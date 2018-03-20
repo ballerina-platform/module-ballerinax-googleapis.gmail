@@ -31,7 +31,8 @@ function main (string[] args) {
     gmailConnector.init();
 
 
-    gmail:Options options = {htmlBody:args[8]};
+    gmail:Options options = {htmlBody:args[8], xmlFilePath:args[9], xmlFileName:args[10], imageFilePath:args[11],
+                            imageFileName:args[12], pdfFilePath:args[13], pdfFileName:args[14]};
     createDraftResponse, e = gmailConnector.createDraft(args[5], args[6], args[7], options);
     if (e.errorMessage == "") {
         io:println("-----Calling createDraft action-----");

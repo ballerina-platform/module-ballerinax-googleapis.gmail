@@ -22,6 +22,12 @@ public struct Options {
     string from;
     string cc;
     string bcc;
+    string xmlFilePath;
+    string xmlFileName;
+    string imageFilePath;
+    string imageFileName;
+    string pdfFilePath;
+    string pdfFileName;
 }
 
 @Description {value:"Struct to define the draft."}

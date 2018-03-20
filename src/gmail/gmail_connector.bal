@@ -21,6 +21,7 @@ import ballerina.net.http;
 import ballerina.util;
 import ballerina.io;
 import ballerina.log;
+import ballerina.mime;
 
 ClientConnector clientConnector;
 boolean isConnectorInitialized = false;
@@ -62,6 +63,12 @@ public connector ClientConnector (string userId, string accessToken, string refr
         string from = options.from;
         string cc = options.cc;
         string bcc = options.bcc;
+        string xmlFilePath = options.xmlFilePath;
+        string xmlFileName = options.xmlFileName;
+        string imageFilePath = options.imageFilePath;
+        string imageFileName = options.imageFileName;
+        string pdfFilePath = options.pdfFilePath;
+        string pdfFileName = options.pdfFileName;
 
         if (to != "null" && to != "") {
             concatRequest = concatRequest + "to:" + to + "\n";
@@ -78,15 +85,42 @@ public connector ClientConnector (string userId, string accessToken, string refr
         if (bcc != "null" && bcc != "") {
             concatRequest = concatRequest + "bcc:" + bcc + "\n";
         }
+        concatRequest = concatRequest + "content-type:multipart/mixed; boundary=boundaryString" + "\n";
+
+        if (messageBody != "null" && messageBody != "") {
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:text/plain" + "\n";
+            concatRequest = concatRequest + "\n" + messageBody + "\n";
+        }
         if (htmlBody != "null" && htmlBody != "") {
-            concatRequest = concatRequest + "content-type:text/html" + "\n";
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:text/html" + "\n";
             concatRequest = concatRequest + "\n" + htmlBody + "\n";
-        } else {
-            if (messageBody != "null" && messageBody != "") {
-                concatRequest = concatRequest + "\n" + messageBody + "\n";
+        }
+        if (xmlFilePath != "null" && xmlFilePath != "") {
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:text/xml";
+            if (xmlFileName != "null" && xmlFileName != "") {
+                concatRequest = concatRequest + ";name=" + xmlFileName + "\n";
             }
+            concatRequest = concatRequest + "content-transfer-encoding:base64" + "\n";
+            concatRequest = concatRequest + "\n" + encodeFile(xmlFilePath) + "\n";
+        }
+        if (imageFilePath != "null" && imageFilePath != "") {
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:image/jpgeg";
+            if (imageFileName != "null" && imageFileName != "") {
+                concatRequest = concatRequest + ";name=" + imageFileName + "\n";
+            }
+            concatRequest = concatRequest + "content-transfer-encoding:base64" + "\n";
+            concatRequest = concatRequest + "\n" + encodeFile(imageFilePath) + "\n";
+        }
+        if (pdfFilePath != "null" && pdfFilePath != "") {
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:application/pdf";
+            if (pdfFileName != "null" && pdfFileName != "") {
+                concatRequest = concatRequest + ";name=" + pdfFileName + "\n";
+            }
+            concatRequest = concatRequest + "content-transfer-encoding:base64" + "\n";
+            concatRequest = concatRequest + "\n" + encodeFile(pdfFilePath) + "\n";
         }
 
+        concatRequest = concatRequest + "\n" + "--boundaryString--";
         string encodedRequest = util:base64Encode(concatRequest);
         encodedRequest = encodedRequest.replace("+", "-");
         encodedRequest = encodedRequest.replace("/", "_");
@@ -126,13 +160,18 @@ public connector ClientConnector (string userId, string accessToken, string refr
         Draft updateResponse = {};
         string concatRequest = "";
 
-
         string to = recipient;
         string messageBody = body;
         string htmlBody = options.htmlBody;
         string from = options.from;
         string cc = options.cc;
         string bcc = options.bcc;
+        string xmlFilePath = options.xmlFilePath;
+        string xmlFileName = options.xmlFileName;
+        string imageFilePath = options.imageFilePath;
+        string imageFileName = options.imageFileName;
+        string pdfFilePath = options.pdfFilePath;
+        string pdfFileName = options.pdfFileName;
 
         if (to != "null" && to != "") {
             concatRequest = concatRequest + "to:" + to + "\n";
@@ -149,15 +188,42 @@ public connector ClientConnector (string userId, string accessToken, string refr
         if (bcc != "null" && bcc != "") {
             concatRequest = concatRequest + "bcc:" + bcc + "\n";
         }
+        concatRequest = concatRequest + "content-type:multipart/mixed; boundary=boundaryString" + "\n";
+
+        if (messageBody != "null" && messageBody != "") {
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:text/plain" + "\n";
+            concatRequest = concatRequest + "\n" + messageBody + "\n";
+        }
         if (htmlBody != "null" && htmlBody != "") {
-            concatRequest = concatRequest + "content-type:text/html" + "\n";
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:text/html" + "\n";
             concatRequest = concatRequest + "\n" + htmlBody + "\n";
-        } else {
-            if (messageBody != "null" && messageBody != "") {
-                concatRequest = concatRequest + "\n" + messageBody + "\n";
+        }
+        if (xmlFilePath != "null" && xmlFilePath != "") {
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:text/xml";
+            if (xmlFileName != "null" && xmlFileName != "") {
+                concatRequest = concatRequest + ";name=" + xmlFileName + "\n";
             }
+            concatRequest = concatRequest + "content-transfer-encoding:base64" + "\n";
+            concatRequest = concatRequest + "\n" + encodeFile(xmlFilePath) + "\n";
+        }
+        if (imageFilePath != "null" && imageFilePath != "") {
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:image/jpgeg";
+            if (imageFileName != "null" && imageFileName != "") {
+                concatRequest = concatRequest + ";name=" + imageFileName + "\n";
+            }
+            concatRequest = concatRequest + "content-transfer-encoding:base64" + "\n";
+            concatRequest = concatRequest + "\n" + encodeFile(imageFilePath) + "\n";
+        }
+        if (pdfFilePath != "null" && pdfFilePath != "") {
+            concatRequest = concatRequest + "\n" + "--boundaryString" + "\n" + "content-type:application/pdf";
+            if (pdfFileName != "null" && pdfFileName != "") {
+                concatRequest = concatRequest + ";name=" + pdfFileName + "\n";
+            }
+            concatRequest = concatRequest + "content-transfer-encoding:base64" + "\n";
+            concatRequest = concatRequest + "\n" + encodeFile(pdfFilePath) + "\n";
         }
 
+        concatRequest = concatRequest + "\n" + "--boundaryString--";
         string encodedRequest = util:base64Encode(concatRequest);
         encodedRequest = encodedRequest.replace("+", "-");
         encodedRequest = encodedRequest.replace("/", "_");

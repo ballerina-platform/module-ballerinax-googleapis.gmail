@@ -16,6 +16,9 @@
 
 package src.gmail;
 
+import ballerina.io;
+import ballerina.mime;
+
 function getHeaders (json jsonHeaders) (Header[]) {
     int i = 0;
     Header[] headers = [];
@@ -44,4 +47,28 @@ function getLabelIds (json allLabelIds) (string[]) {
         i = i + 1;
     }
     return labelIds;
+}
+
+function getFileChannel (string filePath, string permission) (io:ByteChannel) {
+    io:ByteChannel channel = io:openFile(filePath, permission);
+    return channel;
+}
+
+function readBytes (io:ByteChannel channel, int numberOfBytes) (blob, int) {
+    blob bytes;
+    int numberOfBytesRead;
+
+    bytes, numberOfBytesRead = channel.readBytes(numberOfBytes);
+    return bytes, numberOfBytesRead;
+}
+
+function encodeFile (string filePath) (string) {
+    io:ByteChannel fileChannel = getFileChannel(filePath, "r");
+    int bytesChunk = 100000000;
+    blob readContent;
+    int readCount = -1;
+    readContent, readCount = readBytes(fileChannel, bytesChunk);
+    mime:MimeBase64Encoder encoding = {};
+    blob blobEncode = encoding.encode(readContent);
+    return blobEncode.toString("UTF-8");
 }

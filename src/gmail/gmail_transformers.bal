@@ -21,6 +21,12 @@ transformer <json jsonMessage, Options options> optionsTrans() {
     options.from = jsonMessage.from.toString();
     options.cc = jsonMessage.cc.toString();
     options.bcc = jsonMessage.bcc.toString();
+    options.xmlFilePath = jsonMessage.xmlFilePath.toString();
+    options.xmlFileName = jsonMessage.xmlFileName.toString();
+    options.imageFilePath = jsonMessage.imageFilePath.toString();
+    options.imageFileName = jsonMessage.imageFileName.toString();
+    options.pdfFilePath = jsonMessage.pdfFilePath.toString();
+    options.pdfFileName = jsonMessage.pdfFileName.toString();
 }
 
 transformer <json jsonDraft, Draft draft> draftTrans() {
