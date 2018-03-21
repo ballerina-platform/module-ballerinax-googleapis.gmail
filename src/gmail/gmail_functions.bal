@@ -49,6 +49,16 @@ function getLabelIds (json allLabelIds) (string[]) {
     return labelIds;
 }
 
+function getDrafts (json jsonDrafts) (Draft[]) {
+    int i = 0;
+    Draft[] drafts = [];
+    foreach jsonDraft in jsonDrafts {
+        drafts[i] = <Draft, draftTrans()>jsonDraft;
+        i = i + 1;
+    }
+    return drafts;
+}
+
 function getFileChannel (string filePath, string permission) (io:ByteChannel) {
     io:ByteChannel channel = io:openFile(filePath, permission);
     return channel;

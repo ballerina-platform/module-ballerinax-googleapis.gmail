@@ -16,6 +16,13 @@
 
 package src.gmail;
 
+transformer <json jsonUserProfile, UserProfile userProfile> userProfileTrans() {
+    userProfile.emailAddress = jsonUserProfile.emailAddress.toString();
+    userProfile.messagesTotal, _ = <int>jsonUserProfile.messagesTotal.toString();
+    userProfile.threadsTotal, _ = <int>jsonUserProfile.threadsTotal.toString();
+    userProfile.historyId = jsonUserProfile.historyId.toString();
+}
+
 transformer <json jsonMessage, Options options> optionsTrans() {
     options.htmlBody = jsonMessage.htmlBody.toString();
     options.from = jsonMessage.from.toString();
@@ -71,6 +78,19 @@ transformer <json jsonMessage, Message message> messageTrans() {
     message.internalDate = jsonMessage.internalDate != null?jsonMessage.internalDate.toString():null;
     message.payload = jsonMessage.payload != null?<MessagePayload, messagePayloadTrans()>jsonMessage.payload:{};
     message.sizeEstimate = jsonMessage.sizeEstimate != null?<int, convertToInt()>jsonMessage.sizeEstimate:0;
+}
+
+transformer <json jsonDrafts, Drafts drafts> draftsTrans() {
+    drafts.drafts = getDrafts(jsonDrafts.drafts);// Todo: use map (low)
+    drafts.resultSizeEstimate = jsonDrafts.resultSizeEstimate != null?<int, convertToInt()>jsonDrafts.resultSizeEstimate:0;
+    drafts.nextPageToken = jsonDrafts.nextPageToken != null?jsonDrafts.nextPageToken.toString():null;
+}
+
+transformer <json jsonDraftsListFilter, DraftsListFilter draftsListFilter> draftsListFilterTrans() {
+    draftsListFilter.includeSpamTrash = jsonDraftsListFilter.includeSpamTrash != null?jsonDraftsListFilter.includeSpamTrash.toString():null;
+    draftsListFilter.maxResults = jsonDraftsListFilter.maxResults != null?jsonDraftsListFilter.maxResults.toString():null;
+    draftsListFilter.pageToken = jsonDraftsListFilter.pageToken != null?jsonDraftsListFilter.pageToken.toString():null;
+    draftsListFilter.q = jsonDraftsListFilter.q != null?jsonDraftsListFilter.q.toString():null;
 }
 
 transformer <json jsonGmailError, GmailError gmailError> gmailErrorTrans() {

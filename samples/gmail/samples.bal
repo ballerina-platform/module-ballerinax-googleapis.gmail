@@ -25,14 +25,25 @@ function main (string[] args) {
     }
 
     gmail:GmailError e = {};
+    gmail:UserProfile userProfileResponse = {};
     gmail:Draft createDraftResponse = {};
     gmail:Draft updateResponse = {};
+    gmail:Drafts getDraftsResponse = {};
+    gmail:Message sendEmailResponse = {};
     boolean sendResponse = false;
+    boolean deleteDraftResponse = false;
     gmailConnector.init();
 
+    io:println("-----Calling getUserProfile action-----");
+    userProfileResponse, e = gmailConnector.getUserProfile();
+    if (e.errorMessage == "") {
+        io:println(userProfileResponse);
+    } else {
+        io:println(e);
+    }
 
     gmail:Options options = {htmlBody:args[8], xmlFilePath:args[9], xmlFileName:args[10], imageFilePath:args[11],
-                            imageFileName:args[12], pdfFilePath:args[13], pdfFileName:args[14]};
+                                imageFileName:args[12], pdfFilePath:args[13], pdfFileName:args[14]};
     createDraftResponse, e = gmailConnector.createDraft(args[5], args[6], args[7], options);
     if (e.errorMessage == "") {
         io:println("-----Calling createDraft action-----");
@@ -51,6 +62,27 @@ function main (string[] args) {
         } else {
             io:println(e);
         }
+    } else {
+        io:println(e);
+    }
+    getDraftsResponse, e = gmailConnector.getDrafts({maxResults:"1"});
+    if (e.errorMessage == "") {
+        io:println("-----Calling getDrafts action-----");
+        io:println(getDraftsResponse);
+    } else {
+        io:println(e);
+    }
+    deleteDraftResponse, e = gmailConnector.deleteDraft(getDraftsResponse.drafts[0].id);
+    if (e.errorMessage == "") {
+        io:println("-----Calling deleteDraft action-----");
+        io:println(deleteDraftResponse);
+    } else {
+        io:println(e);
+    }
+    sendEmailResponse, e = gmailConnector.sendEmail(args[5], args[6], args[7], options);
+    if (e.errorMessage == "") {
+        io:println("-----Calling sendEmail action-----");
+        io:println(sendEmailResponse);
     } else {
         io:println(e);
     }

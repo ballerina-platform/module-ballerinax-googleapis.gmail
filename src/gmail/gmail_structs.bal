@@ -16,6 +16,14 @@
 
 package src.gmail;
 
+@Description {value:"Struct to define the UserProfile."}
+public struct UserProfile {
+    string emailAddress;
+    int messagesTotal;
+    int threadsTotal;
+    string historyId;
+}
+
 @Description {value:"Struct to define the optional parameters which are used to create a mail."}
 public struct Options {
     string htmlBody;
@@ -83,6 +91,21 @@ public struct Message {
     string internalDate;
     MessagePayload payload;
     int sizeEstimate;
+}
+
+@Description {value:"Struct to define the whole drafts details."}
+public struct Drafts {
+    Draft[] drafts;
+    int resultSizeEstimate;
+    string nextPageToken;
+}
+
+@Description {value:"Struct to define the filters uesd to get draft details."}
+public struct DraftsListFilter {
+    string includeSpamTrash;
+    string maxResults;
+    string pageToken;
+    string q;
 }
 
 @Description {value:"Struct to define the error return from response."}
