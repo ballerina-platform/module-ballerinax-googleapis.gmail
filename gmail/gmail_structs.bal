@@ -1,0 +1,333 @@
+// Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+//
+// WSO2 Inc. licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+package gmail;
+
+import ballerina/util;
+import ballerina/io;
+
+@Description {value:"Struct to define the message resource"}
+public struct Message {
+    //Thread ID which the message belongs to
+    string threadId;
+    //Message Id
+    string id;
+    //The label ids of the message
+    string[] labelIds;
+    //The headers in the top level message part representing the entire message payload in a  standard RFC 2822 message
+    MessagePartHeader[] headers;
+    //Following are the set of general headers taken from above header list
+    MessagePartHeader headerTo;
+    MessagePartHeader headerFrom;
+    MessagePartHeader headerBcc;
+    MessagePartHeader headerCc;
+    MessagePartHeader headerSubject;
+    MessagePartHeader headerDate;
+    MessagePartHeader headerContentType;
+    //MIME type of the top level message part.
+    string mimeType;
+    //MIME Message Part with the content type as text/plain
+    MessageBodyPart plainTextBodyPart;
+    //MIME Message Part with the content type as text/html
+    MessageBodyPart htmlBodyPart;
+    //MIME Message Part for the inline images with the content type as image/*
+    MessageBodyPart[] inlineImgParts;
+    //MIME Message Parts of the message consisting the attachments
+    MessageAttachment[] msgAttachments;
+    //If the top level message part is multipart/*
+    boolean isMultipart;
+    private:
+        //Represent the entire message in base64 encoded string
+        string raw;
+        //Short part of the message text
+        string snippet;
+        //ID of the last history record that modified the message
+        string historyId;
+        //Internal message creation timestamp(epoch ms)
+        string internalDate;
+        //Estimated size of the message in bytes
+        string sizeEstimate;
+}
+
+@Description {value:"Struct to define the MIME Message Body Part"}
+public struct MessageBodyPart {
+    //The body data of a MIME message part
+    string body;
+    //Number of bytes of message part data
+    string size;
+    //MIME type of the message part
+    string mimeType;
+    //Headers of the MIME Message Part
+    MessagePartHeader[] bodyHeaders;
+    //File ID of the attachment in message part (This is empty unless the message part represent an inline image)
+    string fileId;
+    //File name of the attachment in message part (This is empty unless the message part represent an inline image)
+    string fileName;
+    private:
+        //Part id of the message part
+        string partId;
+}
+
+@Description {value:"Struct to define the MIME Message Part which represents an attachment"}
+public struct MessageAttachment {
+    //File ID of the attachment in the message.
+    string attachmentFileId;
+    //Attachment body of the MIME Message Part.
+    //This is empty when the attachment body data is sent as a seperate attachment
+    string attachmentBody;
+    //Size of the attachment message part
+    string size;
+    //File name of the attachment in the message
+    string attachmentFileName;
+    //Mime Type of the MIME message part which represent the attachment
+    string mimeType;
+    //Headers of MIME Message Part representing the attachment
+    MessagePartHeader[] attachmentHeaders;
+    private:
+        //Part Id of the message part
+        string partId;
+}
+
+@Description {value:"Struct to define the message part header"}
+public struct MessagePartHeader {
+    string name;
+    string value;
+}
+
+@Description {value:"Struct to define message error"}
+public struct GmailError {
+    string errorMessage;
+    int statusCode;
+}
+
+@Description {value:"Struct to define the optional parameters which are used to create a mail."}
+public struct MessageOptions {
+    string sender;
+    string cc;
+    string bcc;
+}
+
+//Functions binded to Message struct
+
+@Description {value:"Create a message"}
+@Param {value:"recipient:  email address of the receiver"}
+@Param {value:"sender: email address of the sender, the mailbox account"}
+@Param {value:"subject: subject of the email"}
+@Param {value:"bodyText: body text of the email"}
+@Param {value:"options: other optional headers of the email including Cc, Bcc and From"}
+public function <Message message> createMessage (string recipient, string subject, string bodyText, MessageOptions options) {
+    //set the general header To of top level message part
+    message.headerTo = {name:TO, value:recipient};
+    //Include the seperate header to the existing header list
+    message.headers[0] = message.headerTo;
+    message.headerSubject = {name:SUBJECT, value:subject};
+    message.headers[1] = message.headerSubject;
+    if (options.sender != "") {
+        message.headerFrom = {name:FROM, value:options.sender};
+        message.headers[lengthof message.headers] = message.headerFrom;
+    }
+    if (options.cc != "") {
+        message.headerCc = {name:CC, value:options.cc};
+        message.headers[lengthof message.headers] = message.headerCc;
+    }
+    if (options.bcc != "") {
+        message.headerBcc = {name:BCC, value:options.bcc};
+        message.headers[lengthof message.headers] = message.headerBcc;
+    }
+    //Set the general content type header of top level MIME message part as multipart/mixed with the
+    //boundary=boundaryString
+    message.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + ";" + BOUNDARY + "=\"" + BOUNDARY_STRING + "\""};
+    message.headers[lengthof message.headers] = message.headerContentType;
+    message.mimeType = MULTIPART_MIXED;
+    message.isMultipart = true;
+    //Set the plain text type MIME Message body part of the message
+    message.plainTextBodyPart.setMessageBody(bodyText, TEXT_PLAIN);
+    message.plainTextBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_PLAIN + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
+    message.plainTextBodyPart.mimeType = TEXT_PLAIN;
+}
+
+@Description {value:"Set the html content or inline image content of the message"}
+@Param {value:"content: the string html content or the string inline image file path"}
+@Param {value:"contentType: the content type"}
+@Return {value:"Returns true if the content is set successfully"}
+@Return {value:"Returns IOError if there's any error while performaing I/O operation"}
+@Return {value:"Returns GmailError if the content type is not supported"}
+public function <Message message> setContent (string content, string contentType) returns (boolean|(GmailError|io:IOError)) {
+    //If the mime type of the content is text/html
+    if (isMimeType(contentType, TEXT_HTML)) {
+        //Set the html body part of the message
+        message.htmlBodyPart.mimeType = TEXT_HTML;
+        message.htmlBodyPart.setMessageBody(content, contentType);
+        message.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
+
+    } else if (isMimeType(contentType, IMAGE_ANY)) {
+        string encodedFile;
+        //Open and encode the image file into base64. Return an IOError if fails.
+        match encodeFile(content) {
+            string eFile => encodedFile = eFile;
+            io:IOError ioError => return ioError;
+        }
+        //Set the inline image body part of the message
+        MessageBodyPart inlineImgBody = {};
+        inlineImgBody.fileName = getFileNameFromPath(content);
+        MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" + inlineImgBody.fileName + "\""};
+        MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:INLINE + "; " + FILE_NAME + "=\"" + inlineImgBody.fileName + "\""};
+        MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
+        MessagePartHeader contentIdHeader = {name:CONTENT_ID, value:"<" + INLINE_IMAGE_CONTENT_ID_PREFIX + inlineImgBody.fileName + ">"};
+        inlineImgBody.bodyHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader, contentIdHeader];
+        inlineImgBody.setMessageBody(encodedFile, contentType);
+        inlineImgBody.mimeType = contentType;
+        message.inlineImgParts[lengthof message.inlineImgParts] = inlineImgBody;
+    } else {
+        //Return an error if an un supported content type other than text/html or image/* is passed
+        GmailError gmailError = {};
+        gmailError.errorMessage = ERROR_CONTENT_TYPE_UNSUPPORTED;
+        return gmailError;
+    }
+    return true;
+}
+
+@Description {value:"Add an attachment to the message"}
+@Param {value:"filePath: the string file path of the attachment"}
+@Param {value:"contentType: the content type of the attachment"}
+@Return {value:"Returns true if the attachment process is success"}
+@Return {value:"Returns IOError if there's any error while performaing I/O operation"}
+public function <Message message> addAttachment (string filePath, string contentType) returns boolean|(io:IOError) {
+    string encodedFile;
+    //Open and encode the file into base64. Return an IOError if fails.
+    match encodeFile(filePath) {
+        string eFile => encodedFile = eFile;
+        io:IOError ioError => return ioError;
+    }
+    MessageAttachment attachment = {};
+    attachment.mimeType = contentType;
+    attachment.attachmentFileName = getFileNameFromPath(filePath);
+    MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" + attachment.attachmentFileName + "\""};
+    MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:ATTACHMENT + "; " + FILE_NAME + "=\"" + attachment.attachmentFileName + "\""};
+    MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
+    attachment.attachmentHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader];
+    attachment.setAttachment(encodedFile, contentType);
+    message.msgAttachments[lengthof message.msgAttachments] = attachment;
+    return true;
+}
+
+@Description {value:"Create the raw base 64 encoded string of the whole message and send the email from the user's
+mailbox to its recipient."}
+@Param {value:"userId: User's email address. The special value -> me"}
+@Return {value:"Returns the message id of the successfully sent message"}
+@Return {value:"Returns the thread id of the succesfully sent message"}
+@Return {value:"Returns GmailError if the message is not sent successfully"}
+public function <Message message> sendMessage (string userId) returns (string,string)|GmailError {
+    if (!isConnectorInitialized) {
+        GmailError gmailError = {};
+        gmailError.errorMessage = ERROR_CONNECTOR_NOT_INITALIZED;
+        return gmailError;
+    }
+    string concatRequest = EMPTY_STRING;
+    //Set the general headers of the message
+    concatRequest += TO + ":" + message.headerTo.value + NEW_LINE;
+    concatRequest += SUBJECT + ":" + message.headerSubject.value + NEW_LINE;
+
+    if (message.headerFrom.value != EMPTY_STRING) {
+        concatRequest += FROM + ":" + message.headerFrom.value + NEW_LINE;
+    }
+    if (message.headerCc.value != EMPTY_STRING) {
+        concatRequest += CC + ":" + message.headerCc.value + NEW_LINE;
+    }
+    if (message.headerBcc.value != EMPTY_STRING) {
+        concatRequest += BCC + ":" + message.headerBcc.value + NEW_LINE;
+    }
+    //------Start of multipart/mixed mime part (parent mime part)------
+    //Set the content type header of top level MIME message part
+    concatRequest += message.headerContentType.name + ":" + message.headerContentType.value + NEW_LINE;
+    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
+    //------Start of multipart/related mime part------
+    concatRequest += CONTENT_TYPE + ":" + MULTIPART_RELATED + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_1 + "\"" + NEW_LINE;
+    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
+    //------Start of multipart/alternative mime part------
+    concatRequest += CONTENT_TYPE + ":" + MULTIPART_ALTERNATIVE + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_2 + "\"" + NEW_LINE;
+    //Set the body part : text/plain
+    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+    foreach header in message.plainTextBodyPart.bodyHeaders {
+        concatRequest += header.name + ":" + header.value + NEW_LINE;
+    }
+    concatRequest += NEW_LINE + message.plainTextBodyPart.body + NEW_LINE;
+    //Set the body part : text/html
+    if (message.htmlBodyPart.body != "") {
+        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+        foreach header in message.htmlBodyPart.bodyHeaders {
+            concatRequest += header.name + ":" + header.value + NEW_LINE;
+        }
+        concatRequest += NEW_LINE + message.htmlBodyPart.body + NEW_LINE + NEW_LINE;
+        concatRequest += "--" + BOUNDARY_STRING_2 + "--";
+    }
+    //------End of multipart/alternative mime part------
+    //Set inline Images as body parts
+    boolean isExistInlineImageBody = false;
+    foreach inlineImagePart in message.inlineImgParts {
+        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
+        foreach header in inlineImagePart.bodyHeaders {
+            concatRequest += header.name + ":" + header.value + NEW_LINE;
+        }
+        concatRequest += NEW_LINE + inlineImagePart.body + NEW_LINE + NEW_LINE;
+        isExistInlineImageBody = true;
+    }
+    if (isExistInlineImageBody) {
+        concatRequest += "--" + BOUNDARY_STRING_1 + "--" + NEW_LINE;
+    }
+    //------End of multipart/related mime part------
+    //Set attachments
+    boolean isExistAttachment = false;
+    foreach attachment in message.msgAttachments {
+        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
+        foreach header in attachment.attachmentHeaders {
+            concatRequest += header.name + ":" + header.value + NEW_LINE;
+        }
+        concatRequest += NEW_LINE + attachment.attachmentBody + NEW_LINE + NEW_LINE;
+        isExistAttachment = true;
+    }
+    if (isExistInlineImageBody) {
+        concatRequest += "--" + BOUNDARY_STRING + "--";
+    }
+    //------End of multipart/mixed mime part------
+    string encodedRequest = util:base64Encode(concatRequest);
+    encodedRequest = encodedRequest.replace("+", "-");
+    encodedRequest = encodedRequest.replace("/", "_");
+    //Set the encoded message as raw
+    message.raw = encodedRequest;
+    //Call the send Message of gmail global client connector to send the payload to Gmail API
+    return gsClientGlobal.sendMessage(message.raw, userId);
+}
+
+//Functions binded to MessageBodyPart struct
+
+@Description {value:"set the values of message body part of an email "}
+@Param {value:"body: body of the message part. This could be plain text, html content or encoded inline image"}
+@Param {value:"mimeType: mime type of message part"}
+function <MessageBodyPart messageBody> setMessageBody (string body, string mimeType) {
+    messageBody.body = body;
+    messageBody.mimeType = mimeType;
+}
+
+//Functions binded to MessageAttachment struct
+
+@Description {value:"set the values of an attachment part of an email "}
+@Param {value:"encodedAttachment: body of the attachment."}
+@Param {value:"mimeType: mime type of the attachment"}
+function <MessageAttachment attachment> setAttachment (string encodedAttachment, string mimeType) {
+    attachment.attachmentBody = encodedAttachment;
+    attachment.mimeType = mimeType;
+}
