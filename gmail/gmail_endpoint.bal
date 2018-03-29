@@ -27,7 +27,7 @@ public struct GmailConfiguration {
     string refreshToken;
     string refreshTokenEP;
     string refreshTokenPath;
-    string uri;
+    string baseUrl;
     http:ClientEndpointConfiguration clientConfig;
 }
 
@@ -41,17 +41,21 @@ public struct GmailEndpoint {
     GmailConfiguration gmailConfig;
     GmailConnector gmailConnector;
 }
-
+@Description {value:"Initialize the gmail endpoint"}
 public function <GmailEndpoint ep> init (GmailConfiguration gmailConfig) {
-    string gmailURI = gmailConfig.uri;
-    string lastCharacter = gmailURI.subString(lengthof gmailURI - 1, lengthof gmailURI);
-    gmailConfig.uri = (lastCharacter == "/") ? gmailURI.subString(0, lengthof gmailURI - 1) : gmailURI;
-    ep.gmailConnector = {httpClient:http:createHttpClient(gmailConfig.uri, gmailConfig.clientConfig),
-                        accessToken:gmailConfig.accessToken, clientId:gmailConfig.clientId,
-                        clientSecret:gmailConfig.clientSecret, refreshToken:gmailConfig.refreshToken,
-                        refreshTokenEP:gmailConfig.refreshTokenEP, refreshTokenPath:gmailConfig.refreshTokenPath,
-                        baseUrl:gmailConfig.uri};
-    httpClientGlobal = http:createHttpClient(gmailConfig.uri, gmailConfig.clientConfig);
+    endpoint oauth2:OAuth2Endpoint oauth2EP {
+        accessToken:gmailConfig.accessToken,
+        clientId:gmailConfig.clientId,
+        clientSecret:gmailConfig.clientSecret,
+        refreshToken:gmailConfig.refreshToken,
+        refreshTokenEP:gmailConfig.refreshTokenEP,
+        refreshTokenPath:gmailConfig.refreshTokenPath,
+        baseUrl:gmailConfig.baseUrl,
+        clientConfig:gmailConfig.clientConfig,
+        useUriParams:true
+     };
+    ep.gmailConnector.oauthEndpoint = oauth2EP;
+    ep.gmailConnector.baseUrl = gmailConfig.baseUrl;
 }
 
 public function <GmailEndpoint ep> register(typedesc serviceType) {

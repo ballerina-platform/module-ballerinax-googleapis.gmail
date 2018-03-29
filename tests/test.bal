@@ -19,29 +19,20 @@ package tests;
 import ballerina/io;
 import gmail;
 import ballerina.user;
+import oauth2;
 
 public function main (string[] args) {
-    //endpoint gmail:GmailEndpoint gmailEP {
-    //    accessToken:args[0],
-    //    clientId:args[1],
-    //    clientSecret:args[2],
-    //    refreshToken:args[3],
-    //    refreshTokenEP:args[4],
-    //    refreshTokenPath:args[5],
-    //    uri:args[6],
-    //    clientConfig:{}
-    //};
     endpoint gmail:GmailEndpoint gmailEP {
-        accessToken:"ya29.GluNBTFlsJP32TSNy7fIQG6GlBTjSaC82-Mf2Y_bKc3X-zz_4GkEq54JBqv1oCyz86dtWKtDuPG7nUjxwImDhKF6X51sLOtMJmisI_wYeh4tedAxTlsJHLbiDZG4",
+        accessToken:"ya29.GlyNBfLa9n67UFU_H1pBtha-Ei6vOfDBN1yNLX9G8VeVgcS4ALOhZ1KIK6cwTck8KXD4blrH2r_nLZCnIp7ir6wYov_9oaDj77f5W5dubHuhTVok_7Qa2DKpoVX6eA",
         clientId:"297850098219-dju3ruvd8c7c11lluhjav55d1rr25asa.apps.googleusercontent.com",
         clientSecret:"CITYfRtibqMi0kndYsnIjJTL",
         refreshToken:"1/y-Xi70VN_oijQW5L38tOyLHIP8SIC2oQU1KU5WXg5PM",
         refreshTokenEP:gmail:REFRESH_TOKEN_EP,
         refreshTokenPath:gmail:REFRESH_TOKEN_PATH,
-        uri:gmail:BASE_URL,
+        baseUrl:gmail:BASE_URL,
         clientConfig:{}
     };
-    gmailEP->initOAuth2();
+
     //-----Define the email parameters------
     //string recipient = "recipient@gmail.com";
     //string sender = "sender@gmail.com";
