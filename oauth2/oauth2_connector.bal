@@ -20,275 +20,246 @@ import ballerina/io;
 import ballerina/net.http;
 import ballerina/mime;
 
-public struct OAuth2Client {
-    http:ClientEndpoint httpClient;
-    OAuthConfig oAuthConfig;
-}
-
-public struct OAuthConfig {
+@Description {value:"Struct to initialize the connection."}
+public struct OAuth2Connector {
     string accessToken;
-    string refreshToken;
+    string baseUrl;
     string clientId;
     string clientSecret;
-    string baseUrl;
+    string refreshToken;
     string refreshTokenEP;
     string refreshTokenPath;
+    boolean useUriParams = false;
+    http:HttpClient httpClient;
+    http:ClientEndpointConfiguration clientConfig;
 }
 
-string accessTokenValue;
 http:Response response = {};
-http:HttpConnectorError e = {};
+http:HttpConnectorError httpConnectorError = {};
 
-public function <OAuth2Client oAuth2Client> init(string baseUrl, string accessToken, string refreshToken,
-                         string clientId, string clientSecret, string refreshTokenEP, string refreshTokenPath,
-                         string trustStoreLocation, string trustStorePassword) {
-    endpoint http:ClientEndpoint httpEP {
-        targets:[{uri:baseUrl,
-                    secureSocket:{
-                        trustStore:{
-                            filePath:trustStoreLocation,
-                            password:trustStorePassword
+public function <OAuth2Connector oAuth2Connector> get (string path, http:Request originalRequest)
+returns http:Response | http:HttpConnectorError {
+    match oAuth2Connector.canProcess(originalRequest) {
+        http:HttpConnectorError err => return err;
+        boolean val => {
+            var httpResponse = oAuth2Connector.httpClient.get(path, originalRequest);
+            match  httpResponse {
+                http:HttpConnectorError err => return err;
+                http:Response res => {
+                    response = res;
+                    http:Request request = {};
+                    match oAuth2Connector.checkAndRefreshToken(request) {
+                        http:HttpConnectorError err => return err;
+                        boolean isRefreshed => {
+                            if (isRefreshed) {
+                                match oAuth2Connector.httpClient.get(path, request) {
+                                    http:HttpConnectorError err => return err;
+                                    http:Response newResponse => response = newResponse;
+                                }
+                            }
                         }
+
                     }
-                 }
-        ]
-    };
-
-    OAuthConfig conf = {};
-    conf.accessToken = accessToken;
-    conf.refreshToken = refreshToken;
-    conf.clientId = clientId;
-    conf.clientSecret = clientSecret;
-    conf.refreshTokenEP = refreshTokenEP;
-    conf.refreshTokenPath = refreshTokenPath;
-
-    oAuth2Client.httpClient = httpEP;
-    oAuth2Client.oAuthConfig = conf;
+                }
+            }
+        }
+    }
+    return response;
 }
 
-public function <OAuth2Client oAuth2Client> get (string path, http:Request originalRequest)
-                                        returns http:Response | http:HttpConnectorError {
-    endpoint http:ClientEndpoint httpClient = oAuth2Client.httpClient;
-    boolean isRefreshed;
-    populateAuthHeader(originalRequest, oAuth2Client.oAuthConfig.accessToken);
-    var httpResponse = httpClient -> get(path, originalRequest);
-    match httpResponse {
-        http:Response res => response = res;
+public function <OAuth2Connector oAuth2Connector> post (string path, http:Request originalRequest)
+returns http:Response | http:HttpConnectorError {
+    json originalPayload =? originalRequest.getJsonPayload();
+    match oAuth2Connector.canProcess(originalRequest) {
         http:HttpConnectorError err => return err;
-    }
-    http:Request request = {};
-    var isRefreshedTokenResponse = checkAndRefreshToken(request, oAuth2Client.oAuthConfig.accessToken,
-                                    oAuth2Client.oAuthConfig.clientId, oAuth2Client.oAuthConfig.clientSecret,
-                                    oAuth2Client.oAuthConfig.refreshToken, oAuth2Client.oAuthConfig.refreshTokenEP,
-                                    oAuth2Client.oAuthConfig.refreshTokenPath);
+        boolean val => {
+            var httpResponse = oAuth2Connector.httpClient.post(path, originalRequest);
+            match  httpResponse {
+                http:HttpConnectorError err => return err;
+                http:Response res => {
+                    response = res;
+                    http:Request request = {};
+                    request.setJsonPayload(originalPayload);
+                    match oAuth2Connector.checkAndRefreshToken(request) {
+                        http:HttpConnectorError err => return err;
+                        boolean isRefreshed => {
+                            if (isRefreshed) {
+                                match oAuth2Connector.httpClient.post(path, request) {
+                                    http:HttpConnectorError err => return err;
+                                    http:Response newResponse => response = newResponse;
+                                }
+                            }
+                        }
 
-    match isRefreshedTokenResponse {
-        boolean val => isRefreshed = val;
-        http:HttpConnectorError err => return err;
+                    }
+                }
+            }
+        }
     }
-    if (isRefreshed) {
-        httpResponse = httpClient -> get (path, request);
-    }
-
-    match httpResponse {
-        http:Response res =>  return res;
-        http:HttpConnectorError err => return err;
-    }
+    return response;
 }
 
-public function <OAuth2Client oAuth2Client> post (string path, http:Request originalRequest)
-                                                            returns http:Response | http:HttpConnectorError {
-    endpoint http:ClientEndpoint httpClient = oAuth2Client.httpClient;
-    boolean isRefreshed;
-    json originalPayload;
-    var originalJsonPayload = originalRequest.getJsonPayload();
-    match originalJsonPayload {
-        json jsonVal => originalPayload = jsonVal;
-        mime:EntityError err => io:println(err);
-    }
-    populateAuthHeader(originalRequest, oAuth2Client.oAuthConfig.accessToken);
-    var httpResponse = httpClient -> post(path, originalRequest);
-    match httpResponse {
-        http:Response res => response = res;
+public function <OAuth2Connector oAuth2Connector> put (string path, http:Request originalRequest)
+returns http:Response | http:HttpConnectorError {
+    json originalPayload =? originalRequest.getJsonPayload();
+    match oAuth2Connector.canProcess(originalRequest) {
         http:HttpConnectorError err => return err;
-    }
-    http:Request request = {};
-    request.setJsonPayload(originalPayload);
-    var isRefreshedTokenResponse = checkAndRefreshToken(request, oAuth2Client.oAuthConfig.accessToken,
-                                    oAuth2Client.oAuthConfig.clientId, oAuth2Client.oAuthConfig.clientSecret,
-                                    oAuth2Client.oAuthConfig.refreshToken, oAuth2Client.oAuthConfig.refreshTokenEP,
-                                    oAuth2Client.oAuthConfig.refreshTokenPath);
+        boolean val => {
+            var httpResponse = oAuth2Connector.httpClient.put(path, originalRequest);
+            match  httpResponse {
+                http:HttpConnectorError err => return err;
+                http:Response res => {
+                    response = res;
+                    http:Request request = {};
+                    request.setJsonPayload(originalPayload);
+                    match oAuth2Connector.checkAndRefreshToken(request) {
+                        http:HttpConnectorError err => return err;
+                        boolean isRefreshed => {
+                            if (isRefreshed) {
+                                match oAuth2Connector.httpClient.put(path, request) {
+                                    http:HttpConnectorError err => return err;
+                                    http:Response newResponse => response = newResponse;
+                                }
+                            }
+                        }
 
-    match isRefreshedTokenResponse {
-        boolean val => isRefreshed = val;
-        http:HttpConnectorError err => return err;
+                    }
+                }
+            }
+        }
     }
-    if (isRefreshed) {
-        httpResponse = httpClient -> post (path, request);
-    }
-
-    match httpResponse {
-        http:Response res =>  return res;
-        http:HttpConnectorError err => return err;
-    }
+    return response;
 }
 
-public function <OAuth2Client oAuth2Client> put (string path, http:Request originalRequest)
-                                                            returns http:Response | http:HttpConnectorError {
-    endpoint http:ClientEndpoint httpClient = oAuth2Client.httpClient;
-    boolean isRefreshed;
-    json originalPayload;
-    var originalJsonPayload = originalRequest.getJsonPayload();
-    match originalJsonPayload {
-        json jsonVal => originalPayload = jsonVal;
-        mime:EntityError err => io:println(err);
-    }
-    populateAuthHeader(originalRequest, oAuth2Client.oAuthConfig.accessToken);
-    var httpResponse = httpClient -> put(path, originalRequest);
-    match httpResponse {
-        http:Response res => response = res;
+public function <OAuth2Connector oAuth2Connector> patch (string path, http:Request originalRequest)
+returns http:Response | http:HttpConnectorError {
+    json originalPayload =? originalRequest.getJsonPayload();
+    match oAuth2Connector.canProcess(originalRequest) {
         http:HttpConnectorError err => return err;
-    }
-    http:Request request = {};
-    request.setJsonPayload(originalPayload);
-    var isRefreshedTokenResponse = checkAndRefreshToken(request, oAuth2Client.oAuthConfig.accessToken,
-                                    oAuth2Client.oAuthConfig.clientId, oAuth2Client.oAuthConfig.clientSecret,
-                                    oAuth2Client.oAuthConfig.refreshToken, oAuth2Client.oAuthConfig.refreshTokenEP,
-                                    oAuth2Client.oAuthConfig.refreshTokenPath);
+        boolean val => {
+            var httpResponse = oAuth2Connector.httpClient.patch(path, originalRequest);
+            match  httpResponse {
+                http:HttpConnectorError err => return err;
+                http:Response res => {
+                    response = res;
+                    http:Request request = {};
+                    request.setJsonPayload(originalPayload);
+                    match oAuth2Connector.checkAndRefreshToken(request) {
+                        http:HttpConnectorError err => return err;
+                        boolean isRefreshed => {
+                            if (isRefreshed) {
+                                match oAuth2Connector.httpClient.patch(path, request) {
+                                    http:HttpConnectorError err => return err;
+                                    http:Response newResponse => response = newResponse;
+                                }
+                            }
+                        }
 
-    match isRefreshedTokenResponse {
-        boolean val => isRefreshed = val;
-        http:HttpConnectorError err => return err;
+                    }
+                }
+            }
+        }
     }
-    if (isRefreshed) {
-        httpResponse = httpClient -> put (path, request);
-    }
-
-    match httpResponse {
-        http:Response res =>  return res;
-        http:HttpConnectorError err => return err;
-    }
+    return response;
 }
 
-public function <OAuth2Client oAuth2Client> delete (string path, http:Request originalRequest)
-                                                                returns http:Response | http:HttpConnectorError {
-    endpoint http:ClientEndpoint httpClient = oAuth2Client.httpClient;
-    boolean isRefreshed;
-    populateAuthHeader(originalRequest, oAuth2Client.oAuthConfig.accessToken);
-    var httpResponse = httpClient -> delete(path, originalRequest);
-    match httpResponse {
-        http:Response res => response = res;
-        http:HttpConnectorError err => return err;
-    }
-    http:Request request = {};
-    var isRefreshedTokenResponse = checkAndRefreshToken(request, oAuth2Client.oAuthConfig.accessToken,
-                                    oAuth2Client.oAuthConfig.clientId, oAuth2Client.oAuthConfig.clientSecret,
-                                    oAuth2Client.oAuthConfig.refreshToken, oAuth2Client.oAuthConfig.refreshTokenEP,
-                                    oAuth2Client.oAuthConfig.refreshTokenPath);
 
-    match isRefreshedTokenResponse {
-        boolean val => isRefreshed = val;
+public function <OAuth2Connector oAuth2Connector> delete (string path, http:Request originalRequest)
+returns http:Response | http:HttpConnectorError {
+    match oAuth2Connector.canProcess(originalRequest) {
         http:HttpConnectorError err => return err;
-    }
-    if (isRefreshed) {
-        httpResponse = httpClient -> delete (path, request);
-    }
+        boolean val => {
+            var httpResponse = oAuth2Connector.httpClient.delete(path, originalRequest);
+            match  httpResponse {
+                http:HttpConnectorError err => return err;
+                http:Response res => {
+                    response = res;
+                    http:Request request = {};
+                    match oAuth2Connector.checkAndRefreshToken(request) {
+                        http:HttpConnectorError err => return err;
+                        boolean isRefreshed => {
+                            if (isRefreshed) {
+                                match oAuth2Connector.httpClient.delete(path, request) {
+                                    http:HttpConnectorError err => return err;
+                                    http:Response newResponse => response = newResponse;
+                                }
+                            }
+                        }
 
-    match httpResponse {
-        http:Response res =>  return res;
-        http:HttpConnectorError err => return err;
+                    }
+                }
+            }
+        }
     }
+    return response;
 }
 
-public function <OAuth2Client oAuth2Client> patch (string path, http:Request originalRequest)
-                                                            returns http:Response | http:HttpConnectorError {
-    endpoint http:ClientEndpoint httpClient = oAuth2Client.httpClient;
-    boolean isRefreshed;
-    json originalPayload;
-    var originalJsonPayload = originalRequest.getJsonPayload();
-    match originalJsonPayload {
-        json jsonVal => originalPayload = jsonVal;
-        mime:EntityError err => io:println(err);
+function <OAuth2Connector oAuth2Connector> canProcess (http:Request request)
+returns (boolean) | http:HttpConnectorError {
+    if (oAuth2Connector.accessToken == "") {
+        if (oAuth2Connector.refreshToken != "") {
+            var  accessTokenValueResponse = oAuth2Connector.getAccessTokenFromRefreshToken(request);
+            match accessTokenValueResponse {
+                string accessTokenString => request.setHeader("Authorization", "Bearer " + accessTokenString);
+                http:HttpConnectorError err =>  return err;
+            }
+        } else {
+            httpConnectorError.message = "Valid access_token or refresh_token is not available to process the request";
+            return httpConnectorError;
+        }
+    } else {
+        request.setHeader("Authorization", "Bearer " + oAuth2Connector.accessToken);
     }
-    populateAuthHeader(originalRequest, oAuth2Client.oAuthConfig.accessToken);
-    var httpResponse = httpClient -> patch (path, originalRequest);
-    match httpResponse {
-        http:Response res => response = res;
-        http:HttpConnectorError err => return err;
-    }
-    http:Request request = {};
-    request.setJsonPayload(originalPayload);
-    var isRefreshedTokenResponse = checkAndRefreshToken(request, oAuth2Client.oAuthConfig.accessToken,
-                                    oAuth2Client.oAuthConfig.clientId, oAuth2Client.oAuthConfig.clientSecret,
-                                    oAuth2Client.oAuthConfig.refreshToken, oAuth2Client.oAuthConfig.refreshTokenEP,
-                                    oAuth2Client.oAuthConfig.refreshTokenPath);
-
-    match isRefreshedTokenResponse {
-        boolean val => isRefreshed = val;
-        http:HttpConnectorError err => return err;
-    }
-    if (isRefreshed) {
-        httpResponse = httpClient -> patch (path, request);
-    }
-
-    match httpResponse {
-        http:Response res =>  return res;
-        http:HttpConnectorError err => return err;
-    }
+    return true;
 }
 
-function populateAuthHeader (http:Request request, string accessToken) {
-    if (accessTokenValue == null || accessTokenValue == "") {
-        accessTokenValue = accessToken;
-    }
-    request.setHeader("Authorization", "Bearer " + accessTokenValue);
-}
-
-function checkAndRefreshToken(http:Request request, string accessToken, string clientId,
-                              string clientSecret, string refreshToken, string refreshTokenEP, string refreshTokenPath)
-                              returns (boolean) | http:HttpConnectorError {
-    boolean isRefreshed;
-    if ((response.statusCode == 401) && refreshToken != null) {
-        var accessTokenValueResponse = getAccessTokenFromRefreshToken(request, accessToken, clientId, clientSecret,
-                                                                     refreshToken, refreshTokenEP, refreshTokenPath);
+function <OAuth2Connector oAuth2Connector> checkAndRefreshToken (http:Request request)
+returns (boolean) | http:HttpConnectorError {
+    if ((response.statusCode == 401) && oAuth2Connector.refreshToken != "") {
+        var accessTokenValueResponse = oAuth2Connector.getAccessTokenFromRefreshToken(request);
         match accessTokenValueResponse {
-            string accessTokenString => accessTokenValue = accessTokenString;
+            string accessTokenString => request.setHeader("Authorization", "Bearer " + accessTokenString);
             http:HttpConnectorError err => return err;
         }
-        isRefreshed = true;
+        return true;
     }
-    return isRefreshed;
+    return false;
 }
 
-function getAccessTokenFromRefreshToken (http:Request request, string accessToken, string clientId, string clientSecret,
-                               string refreshToken, string refreshTokenEP, string refreshTokenPath)
-                               returns (string) | http:HttpConnectorError {
-    endpoint http:ClientEndpoint refreshTokenHTTPEP {targets:[{uri:refreshTokenEP}]};
+function <OAuth2Connector oAuth2Connector> getAccessTokenFromRefreshToken (http:Request request)
+                                                        returns (string) | http:HttpConnectorError {
+    http:HttpClient refreshTokenClient = http:createHttpClient(oAuth2Connector.refreshTokenEP,
+                                                               oAuth2Connector.clientConfig);
     http:Request refreshTokenRequest = {};
     http:Response httpRefreshTokenResponse = {};
-    json accessTokenFromRefreshTokenJSONResponse;
     http:HttpConnectorError connectorError = {};
-
-    string accessTokenFromRefreshTokenReq = refreshTokenPath + "?refresh_token=" + refreshToken
-                                    + "&grant_type=refresh_token&client_secret=" + clientSecret
-                                    + "&client_id=" + clientId;
-    var refreshTokenResponse = refreshTokenHTTPEP -> post(accessTokenFromRefreshTokenReq, refreshTokenRequest);
+    boolean useUriParams = oAuth2Connector.useUriParams;
+    string accessTokenFromRefreshTokenReq = oAuth2Connector.refreshTokenPath;
+    string requestParams = "refresh_token=" + oAuth2Connector.refreshToken
+                                            + "&grant_type=refresh_token&client_secret=" + oAuth2Connector.clientSecret
+                                            + "&client_id=" + oAuth2Connector.clientId;
+    if(useUriParams) {
+        refreshTokenRequest.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        refreshTokenRequest.setStringPayload(requestParams);
+    } else {
+        accessTokenFromRefreshTokenReq = accessTokenFromRefreshTokenReq + "?" + requestParams;
+    }
+    var refreshTokenResponse = refreshTokenClient.post(accessTokenFromRefreshTokenReq, refreshTokenRequest);
     match refreshTokenResponse {
         http:Response httpResponse => httpRefreshTokenResponse = httpResponse;
         http:HttpConnectorError err => return err;
     }
-    var jsonPayload = httpRefreshTokenResponse.getJsonPayload();
-    match jsonPayload {
-        json jsonVal => accessTokenFromRefreshTokenJSONResponse = jsonVal;
-        mime:EntityError err => io:println(err);
-    }
+    json accessTokenFromRefreshTokenJSONResponse =? httpRefreshTokenResponse.getJsonPayload();
+
     if (httpRefreshTokenResponse.statusCode == 200) {
-        accessToken = accessTokenFromRefreshTokenJSONResponse.access_token.toString();
+        string accessToken = accessTokenFromRefreshTokenJSONResponse.access_token.toString();
+        oAuth2Connector.accessToken = accessToken;
+        if (accessTokenFromRefreshTokenJSONResponse.refresh_token != null) {
+            oAuth2Connector.refreshToken = accessTokenFromRefreshTokenJSONResponse.refresh_token.toString();
+        }
     } else {
         connectorError.message = accessTokenFromRefreshTokenJSONResponse.toString();
         return connectorError;
     }
-    request.setHeader("Authorization", "Bearer " + accessToken);
-
-    return accessToken;
+    return oAuth2Connector.accessToken;
 }

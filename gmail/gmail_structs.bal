@@ -159,7 +159,9 @@ public function <Message message> createMessage (string recipient, string subjec
     message.plainTextBodyPart.mimeType = TEXT_PLAIN;
 }
 
-@Description {value:"Set the html content or inline image content of the message"}
+@Description {value:"Set the html content or inline image content of the message. If you are sending an inline image,
+set a html body in email and put the image into the body by using <img> tag.
+Give the src value of img element as 'cid:image-<Your image name with extension>' Eg: <img src=\"cid:image-ImageName.jpg\""}
 @Param {value:"content: the string html content or the string inline image file path"}
 @Param {value:"contentType: the content type"}
 @Return {value:"Returns true if the content is set successfully"}
@@ -222,94 +224,6 @@ public function <Message message> addAttachment (string filePath, string content
     attachment.setAttachment(encodedFile, contentType);
     message.msgAttachments[lengthof message.msgAttachments] = attachment;
     return true;
-}
-
-@Description {value:"Create the raw base 64 encoded string of the whole message and send the email from the user's
-mailbox to its recipient."}
-@Param {value:"userId: User's email address. The special value -> me"}
-@Return {value:"Returns the message id of the successfully sent message"}
-@Return {value:"Returns the thread id of the succesfully sent message"}
-@Return {value:"Returns GmailError if the message is not sent successfully"}
-public function <Message message> sendMessage (string userId) returns (string,string)|GmailError {
-    if (!isConnectorInitialized) {
-        GmailError gmailError = {};
-        gmailError.errorMessage = ERROR_CONNECTOR_NOT_INITALIZED;
-        return gmailError;
-    }
-    string concatRequest = EMPTY_STRING;
-    //Set the general headers of the message
-    concatRequest += TO + ":" + message.headerTo.value + NEW_LINE;
-    concatRequest += SUBJECT + ":" + message.headerSubject.value + NEW_LINE;
-
-    if (message.headerFrom.value != EMPTY_STRING) {
-        concatRequest += FROM + ":" + message.headerFrom.value + NEW_LINE;
-    }
-    if (message.headerCc.value != EMPTY_STRING) {
-        concatRequest += CC + ":" + message.headerCc.value + NEW_LINE;
-    }
-    if (message.headerBcc.value != EMPTY_STRING) {
-        concatRequest += BCC + ":" + message.headerBcc.value + NEW_LINE;
-    }
-    //------Start of multipart/mixed mime part (parent mime part)------
-    //Set the content type header of top level MIME message part
-    concatRequest += message.headerContentType.name + ":" + message.headerContentType.value + NEW_LINE;
-    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
-    //------Start of multipart/related mime part------
-    concatRequest += CONTENT_TYPE + ":" + MULTIPART_RELATED + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_1 + "\"" + NEW_LINE;
-    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
-    //------Start of multipart/alternative mime part------
-    concatRequest += CONTENT_TYPE + ":" + MULTIPART_ALTERNATIVE + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_2 + "\"" + NEW_LINE;
-    //Set the body part : text/plain
-    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
-    foreach header in message.plainTextBodyPart.bodyHeaders {
-        concatRequest += header.name + ":" + header.value + NEW_LINE;
-    }
-    concatRequest += NEW_LINE + message.plainTextBodyPart.body + NEW_LINE;
-    //Set the body part : text/html
-    if (message.htmlBodyPart.body != "") {
-        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
-        foreach header in message.htmlBodyPart.bodyHeaders {
-            concatRequest += header.name + ":" + header.value + NEW_LINE;
-        }
-        concatRequest += NEW_LINE + message.htmlBodyPart.body + NEW_LINE + NEW_LINE;
-        concatRequest += "--" + BOUNDARY_STRING_2 + "--";
-    }
-    //------End of multipart/alternative mime part------
-    //Set inline Images as body parts
-    boolean isExistInlineImageBody = false;
-    foreach inlineImagePart in message.inlineImgParts {
-        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
-        foreach header in inlineImagePart.bodyHeaders {
-            concatRequest += header.name + ":" + header.value + NEW_LINE;
-        }
-        concatRequest += NEW_LINE + inlineImagePart.body + NEW_LINE + NEW_LINE;
-        isExistInlineImageBody = true;
-    }
-    if (isExistInlineImageBody) {
-        concatRequest += "--" + BOUNDARY_STRING_1 + "--" + NEW_LINE;
-    }
-    //------End of multipart/related mime part------
-    //Set attachments
-    boolean isExistAttachment = false;
-    foreach attachment in message.msgAttachments {
-        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
-        foreach header in attachment.attachmentHeaders {
-            concatRequest += header.name + ":" + header.value + NEW_LINE;
-        }
-        concatRequest += NEW_LINE + attachment.attachmentBody + NEW_LINE + NEW_LINE;
-        isExistAttachment = true;
-    }
-    if (isExistInlineImageBody) {
-        concatRequest += "--" + BOUNDARY_STRING + "--";
-    }
-    //------End of multipart/mixed mime part------
-    string encodedRequest = util:base64Encode(concatRequest);
-    encodedRequest = encodedRequest.replace("+", "-");
-    encodedRequest = encodedRequest.replace("/", "_");
-    //Set the encoded message as raw
-    message.raw = encodedRequest;
-    //Call the send Message of gmail global client connector to send the payload to Gmail API
-    return gsClientGlobal.sendMessage(message.raw, userId);
 }
 
 //Functions binded to MessageBodyPart struct

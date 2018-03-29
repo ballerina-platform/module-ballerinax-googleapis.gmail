@@ -22,24 +22,36 @@ import ballerina/net.http;
 import ballerina/user;
 import oauth2;
 
+//Global Http Client
+http:HttpClient httpClientGlobal = {};
+
 @Description {value:"Struct to define the Gmail Client Connector"}
-public struct GmailClientConnector {
-    oauth2:OAuth2Client oAuth2Client;
+public struct GmailConnector {
+    string accessToken;
+    string clientId;
+    string clientSecret;
+    string refreshToken;
+    string refreshTokenEP;
+    string refreshTokenPath;
+    string baseUrl;
+    http:HttpClient httpClient;
+    http:ClientEndpointConfiguration clientConfig;
+    oauth2:OAuth2Connector oAuth2Connector;
 }
 
-//Global gmail client connector
-GmailClientConnector gsClientGlobal = {};
-boolean isConnectorInitialized = false;
+boolean isOAuth2Initialized = false;
 
 @Description {value:"Set up gmail environment"}
-public function <GmailClientConnector gsClient> init (string accessToken, string refreshToken,
-                                                      string clientId, string clientSecret) {
-    oauth2:OAuth2Client oauth = {};
-    oauth.init(BASE_URL, accessToken, refreshToken, clientId, clientSecret,
-               REFRESH_TOKEN_EP, REFRESH_TOKEN_PATH, EMPTY_STRING, EMPTY_STRING);
-    gsClient.oAuth2Client = oauth;
-    gsClientGlobal = gsClient;
-    isConnectorInitialized = true;
+public function <GmailConnector gmailConnector> initOAuth2 () {
+    gmailConnector.oAuth2Connector = {accessToken:gmailConnector.accessToken, clientId:gmailConnector.clientId,
+                                                 clientSecret:gmailConnector.clientSecret,
+                                                 refreshToken:gmailConnector.refreshToken,
+                                                 refreshTokenEP:gmailConnector.refreshTokenEP,
+                                                 refreshTokenPath:gmailConnector.refreshTokenPath,
+                                                 baseUrl:gmailConnector.baseUrl,
+                                                 httpClient:gmailConnector.httpClient,
+                                                 clientConfig:gmailConnector.clientConfig, useUriParams:true};
+    isOAuth2Initialized = true;
 }
 
 @Description {value:"list the messages in user's mailbox"}
@@ -53,7 +65,7 @@ public function <GmailClientConnector gsClient> init (string accessToken, string
 @Return {value:"Next page token of the response"}
 @Return {value:"Estimated result set size of the response"}
 @Return {value:"GmailError is thrown if any error occurs in sending the request and receiving the response"}
-public function <GmailClientConnector gsClient> listAllMails (string userId, string includeSpamTrash, string labelIds, string maxResults, string pageToken, string q) returns (json[], string, string)|GmailError {
+public function <GmailConnector gmailConnector> listAllMails (string userId, string includeSpamTrash, string labelIds, string maxResults, string pageToken, string q) returns (json[], string, string)|GmailError {
     http:Request request = {};
     http:Response response = {};
     http:HttpConnectorError connectionError = {};
@@ -66,11 +78,11 @@ public function <GmailClientConnector gsClient> listAllMails (string userId, str
     uriParams = pageToken != EMPTY_STRING ? uriParams + PAGE_TOKEN + pageToken : uriParams + EMPTY_STRING;
     uriParams = q != EMPTY_STRING ? uriParams + QUERY + q : uriParams + EMPTY_STRING;
     getListMessagesPath = uriParams != EMPTY_STRING ? getListMessagesPath + "?" + uriParams.subString(1, uriParams.length()) : EMPTY_STRING;
-    if (!isConnectorInitialized) {
+    if (!isOAuth2Initialized) {
         gmailError.errorMessage = ERROR_CONNECTOR_NOT_INITALIZED;
         return gmailError;
     }
-    match gsClient.oAuth2Client.get(getListMessagesPath, request) {
+    match gmailConnector.oAuth2Connector.get(getListMessagesPath, request) {
         http:Response res => response = res;
         http:HttpConnectorError connectErr => connectionError = connectErr;
     }
@@ -109,9 +121,8 @@ public function <GmailClientConnector gsClient> listAllMails (string userId, str
     }
 }
 
-
 ////TODO: Write read mail. Only support a single meta data header at the moment
-//public function <GmailClientConnector gsClient> readMail (string userId, string messageId, string format, string metaDataHeaders) returns (Message)|GmailError {
+//public function <GmailConnector gmailConnector> readMail (string userId, string messageId, string format, string metaDataHeaders) returns (Message)|GmailError {
 //    http:Request request = {};
 //    GmailError gmailError = {};
 //    string uriParams;
@@ -121,11 +132,11 @@ public function <GmailClientConnector gsClient> listAllMails (string userId, str
 //
 //    readMailPath = uriParams != "" ? readMailPath + "?" + uriParams.subString(1, uriParams.length()) : "";
 //    io:println(readMailPath);
-//    if (!isConnectorInitialized) {
+//    if (!isOAuth2Initialized) {
 //        gmailError.errorMessage = "Connector is not initalized. Invoke init method first.";
 //        return gmailError;
 //    }
-//    var httpResponse = gsClient.oAuth2Client.get(readMailPath, request);
+//    var httpResponse = gmailConnector.oAuth2Connector.get(readMailPath, request);
 //    match httpResponse {
 //        http:HttpConnectorError err => { gmailError.errorMessage = err.message;
 //                                         gmailError.statusCode = err.statusCode;
@@ -156,32 +167,106 @@ public function <GmailClientConnector gsClient> listAllMails (string userId, str
 @Param {value:"subject: subject of the email"}
 @Param {value:"bodyText: body text of the email"}
 @Param {value:"options: other optional headers of the email including Cc, Bcc and From"}
-public function <GmailClientConnector gsClient> createMessage (string sender, string subject, string bodyText, MessageOptions options) returns (Message) {
+public function <GmailConnector gmailConnector> createMessage (string sender, string subject, string bodyText, MessageOptions options) returns (Message) {
     Message message = {};
     message.createMessage(sender, subject, bodyText, options);
     return message;
 }
 
-@Description {value:"Send an email from the user's mailbox to its recipient."}
-@Param {value:"rawMessage: Email which was set to raw of message"}
+@Description {value:"Create the raw base 64 encoded string of the whole message and send the email from the user's
+mailbox to its recipient."}
 @Param {value:"userId: User's email address. The special value -> me"}
+@Param {value:"message: Message to send"}
 @Return {value:"Returns the message id of the successfully sent message"}
 @Return {value:"Returns the thread id of the succesfully sent message"}
 @Return {value:"Returns GmailError if the message is not sent successfully"}
-function <GmailClientConnector gsClient> sendMessage (string rawMessage, string userId) returns (string,string)|GmailError {
+public function <GmailConnector gmailConnector> sendMessage (string userId, Message message) returns (string,string)|GmailError {
+    if (!isOAuth2Initialized) {
+        GmailError gmailError = {};
+        gmailError.errorMessage = ERROR_CONNECTOR_NOT_INITALIZED;
+        return gmailError;
+    }
+    string concatRequest = EMPTY_STRING;
+    //Set the general headers of the message
+    concatRequest += TO + ":" + message.headerTo.value + NEW_LINE;
+    concatRequest += SUBJECT + ":" + message.headerSubject.value + NEW_LINE;
+
+    if (message.headerFrom.value != EMPTY_STRING) {
+        concatRequest += FROM + ":" + message.headerFrom.value + NEW_LINE;
+    }
+    if (message.headerCc.value != EMPTY_STRING) {
+        concatRequest += CC + ":" + message.headerCc.value + NEW_LINE;
+    }
+    if (message.headerBcc.value != EMPTY_STRING) {
+        concatRequest += BCC + ":" + message.headerBcc.value + NEW_LINE;
+    }
+    //------Start of multipart/mixed mime part (parent mime part)------
+    //Set the content type header of top level MIME message part
+    concatRequest += message.headerContentType.name + ":" + message.headerContentType.value + NEW_LINE;
+    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
+    //------Start of multipart/related mime part------
+    concatRequest += CONTENT_TYPE + ":" + MULTIPART_RELATED + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_1 + "\"" + NEW_LINE;
+    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
+    //------Start of multipart/alternative mime part------
+    concatRequest += CONTENT_TYPE + ":" + MULTIPART_ALTERNATIVE + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_2 + "\"" + NEW_LINE;
+    //Set the body part : text/plain
+    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+    foreach header in message.plainTextBodyPart.bodyHeaders {
+        concatRequest += header.name + ":" + header.value + NEW_LINE;
+    }
+    concatRequest += NEW_LINE + message.plainTextBodyPart.body + NEW_LINE;
+    //Set the body part : text/html
+    if (message.htmlBodyPart.body != "") {
+        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+        foreach header in message.htmlBodyPart.bodyHeaders {
+            concatRequest += header.name + ":" + header.value + NEW_LINE;
+        }
+        concatRequest += NEW_LINE + message.htmlBodyPart.body + NEW_LINE + NEW_LINE;
+        concatRequest += "--" + BOUNDARY_STRING_2 + "--";
+    }
+    //------End of multipart/alternative mime part------
+    //Set inline Images as body parts
+    boolean isExistInlineImageBody = false;
+    foreach inlineImagePart in message.inlineImgParts {
+        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
+        foreach header in inlineImagePart.bodyHeaders {
+            concatRequest += header.name + ":" + header.value + NEW_LINE;
+        }
+        concatRequest += NEW_LINE + inlineImagePart.body + NEW_LINE + NEW_LINE;
+        isExistInlineImageBody = true;
+    }
+    if (isExistInlineImageBody) {
+        concatRequest += "--" + BOUNDARY_STRING_1 + "--" + NEW_LINE;
+    }
+    //------End of multipart/related mime part------
+    //Set attachments
+    boolean isExistAttachment = false;
+    foreach attachment in message.msgAttachments {
+        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
+        foreach header in attachment.attachmentHeaders {
+            concatRequest += header.name + ":" + header.value + NEW_LINE;
+        }
+        concatRequest += NEW_LINE + attachment.attachmentBody + NEW_LINE + NEW_LINE;
+        isExistAttachment = true;
+    }
+    if (isExistInlineImageBody) {
+        concatRequest += "--" + BOUNDARY_STRING + "--";
+    }
+    //------End of multipart/mixed mime part------
+    string encodedRequest = util:base64Encode(concatRequest);
+    encodedRequest = encodedRequest.replace("+", "-");
+    encodedRequest = encodedRequest.replace("/", "_");
+    //Set the encoded message as raw
+    message.raw = encodedRequest;
     http:Request request = {};
     http:Response response = {};
     http:HttpConnectorError connectionError = {};
     GmailError gmailError = {};
-    json jsonPayload = {"raw":rawMessage};
+    json jsonPayload = {"raw":message.raw};
     string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
-    if (!isConnectorInitialized) {
-        gmailError.errorMessage = ERROR_CONNECTOR_NOT_INITALIZED;
-        return gmailError;
-    }
     request.setJsonPayload(jsonPayload);
     request.setHeader(CONTENT_TYPE, APPLICATION_JSON);
-    match gsClient.oAuth2Client.post(sendMessagePath, request) {
+    match gmailConnector.oAuth2Connector.post(sendMessagePath, request) {
         http:Response res => response = res;
         http:HttpConnectorError connectErr => connectionError = connectErr;
     }
@@ -201,7 +286,7 @@ function <GmailClientConnector gsClient> sendMessage (string rawMessage, string 
     if (response.statusCode == STATUS_CODE_200_OK) {
         string id = jsonSendMessageResponse.id.toString();
         string threadId = jsonSendMessageResponse.threadId.toString();
-        return (id,threadId);
+        return (id, threadId);
     } else {
         gmailError.errorMessage = jsonSendMessageResponse.error.message.toString();
         gmailError.statusCode = response.statusCode;

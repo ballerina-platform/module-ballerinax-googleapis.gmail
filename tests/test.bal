@@ -21,11 +21,33 @@ import gmail;
 import ballerina.user;
 
 public function main (string[] args) {
-    gmail:GmailClientConnector gs = {};
-    gs.init(args[0], args[1], args[2], args[3]);
+    //endpoint gmail:GmailEndpoint gmailEP {
+    //    accessToken:args[0],
+    //    clientId:args[1],
+    //    clientSecret:args[2],
+    //    refreshToken:args[3],
+    //    refreshTokenEP:args[4],
+    //    refreshTokenPath:args[5],
+    //    uri:args[6],
+    //    clientConfig:{}
+    //};
+    endpoint gmail:GmailEndpoint gmailEP {
+        accessToken:"ya29.GluNBTFlsJP32TSNy7fIQG6GlBTjSaC82-Mf2Y_bKc3X-zz_4GkEq54JBqv1oCyz86dtWKtDuPG7nUjxwImDhKF6X51sLOtMJmisI_wYeh4tedAxTlsJHLbiDZG4",
+        clientId:"297850098219-dju3ruvd8c7c11lluhjav55d1rr25asa.apps.googleusercontent.com",
+        clientSecret:"CITYfRtibqMi0kndYsnIjJTL",
+        refreshToken:"1/y-Xi70VN_oijQW5L38tOyLHIP8SIC2oQU1KU5WXg5PM",
+        refreshTokenEP:gmail:REFRESH_TOKEN_EP,
+        refreshTokenPath:gmail:REFRESH_TOKEN_PATH,
+        uri:gmail:BASE_URL,
+        clientConfig:{}
+    };
+    gmailEP->initOAuth2();
     //-----Define the email parameters------
-    string recipient = "recipient@gmail.com";
-    string sender = "sender@gmail.com";
+    //string recipient = "recipient@gmail.com";
+    //string sender = "sender@gmail.com";
+    string recipient = "dushaniw@wso2.com";
+    string sender = "dushaniwellappili@gmail.com";
+
     string cc = "cc@gmail.com";
     string subject = "Email-Subject";
     string messageBody = "";
@@ -36,7 +58,9 @@ public function main (string[] args) {
     gmail:MessageOptions options = {};
     options.sender = sender;
     // options.cc = cc;
-    gmail:Message message = gs.createMessage(recipient, subject, messageBody, options);
+
+    gmail:Message message = gmailEP -> createMessage(recipient, subject, messageBody, options);
+
     boolean htmlSetStatus;
     match message.setContent(htmlBody, "text/html") {
         boolean b => htmlSetStatus = b;
@@ -45,16 +69,17 @@ public function main (string[] args) {
     }
     if (htmlSetStatus) {
         boolean imgInlineSetStatus;
-        match message.setContent("/home/Picture2.jpg", "image/jpeg") {
+        match message.setContent("/home/dushaniw/Picture2.jpg", "image/jpeg") {
             boolean b => imgInlineSetStatus = b;
             gmail:GmailError er => io:println(er);
             io:IOError ioError => io:println(ioError);
         }
     }
-    var attachStatus = message.addAttachment("/home/hello.txt", "text/plain");
+    var attachStatus = message.addAttachment("/home/dushaniw/hello.txt", "text/plain");
     string messageId;
     string threadId;
-    match message.sendMessage(userId) {
+    var sendMessageResponse = gmailEP -> sendMessage(userId, message);
+    match sendMessageResponse {
         (string, string) sendStatus => (messageId, threadId) = sendStatus;
         gmail:GmailError e => io:println(e);
     }
@@ -65,14 +90,15 @@ public function main (string[] args) {
     json[] msgs;
     string token;
     string estimateSize;
-    match gs.listAllMails(userId, "false", "INBOX", "", "", "") {
-        (json[], string, string) response => {
-            (msgs, token, estimateSize) = response;
-            io:println("Msg List : ");
-            io:println(msgs);
-            io:println("Next Page Toke : " + token);
-            io:println("Estimated Size : " + estimateSize);
+    var msgList = gmailEP -> listAllMails(userId, "false", "INBOX", "", "", "");
+    match msgList {
+        (json[], string, string) response => { (msgs, token, estimateSize) = response;
+                                               io:println("Msg List : ");
+                                               io:println(msgs);
+                                               io:println("Next Page Toke : " + token);
+                                               io:println("Estimated Size : " + estimateSize);
         }
         gmail:GmailError e => io:println(e);
+
     }
 }
