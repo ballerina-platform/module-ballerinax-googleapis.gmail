@@ -23,7 +23,7 @@ import oauth2;
 
 public function main (string[] args) {
     endpoint gmail:GmailEndpoint gmailEP {
-        accessToken:"ya29.GlyNBfLa9n67UFU_H1pBtha-Ei6vOfDBN1yNLX9G8VeVgcS4ALOhZ1KIK6cwTck8KXD4blrH2r_nLZCnIp7ir6wYov_9oaDj77f5W5dubHuhTVok_7Qa2DKpoVX6eA",
+        accessToken:"ya29.GluOBS1ptaY0DOFJSbqyffj5jJobqe6ENdP4mKx8Giup5il2qqKPsnOMTIUzYqu6v7B5A5Jgmo5wsbbarMrGTxtHxxcd6YzC0LbMKrkxeRo22nazZqhIZonX6wYD",
         clientId:"297850098219-dju3ruvd8c7c11lluhjav55d1rr25asa.apps.googleusercontent.com",
         clientSecret:"CITYfRtibqMi0kndYsnIjJTL",
         refreshToken:"1/y-Xi70VN_oijQW5L38tOyLHIP8SIC2oQU1KU5WXg5PM",
@@ -69,27 +69,35 @@ public function main (string[] args) {
     var attachStatus = message.addAttachment("/home/dushaniw/hello.txt", "text/plain");
     string messageId;
     string threadId;
-    var sendMessageResponse = gmailEP -> sendMessage(userId, message);
-    match sendMessageResponse {
-        (string, string) sendStatus => (messageId, threadId) = sendStatus;
-        gmail:GmailError e => io:println(e);
-    }
+    //var sendMessageResponse = gmailEP -> sendMessage(userId, message);
+    //match sendMessageResponse {
+    //    (string, string) sendStatus => (messageId, threadId) = sendStatus;
+    //    gmail:GmailError e => io:println(e);
+    //}
     io:println("---------Send Mail Response---------");
     io:println("Message Id : " + messageId);
     io:println("Thread Id : " + threadId);
     io:println("---------List All Mails with Label INBOX without including Spam and Trash---------");
-    json[] msgs;
-    string token;
-    string estimateSize;
-    var msgList = gmailEP -> listAllMails(userId, "false", "INBOX", "", "", "");
-    match msgList {
-        (json[], string, string) response => { (msgs, token, estimateSize) = response;
-                                               io:println("Msg List : ");
-                                               io:println(msgs);
-                                               io:println("Next Page Toke : " + token);
-                                               io:println("Estimated Size : " + estimateSize);
-        }
-        gmail:GmailError e => io:println(e);
-
-    }
+    var msgList = gmailEP -> listAllMails(userId,{includeSpamTrash:false,labelIds:["INBOX"],maxResults:"1",pageToken:"",q:""});
+    //match msgList {
+    //    gmail:MessageListPage list => { io:println("Msg List : ");
+    //                              io:print(lengthof list.messages);
+    //                              io:println("Next Page Toke : " + list.nextPageToken);
+    //                              io:println("Estimated Size : " + list.resultSizeEstimate);
+    //    }
+    //    gmail:GmailError e => io:println(e);
+    //
+    //}
+    io:println("---------Read mail Response---------");
+    //gmail:GetMessageFilter filter = {format:"",metadataHeaders:[]};
+    //var mail = gmailEP -> readMail(userId, "16260600f9edd702",filter);
+    //match mail{
+    //    gmail:Message m => {//io:println(m);
+    //                        io:println(m.plainTextBodyPart.body);
+    //                        io:println(m.htmlBodyPart.body);
+    //                        //io:println(m.inlineImgParts);
+    //                        //io:println(m.msgAttachments);
+    //                        }
+    //    gmail:GmailError e => io:println(e);
+    //}
 }

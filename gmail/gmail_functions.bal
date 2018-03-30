@@ -18,26 +18,117 @@ package gmail;
 
 import ballerina/io;
 import ballerina/mime;
+import ballerina/util;
 
-@Description {value:"Get only the attachment messageParts from the json messagepart[] from message payload"}
-@Param {value:"messageParts: json array of message parts in MIME Message"}
+function decodeMsgBodyData (json sourceMessagePartJsonObject) returns string {
+    string decodedBody;
+    if (sourceMessagePartJsonObject.mimeType != null
+        && isMimeType(sourceMessagePartJsonObject.mimeType.toString(), TEXT_ANY)) {
+        //io:println(sourceMessagePartJsonObject.body.data.toString());
+        decodedBody = sourceMessagePartJsonObject.body.data.toString().replace("-", "+").replace("_", "/").replace("*", "=");
+        decodedBody = (util:base64Decode(decodedBody));
+    }
+    return decodedBody;
+}
+
+@Description {value:"Get only the attachment MIME messageParts from the json message payload of th email"}
+@Param {value:"messagePayload: parent json message payload in MIME Message"}
+@Param {value:"msgAttachments: intial array of attachment message parts"}
 @Return {value:"Returns array of MessageAttachment"}
-function getMessageParts (json messageParts) returns MessageAttachment[] {
-    MessageAttachment[] mesgAttachments = [];
-    if (lengthof messageParts != 0) {
-        int i = 0;
-        foreach part in messageParts {
-            if (!isMimeType(part.mimeType.toString(), MULTIPART_ANY)) {
-                mesgAttachments[i] = <MessageAttachment, convertJsonMsgPartToMsgAttachment()>part;
+function getAttachmentPartsFromPayload (json messagePayload, MessageAttachment[] msgAttachments) returns MessageAttachment[] {
+    MessageAttachment[] attachmentParts = msgAttachments;
+    MessagePartHeader contentDispositionHeader = getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+    string[] headerParts = contentDispositionHeader.value.split(";");
+    string disposition = headerParts[0];
+    //If parent mime part is an attachment
+    if (disposition == ATTACHMENT) {
+        attachmentParts[lengthof attachmentParts] = <MessageAttachment, convertJsonMsgPartToMsgAttachment()>messagePayload;
+    } //Else if is any multipart/*
+    else if (isMimeType(messagePayload.mimeType.toString(), MULTIPART_ANY) && (messagePayload.parts != null)) {
+        json messageParts = messagePayload.parts;
+        if (lengthof messageParts != 0) {
+            //Iterate each child parts of the parent mime part
+            foreach part in messageParts {
+                //Recursively check each ith child mime part
+                attachmentParts = getAttachmentPartsFromPayload(part, attachmentParts);
             }
-            else {
-                mesgAttachments = getMessageParts(part.parts);
-                i = lengthof mesgAttachments - 1;
+        }
+
+    }
+    return attachmentParts;
+}
+
+@Description {value:"Get only inline MIME messageParts from the json message payload of the email"}
+@Param {value:"messagePayload: parent json message payload in MIME Message"}
+@Param {value:"inlineMailImages: intial array of inline image message parts"}
+@Return {value:"Returns array of MessageBodyPart"}
+//Extract inline image MIME message parts from the email
+function getInlineImgPartsFromPayloadByMimeType (json messagePayload, MessageBodyPart[] inlineMailImages) returns MessageBodyPart[] {
+    MessageBodyPart[] inlineImgParts = inlineMailImages;
+    MessagePartHeader contentDispositionHeader = getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+    string[] headerParts = contentDispositionHeader.value.split(";");
+    string disposition = headerParts[0];
+    //If parent mime part is image/* and it is inline
+    if (isMimeType(messagePayload.mimeType.toString(), IMAGE_ANY) && (disposition == INLINE)) {
+        inlineImgParts[lengthof inlineImgParts] = <MessageBodyPart, convertJsonMsgBodyPartToMsgBodyStruct()>messagePayload;
+    } //Else if is any multipart/*
+    else if (isMimeType(messagePayload.mimeType.toString(), MULTIPART_ANY) && (messagePayload.parts != null)) {
+        json messageParts = messagePayload.parts;
+        if (lengthof messageParts != 0) {
+            //Iterate each child parts of the parent mime part
+            foreach part in messageParts {
+                //Recursively check each ith child mime part
+                inlineImgParts = getInlineImgPartsFromPayloadByMimeType(part, inlineImgParts);
             }
-            i++;
+        }
+
+    }
+    return inlineImgParts;
+}
+
+@Description {value:"Get the body MIME messageParts(excluding attachments and inline images) from the json message payload of the email.
+Can be used only if there is only one message part with the given mime type in the email payload,
+otherwise it will return with first found matching message part"}
+@Param {value:"messagePayload: parent json message payload in MIME Message"}
+@Param {value:"inlineMailImages: intial array of inline image message parts"}
+@Return {value:"Returns array of MessageBodyPart"}
+function getMessageBodyPartFromPayloadByMimeType (string mimeType, json messagePayload) returns MessageBodyPart {
+    MessageBodyPart msgBodyPart = {};
+    MessagePartHeader contentDispositionHeader = getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+    string[] headerParts = contentDispositionHeader.value.split(";");
+    string disposition = headerParts[0];
+    //If parent mime part is given mime type and not an attachment or an inline part
+    if (isMimeType(messagePayload.mimeType.toString(), mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
+        msgBodyPart = <MessageBodyPart, convertJsonMsgBodyPartToMsgBodyStruct()>messagePayload;
+    } //Else if is any multipart/*
+    else if (isMimeType(messagePayload.mimeType.toString(), MULTIPART_ANY) && (messagePayload.parts != null)) {
+        json messageParts = messagePayload.parts;
+        if (lengthof messageParts != 0) {
+            //Iterate each child parts of the parent mime part
+            foreach part in messageParts {
+                //Recursively check each ith child mime part
+                msgBodyPart = getMessageBodyPartFromPayloadByMimeType(mimeType, part);
+                //If the returned msg body is a match for given mime type stop iterating over the other child parts
+                if (msgBodyPart.mimeType != "" && isMimeType(msgBodyPart.mimeType, mimeType)) {
+                    break;
+                }
+            }
         }
     }
-    return mesgAttachments;
+    return msgBodyPart;
+}
+
+@Description {value:"Get the message header Content-Disposition"}
+@Param {value:"headers: array of MessagePart headers"}
+@Return {value:"Returns message part header Content-Disposition"}
+function getMsgPartHeaderContentDisposition (MessagePartHeader[] headers) returns MessagePartHeader {
+    MessagePartHeader headerContentDisposition = {};
+    foreach header in headers {
+        if (header.name == CONTENT_DISPOSITION) {
+            headerContentDisposition = header;
+        }
+    }
+    return headerContentDisposition;
 }
 
 @Description {value:"Get the message header To"}
@@ -147,7 +238,7 @@ function convertToMsgPartHeaders (json jsonMsgPartHeaders) returns MessagePartHe
 @Description {value:"Convert json array to string array"}
 @Param {value:"sourceJsonObject: json array"}
 @Return {value:"Return string array"}
-public function convertJSONArrayToStringArray (json sourceJsonObject) returns string[] {
+function convertJSONArrayToStringArray (json sourceJsonObject) returns string[] {
     string[] targetStringArray = [];
     int i = 0;
     foreach element in sourceJsonObject {
@@ -161,7 +252,7 @@ public function convertJSONArrayToStringArray (json sourceJsonObject) returns st
 @Param {value:"msgMimeType: mime type of the message part"}
 @Param {value:"mType: given mime type which you wants check against with"}
 @Return {value:"Returns true or false whether mime types match"}
-public function isMimeType (string msgMimeType, string mType) returns boolean {
+function isMimeType (string msgMimeType, string mType) returns boolean {
     string[] msgTypes = msgMimeType.split("/");
     string msgPrimaryType = msgTypes[0];
     string msgSecondaryType = msgTypes[1];
@@ -183,7 +274,7 @@ public function isMimeType (string msgMimeType, string mType) returns boolean {
 @Param {value:"filePath: string file path"}
 @Return {value:"Returns the encoded string"}
 @Return {value:"Returns IOError if there's any error while performaing I/O operation"}
-function encodeFile (string filePath) returns string | io:IOError {
+function encodeFile (string filePath) returns string|io:IOError {
     io:ByteChannel fileChannel = getFileChannel(filePath, "r");
     int bytesChunk = BYTES_CHUNK;
     blob readContent;
@@ -200,9 +291,9 @@ function encodeFile (string filePath) returns string | io:IOError {
 @Description {value:"Get the file name from the given file path"}
 @Param {value:"filePath: string file path (including the file name and extension at the end)"}
 @Return {value:"string file name extracted from the file path"}
-public function getFileNameFromPath(string filePath) returns string {
+function getFileNameFromPath (string filePath) returns string {
     string[] pathParts = filePath.split("/");
-    return pathParts[lengthof pathParts -1];
+    return pathParts[lengthof pathParts - 1];
 }
 
 @Description {value:"Open the file and return the byte channel"}

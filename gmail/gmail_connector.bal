@@ -29,17 +29,13 @@ public struct GmailConnector {
 }
 
 @Description {value:"list the messages in user's mailbox"}
-@Param {value:"includeSpamTrash:  Includes messages from SPAM and TRASH in the results."}
-@Param {value:"userId: The user's email address. The special value *me* can be used to indicate the authenticated user."}
-@Param {value:"labelIds[]: Only return messages with labels that match all of the specified label IDs."}
-@Param {value:"maxResults: Maximum number of messages to return"}
-@Param {value:"pageToken: Page token to retrieve a specific page of results in the list."}
-@Param {value:"q: Only returns messages matching the specified query. Supports the same query format as the Gmail search box."}
+@Param {value:"userId: The user's email address. The special value *me* can be used to indicate the authenticated user"}
+@Param {value:"filter: SearchMessageFilter struct with optional query parameters"}
 @Return {value:"Json array of message ids and their thread ids"}
 @Return {value:"Next page token of the response"}
 @Return {value:"Estimated result set size of the response"}
 @Return {value:"GmailError is thrown if any error occurs in sending the request and receiving the response"}
-public function <GmailConnector gmailConnector> listAllMails (string userId, string includeSpamTrash, string labelIds, string maxResults, string pageToken, string q) returns (json[], string, string)|GmailError {
+public function <GmailConnector gmailConnector> listAllMails (string userId, SearchMessageFilter filter) returns (MessageListPage)|GmailError {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
     http:Request request = {};
     http:Response response = {};
@@ -47,18 +43,17 @@ public function <GmailConnector gmailConnector> listAllMails (string userId, str
     GmailError gmailError = {};
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
     string uriParams = "";
-    uriParams = includeSpamTrash != EMPTY_STRING ? uriParams + INCLUDE_SPAMTRASH + includeSpamTrash : uriParams + EMPTY_STRING;
-    uriParams = labelIds != EMPTY_STRING ? uriParams + LABEL_IDS + labelIds : uriParams + EMPTY_STRING;
-    uriParams = maxResults != "" ? uriParams + MAX_RESULTS + maxResults : uriParams + EMPTY_STRING;
-    uriParams = pageToken != EMPTY_STRING ? uriParams + PAGE_TOKEN + pageToken : uriParams + EMPTY_STRING;
-    uriParams = q != EMPTY_STRING ? uriParams + QUERY + q : uriParams + EMPTY_STRING;
-    getListMessagesPath = uriParams != EMPTY_STRING ? getListMessagesPath + "?" + uriParams.subString(1, uriParams.length()) : EMPTY_STRING;
-    //if (!isOAuth2Initialized) {
-    //    gmailError.errorMessage = ERROR_CONNECTOR_NOT_INITALIZED;
-    //    return gmailError;
-    //}
-    var listMessageResponse = oauthEP -> get(getListMessagesPath, request);
-    match listMessageResponse {
+    //Add optional query parameters
+    uriParams = uriParams + INCLUDE_SPAMTRASH + filter.includeSpamTrash;
+    foreach labelId in filter.labelIds {
+        uriParams = labelId != EMPTY_STRING ? uriParams + LABEL_IDS + labelId : uriParams;
+    }
+    uriParams = filter.maxResults != EMPTY_STRING ? uriParams + MAX_RESULTS + filter.maxResults : uriParams;
+    uriParams = filter.pageToken != EMPTY_STRING ? uriParams + PAGE_TOKEN + filter.pageToken : uriParams;
+    uriParams = filter.q != EMPTY_STRING ? uriParams + QUERY + filter.q : uriParams;
+    getListMessagesPath = uriParams != EMPTY_STRING ? getListMessagesPath + "?" + uriParams.subString(1, uriParams.length()) : getListMessagesPath;
+    var httpResponse = oauthEP -> get(getListMessagesPath, request);
+    match httpResponse {
         http:Response res => response = res;
         http:HttpConnectorError connectErr => connectionError = connectErr;
     }
@@ -67,31 +62,35 @@ public function <GmailConnector gmailConnector> listAllMails (string userId, str
         gmailError.statusCode = connectionError.statusCode;
         return gmailError;
     }
-    json jsonMessageIDResponse;
+    json jsonlistMsgResponse;
     match response.getJsonPayload() {
         mime:EntityError err => gmailError.errorMessage = err.message;
-        json jsonResponse => jsonMessageIDResponse = jsonResponse;
+        json jsonResponse => jsonlistMsgResponse = jsonResponse;
     }
     if (gmailError.errorMessage != "") {
         return gmailError;
     }
-    json[] messageIdJSONArray;
-    string nextPageToken;
-    string resultSizeEstimate;
+    MessageListPage messageListPage = {};
     if (response.statusCode == STATUS_CODE_200_OK) {
         int i = 0;
-        if (jsonMessageIDResponse.messages != null) {
-            //get all the message id and thread ids into meesageIdJSONArray
-            foreach element in jsonMessageIDResponse.messages {
-                messageIdJSONArray[i] = jsonMessageIDResponse.messages[i];
-                i++;
+        if (jsonlistMsgResponse.messages != null) {
+            messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate != null ? jsonlistMsgResponse.resultSizeEstimate.toString() : EMPTY_STRING;
+            messageListPage.nextPageToken = jsonlistMsgResponse.nextPageToken != null ? jsonlistMsgResponse.nextPageToken.toString() : EMPTY_STRING;
+            //for each message resource in messages json array of the response
+            foreach message in jsonlistMsgResponse.messages {
+                //read mail from the message id
+                var readMailResponse = gmailConnector.readMail(userId, message.id.toString(), {});
+                match readMailResponse {
+                    Message mail => {messageListPage.messages[i] = mail; //Add the message to the message list page's list of message
+                                     i++;
+                    }
+                    GmailError e => return e;
+                }
             }
-            resultSizeEstimate = jsonMessageIDResponse.resultSizeEstimate != null ? jsonMessageIDResponse.resultSizeEstimate.toString() : EMPTY_STRING;
-            nextPageToken = jsonMessageIDResponse.nextPageToken != null ? jsonMessageIDResponse.nextPageToken.toString() : EMPTY_STRING;
         }
-        return (messageIdJSONArray, nextPageToken, resultSizeEstimate);
+        return messageListPage;
     } else {
-        gmailError.errorMessage = jsonMessageIDResponse.error.message.toString();
+        gmailError.errorMessage = jsonlistMsgResponse.error.message.toString();
         gmailError.statusCode = response.statusCode;
         return gmailError;
     }
@@ -118,11 +117,6 @@ mailbox to its recipient."}
 @Return {value:"Returns GmailError if the message is not sent successfully"}
 public function <GmailConnector gmailConnector> sendMessage (string userId, Message message) returns (string, string)|GmailError {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
-    //if (!isOAuth2Initialized) {
-    //    GmailError gmailError = {};
-    //    gmailError.errorMessage = ERROR_CONNECTOR_NOT_INITALIZED;
-    //    return gmailError;
-    //}
     string concatRequest = EMPTY_STRING;
     //Set the general headers of the message
     concatRequest += TO + ":" + message.headerTo.value + NEW_LINE;
@@ -191,7 +185,7 @@ public function <GmailConnector gmailConnector> sendMessage (string userId, Mess
     }
     //------End of multipart/mixed mime part------
     string encodedRequest = util:base64Encode(concatRequest);
-    encodedRequest = encodedRequest.replace("+", "-");
+    encodedRequest = encodedRequest.replace("+", "-").replace("/", "_").replace("=","*");
     encodedRequest = encodedRequest.replace("/", "_");
     //Set the encoded message as raw
     message.raw = encodedRequest;
@@ -232,42 +226,52 @@ public function <GmailConnector gmailConnector> sendMessage (string userId, Mess
     }
 }
 
-////TODO: Write read mail. Only support a single meta data header at the moment
-//public function <GmailConnector gmailConnector> readMail (string userId, string messageId, string format, string metaDataHeaders) returns (Message)|GmailError {
-//    http:Request request = {};
-//    GmailError gmailError = {};
-//    string uriParams;
-//    string readMailPath = "/v1/users/" + userId + "/messages/" + messageId;
-//    uriParams = format != "null" ? uriParams + "&format=" + format : "";
-//    uriParams = metaDataHeaders != "null" ? uriParams + "&metadataHeaders=" + metaDataHeaders : "";
-//
-//    readMailPath = uriParams != "" ? readMailPath + "?" + uriParams.subString(1, uriParams.length()) : "";
-//    io:println(readMailPath);
-//    if (!isOAuth2Initialized) {
-//        gmailError.errorMessage = "Connector is not initalized. Invoke init method first.";
-//        return gmailError;
-//    }
-//    var httpResponse = gmailConnector.oAuth2Connector.get(readMailPath, request);
-//    match httpResponse {
-//        http:HttpConnectorError err => { gmailError.errorMessage = err.message;
-//                                         gmailError.statusCode = err.statusCode;
-//                                         return gmailError;
-//        }
-//        http:Response response => match response.getJsonPayload() {
-//                                      mime:EntityError err => {
-//                                          gmailError.errorMessage = err.message;
-//                                          return gmailError;
-//                                      }
-//                                      json jsonResponse => {
-//                                          if (response.statusCode == 200) {
-//                                              return <Message, convertJsonToMessage()>jsonResponse;
-//                                          }
-//                                          else {
-//                                              gmailError.errorMessage = jsonResponse.error.message.toString();
-//                                              gmailError.statusCode = response.statusCode;
-//                                              return gmailError;
-//                                          }
-//                                      }
-//                                  }
-//    }
-//}
+@Description {value:"Read the specified mail from users mailbox"}
+@Param {value:"userId: user's email address. The special value -> me"}
+@Param {value:"messageId: message id of the specified mail to retrieve"}
+@Param {value:"filter: GetMessageFilter struct object with the optional format and metadataHeaders query parameters"}
+@Return {value:"Returns GmailError if the message is not sent successfully"}
+public function <GmailConnector gmailConnector> readMail (string userId, string messageId, GetMessageFilter filter) returns (Message)|GmailError {
+    endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
+    http:Request request = {};
+    http:Response response = {};
+    http:HttpConnectorError connectionError = {};
+    GmailError gmailError = {};
+    string uriParams = "";
+    string readMailPath = "/v1/users/" + userId + "/messages/" + messageId;
+    //Add format optional query parameter
+    uriParams = filter.format != "" ? uriParams + "&format=" + filter.format : uriParams;
+    //Add the optional meta data headers as query parameters
+    foreach metaDataHeader in filter.metadataHeaders {
+        uriParams = metaDataHeader != "" ? uriParams + "&metadataHeaders=" + metaDataHeader : uriParams;
+    }
+    readMailPath = uriParams != "" ? readMailPath + "?" + uriParams.subString(1, uriParams.length()) : readMailPath;
+    var httpResponse = oauthEP -> get(readMailPath, request);
+    match httpResponse {
+        http:Response res => response = res;
+        http:HttpConnectorError connectErr => connectionError = connectErr;
+    }
+    if (connectionError.message != "") {
+        gmailError.errorMessage = connectionError.message;
+        gmailError.statusCode = connectionError.statusCode;
+        return gmailError;
+    }
+    json jsonMail;
+    match response.getJsonPayload() {
+        mime:EntityError err => gmailError.errorMessage = err.message;
+        json jsonResponse => jsonMail = jsonResponse;
+    }
+    if (gmailError.errorMessage != "") {
+        return gmailError;
+    }
+    if (response.statusCode == 200) {
+        //Transform the json mail response from Gmail API to Message struct
+        Message message = <Message, convertJsonMailToMessage()>jsonMail;
+        return message;
+    }
+    else {
+        gmailError.errorMessage = jsonMail.error.message.toString();
+        gmailError.statusCode = response.statusCode;
+        return gmailError;
+    }
+}

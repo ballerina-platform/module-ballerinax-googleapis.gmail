@@ -30,9 +30,7 @@ transformer <json sourceMailJsonObject, Message targetMessageStruct> convertJson
     targetMessageStruct.historyId = sourceMailJsonObject.historyId != null ? sourceMailJsonObject.historyId.toString() : EMPTY_STRING;
     targetMessageStruct.internalDate = sourceMailJsonObject.internalDate != null ? sourceMailJsonObject.internalDate.toString() : EMPTY_STRING;
     targetMessageStruct.sizeEstimate = sourceMailJsonObject.sizeEstimate != null ? sourceMailJsonObject.sizeEstimate.toString() : EMPTY_STRING;
-
     targetMessageStruct.headers = sourceMailJsonObject.payload.headers != null ? convertToMsgPartHeaders(sourceMailJsonObject.payload.headers) : [];
-
     targetMessageStruct.headerTo = sourceMailJsonObject.payload.headers != null ? getMsgPartHeaderTo(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
     targetMessageStruct.headerFrom = sourceMailJsonObject.payload.headers != null ? getMsgPartHeaderFrom(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
     targetMessageStruct.headerCc = sourceMailJsonObject.payload.headers != null ? getMsgPartHeaderCc(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
@@ -40,10 +38,23 @@ transformer <json sourceMailJsonObject, Message targetMessageStruct> convertJson
     targetMessageStruct.headerSubject = sourceMailJsonObject.payload.headers != null ? getMsgPartHeaderSubject(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
     targetMessageStruct.headerDate = sourceMailJsonObject.payload.headers != null ? getMsgPartHeaderDate(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
     targetMessageStruct.headerContentType = sourceMailJsonObject.payload.headers != null ? getMsgPartHeaderContentType(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
-
     targetMessageStruct.mimeType = sourceMailJsonObject.payload.mimeType != null ? sourceMailJsonObject.payload.mimeType.toString() : EMPTY_STRING;
-    //    targetMessageStruct.msgBodyParts = sourceMailJsonObject.payload.body != null ? <MessageBody, convertJsonPayloadToBodyStruct()>sourceMailJsonObject.payload : {};
-    targetMessageStruct.msgAttachments = sourceMailJsonObject.payload.parts != null ? getMessageParts(sourceMailJsonObject.payload.parts) : [];
+    targetMessageStruct.isMultipart = sourceMailJsonObject.payload.mimeType != null ? isMimeType(sourceMailJsonObject.payload.mimeType.toString(), MULTIPART_ANY) : false;
+    targetMessageStruct.plainTextBodyPart = sourceMailJsonObject.payload != null ? getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload) : {};
+    targetMessageStruct.htmlBodyPart = sourceMailJsonObject.payload != null ? getMessageBodyPartFromPayloadByMimeType(TEXT_HTML, sourceMailJsonObject.payload) : {};
+    targetMessageStruct.inlineImgParts = sourceMailJsonObject.payload != null ? getInlineImgPartsFromPayloadByMimeType(sourceMailJsonObject.payload, []) : [];
+    targetMessageStruct.msgAttachments = sourceMailJsonObject.payload != null ? getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
+}
+
+@Description {value:"Transform MIME Message Part JSON into MessageBody struct"}
+transformer <json sourceMessagePartJsonObject, MessageBodyPart targetMessageBodyStruct> convertJsonMsgBodyPartToMsgBodyStruct() {
+    targetMessageBodyStruct.fileId = sourceMessagePartJsonObject.body.attachmentId != null ? sourceMessagePartJsonObject.body.attachmentId.toString() : EMPTY_STRING;
+    targetMessageBodyStruct.body = sourceMessagePartJsonObject.body.data != null ? decodeMsgBodyData(sourceMessagePartJsonObject) : EMPTY_STRING;
+    targetMessageBodyStruct.size = sourceMessagePartJsonObject.body.size != null ? sourceMessagePartJsonObject.body.size.toString() : EMPTY_STRING;
+    targetMessageBodyStruct.mimeType = sourceMessagePartJsonObject.mimeType != null ? sourceMessagePartJsonObject.mimeType.toString() : EMPTY_STRING;
+    targetMessageBodyStruct.partId = sourceMessagePartJsonObject.partId != null ? sourceMessagePartJsonObject.partId.toString() : EMPTY_STRING;
+    targetMessageBodyStruct.fileName = sourceMessagePartJsonObject.filename != null ? sourceMessagePartJsonObject.filename.toString() : EMPTY_STRING;
+    targetMessageBodyStruct.bodyHeaders = sourceMessagePartJsonObject.headers != null ? convertToMsgPartHeaders(sourceMessagePartJsonObject.headers) : [];
 }
 
 @Description {value:"Transform MIME Message Part JSON into MessageAttachment struct"}

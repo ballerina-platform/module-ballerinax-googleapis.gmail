@@ -50,6 +50,7 @@ public const string MULTIPART_ALTERNATIVE = "multipart/alternative";
 public const string MULTIPART_RELATED = "multipart/related";
 public const string TEXT_PLAIN = "text/plain";
 public const string TEXT_HTML = "text/html";
+public const string TEXT_ANY = "text/*";
 public const string IMAGE_ANY = "image/*";
 public const string CHARSET = "charset";
 public const string BASE_64 = "base64";
@@ -68,6 +69,7 @@ public const string BCC = "Bcc";
 public const string SUBJECT = "Subject";
 public const string DATE = "Date";
 
-
-
-
+public const string FORMAT_FULL = "full";
+public const string FORMAT_METADATA = "metadata";
+public const string FORMAT_MINIMAL = "minimal";
+public const string FORMAT_RAW = "raw";

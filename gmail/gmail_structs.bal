@@ -64,7 +64,7 @@ public struct Message {
 
 @Description {value:"Struct to define the MIME Message Body Part"}
 public struct MessageBodyPart {
-    //The body data of a MIME message part
+    //The body data of a MIME message part. If not a text/*, this would be a base64 encoded string
     string body;
     //Number of bytes of message part data
     string size;
@@ -85,7 +85,7 @@ public struct MessageBodyPart {
 public struct MessageAttachment {
     //File ID of the attachment in the message.
     string attachmentFileId;
-    //Attachment body of the MIME Message Part.
+    //Attachment body of the MIME Message Part encoded with base64
     //This is empty when the attachment body data is sent as a seperate attachment
     string attachmentBody;
     //Size of the attachment message part
@@ -118,6 +118,43 @@ public struct MessageOptions {
     string sender;
     string cc;
     string bcc;
+}
+
+@Description {value:"Struct to define the optional search message filter fields"}
+public struct SearchMessageFilter {
+    //Includes messages from SPAM and TRASH in the results
+    boolean includeSpamTrash;
+    //Only return messages with labels that match all of the specified label IDs
+    string[] labelIds;
+    //Maximum number of messages to return in the page for a single request
+    string maxResults;
+    //Page token to retrieve a specific page of results in the list
+    string pageToken;
+    //Only returns messages matching the specified query. Supports the same query format as the Gmail search box
+    string q;
+}
+
+@Description {value:"Struct to define the optional get message filter fields"}
+public struct GetMessageFilter{
+    //Acceptable values for format for a get message request are:
+    //"full": Returns the full email message data with body content parsed in the payload field;
+    //       the raw field is not used. (default)
+    //"metadata": Returns only email message ID, labels, and email headers.
+    //"minimal": Returns only email message ID and labels; does not return the email headers, body, or payload.
+    //"raw": Returns the full email message data with body content in the raw field as a base64url encoded string;
+    //      the payload field is not used."}
+    string format;
+    //metaDataHeaders: when given and format is METADATA, only include the metadDataHeaders specified.
+    string[] metadataHeaders;
+}
+
+@Description {value:"Struct to define a page of message list"}
+public struct MessageListPage{
+    Message[] messages;
+    //Estimated size of the whole list
+    string resultSizeEstimate;
+    //Token for next page of message list
+    string nextPageToken;
 }
 
 //Functions binded to Message struct
