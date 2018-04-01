@@ -20,6 +20,22 @@ import ballerina/io;
 import ballerina/mime;
 import ballerina/util;
 
+@Description {value:"Convert the json message array into Message struct array"}
+@Param {value:"sourceMessageArrayJsonObject: json message array"}
+@Return {value:"Message struct array"}
+function convertToMessageArray(json sourceMessageArrayJsonObject) returns Message[] {
+    Message[] messages = [];
+    int i = 0;
+    foreach jsonMessage in sourceMessageArrayJsonObject {
+        messages[i] = <Message, convertJsonMailToMessage()>jsonMessage;
+        i++;
+    }
+    return messages;
+}
+
+@Description {value:"Decode the message body of text/* mime message parts"}
+@Param {value:"sourceMessagePartJsonObject: json message part"}
+@Return {value:"base 64 decoded message body string"}
 function decodeMsgBodyData (json sourceMessagePartJsonObject) returns string {
     string decodedBody;
     if (sourceMessagePartJsonObject.mimeType != null

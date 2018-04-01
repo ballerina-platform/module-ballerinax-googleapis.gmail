@@ -73,3 +73,26 @@ transformer <json sourceMessagePartHeader, MessagePartHeader targetMessagePartHe
     targetMessagePartHeader.name = sourceMessagePartHeader.name != null ? sourceMessagePartHeader.name.toString() : EMPTY_STRING;
     targetMessagePartHeader.value = sourceMessagePartHeader.value != null ? sourceMessagePartHeader.value.toString() : EMPTY_STRING;
 }
+
+
+@Description {value:"Transform single body of MIME Message part into MessageAttachment struct"}
+transformer <json sourceMessageBodyJsonObject, MessageAttachment targetMessageAttachmentStruct> convertJsonMessageBodyToMsgAttachment() {
+    targetMessageAttachmentStruct.attachmentFileId = sourceMessageBodyJsonObject.attachmentId != null ? sourceMessageBodyJsonObject.attachmentId.toString() : EMPTY_STRING;
+    targetMessageAttachmentStruct.attachmentBody = sourceMessageBodyJsonObject.data != null ? sourceMessageBodyJsonObject.data.toString() : EMPTY_STRING;
+    targetMessageAttachmentStruct.size = sourceMessageBodyJsonObject.size != null ? sourceMessageBodyJsonObject.size.toString() : EMPTY_STRING;
+}
+
+@Description {value:"Transform thread JSON object into Thread struct"}
+transformer <json sourceThreadJsonObject, Thread targetThreadStruct> convertJsonThreadToThreadStruct() {
+    targetThreadStruct.id = sourceThreadJsonObject.id != null ? sourceThreadJsonObject.id.toString() : EMPTY_STRING;
+    targetThreadStruct.historyId = sourceThreadJsonObject.historyId != null ? sourceThreadJsonObject.historyId.toString() : EMPTY_STRING;
+    targetThreadStruct.messages = sourceThreadJsonObject.messages != null ? convertToMessageArray(sourceThreadJsonObject.messages) : [];
+}
+
+@Description {value:"Transform user profile JSON object into UserProfile struct"}
+transformer <json sourceUserProfileJsonObject, UserProfile targetUserProfile> convertJsonProfileToUserProfileStruct() {
+    targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress != null ? sourceUserProfileJsonObject.emailAddress.toString() : EMPTY_STRING;
+    targetUserProfile.threadsTotal = sourceUserProfileJsonObject.threadsTotal != null ? sourceUserProfileJsonObject.threadsTotal.toString() : EMPTY_STRING;
+    targetUserProfile.messagesTotal = sourceUserProfileJsonObject.messagesTotal != null ? sourceUserProfileJsonObject.messagesTotal.toString() : EMPTY_STRING;
+    targetUserProfile.historyId = sourceUserProfileJsonObject.historyId != null ? sourceUserProfileJsonObject.historyId.toString() : EMPTY_STRING;
+}

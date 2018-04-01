@@ -22,6 +22,9 @@ public const string REFRESH_TOKEN_PATH = "/oauth2/v3/token";
 public const string USER_RESOURCE = "/v1/users/";
 public const string MESSAGE_RESOURCE = "/messages";
 public const string MESSAGE_SEND_RESOURCE = "/messages/send";
+public const string ATTACHMENT_RESOURCE = "/attachments/";
+public const string THREAD_RESOURCE = "/threads";
+public const string PROFILE_RESOURCE = "/profile";
 
 public const string EMPTY_STRING = "";
 public const string NEW_LINE = "\n";
@@ -31,10 +34,13 @@ public const string LABEL_IDS = "&labelIds=";
 public const string MAX_RESULTS = "&maxResults=";
 public const string PAGE_TOKEN ="&pageToken=";
 public const string QUERY = "&q=";
+public const string FORMAT = "&format=";
+public const string METADATA_HEADERS = "&metadataHeaders=";
 
 public const string ERROR_CONNECTOR_NOT_INITALIZED = "Connector is not initalized. Invoke init method first.";
 public const string ERROR_CONTENT_TYPE_UNSUPPORTED = "The given content type is unsupported to add to the body.";
 public const int STATUS_CODE_200_OK = 200;
+public const int STATUS_CODE_204_NO_CONTENT = 204;
 public const string APPLICATION_JSON =  "Application/json";
 public const string CONTENT_TYPE = "Content-Type";
 public const string CONTENT_DISPOSITION = "Content-Disposition";

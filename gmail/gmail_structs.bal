@@ -19,6 +19,30 @@ package gmail;
 import ballerina/util;
 import ballerina/io;
 
+@Description {value:"Struct to define the UserProfile"}
+public struct UserProfile {
+    //The user's email address
+    string emailAddress;
+    //The total number of messages in the mailbox
+    string messagesTotal;
+    //The total number of threads in the mailbox
+    string threadsTotal;
+    //The ID of the mailbox's current history record
+    string historyId;
+}
+
+@Description {value:"Struct to define the threads resource"}
+public struct Thread {
+    //The unique ID of the thread
+    string id;
+    //A short part of the message text
+    string snippet;
+    //The ID of the last history record that modified this thread
+    string historyId;
+    // 	The list of messages in the thread
+    Message[] messages;
+}
+
 @Description {value:"Struct to define the message resource"}
 public struct Message {
     //Thread ID which the message belongs to
@@ -121,22 +145,22 @@ public struct MessageOptions {
 }
 
 @Description {value:"Struct to define the optional search message filter fields"}
-public struct SearchMessageFilter {
-    //Includes messages from SPAM and TRASH in the results
+public struct SearchFilter {
+    //Includes messages/threads from SPAM and TRASH in the results
     boolean includeSpamTrash;
-    //Only return messages with labels that match all of the specified label IDs
+    //Only return messages/threads with labels that match all of the specified label IDs
     string[] labelIds;
-    //Maximum number of messages to return in the page for a single request
+    //Maximum number of messages/threads to return in the page for a single request
     string maxResults;
     //Page token to retrieve a specific page of results in the list
     string pageToken;
-    //Only returns messages matching the specified query. Supports the same query format as the Gmail search box
+    //Only returns messages/threads matching the specified query. Supports the same query format as the Gmail search box
     string q;
 }
 
 @Description {value:"Struct to define the optional get message filter fields"}
-public struct GetMessageFilter{
-    //Acceptable values for format for a get message request are:
+public struct GetMessageThreadFilter {
+    //Acceptable values for format for a get message/thread request are:
     //"full": Returns the full email message data with body content parsed in the payload field;
     //       the raw field is not used. (default)
     //"metadata": Returns only email message ID, labels, and email headers.
@@ -154,6 +178,15 @@ public struct MessageListPage{
     //Estimated size of the whole list
     string resultSizeEstimate;
     //Token for next page of message list
+    string nextPageToken;
+}
+
+@Description {value:"Struct to define a page of thread list"}
+public struct ThreadListPage{
+    Thread[] threads;
+    //Estimated size of the whole list
+    string resultSizeEstimate;
+    //Token for next page of thread list
     string nextPageToken;
 }
 

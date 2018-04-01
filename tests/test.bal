@@ -23,7 +23,7 @@ import oauth2;
 
 public function main (string[] args) {
     endpoint gmail:GmailEndpoint gmailEP {
-        accessToken:"ya29.GluOBS1ptaY0DOFJSbqyffj5jJobqe6ENdP4mKx8Giup5il2qqKPsnOMTIUzYqu6v7B5A5Jgmo5wsbbarMrGTxtHxxcd6YzC0LbMKrkxeRo22nazZqhIZonX6wYD",
+        accessToken:"ya29.GluQBQD3Ve0O1Eu5g1t0n6mBYsQ0zxcTkt2dAWoL00Q7gG-z-8fx3tRAFoSJQ0KM88N8s8coklYV8p0AC0s-NeSd0ukU3J1aLL93xTNg1zRZPdSz56voU8ev5yxM",
         clientId:"297850098219-dju3ruvd8c7c11lluhjav55d1rr25asa.apps.googleusercontent.com",
         clientSecret:"CITYfRtibqMi0kndYsnIjJTL",
         refreshToken:"1/y-Xi70VN_oijQW5L38tOyLHIP8SIC2oQU1KU5WXg5PM",
@@ -78,18 +78,18 @@ public function main (string[] args) {
     io:println("Message Id : " + messageId);
     io:println("Thread Id : " + threadId);
     io:println("---------List All Mails with Label INBOX without including Spam and Trash---------");
-    var msgList = gmailEP -> listAllMails(userId,{includeSpamTrash:false,labelIds:["INBOX"],maxResults:"1",pageToken:"",q:""});
-    //match msgList {
-    //    gmail:MessageListPage list => { io:println("Msg List : ");
-    //                              io:print(lengthof list.messages);
-    //                              io:println("Next Page Toke : " + list.nextPageToken);
-    //                              io:println("Estimated Size : " + list.resultSizeEstimate);
-    //    }
-    //    gmail:GmailError e => io:println(e);
-    //
-    //}
-    io:println("---------Read mail Response---------");
-    //gmail:GetMessageFilter filter = {format:"",metadataHeaders:[]};
+    var msgList = gmailEP -> listAllMails(userId, {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"1", pageToken:"", q:""});
+    match msgList {
+        gmail:MessageListPage list => { io:println("Msg List : ");
+                                        io:print(lengthof list.messages);
+                                        io:println("Next Page Toke : " + list.nextPageToken);
+                                        io:println("Estimated Size : " + list.resultSizeEstimate);
+        }
+        gmail:GmailError e => io:println(e);
+
+    }
+    io:println("---------Read mail---------");
+    //gmail:GetMessageThreadFilter filter = {format:"",metadataHeaders:[]};
     //var mail = gmailEP -> readMail(userId, "16260600f9edd702",filter);
     //match mail{
     //    gmail:Message m => {//io:println(m);
@@ -100,4 +100,84 @@ public function main (string[] args) {
     //                        }
     //    gmail:GmailError e => io:println(e);
     //}
+    io:println("---------Trash Mail------------");
+    //var trash = gmailEP -> trashMail(userId, "1627f235d4600fe7");
+    //match trash {
+    //    gmail:GmailError e => io:println(e);
+    //    boolean success => {io:println("Trash Message Success: ");
+    //                        io:print(success);
+    //    }
+    //}
+    io:println("---------UnTrash Mail------------");
+    //var untrash = gmailEP -> untrashMail(userId, "1627f235d4600fe7");
+    //match untrash {
+    //    gmail:GmailError e => io:println(e);
+    //    boolean success => {io:println("UnTrash Message Success: ");
+    //                        io:print(success);
+    //    }
+    //}
+    io:println("---------Delete Mail------------");
+    //var delete = gmailEP -> deleteMail(userId, "16280d17b1678941");
+    //match delete {
+    //    gmail:GmailError e => io:println(e);
+    //    boolean success => {io:println("Delete Message Success: ");
+    //                        io:print(success);
+    //    }
+    //}
+    io:println("----------Get Message Attachment----------");
+    //var attachment = gmailEP -> getAttachment(userId, "16281ac6b5e5388d", "ANGjdJ-n7Wf1WGO2DnfDb_q0Vv9ZtZ5jo0VE5VzrSO9_hZNeqKQLS4GeNea5pf3lazFY4Jkmk0qRlPeAEVBUA_LUXWbX-k70co9kdsZsa0yZQO-RHuDGAWDf4mGGyQ7t4zFV2eEyvXwR2Dsf9bYYS3gK_Xcx9vqtIxr5Dg2cs5T1zzbODjjG6kqNzVwYyow8Axxhe1Fajk-RIGxnF2EStoz-o1cFCufHreDQz75sDq9sa6quHSQe8_xX5CpJn4NpXw7OBG1BKJ6vQLa_zmpnfvNY9vElQXTni10iZ7QVIy2jMbWSWG82lTQrBMn4EKcMXjdGRz4yKSIKR1s9TLTlQIIHoCOdk_kiFWCS3F5ElT-pn-AsxQjBPYg9zb9iscDTXVTAK9bZdgKukIWFjzT0");
+    //match attachment {
+    //    gmail:GmailError e => io:println(e);
+    //    gmail:MessageAttachment attach => {io:println("Get Attachment: ");
+    //                                       io:print(attach);
+    //    }
+    //}
+    io:println("---------List All Threads with Label INBOX without including Spam and Trash---------");
+    //var threadList = gmailEP -> listThreads(userId, {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"1", pageToken:"", q:"from:(dushaniw@wso2.com) subject:atttachment"});
+    //match threadList {
+    //    gmail:ThreadListPage list => { io:println("Thread List : ");
+    //                                    io:print(lengthof list.threads);
+    //                                    io:println("Next Page Toke : " + list.nextPageToken);
+    //                                    io:println("Estimated Size : " + list.resultSizeEstimate);
+    //    }
+    //    gmail:GmailError e => io:println(e);
+    //
+    //}
+    io:println("---------Read Thread---------");
+    //gmail:GetMessageThreadFilter filter = {format:gmail:FORMAT_METADATA,metadataHeaders:["Authentication-Results"]};
+    //var thread = gmailEP -> readThread(userId, "16281ac6b5e5388d",filter);
+    //match thread{
+    //    gmail:Thread t => io:println(t);
+    //    gmail:GmailError e => io:println(e);
+    //}
+    io:println("---------Trash Thread------------");
+    //var trash = gmailEP -> trashThread(userId, "16281ac6b5e5388d");
+    //match trash {
+    //    gmail:GmailError e => io:println(e);
+    //    boolean success => {io:println("Trash Thread Success: ");
+    //                        io:print(success);
+    //    }
+    //}
+    io:println("---------UnTrash Thread------------");
+    //var untrash = gmailEP -> untrashThread(userId, "16281ac6b5e5388d");
+    //match untrash {
+    //    gmail:GmailError e => io:println(e);
+    //    boolean success => {io:println("UnTrash Thread Success: ");
+    //                        io:print(success);
+    //    }
+    //}
+    io:println("---------Delete Thread------------");
+    //var delete = gmailEP -> deleteThread(userId, "16281ac6b5e5388d");
+    //match delete {
+    //    gmail:GmailError e => io:println(e);
+    //    boolean success => {io:println("Delete Thread Success: ");
+    //                        io:print(success);
+    //    }
+    //}
+    io:println("---------User Profile----------");
+    var profile = gmailEP -> getUserProfile(userId);
+    match profile {
+        gmail:UserProfile p => io:println(p);
+        gmail:GmailError e => io:println(e);
+    }
 }
