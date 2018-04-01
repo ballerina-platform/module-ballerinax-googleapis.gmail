@@ -23,16 +23,17 @@ import oauth2;
 
 public function main (string[] args) {
     endpoint gmail:GmailEndpoint gmailEP {
-        accessToken:"ya29.GluQBQD3Ve0O1Eu5g1t0n6mBYsQ0zxcTkt2dAWoL00Q7gG-z-8fx3tRAFoSJQ0KM88N8s8coklYV8p0AC0s-NeSd0ukU3J1aLL93xTNg1zRZPdSz56voU8ev5yxM",
-        clientId:"297850098219-dju3ruvd8c7c11lluhjav55d1rr25asa.apps.googleusercontent.com",
-        clientSecret:"CITYfRtibqMi0kndYsnIjJTL",
-        refreshToken:"1/y-Xi70VN_oijQW5L38tOyLHIP8SIC2oQU1KU5WXg5PM",
-        refreshTokenEP:gmail:REFRESH_TOKEN_EP,
-        refreshTokenPath:gmail:REFRESH_TOKEN_PATH,
-        baseUrl:gmail:BASE_URL,
-        clientConfig:{}
+        oauthClientConfig:{
+                              accessToken:"ya29.GluQBQD3Ve0O1Eu5g1t0n6mBYsQ0zxcTkt2dAWoL00Q7gG-z-8fx3tRAFoSJQ0KM88N8s8coklYV8p0AC0s-NeSd0ukU3J1aLL93xTNg1zRZPdSz56voU8ev5yxM",
+                              clientId:"297850098219-dju3ruvd8c7c11lluhjav55d1rr25asa.apps.googleusercontent.com",
+                              clientSecret:"CITYfRtibqMi0kndYsnIjJTL",
+                              refreshToken:"1/y-Xi70VN_oijQW5L38tOyLHIP8SIC2oQU1KU5WXg5PM",
+                              refreshTokenEP:gmail:REFRESH_TOKEN_EP,
+                              refreshTokenPath:gmail:REFRESH_TOKEN_PATH,
+                              baseUrl:gmail:BASE_URL,
+                              clientConfig:{}
+                          }
     };
-
     //-----Define the email parameters------
     //string recipient = "recipient@gmail.com";
     //string sender = "sender@gmail.com";

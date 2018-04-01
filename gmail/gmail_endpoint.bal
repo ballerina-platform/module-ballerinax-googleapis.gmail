@@ -21,59 +21,43 @@ import oauth2;
 
 @Description {value:"Struct to set the Gmail configuration."}
 public struct GmailConfiguration {
-    string accessToken;
-    string clientId;
-    string clientSecret;
-    string refreshToken;
-    string refreshTokenEP;
-    string refreshTokenPath;
-    string baseUrl;
-    http:ClientEndpointConfiguration clientConfig;
+    oauth2:OAuth2Configuration oauthClientConfig;
 }
 
 @Description {value:"Set the client configuration."}
-public function <GmailConfiguration gmailConfig> GmailConfiguration() {
-    gmailConfig.clientConfig = {};
+public function <GmailConfiguration gmailConfig> GmailConfiguration () {
+    gmailConfig.oauthClientConfig = {};
 }
 
 @Description {value:"Gmail Endpoint struct."}
 public struct GmailEndpoint {
+    oauth2:OAuth2Endpoint oauthEP;
     GmailConfiguration gmailConfig;
     GmailConnector gmailConnector;
 }
 @Description {value:"Initialize the gmail endpoint"}
 public function <GmailEndpoint ep> init (GmailConfiguration gmailConfig) {
-    endpoint oauth2:OAuth2Endpoint oauth2EP {
-        accessToken:gmailConfig.accessToken,
-        clientId:gmailConfig.clientId,
-        clientSecret:gmailConfig.clientSecret,
-        refreshToken:gmailConfig.refreshToken,
-        refreshTokenEP:gmailConfig.refreshTokenEP,
-        refreshTokenPath:gmailConfig.refreshTokenPath,
-        baseUrl:gmailConfig.baseUrl,
-        clientConfig:gmailConfig.clientConfig,
-        useUriParams:true
-     };
-    ep.gmailConnector.oauthEndpoint = oauth2EP;
-    ep.gmailConnector.baseUrl = gmailConfig.baseUrl;
+    ep.oauthEP.init(gmailConfig.oauthClientConfig);
+    ep.gmailConnector.oauthEndpoint = ep.oauthEP;
+    ep.gmailConnector.baseUrl = gmailConfig.oauthClientConfig.baseUrl;
 }
 
-public function <GmailEndpoint ep> register(typedesc serviceType) {
+public function <GmailEndpoint ep> register (typedesc serviceType) {
 
 }
 
-public function <GmailEndpoint ep> start() {
+public function <GmailEndpoint ep> start () {
 
 }
 
-@Description { value:"Returns the connector that client code uses"}
-@Return { value:"The connector that client code uses" }
-public function <GmailEndpoint ep> getClient() returns GmailConnector {
+@Description {value:"Returns the connector that client code uses"}
+@Return {value:"The connector that client code uses"}
+public function <GmailEndpoint ep> getClient () returns GmailConnector {
     return ep.gmailConnector;
 }
 
-@Description { value:"Stops the registered service"}
-@Return { value:"Error occured during registration" }
-public function <GmailEndpoint ep> stop() {
+@Description {value:"Stops the registered service"}
+@Return {value:"Error occured during registration"}
+public function <GmailEndpoint ep> stop () {
 
 }

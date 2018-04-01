@@ -53,7 +53,7 @@ public function <GmailConnector gmailConnector> listAllMails (string userId, Sea
         match uri:encode(filter.q, UTF_8) {
             string encodedQuery => uriParams += QUERY + encodedQuery;
             error e => {
-                gmailError.errorMessage = "Error Occured during encoding the query";
+                gmailError.errorMessage = "Error occured during encoding the query";
                 return gmailError;
             }
         }
