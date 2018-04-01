@@ -57,14 +57,12 @@ public function main (string[] args) {
     match message.setContent(htmlBody, "text/html") {
         boolean b => htmlSetStatus = b;
         gmail:GmailError er => io:println(er);
-        io:IOError ioError => io:println(ioError);
     }
     if (htmlSetStatus) {
         boolean imgInlineSetStatus;
         match message.setContent("/home/dushaniw/Picture2.jpg", "image/jpeg") {
             boolean b => imgInlineSetStatus = b;
             gmail:GmailError er => io:println(er);
-            io:IOError ioError => io:println(ioError);
         }
     }
     var attachStatus = message.addAttachment("/home/dushaniw/hello.txt", "text/plain");

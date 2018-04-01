@@ -74,15 +74,15 @@ public struct Message {
     //If the top level message part is multipart/*
     boolean isMultipart;
     private:
-        //Represent the entire message in base64 encoded string
+    //Represent the entire message in base64 encoded string
         string raw;
-        //Short part of the message text
+    //Short part of the message text
         string snippet;
-        //ID of the last history record that modified the message
+    //ID of the last history record that modified the message
         string historyId;
-        //Internal message creation timestamp(epoch ms)
+    //Internal message creation timestamp(epoch ms)
         string internalDate;
-        //Estimated size of the message in bytes
+    //Estimated size of the message in bytes
         string sizeEstimate;
 }
 
@@ -101,7 +101,7 @@ public struct MessageBodyPart {
     //File name of the attachment in message part (This is empty unless the message part represent an inline image)
     string fileName;
     private:
-        //Part id of the message part
+    //Part id of the message part
         string partId;
 }
 
@@ -121,7 +121,7 @@ public struct MessageAttachment {
     //Headers of MIME Message Part representing the attachment
     MessagePartHeader[] attachmentHeaders;
     private:
-        //Part Id of the message part
+    //Part Id of the message part
         string partId;
 }
 
@@ -173,7 +173,7 @@ public struct GetMessageThreadFilter {
 }
 
 @Description {value:"Struct to define a page of message list"}
-public struct MessageListPage{
+public struct MessageListPage {
     Message[] messages;
     //Estimated size of the whole list
     string resultSizeEstimate;
@@ -182,7 +182,7 @@ public struct MessageListPage{
 }
 
 @Description {value:"Struct to define a page of thread list"}
-public struct ThreadListPage{
+public struct ThreadListPage {
     Thread[] threads;
     //Estimated size of the whole list
     string resultSizeEstimate;
@@ -237,7 +237,7 @@ Give the src value of img element as 'cid:image-<Your image name with extension>
 @Return {value:"Returns true if the content is set successfully"}
 @Return {value:"Returns IOError if there's any error while performaing I/O operation"}
 @Return {value:"Returns GmailError if the content type is not supported"}
-public function <Message message> setContent (string content, string contentType) returns (boolean|(GmailError|io:IOError)) {
+public function <Message message> setContent (string content, string contentType) returns (boolean|GmailError) {
     //If the mime type of the content is text/html
     if (isMimeType(contentType, TEXT_HTML)) {
         //Set the html body part of the message
@@ -250,7 +250,10 @@ public function <Message message> setContent (string content, string contentType
         //Open and encode the image file into base64. Return an IOError if fails.
         match encodeFile(content) {
             string eFile => encodedFile = eFile;
-            io:IOError ioError => return ioError;
+            io:IOError ioError => {GmailError gmailError = {};
+                                   gmailError.errorMessage = ioError.message;
+                                   return gmailError;
+            }
         }
         //Set the inline image body part of the message
         MessageBodyPart inlineImgBody = {};
