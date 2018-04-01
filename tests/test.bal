@@ -134,23 +134,23 @@ public function main (string[] args) {
     //    }
     //}
     io:println("---------List All Threads with Label INBOX without including Spam and Trash---------");
-    //var threadList = gmailEP -> listThreads(userId, {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"1", pageToken:"", q:"from:(dushaniw@wso2.com) subject:atttachment"});
-    //match threadList {
-    //    gmail:ThreadListPage list => { io:println("Thread List : ");
-    //                                    io:print(lengthof list.threads);
-    //                                    io:println("Next Page Toke : " + list.nextPageToken);
-    //                                    io:println("Estimated Size : " + list.resultSizeEstimate);
-    //    }
-    //    gmail:GmailError e => io:println(e);
-    //
-    //}
+    var threadList = gmailEP -> listThreads(userId, {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"1", pageToken:"", q:"from:(dushaniw@wso2.com) subject:atttachment"});
+    match threadList {
+        gmail:ThreadListPage list => { io:println("Thread List : ");
+                                        io:print(lengthof list.threads);
+                                        io:println("Next Page Toke : " + list.nextPageToken);
+                                        io:println("Estimated Size : " + list.resultSizeEstimate);
+        }
+        gmail:GmailError e => io:println(e);
+
+    }
     io:println("---------Read Thread---------");
-    //gmail:GetMessageThreadFilter filter = {format:gmail:FORMAT_METADATA,metadataHeaders:["Authentication-Results"]};
-    //var thread = gmailEP -> readThread(userId, "16281ac6b5e5388d",filter);
-    //match thread{
-    //    gmail:Thread t => io:println(t);
-    //    gmail:GmailError e => io:println(e);
-    //}
+    gmail:GetMessageThreadFilter filter = {format:gmail:FORMAT_METADATA,metadataHeaders:["Authentication-Results"]};
+    var thread = gmailEP -> readThread(userId, "16281ac6b5e5388d",filter);
+    match thread{
+        gmail:Thread t => io:println(t);
+        gmail:GmailError e => io:println(e);
+    }
     io:println("---------Trash Thread------------");
     //var trash = gmailEP -> trashThread(userId, "16281ac6b5e5388d");
     //match trash {

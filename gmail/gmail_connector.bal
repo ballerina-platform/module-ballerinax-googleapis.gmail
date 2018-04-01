@@ -274,7 +274,7 @@ public function <GmailConnector gmailConnector> readMail (string userId, string 
     }
     if (response.statusCode == STATUS_CODE_200_OK) {
         //Transform the json mail response from Gmail API to Message struct
-        Message message = <Message, convertJsonMailToMessage()>jsonMail;
+        Message message = convertJsonMailToMessage(jsonMail);
         return message;
     }
     else {
@@ -318,7 +318,7 @@ public function <GmailConnector gmailConnector> getAttachment (string userId, st
     }
     if (response.statusCode == STATUS_CODE_200_OK) {
         //Transform the json mail response from Gmail API to MessageAttachment struct
-        MessageAttachment attachment = <MessageAttachment, convertJsonMessageBodyToMsgAttachment()>jsonAttachment;
+        MessageAttachment attachment = convertJsonMessageBodyToMsgAttachment(jsonAttachment);
         return attachment;
     }
     else {
@@ -562,7 +562,7 @@ public function <GmailConnector gmailConnector> readThread (string userId, strin
     }
     if (response.statusCode == STATUS_CODE_200_OK) {
         //Transform the json mail response from Gmail API to Thread struct
-        Thread thread = <Thread, convertJsonThreadToThreadStruct()>jsonThread;
+        Thread thread = convertJsonThreadToThreadStruct(jsonThread);
         return thread;
     }
     else {
@@ -723,7 +723,7 @@ public function <GmailConnector gmailConnector> getUserProfile (string userId) r
     }
     if (response.statusCode == STATUS_CODE_200_OK) {
         //Transform the json profile response from Gmail API to User Profile struct
-        UserProfile profile = <UserProfile , convertJsonProfileToUserProfileStruct()>jsonProfile;
+        UserProfile profile = convertJsonProfileToUserProfileStruct(jsonProfile);
         return profile;
     }
     else {

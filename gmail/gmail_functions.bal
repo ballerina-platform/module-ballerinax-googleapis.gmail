@@ -23,11 +23,11 @@ import ballerina/util;
 @Description {value:"Convert the json message array into Message struct array"}
 @Param {value:"sourceMessageArrayJsonObject: json message array"}
 @Return {value:"Message struct array"}
-function convertToMessageArray(json sourceMessageArrayJsonObject) returns Message[] {
+function convertToMessageArray (json sourceMessageArrayJsonObject) returns Message[] {
     Message[] messages = [];
     int i = 0;
     foreach jsonMessage in sourceMessageArrayJsonObject {
-        messages[i] = <Message, convertJsonMailToMessage()>jsonMessage;
+        messages[i] = convertJsonMailToMessage(jsonMessage);
         i++;
     }
     return messages;
@@ -58,7 +58,7 @@ function getAttachmentPartsFromPayload (json messagePayload, MessageAttachment[]
     string disposition = headerParts[0];
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
-        attachmentParts[lengthof attachmentParts] = <MessageAttachment, convertJsonMsgPartToMsgAttachment()>messagePayload;
+        attachmentParts[lengthof attachmentParts] = convertJsonMsgPartToMsgAttachment(messagePayload);
     } //Else if is any multipart/*
     else if (isMimeType(messagePayload.mimeType.toString(), MULTIPART_ANY) && (messagePayload.parts != null)) {
         json messageParts = messagePayload.parts;
@@ -86,7 +86,7 @@ function getInlineImgPartsFromPayloadByMimeType (json messagePayload, MessageBod
     string disposition = headerParts[0];
     //If parent mime part is image/* and it is inline
     if (isMimeType(messagePayload.mimeType.toString(), IMAGE_ANY) && (disposition == INLINE)) {
-        inlineImgParts[lengthof inlineImgParts] = <MessageBodyPart, convertJsonMsgBodyPartToMsgBodyStruct()>messagePayload;
+        inlineImgParts[lengthof inlineImgParts] = convertJsonMsgBodyPartToMsgBodyStruct(messagePayload);
     } //Else if is any multipart/*
     else if (isMimeType(messagePayload.mimeType.toString(), MULTIPART_ANY) && (messagePayload.parts != null)) {
         json messageParts = messagePayload.parts;
@@ -115,7 +115,7 @@ function getMessageBodyPartFromPayloadByMimeType (string mimeType, json messageP
     string disposition = headerParts[0];
     //If parent mime part is given mime type and not an attachment or an inline part
     if (isMimeType(messagePayload.mimeType.toString(), mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
-        msgBodyPart = <MessageBodyPart, convertJsonMsgBodyPartToMsgBodyStruct()>messagePayload;
+        msgBodyPart = convertJsonMsgBodyPartToMsgBodyStruct(messagePayload);
     } //Else if is any multipart/*
     else if (isMimeType(messagePayload.mimeType.toString(), MULTIPART_ANY) && (messagePayload.parts != null)) {
         json messageParts = messagePayload.parts;
@@ -245,7 +245,7 @@ function convertToMsgPartHeaders (json jsonMsgPartHeaders) returns MessagePartHe
     MessagePartHeader[] msgPartHeaders = [];
     int i = 0;
     foreach jsonHeader in jsonMsgPartHeaders {
-        msgPartHeaders[i] = <MessagePartHeader, convertJsonToMesagePartHeader()>jsonHeader;
+        msgPartHeaders[i] = convertJsonToMesagePartHeader(jsonHeader);
         i++;
     }
     return msgPartHeaders;
