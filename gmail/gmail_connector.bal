@@ -102,18 +102,6 @@ public function <GmailConnector gmailConnector> listAllMails (string userId, Sea
     }
 }
 
-@Description {value:"Create a message"}
-@Param {value:"recipient:  email address of the receiver"}
-@Param {value:"sender: email address of the sender, the mailbox account"}
-@Param {value:"subject: subject of the email"}
-@Param {value:"bodyText: body text of the email"}
-@Param {value:"options: other optional headers of the email including Cc, Bcc and From"}
-public function <GmailConnector gmailConnector> createMessage (string sender, string subject, string bodyText, MessageOptions options) returns (Message) {
-    Message message = {};
-    message.createMessage(sender, subject, bodyText, options);
-    return message;
-}
-
 @Description {value:"Create the raw base 64 encoded string of the whole message and send the email from the user's
 mailbox to its recipient."}
 @Param {value:"userId: User's email address. The special value -> me"}
