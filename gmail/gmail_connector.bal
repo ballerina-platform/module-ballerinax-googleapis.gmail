@@ -20,7 +20,6 @@ import ballerina/io;
 import ballerina/mime;
 import ballerina/net.http;
 import ballerina/net.uri;
-import ballerina/user;
 import oauth2;
 
 @Description {value:"Struct to define the Gmail Client Connector"}
@@ -192,8 +191,7 @@ public function <GmailConnector gmailConnector> sendMessage (string userId, Mess
     }
     //------End of multipart/mixed mime part------
     string encodedRequest = util:base64Encode(concatRequest);
-    encodedRequest = encodedRequest.replace("+", "-").replace("/", "_").replace("=", "*");
-    encodedRequest = encodedRequest.replace("/", "_");
+    encodedRequest = encodedRequest.replace("+", "-").replace("/", "_");
     //Set the encoded message as raw
     message.raw = encodedRequest;
     http:Request request = {};
