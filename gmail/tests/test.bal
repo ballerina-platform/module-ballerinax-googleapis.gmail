@@ -30,7 +30,8 @@ endpoint GmailEndpoint gmailEP {
         refreshTokenEP: REFRESH_TOKEN_EP,
         refreshTokenPath: REFRESH_TOKEN_PATH,
         baseUrl: BASE_URL,
-        clientConfig:{}
+        clientConfig:{},
+        useUriParams:true
     }
 };
 

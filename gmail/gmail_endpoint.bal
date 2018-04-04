@@ -35,11 +35,11 @@ public struct GmailEndpoint {
     GmailConfiguration gmailConfig;
     GmailConnector gmailConnector;
 }
+
 @Description {value:"Initialize the gmail endpoint"}
 public function <GmailEndpoint ep> init (GmailConfiguration gmailConfig) {
     ep.oauthEP.init(gmailConfig.oauthClientConfig);
     ep.gmailConnector.oauthEndpoint = ep.oauthEP;
-    ep.gmailConnector.baseUrl = gmailConfig.oauthClientConfig.baseUrl;
 }
 
 public function <GmailEndpoint ep> register (typedesc serviceType) {
