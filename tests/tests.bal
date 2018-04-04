@@ -24,10 +24,10 @@ import gmail;
 
 endpoint gmail:GmailEndpoint gmailEP {
     oauthClientConfig:{
-        accessToken:"ya29.GluTBVFn8kDVYGvYq5Bx-kUWKqtBHLME8g5qbwn_E44WbmUkuTfQujLpSPDOvXytUtF57ZzSf7aJT1qVx631gx33cIuqKPiZAzlZFw7u4AfqpTZongt0N0pQZezC",
-        clientId:"297850098219-dju3ruvd8c7c11lluhjav55d1rr25asa.apps.googleusercontent.com",
-        clientSecret:"CITYfRtibqMi0kndYsnIjJTL",
-        refreshToken:"1/y-Xi70VN_oijQW5L38tOyLHIP8SIC2oQU1KU5WXg5PM",
+        accessToken:"",
+        clientId:"",
+        clientSecret:"",
+        refreshToken:"",
         refreshTokenEP:gmail:REFRESH_TOKEN_EP,
         refreshTokenPath:gmail:REFRESH_TOKEN_PATH,
         baseUrl:gmail:BASE_URL,
