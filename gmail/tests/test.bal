@@ -35,33 +35,40 @@ endpoint GmailEndpoint gmailEP {
     }
 };
 
+//Needs to be filled by tester
+string recipient = "";
+string sender = "";
+string cc = "";
+string attachmentPath = ""; //Example: "/home/dushaniw/hello.txt"
+string attachmentContentType = ""; //Example: "text/plain"
+string inlineImagePath = ""; //Example: "/home/user/Picture2.jpg"
+string inlineImageName = ""; //Example: "Picture2.jpg"
+string imageContentType = ""; //Example: "image/jpeg"
+
 string userId = "me";
 Message mail = {};
 //Message id of text mail which will be sent from testSendSimpleMail()
-string sentTextMailId = "";
+string sentTextMailId;
 //Thread id of text mail which will be sent from testSendSimpleMail()
-string sentTextMailThreadId = "";
+string sentTextMailThreadId;
 //Mail id of the html mail which will be sent from testSendHtml()
 string sentHtmlMailId = "";
 //Message id of mail with attachment which will be sent from testSendWithAttachment()
-string sentAttachmentMailId = "";
+string sentAttachmentMailId;
 //Attachment id of attachment which will be sent from testSendWithAttachment()
-string readAttachmentFileId = "";
+string readAttachmentFileId;
 
 function createMail() {
     mail = {};
     //Create a simple mail with text content
     log:printInfo("createMessage()");
     //-----Define the email parameters------
-    string recipient = "dushaniw@wso2.com";
-    string sender = "dushaniwellappili@gmail.com";
     string subject = "Email-Subject";
     string messageBody = "Email Test Body";
-    string userId = "me";
-     MessageOptions options = {};
-    options.sender = "dushaniwellappili@gmail.com";
-    options.cc = "dushani.13@cse.mrt.ac.lk";
-     mail.createMessage(recipient, subject, messageBody, options);
+    MessageOptions options = {};
+    options.sender = sender;
+    options.cc = cc;
+    mail.createMessage(recipient, subject, messageBody, options);
 }
 
 @test:Config {
@@ -124,13 +131,13 @@ function testSendHtmlInlineImage() {
     //----Set Html content----
     //If you are sending an inline image, create a html body email and put the image into the body by using <img> tag.
     //Give the src value as "cid:image-<Your image name with extension>".
-    string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-Picture2.jpg\">";
+    string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
     match mail.setContent(htmlBody, "text/html") {
         boolean htmlSetStatus => test:assertTrue(htmlSetStatus, msg = "Set Html Content Failed");
          GmailError er => test:assertFail(msg = er.errorMessage);
     }
 
-    match mail.setContent("/home/dushaniw/Picture2.jpg", "image/jpeg") {
+    match mail.setContent(inlineImagePath, imageContentType) {
         boolean imgInlineSetStatus => test:assertTrue(imgInlineSetStatus,
             msg = "Set Html Content and inline image Failed");
          GmailError er => test:assertFail(msg = er.errorMessage);
@@ -157,7 +164,7 @@ function testSendHtmlInlineImage() {
 function testSendWithAttachment() {
     //Send a mail with text content and attachment
     //----Add Attachment----
-    match mail.addAttachment("/home/dushaniw/hello.txt", "text/plain") {
+    match mail.addAttachment(attachmentPath, attachmentContentType) {
         boolean attachStatus => test:assertTrue(attachStatus, msg = "Add attachment Failed");
         io:IOError er => test:assertFail(msg = er.message);
     }
@@ -190,7 +197,7 @@ function testSendHtmlWithAttachment() {
          GmailError er => test:assertFail(msg = er.errorMessage);
     }
     //----Add Attachment----
-    match mail.addAttachment("/home/dushaniw/hello.txt", "text/plain") {
+    match mail.addAttachment(attachmentPath, attachmentContentType) {
         boolean attachStatus => test:assertTrue(attachStatus, msg = "Add attachment Failed");
         io:IOError er => test:assertFail(msg = er.message);
     }
