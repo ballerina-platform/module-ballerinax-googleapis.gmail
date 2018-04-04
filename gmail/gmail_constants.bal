@@ -29,7 +29,7 @@ public const string PROFILE_RESOURCE = "/profile";
 public const string EMPTY_STRING = "";
 public const string NEW_LINE = "\n";
 
-public const string INCLUDE_SPAMTRASH = "&includeSpamTrash=";
+public const string INCLUDE_SPAMTRASH = "?includeSpamTrash=";
 public const string LABEL_IDS = "&labelIds=";
 public const string MAX_RESULTS = "&maxResults=";
 public const string PAGE_TOKEN ="&pageToken=";
