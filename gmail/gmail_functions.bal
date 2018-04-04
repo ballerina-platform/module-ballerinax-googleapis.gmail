@@ -40,7 +40,6 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string {
     string decodedBody;
     if (sourceMessagePartJsonObject.mimeType != null
     && isMimeType(sourceMessagePartJsonObject.mimeType.toString(), TEXT_ANY)) {
-        //io:println(sourceMessagePartJsonObject.body.data.toString());
         decodedBody = sourceMessagePartJsonObject.body.data.toString().replace("-", "+").replace("_", "/").replace("*", "=");
         decodedBody = (util:base64Decode(decodedBody));
     }

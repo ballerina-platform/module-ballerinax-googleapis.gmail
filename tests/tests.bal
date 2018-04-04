@@ -82,7 +82,7 @@ function testSendSimpleMail() {
             sentTextMailThreadId = threadId;
             test:assertTrue(messageId != null && threadId != null, msg = "Send Simple text Message Failed");
         }
-        gmail:GmailError e => {io:println(e);test:assertFail(msg = e.errorMessage);}
+        gmail:GmailError e => test:assertFail(msg = e.errorMessage);
     }
 
 }
