@@ -17,7 +17,7 @@
 package oauth2;
 
 import ballerina/io;
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/mime;
 
 @Description {value:"Struct to initialize the connection."}

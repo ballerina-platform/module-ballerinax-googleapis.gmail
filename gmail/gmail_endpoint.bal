@@ -16,7 +16,7 @@
 
 package gmail;
 
-import ballerina/net.http;
+import ballerina/http;
 import oauth2;
 
 @Description {value:"Struct to set the Gmail configuration."}

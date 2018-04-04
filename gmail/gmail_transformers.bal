@@ -92,7 +92,8 @@ function convertJsonMessageBodyToMsgAttachment (json sourceMessageBodyJsonObject
 }
 
 @Description {value:"Transform thread JSON object into Thread struct"}
-function convertJsonThreadToThreadStruct (json sourceThreadJsonObject) returns Thread {
+function
+convertJsonThreadToThreadStruct (json sourceThreadJsonObject) returns Thread {
     Thread targetThreadStruct = {};
     targetThreadStruct.id = sourceThreadJsonObject.id != null ? sourceThreadJsonObject.id.toString() : EMPTY_STRING;
     targetThreadStruct.historyId = sourceThreadJsonObject.historyId != null ? sourceThreadJsonObject.historyId.toString() : EMPTY_STRING;

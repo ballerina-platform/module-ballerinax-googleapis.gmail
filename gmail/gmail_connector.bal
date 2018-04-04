@@ -18,7 +18,7 @@ package gmail;
 
 import ballerina/io;
 import ballerina/mime;
-import ballerina/net.http;
+import ballerina/http;
 import ballerina/net.uri;
 import oauth2;
 
@@ -33,7 +33,7 @@ public struct GmailConnector {
 @Param {value:"filter: SearchFilter struct with optional query parameters"}
 @Return {value:"MessageListPage struct with array of messages, size estimation and next page token"}
 @Return {value:"GmailError is thrown if any error occurs in sending the request and receiving the response"}
-public function <GmailConnector gmailConnector> listAllMails (string userId, SearchFilter filter) returns (MessageListPage)|GmailError {
+public function <GmailConnector gmailConnector> listAllMails (string userId, SearchFilter filter) returns (MessageListPage|GmailError) {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
     http:Request request = {};
     http:Response response = {};

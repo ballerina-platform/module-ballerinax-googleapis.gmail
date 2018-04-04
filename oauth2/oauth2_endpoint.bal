@@ -16,7 +16,7 @@
 
 package oauth2;
 
-import ballerina/net.http;
+import ballerina/http;
 
 @Description {value:"Struct to define the OAuth2 configuration."}
 public struct OAuth2Configuration {
