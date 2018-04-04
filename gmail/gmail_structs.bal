@@ -19,6 +19,12 @@ package gmail;
 import ballerina/util;
 import ballerina/io;
 
+@Description {value:"Struct to define the Gmail Client Connector"}
+public struct GmailConnector {
+    oauth2:OAuth2Endpoint oauthEndpoint;
+    string baseUrl;
+}
+
 @Description {value:"Struct to define the UserProfile"}
 public struct UserProfile {
     //The user's email address

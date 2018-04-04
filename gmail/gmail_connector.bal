@@ -22,12 +22,6 @@ import ballerina/http;
 import ballerina/net.uri;
 import oauth2;
 
-@Description {value:"Struct to define the Gmail Client Connector"}
-public struct GmailConnector {
-    oauth2:OAuth2Endpoint oauthEndpoint;
-    string baseUrl;
-}
-
 @Description {value:"List the messages in user's mailbox"}
 @Param {value:"userId: The user's email address. The special value *me* can be used to indicate the authenticated user"}
 @Param {value:"filter: SearchFilter struct with optional query parameters"}
