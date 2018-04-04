@@ -50,9 +50,11 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string {
 @Param {value:"messagePayload: parent json message payload in MIME Message"}
 @Param {value:"msgAttachments: intial array of attachment message parts"}
 @Return {value:"Returns array of MessageAttachment"}
-function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments) returns @tainted MessageAttachment[] {
+function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
+                                                                                returns @tainted MessageAttachment[] {
     MessageAttachment[] attachmentParts = msgAttachments;
-    MessagePartHeader contentDispositionHeader = getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+    MessagePartHeader contentDispositionHeader =
+                                    getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
     string[] headerParts = contentDispositionHeader.value.split(";");
     string disposition = headerParts[0];
     //If parent mime part is an attachment
@@ -78,9 +80,11 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
 @Param {value:"inlineMailImages: intial array of inline image message parts"}
 @Return {value:"Returns array of MessageBodyPart"}
 //Extract inline image MIME message parts from the email
-function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages) returns @tainted MessageBodyPart[] {
+function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
+                                                                                    returns @tainted MessageBodyPart[] {
     MessageBodyPart[] inlineImgParts = inlineMailImages;
-    MessagePartHeader contentDispositionHeader = getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+    MessagePartHeader contentDispositionHeader =
+                                    getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
     string[] headerParts = contentDispositionHeader.value.split(";");
     string disposition = headerParts[0];
     //If parent mime part is image/* and it is inline
@@ -107,13 +111,16 @@ otherwise it will return with first found matching message part"}
 @Param {value:"messagePayload: parent json message payload in MIME Message"}
 @Param {value:"inlineMailImages: intial array of inline image message parts"}
 @Return {value:"Returns array of MessageBodyPart"}
-function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePayload) returns @tainted MessageBodyPart {
+function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePayload)
+                                                                                    returns @tainted MessageBodyPart {
     MessageBodyPart msgBodyPart = {};
-    MessagePartHeader contentDispositionHeader = getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+    MessagePartHeader contentDispositionHeader =
+                                    getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
     string[] headerParts = contentDispositionHeader.value.split(";");
     string disposition = headerParts[0];
     //If parent mime part is given mime type and not an attachment or an inline part
-    if (isMimeType(messagePayload.mimeType.toString(), mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
+    if (isMimeType(messagePayload.mimeType.toString(), mimeType) &&
+                                                            (disposition != ATTACHMENT) && (disposition != INLINE)) {
         msgBodyPart = convertJsonMsgBodyPartToMsgBodyStruct(messagePayload);
     } //Else if is any multipart/*
     else if (isMimeType(messagePayload.mimeType.toString(), MULTIPART_ANY) && (messagePayload.parts != null)) {

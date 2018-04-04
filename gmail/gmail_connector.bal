@@ -27,7 +27,8 @@ import oauth2;
 @Param {value:"filter: SearchFilter struct with optional query parameters"}
 @Return {value:"MessageListPage struct with array of messages, size estimation and next page token"}
 @Return {value:"GmailError is thrown if any error occurs in sending the request and receiving the response"}
-public function<GmailConnector gmailConnector> listAllMails(string userId, SearchFilter filter) returns (MessageListPage|GmailError) {
+public function<GmailConnector gmailConnector> listAllMails(string userId, SearchFilter filter)
+                                                                            returns (MessageListPage|GmailError) {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
     GmailError gmailError = {};
     MessageListPage messageListPage = {};
@@ -50,21 +51,26 @@ public function<GmailConnector gmailConnector> listAllMails(string userId, Searc
             }
         }
     }
-    getListMessagesPath = uriParams != EMPTY_STRING ? getListMessagesPath + "?" + uriParams.subString(1, uriParams.length()) : getListMessagesPath;
+    getListMessagesPath = uriParams != EMPTY_STRING ? getListMessagesPath + "?" +
+                                                    uriParams.subString(1, uriParams.length()) : getListMessagesPath;
     try {
         http:Response response =? oauthEP -> get(getListMessagesPath, request);
         json jsonlistMsgResponse =? response.getJsonPayload();
         if (response.statusCode == STATUS_CODE_200_OK) {
             int i = 0;
             if (jsonlistMsgResponse.messages != null) {
-                messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate != null ? jsonlistMsgResponse.resultSizeEstimate.toString() : EMPTY_STRING;
-                messageListPage.nextPageToken = jsonlistMsgResponse.nextPageToken != null ? jsonlistMsgResponse.nextPageToken.toString() : EMPTY_STRING;
+                messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate != null ?
+                                                        jsonlistMsgResponse.resultSizeEstimate.toString() : EMPTY_STRING;
+                messageListPage.nextPageToken = jsonlistMsgResponse.nextPageToken != null ?
+                                                            jsonlistMsgResponse.nextPageToken.toString() : EMPTY_STRING;
                 //for each message resource in messages json array of the response
                 foreach message in jsonlistMsgResponse.messages {
                     //read mail from the message id
                     match gmailConnector.readMail(userId, message.id.toString(), {}){
-                        Message mail => {messageListPage.messages[i] = mail; //Add the message to the message list page's list of message
-                        i++;
+                        Message mail => {
+                            //Add the message to the message list page's list of message
+                            messageListPage.messages[i] = mail;
+                            i++;
                         }
                         GmailError err => return err;
                     }
@@ -93,7 +99,8 @@ mailbox to its recipient."}
 @Return {value:"Returns the message id of the successfully sent message"}
 @Return {value:"Returns the thread id of the succesfully sent message"}
 @Return {value:"Returns GmailError if the message is not sent successfully"}
-public function<GmailConnector gmailConnector> sendMessage(string userId, Message message) returns (string, string)|GmailError {
+public function<GmailConnector gmailConnector> sendMessage(string userId, Message message)
+                                                                            returns (string, string)|GmailError {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
     string concatRequest = EMPTY_STRING;
     //Set the general headers of the message
@@ -114,10 +121,12 @@ public function<GmailConnector gmailConnector> sendMessage(string userId, Messag
     concatRequest += message.headerContentType.name + ":" + message.headerContentType.value + NEW_LINE;
     concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
     //------Start of multipart/related mime part------
-    concatRequest += CONTENT_TYPE + ":" + MULTIPART_RELATED + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_1 + "\"" + NEW_LINE;
+    concatRequest += CONTENT_TYPE + ":" + MULTIPART_RELATED + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_1 +
+                        "\"" + NEW_LINE;
     concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
     //------Start of multipart/alternative mime part------
-    concatRequest += CONTENT_TYPE + ":" + MULTIPART_ALTERNATIVE + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_2 + "\"" + NEW_LINE;
+    concatRequest += CONTENT_TYPE + ":" + MULTIPART_ALTERNATIVE + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_2 +
+                        "\"" + NEW_LINE;
     //Set the body part : text/plain
     concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
     foreach header in message.plainTextBodyPart.bodyHeaders {
@@ -200,9 +209,10 @@ public function<GmailConnector gmailConnector> sendMessage(string userId, Messag
 @Param {value:"userId: user's email address. The special value -> me"}
 @Param {value:"messageId: message id of the specified mail to retrieve"}
 @Param {value:"filter: GetMessageThreadFilter struct object with the optional format and metadataHeaders query parameters"}
-@Param {value:"Returns the specified mail as a Message struct"}
+@Return {value:"Returns the specified mail as a Message struct"}
 @Return {value:"Returns GmailError if the message cannot be read successfully"}
-public function<GmailConnector gmailConnector> readMail(string userId, string messageId, GetMessageThreadFilter filter) returns (Message)|GmailError {
+public function<GmailConnector gmailConnector> readMail(string userId, string messageId, GetMessageThreadFilter filter)
+                                                                                        returns (Message)|GmailError {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
     http:Request request = {};
     GmailError gmailError = {};
@@ -246,12 +256,14 @@ public function<GmailConnector gmailConnector> readMail(string userId, string me
 @Param {value:"attachmentId: the ID of the attachment."}
 @Param {value:"Returns the specified mail as a MessageAttachment struct"}
 @Return {value:"Returns GmailError if the attachment read is not successful"}
-public function<GmailConnector gmailConnector> getAttachment(string userId, string messageId, string attachmentId) returns (MessageAttachment)|GmailError {
+public function<GmailConnector gmailConnector> getAttachment(string userId, string messageId, string attachmentId)
+                                                                            returns (MessageAttachment)|GmailError {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
     http:Request request = {};
     GmailError gmailError = {};
     MessageAttachment attachment = {};
-    string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId + ATTACHMENT_RESOURCE + attachmentId;
+    string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId +
+                                ATTACHMENT_RESOURCE + attachmentId;
     try {
         http:Response response =? oauthEP -> get(getAttachmentPath, request);
         json jsonAttachment =? response.getJsonPayload();
@@ -383,7 +395,8 @@ public function<GmailConnector gmailConnector> deleteMail(string userId, string 
 @Param {value:"filter: SearchFilter struct with optional query parameters"}
 @Return {value:"ThreadListPage struct with thread list, result set size estimation and next page token"}
 @Return {value:"GmailError is thrown if any error occurs in sending the request and receiving the response"}
-public function<GmailConnector gmailConnector> listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GmailError {
+public function<GmailConnector gmailConnector> listThreads(string userId, SearchFilter filter)
+                                                                                returns (ThreadListPage)|GmailError {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
     http:Request request = {};
     GmailError gmailError = {};
@@ -406,21 +419,25 @@ public function<GmailConnector gmailConnector> listThreads(string userId, Search
             }
         }
     }
-    getListThreadPath = uriParams != EMPTY_STRING ? getListThreadPath + "?" + uriParams.subString(1, uriParams.length()) : getListThreadPath;
+    getListThreadPath = uriParams != EMPTY_STRING ? getListThreadPath + "?" +
+                                                        uriParams.subString(1, uriParams.length()) : getListThreadPath;
     try {
         http:Response response =? oauthEP -> get(getListThreadPath, request);
         json jsonlistThreadResponse =? response.getJsonPayload();
         if (response.statusCode == STATUS_CODE_200_OK) {
             if (jsonlistThreadResponse.threads != null) {
-                threadListPage.resultSizeEstimate = jsonlistThreadResponse.resultSizeEstimate != null ? jsonlistThreadResponse.resultSizeEstimate.toString() : EMPTY_STRING;
-                threadListPage.nextPageToken = jsonlistThreadResponse.nextPageToken != null ? jsonlistThreadResponse.nextPageToken.toString() : EMPTY_STRING;
+                threadListPage.resultSizeEstimate = jsonlistThreadResponse.resultSizeEstimate != null ?
+                                                    jsonlistThreadResponse.resultSizeEstimate.toString() : EMPTY_STRING;
+                threadListPage.nextPageToken = jsonlistThreadResponse.nextPageToken != null ?
+                                                        jsonlistThreadResponse.nextPageToken.toString() : EMPTY_STRING;
                 int i = 0;
                 //for each thread resource in threads json array of the response
                 foreach thread in jsonlistThreadResponse.threads {
                     //read thread from the thread id
                     match gmailConnector.readThread(userId, thread.id.toString(), {}){
                         Thread messageThread => {
-                            threadListPage.threads[i] = messageThread; //Add the thread to the thread list page's list of threads
+                            //Add the thread to the thread list page's list of threads
+                            threadListPage.threads[i] = messageThread;
                             i++;
                         }
                         GmailError err => return err;
@@ -449,7 +466,8 @@ public function<GmailConnector gmailConnector> listThreads(string userId, Search
 @Param {value:"filter: GetMessageThreadFilter struct object with the optional format and metadataHeaders query parameters"}
 @Param {value:"Returns the specified thread as a Thread struct"}
 @Return {value:"Returns GmailError if the thread cannot be read successfully"}
-public function<GmailConnector gmailConnector> readThread(string userId, string threadId, GetMessageThreadFilter filter) returns (Thread)|GmailError {
+public function<GmailConnector gmailConnector> readThread(string userId, string threadId, GetMessageThreadFilter filter)
+                                                                                        returns (Thread)|GmailError {
     endpoint oauth2:OAuth2Endpoint oauthEP = gmailConnector.oauthEndpoint;
     http:Request request = {};
     GmailError gmailError = {};

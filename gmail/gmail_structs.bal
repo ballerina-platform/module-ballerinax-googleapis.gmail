@@ -200,11 +200,11 @@ public struct ThreadListPage {
 
 @Description {value:"Create a message"}
 @Param {value:"recipient:  email address of the receiver"}
-@Param {value:"sender: email address of the sender, the mailbox account"}
 @Param {value:"subject: subject of the email"}
 @Param {value:"bodyText: body text of the email"}
 @Param {value:"options: other optional headers of the email including Cc, Bcc and From"}
-public function <Message message> createMessage (string recipient, string subject, string bodyText, MessageOptions options) {
+public function <Message message> createMessage (string recipient, string subject, string bodyText,
+                                                                                            MessageOptions options) {
     //set the general header To of top level message part
     message.headerTo = {name:TO, value:recipient};
     //Include the seperate header to the existing header list
@@ -225,7 +225,8 @@ public function <Message message> createMessage (string recipient, string subjec
     }
     //Set the general content type header of top level MIME message part as multipart/mixed with the
     //boundary=boundaryString
-    message.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + ";" + BOUNDARY + "=\"" + BOUNDARY_STRING + "\""};
+    message.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + ";" + BOUNDARY +
+                                                                            "=\"" + BOUNDARY_STRING + "\""};
     message.headers[lengthof message.headers] = message.headerContentType;
     message.mimeType = MULTIPART_MIXED;
     message.isMultipart = true;
@@ -241,7 +242,6 @@ Give the src value of img element as 'cid:image-<Your image name with extension>
 @Param {value:"content: the string html content or the string inline image file path"}
 @Param {value:"contentType: the content type"}
 @Return {value:"Returns true if the content is set successfully"}
-@Return {value:"Returns IOError if there's any error while performaing I/O operation"}
 @Return {value:"Returns GmailError if the content type is not supported"}
 public function <Message message> setContent (string content, string contentType) returns (boolean|GmailError) {
     //If the mime type of the content is text/html
@@ -264,10 +264,13 @@ public function <Message message> setContent (string content, string contentType
         //Set the inline image body part of the message
         MessageBodyPart inlineImgBody = {};
         inlineImgBody.fileName = getFileNameFromPath(content);
-        MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" + inlineImgBody.fileName + "\""};
-        MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:INLINE + "; " + FILE_NAME + "=\"" + inlineImgBody.fileName + "\""};
+        MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
+                                                                        inlineImgBody.fileName + "\""};
+        MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:INLINE + "; " + FILE_NAME
+                                                                                + "=\"" + inlineImgBody.fileName + "\""};
         MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
-        MessagePartHeader contentIdHeader = {name:CONTENT_ID, value:"<" + INLINE_IMAGE_CONTENT_ID_PREFIX + inlineImgBody.fileName + ">"};
+        MessagePartHeader contentIdHeader = {name:CONTENT_ID, value:"<" + INLINE_IMAGE_CONTENT_ID_PREFIX +
+                                                                        inlineImgBody.fileName + ">"};
         inlineImgBody.bodyHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader, contentIdHeader];
         inlineImgBody.setMessageBody(encodedFile, contentType);
         inlineImgBody.mimeType = contentType;
@@ -296,8 +299,10 @@ public function <Message message> addAttachment (string filePath, string content
     MessageAttachment attachment = {};
     attachment.mimeType = contentType;
     attachment.attachmentFileName = getFileNameFromPath(filePath);
-    MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" + attachment.attachmentFileName + "\""};
-    MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:ATTACHMENT + "; " + FILE_NAME + "=\"" + attachment.attachmentFileName + "\""};
+    MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
+                                                                                attachment.attachmentFileName + "\""};
+    MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:ATTACHMENT + "; " + FILE_NAME + "=\"" +
+                                                                                attachment.attachmentFileName + "\""};
     MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
     attachment.attachmentHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader];
     attachment.setAttachment(encodedFile, contentType);
