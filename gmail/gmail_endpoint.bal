@@ -17,7 +17,7 @@
 package gmail;
 
 import ballerina/http;
-import oauth2;
+import wso2/oauth2;
 
 @Description {value:"Struct to set the Gmail configuration."}
 public struct GmailConfiguration {

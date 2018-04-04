@@ -20,7 +20,7 @@ import ballerina/io;
 import ballerina/mime;
 import ballerina/http;
 import ballerina/net.uri;
-import oauth2;
+import wso2/oauth2;
 
 @Description {value:"List the messages in user's mailbox"}
 @Param {value:"userId: The user's email address. The special value *me* can be used to indicate the authenticated user"}

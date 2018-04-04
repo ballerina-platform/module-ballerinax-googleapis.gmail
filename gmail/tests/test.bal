@@ -14,13 +14,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package gmail;
+package tests;
 
 import ballerina/io;
 import ballerina/http;
 import ballerina/log;
 import ballerina/test;
-import gmail;
 
 endpoint gmail:GmailEndpoint gmailEP {
     oauthClientConfig:{
@@ -38,15 +37,15 @@ endpoint gmail:GmailEndpoint gmailEP {
 string userId = "me";
 gmail:Message message = {};
 //Message id of text mail which will be sent from testSendSimpleMail()
-string sentTextMailId;
+string sentTextMailId = "";
 //Thread id of text mail which will be sent from testSendSimpleMail()
-string sentTextMailThreadId;
+string sentTextMailThreadId = "";
 //Mail id of the html mail which will be sent from testSendHtml()
-string sentHtmlMailId;
+string sentHtmlMailId = "";
 //Message id of mail with attachment which will be sent from testSendWithAttachment()
-string sentAttachmentMailId;
+string sentAttachmentMailId = "";
 //Attachment id of attachment which will be sent from testSendWithAttachment()
-string readAttachmentFileId;
+string readAttachmentFileId = "";
 
 function createMail() {
     message = {};
