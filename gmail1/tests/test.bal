@@ -36,10 +36,10 @@ endpoint GmailEndpoint gmailEP {
 };
 
 //Needs to be filled by tester
-string recipient = "";
-string sender = "";
-string cc = "";
-string attachmentPath = ""; //Example: "/home/dushaniw/hello.txt"
+string recipient = ""; //Example: "recipient@gmail.com"
+string sender = ""; //Example: "sender@gmail.com"
+string cc = ""; //Example: "cc@gmail.com"
+string attachmentPath = ""; //Example: "/home/user/hello.txt"
 string attachmentContentType = ""; //Example: "text/plain"
 string inlineImagePath = ""; //Example: "/home/user/Picture2.jpg"
 string inlineImageName = ""; //Example: "Picture2.jpg"

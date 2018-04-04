@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package gmail;
+package gmail1;
 
 import ballerina/util;
 import ballerina/io;

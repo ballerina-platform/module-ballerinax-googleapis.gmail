@@ -2,7 +2,7 @@
 
 | Ballerina Version         | Connector Version         | API Version |
 | ------------------------- | ------------------------- | ------------|
-|  0.970.0-alpha1-SNAPSHOT  | 0.970.0-alpha1-SNAPSHOT   |   v1.0     |
+|  0.970.0-alpha1-SNAPSHOT  | 0.970.0-alpha1-SNAPSHOT   |   v1     |
 
 ### Prerequisites
 Get Access Token and Refresh Token for Gmail
@@ -82,6 +82,6 @@ Assign values for the following variables defined at the top in test.bal file.
 * inlineImageName (Example: "Picture2.jpg")
 * imageContentType (Example: "image/jpeg")
 
-Go inside `package-gmail` using terminal and run test.bal file using following command `ballerina test gmail`.
+Go inside `package-gmail` using terminal and run test.bal file using following command `ballerina test gmail1`.
 
  

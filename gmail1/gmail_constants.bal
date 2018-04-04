@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package gmail;
+package gmail1;
 
 public const string BASE_URL = "https://www.googleapis.com/gmail";
 public const string REFRESH_TOKEN_EP =  "https://www.googleapis.com";
