@@ -51,8 +51,7 @@ public function<GmailConnector gmailConnector> listAllMails(string userId, Searc
             }
         }
     }
-    getListMessagesPath = uriParams != EMPTY_STRING ? getListMessagesPath + "?" +
-                                                    uriParams.subString(1, uriParams.length()) : getListMessagesPath;
+    getListMessagesPath = getListMessagesPath + uriParams;
     try {
         http:Response response =? oauthEP -> get(getListMessagesPath, request);
         json jsonlistMsgResponse =? response.getJsonPayload();
@@ -419,8 +418,7 @@ public function<GmailConnector gmailConnector> listThreads(string userId, Search
             }
         }
     }
-    getListThreadPath = uriParams != EMPTY_STRING ? getListThreadPath + "?" +
-                                                        uriParams.subString(1, uriParams.length()) : getListThreadPath;
+    getListThreadPath = getListThreadPath + uriParams;
     try {
         http:Response response =? oauthEP -> get(getListThreadPath, request);
         json jsonlistThreadResponse =? response.getJsonPayload();
@@ -615,7 +613,6 @@ public function<GmailConnector gmailConnector> getUserProfile(string userId) ret
     http:Request request = {};
     UserProfile profile = {};
     GmailError gmailError = {};
-    string uriParams = "";
     string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
     try {
         http:Response response =? oauthEP -> get(getProfilePath, request);
