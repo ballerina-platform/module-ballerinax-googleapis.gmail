@@ -82,7 +82,7 @@ Assign values for the following variables defined at the top in test.bal file.
 * inlineImageName (Example: "Picture2.jpg")
 * imageContentType (Example: "image/jpeg")
 
-Run tests :
+To run tests :
 ```
 ballerina init
 ballerina test gmail1
