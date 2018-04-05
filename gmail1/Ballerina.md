@@ -7,9 +7,9 @@ Ballerina Gmail connector allows you to access the [Gmail REST API](https://deve
 with html content and inline images, mail with attachments, search and get mail etc.
 
 ## Compatibility
-| Language Version        | Connector Version                  |  
-| -------------------------------------------- |:-------------:|
-| ballerina-tools-0.970.0-alpha1-SNAPSHOT      | 0.6           | 
+| Language Version        | Connector Version          |
+| ------------- |:-------------:|
+| ballerina-tools-0.970.0-alpha1-SNAPSHOT     | 0.6 | 
 
 ### Getting started
 
@@ -42,8 +42,3 @@ git clone https://github.com/wso2-ballerina/package-gmail
     * Refresh Token Path (/oauth2/v3/token)
     
 Please note that gmail connector has already defined base url, refresh token endpoint and refresh token path as constant strings for you to use   
-
-
-
-
-
