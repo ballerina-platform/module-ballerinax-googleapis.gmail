@@ -2,7 +2,7 @@
 
 | Ballerina Version         | Connector Version         | API Version |
 | ------------------------- | ------------------------- | ------------|
-|  0.970.0-alpha1-SNAPSHOT  | 0.970.0-alpha1-SNAPSHOT   |   v1     |
+| ballerina-tools-0.970.0-alpha1-SNAPSHOT  | 0.6   |   v1     |
 
 ### Prerequisites
 Get Access Token and Refresh Token for Gmail
@@ -24,7 +24,7 @@ Get Access Token and Refresh Token for Gmail
     * Refresh Token Endpoint (https://www.googleapis.com)
     * Refresh Token Path (/oauth2/v3/token)
     
-Please note that gmail connector has already defined base url, refresh token endpoint and refresh token path as constant strings for you to use   
+Please note that gmail connector has already defined base url, refresh token endpoint and refresh token path as constant strings for you to use.   
 
 IMPORTANT: This access token and refresh token can be used to make API requests on your own account's behalf. Do not share your access token, client secret with anyone.
 
@@ -82,6 +82,9 @@ Assign values for the following variables defined at the top in test.bal file.
 * inlineImageName (Example: "Picture2.jpg")
 * imageContentType (Example: "image/jpeg")
 
-Go inside `package-gmail` using terminal and run test.bal file using following command `ballerina test gmail1`.
-
+Run tests :
+```
+ballerina init
+ballerina test gmail1
+```
  

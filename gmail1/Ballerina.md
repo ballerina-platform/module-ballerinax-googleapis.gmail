@@ -9,21 +9,40 @@ with html content and inline images, mail with attachments, search and get mail 
 ## Compatibility
 | Language Version        | Connector Version          |
 | ------------- |:-------------:|
-| ballerina-tools-0.970.0-alpha0    | 0.1 | 
+| ballerina-tools-0.970.0-alpha1-SNAPSHOT     | 0.6 | 
 
-The following sections provide you with information on how to use the Ballerina SonarQube connector.
+### Getting started
 
-- [Getting started](#getting-started)
-- [Working with gmail connector actions](#working-with-gmail-connector-actions)
+* Clone the repository by running the following command
+```
+git clone https://github.com/wso2-ballerina/package-gmail
+```
+* Import the package to your ballerina project.
 
-## Getting started
+##### Prerequisites
+1. Download the ballerina [distribution](https://ballerinalang.org/downloads/).
 
-1. Clone Ballerina (https://github.com/ballerina-lang/ballerina) repository and run the Maven command ``mvn clean install`` from the ``ballerina`` root directory.
-2. Extract the Ballerina distribution created at `distribution/zip/ballerina/target/ballerina-<version>-SNAPSHOT.zip`  and set the PATH environment variable to the bin directory .
+2. Go through the following steps to obtain access token and refresh token for Gmail
 
+* First, create an application to connect with Gmail API
+* For that, visit Google APIs console (https://console.developers.google.com/) to create a project and create an app for the project
+* After creating the project, configure the OAuth consent screen under Credentials and give a product name to shown to users.
+* Then create OAuth client ID credentials. (Select webapplication -> create and give a name and a redirect URI(Get the code to request an accessToken call to Gmail API) -> create)
 
+    (Give the redirect URI as (https://developers.google.com/oauthplayground), if you are using OAuth2 playground to obtain access token and refresh token )
+* Visit OAuth 2.0 Playground (https://developers.google.com/oauthplayground/), select the needed api scopes and give the obtained client id and client secret and obtain the refresh token and access token 
 
-## Working with Gmail connector actions
+* So to use gmail connector, you need to provide the following:
+    * Base URl (https://www.googleapis.com/gmail)
+    * Client Id
+    * Client Secret
+    * Access Token
+    * Refresh Token
+    * Refresh Token Endpoint (https://www.googleapis.com)
+    * Refresh Token Path (/oauth2/v3/token)
+    
+Please note that gmail connector has already defined base url, refresh token endpoint and refresh token path as constant strings for you to use   
+
 
 
 
