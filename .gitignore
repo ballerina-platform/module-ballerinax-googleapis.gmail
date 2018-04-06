@@ -1,7 +1,7 @@
 # Compiled class file
 *.class
 *.balx
-*.toml
+
 
 # Log file
 *.log
