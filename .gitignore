@@ -1,5 +1,7 @@
 # Compiled class file
 *.class
+*.balx
+
 
 # Log file
 *.log
@@ -20,3 +22,19 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+.ballerina/
+target/
+
+# Ignore everything in this directory
+target
+.classpath
+.settings
+.project
+*.iml
+*.iws
+*.ipr
+.idea
+.m2
+
+#Ignore doc files
+docs/
