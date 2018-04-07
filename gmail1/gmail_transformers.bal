@@ -14,158 +14,149 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package gmail1;
-
 import ballerina/io;
 
-//All the transformers that transform required json to structs and vice versa
+//All the transformers that transform required json to types and vice versa
 
-@Description {value:"Transform JSON Mail into Message struct"}
+@Description {value:"Transform JSON Mail into Message type"}
 @Param {value:"sourceMailJsonObject: json mail object"}
-@Return {value:"Message struct object"}
-function convertJsonMailToMessage(json sourceMailJsonObject) returns Message {
-    Message targetMessageStruct = {};
-    targetMessageStruct.id = sourceMailJsonObject.id != null ? sourceMailJsonObject.id.toString() : EMPTY_STRING;
-    targetMessageStruct.threadId = sourceMailJsonObject.threadId != null ?
-                                                                sourceMailJsonObject.threadId.toString() : EMPTY_STRING;
-    targetMessageStruct.labelIds = sourceMailJsonObject.labelIds != null ?
-                                                      convertJSONArrayToStringArray(sourceMailJsonObject.labelIds) : [];
-    targetMessageStruct.raw = sourceMailJsonObject.raw != null ?
-                                                        sourceMailJsonObject.raw.toString() : EMPTY_STRING;
-    targetMessageStruct.snippet = sourceMailJsonObject.snippet != null ?
-                                                                sourceMailJsonObject.snippet.toString() : EMPTY_STRING;
-    targetMessageStruct.historyId = sourceMailJsonObject.historyId != null ?
-                                                            sourceMailJsonObject.historyId.toString() : EMPTY_STRING;
-    targetMessageStruct.internalDate = sourceMailJsonObject.internalDate != null ?
-                                                            sourceMailJsonObject.internalDate.toString() : EMPTY_STRING;
-    targetMessageStruct.sizeEstimate = sourceMailJsonObject.sizeEstimate != null ?
-                                                            sourceMailJsonObject.sizeEstimate.toString() : EMPTY_STRING;
-    targetMessageStruct.headers = sourceMailJsonObject.payload.headers != null ?
-                                                convertToMsgPartHeaders(sourceMailJsonObject.payload.headers) : [];
-    targetMessageStruct.headerTo = sourceMailJsonObject.payload.headers != null ?
+@Return {value:"Message type object"}
+@Return {value:"Returns GmailError if conversion unsuccesful"}
+function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GmailError {
+    Message targetMessageType = new ();
+    targetMessageType.id = sourceMailJsonObject.id.toString() but { () => EMPTY_STRING };
+    targetMessageType.threadId = sourceMailJsonObject.threadId.toString() but { () => EMPTY_STRING };
+    targetMessageType.labelIds = sourceMailJsonObject.labelIds != () ?
+                                        convertJSONArrayToStringArray(sourceMailJsonObject.labelIds) : [];
+    targetMessageType.raw = sourceMailJsonObject.raw.toString() but { () => EMPTY_STRING };
+    targetMessageType.snippet = sourceMailJsonObject.snippet.toString() but { () => EMPTY_STRING };
+    targetMessageType.historyId = sourceMailJsonObject.historyId.toString() but { () => EMPTY_STRING };
+    targetMessageType.internalDate = sourceMailJsonObject.internalDate.toString() but { () => EMPTY_STRING };
+    targetMessageType.sizeEstimate = sourceMailJsonObject.sizeEstimate.toString() but { () => EMPTY_STRING };
+    targetMessageType.headers = sourceMailJsonObject.payload.headers != () ?
+                                        convertToMsgPartHeaders(sourceMailJsonObject.payload.headers) : [];
+    targetMessageType.headerTo = sourceMailJsonObject.payload.headers != () ?
                                 getMsgPartHeaderTo(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
-    targetMessageStruct.headerFrom = sourceMailJsonObject.payload.headers != null ?
-                                getMsgPartHeaderFrom(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
-    targetMessageStruct.headerCc = sourceMailJsonObject.payload.headers != null ?
+    targetMessageType.headerFrom = sourceMailJsonObject.payload.headers != () ?
+                            getMsgPartHeaderFrom(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+    targetMessageType.headerCc = sourceMailJsonObject.payload.headers != () ?
                                 getMsgPartHeaderCc(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
-    targetMessageStruct.headerBcc = sourceMailJsonObject.payload.headers != null ?
+    targetMessageType.headerBcc = sourceMailJsonObject.payload.headers != () ?
                                 getMsgPartHeaderBcc(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
-    targetMessageStruct.headerSubject = sourceMailJsonObject.payload.headers != null ?
+    targetMessageType.headerSubject = sourceMailJsonObject.payload.headers != () ?
                             getMsgPartHeaderSubject(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
-    targetMessageStruct.headerDate = sourceMailJsonObject.payload.headers != null ?
-                                getMsgPartHeaderDate(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
-    targetMessageStruct.headerContentType = sourceMailJsonObject.payload.headers != null ?
+    targetMessageType.headerDate = sourceMailJsonObject.payload.headers != () ?
+                            getMsgPartHeaderDate(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+    targetMessageType.headerContentType = sourceMailJsonObject.payload.headers != () ?
                         getMsgPartHeaderContentType(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
-    targetMessageStruct.mimeType = sourceMailJsonObject.payload.mimeType != null ?
-                                                        sourceMailJsonObject.payload.mimeType.toString() : EMPTY_STRING;
-    targetMessageStruct.isMultipart = sourceMailJsonObject.payload.mimeType != null ?
-                                    isMimeType(sourceMailJsonObject.payload.mimeType.toString(), MULTIPART_ANY) : false;
-    targetMessageStruct.plainTextBodyPart = sourceMailJsonObject.payload != null ?
-                                getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload) : {};
-    targetMessageStruct.htmlBodyPart = sourceMailJsonObject.payload != null ?
-                                getMessageBodyPartFromPayloadByMimeType(TEXT_HTML, sourceMailJsonObject.payload) : {};
-    targetMessageStruct.inlineImgParts = sourceMailJsonObject.payload != null ?
-                                        getInlineImgPartsFromPayloadByMimeType(sourceMailJsonObject.payload, []) : [];
-    targetMessageStruct.msgAttachments = sourceMailJsonObject.payload != null ?
-                                                getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
-    return targetMessageStruct;
+    targetMessageType.mimeType = sourceMailJsonObject.payload.mimeType.toString() but { () => EMPTY_STRING };
+    string payloadMimeType = sourceMailJsonObject.payload.mimeType.toString() but { () => EMPTY_STRING };
+                                            targetMessageType.isMultipart = isMimeType(payloadMimeType, MULTIPART_ANY);
+    match getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload){
+        MessageBodyPart body => targetMessageType.plainTextBodyPart = body;
+        GmailError err => return err;
+    }
+    match getMessageBodyPartFromPayloadByMimeType(TEXT_HTML, sourceMailJsonObject.payload){
+        MessageBodyPart body => targetMessageType.htmlBodyPart = body;
+        GmailError err => return err;
+    }
+    match getInlineImgPartsFromPayloadByMimeType(sourceMailJsonObject.payload, []){
+        MessageBodyPart[] bodyParts => targetMessageType.inlineImgParts = bodyParts;
+        GmailError err => return err;
+    }
+    targetMessageType.msgAttachments = sourceMailJsonObject.payload != () ?
+    getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
+    return targetMessageType;
 }
 
-@Description {value:"Transform MIME Message Part JSON into MessageBody struct"}
+@Description {value:"Transform MIME Message Part JSON into MessageBody type"}
 @Param {value:"sourceMessagePartJsonObject: json message part object"}
-@Return {value:"MessageBodyPart struct object"}
-function convertJsonMsgBodyPartToMsgBodyStruct(json sourceMessagePartJsonObject) returns MessageBodyPart {
-    MessageBodyPart targetMessageBodyStruct = {};
-    targetMessageBodyStruct.fileId = sourceMessagePartJsonObject.body.attachmentId != null ?
-                                                sourceMessagePartJsonObject.body.attachmentId.toString() : EMPTY_STRING;
-    targetMessageBodyStruct.body = sourceMessagePartJsonObject.body.data != null ?
-                                                            decodeMsgBodyData(sourceMessagePartJsonObject) : EMPTY_STRING;
-    targetMessageBodyStruct.size = sourceMessagePartJsonObject.body.size != null ?
-                                                        sourceMessagePartJsonObject.body.size.toString() : EMPTY_STRING;
-    targetMessageBodyStruct.mimeType = sourceMessagePartJsonObject.mimeType != null ?
-                                                        sourceMessagePartJsonObject.mimeType.toString() : EMPTY_STRING;
-    targetMessageBodyStruct.partId = sourceMessagePartJsonObject.partId != null ?
-                                                            sourceMessagePartJsonObject.partId.toString() : EMPTY_STRING;
-    targetMessageBodyStruct.fileName = sourceMessagePartJsonObject.filename != null ?
-                                                        sourceMessagePartJsonObject.filename.toString() : EMPTY_STRING;
-    targetMessageBodyStruct.bodyHeaders = sourceMessagePartJsonObject.headers != null ?
-                                                    convertToMsgPartHeaders(sourceMessagePartJsonObject.headers) : [];
-    return targetMessageBodyStruct;
+@Return {value:"MessageBodyPart type object"}
+@Return {value:"Returns GmailError if conversion unsuccesful"}
+function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GmailError {
+    MessageBodyPart targetMessageBodyType = new ();
+    targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId.toString() but { () => EMPTY_STRING };
+    match decodeMsgBodyData(sourceMessagePartJsonObject){
+        string decodeBody => targetMessageBodyType.body = decodeBody;
+        GmailError err => return err;
+    }
+    targetMessageBodyType.size = sourceMessagePartJsonObject.body.size.toString() but { () => EMPTY_STRING };
+    targetMessageBodyType.mimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
+    targetMessageBodyType.partId = sourceMessagePartJsonObject.partId.toString() but { () => EMPTY_STRING };
+    targetMessageBodyType.fileName = sourceMessagePartJsonObject.filename.toString() but { () => EMPTY_STRING };
+    targetMessageBodyType.bodyHeaders = sourceMessagePartJsonObject.headers != () ?
+                                                convertToMsgPartHeaders(sourceMessagePartJsonObject.headers) : [];
+    return targetMessageBodyType;
 }
 
-@Description {value:"Transform MIME Message Part JSON into MessageAttachment struct"}
+@Description {value:"Transform MIME Message Part JSON into MessageAttachment type"}
 @Param {value:"sourceMessagePartJsonObject: json message part object"}
-@Return {value:"MessageAttachment struct object"}
+@Return {value:"MessageAttachment type object"}
 function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) returns MessageAttachment {
-    MessageAttachment targetMessageAttachmentStruct = {};
-    targetMessageAttachmentStruct.attachmentFileId = sourceMessagePartJsonObject.body.attachmentId != null ?
-                                                sourceMessagePartJsonObject.body.attachmentId.toString() : EMPTY_STRING;
-    targetMessageAttachmentStruct.attachmentBody = sourceMessagePartJsonObject.body.data != null ?
-                                                        sourceMessagePartJsonObject.body.data.toString() : EMPTY_STRING;
-    targetMessageAttachmentStruct.size = sourceMessagePartJsonObject.body.size != null ?
-                                                        sourceMessagePartJsonObject.body.size.toString() : EMPTY_STRING;
-    targetMessageAttachmentStruct.mimeType = sourceMessagePartJsonObject.mimeType != null ?
-                                                        sourceMessagePartJsonObject.mimeType.toString() : EMPTY_STRING;
-    targetMessageAttachmentStruct.partId = sourceMessagePartJsonObject.partId != null ?
-                                                            sourceMessagePartJsonObject.partId.toString() : EMPTY_STRING;
-    targetMessageAttachmentStruct.attachmentFileName = sourceMessagePartJsonObject.filename != null ?
-                                                        sourceMessagePartJsonObject.filename.toString() : EMPTY_STRING;
-    targetMessageAttachmentStruct.attachmentHeaders = sourceMessagePartJsonObject.headers != null ?
+    MessageAttachment targetMessageAttachmentType = new ();
+    targetMessageAttachmentType.attachmentFileId = sourceMessagePartJsonObject.body.attachmentId.toString() but {
+                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.attachmentBody = sourceMessagePartJsonObject.body.data.toString() but {
+                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.size = sourceMessagePartJsonObject.body.size.toString() but {
+                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.mimeType = sourceMessagePartJsonObject.mimeType.toString() but {
+                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.partId = sourceMessagePartJsonObject.partId.toString() but {
+                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.attachmentFileName = sourceMessagePartJsonObject.filename.toString() but {
+                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.attachmentHeaders = sourceMessagePartJsonObject.headers != () ?
                                                     convertToMsgPartHeaders(sourceMessagePartJsonObject.headers) : [];
-    return targetMessageAttachmentStruct;
+    return targetMessageAttachmentType;
 }
 
-@Description {value:"Transform MIME Message Part Header into MessagePartHeader struct"}
+@Description {value:"Transform MIME Message Part Header into MessagePartHeader type"}
 @Param {value:"sourceMessagePartHeader: json message part header object"}
-@Return {value:"MessagePartHeader struct object"}
+@Return {value:"MessagePartHeader type object"}
 function convertJsonToMesagePartHeader(json sourceMessagePartHeader) returns MessagePartHeader {
     MessagePartHeader targetMessagePartHeader = {};
-    targetMessagePartHeader.name = sourceMessagePartHeader.name != null ?
-                                                                sourceMessagePartHeader.name.toString() : EMPTY_STRING;
-    targetMessagePartHeader.value = sourceMessagePartHeader.value != null ?
-                                                                sourceMessagePartHeader.value.toString() : EMPTY_STRING;
+    targetMessagePartHeader.name = sourceMessagePartHeader.name.toString() but { () => EMPTY_STRING };
+    targetMessagePartHeader.value = sourceMessagePartHeader.value.toString() but { () => EMPTY_STRING };
     return targetMessagePartHeader;
 }
 
-@Description {value:"Transform single body of MIME Message part into MessageAttachment struct"}
+@Description {value:"Transform single body of MIME Message part into MessageAttachment type"}
 @Param {value:"sourceMessageBodyJsonObject: json message body object"}
-@Return {value:"MessageAttachment struct object"}
-function convertJsonMessageBodyToMsgAttachment (json sourceMessageBodyJsonObject) returns MessageAttachment {
-    MessageAttachment targetMessageAttachmentStruct = {};
-    targetMessageAttachmentStruct.attachmentFileId = sourceMessageBodyJsonObject.attachmentId != null ?
-                                                    sourceMessageBodyJsonObject.attachmentId.toString() : EMPTY_STRING;
-    targetMessageAttachmentStruct.attachmentBody = sourceMessageBodyJsonObject.data != null ?
-                                                            sourceMessageBodyJsonObject.data.toString() : EMPTY_STRING;
-    targetMessageAttachmentStruct.size = sourceMessageBodyJsonObject.size != null ?
-                                                            sourceMessageBodyJsonObject.size.toString() : EMPTY_STRING;
-    return targetMessageAttachmentStruct;
+@Return {value:"MessageAttachment type object"}
+function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageAttachment {
+    MessageAttachment targetMessageAttachmentType = new ();
+    targetMessageAttachmentType.attachmentFileId = sourceMessageBodyJsonObject.attachmentId.toString() but {
+                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.attachmentBody = sourceMessageBodyJsonObject.data.toString() but {
+                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.size = sourceMessageBodyJsonObject.size.toString() but { () => EMPTY_STRING };
+    return targetMessageAttachmentType;
 }
 
-@Description {value:"Transform thread JSON object into Thread struct"}
+@Description {value:"Transform thread JSON object into Thread type"}
 @Param {value:"sourceThreadJsonObject: json message thread object"}
-@Return {value:"Thread struct object"}
-function convertJsonThreadToThreadStruct (json sourceThreadJsonObject) returns Thread {
-    Thread targetThreadStruct = {};
-    targetThreadStruct.id = sourceThreadJsonObject.id != null ? sourceThreadJsonObject.id.toString() : EMPTY_STRING;
-    targetThreadStruct.historyId = sourceThreadJsonObject.historyId != null ?
-                                                            sourceThreadJsonObject.historyId.toString() : EMPTY_STRING;
-    targetThreadStruct.messages = sourceThreadJsonObject.messages != null ?
-                                                            convertToMessageArray(sourceThreadJsonObject.messages) : [];
-    return targetThreadStruct;
+@Return {value:"Thread type object"}
+@Return {value:"Returns GmailError if conversion unsuccesful"}
+function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GmailError{
+    Thread targetThreadType = {};
+    targetThreadType.id = sourceThreadJsonObject.id.toString() but { () => EMPTY_STRING };
+    targetThreadType.historyId = sourceThreadJsonObject.historyId.toString() but { () => EMPTY_STRING };
+    match (convertToMessageArray(sourceThreadJsonObject.messages)){
+        Message[] msgs => targetThreadType.messages = msgs;
+        GmailError err => return err;
+    }
+    return targetThreadType;
 }
 
-@Description {value:"Transform user profile JSON object into UserProfile struct"}
+@Description {value:"Transform user profile JSON object into UserProfile type"}
 @Param {value:"sourceUserProfileJsonObject: json user profile object"}
-@Return {value:"UserProfile struct object"}
-function convertJsonProfileToUserProfileStruct (json sourceUserProfileJsonObject) returns UserProfile {
+@Return {value:"UserProfile type object"}
+function convertJsonProfileToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
     UserProfile targetUserProfile = {};
-    targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress != null ?
-                                                    sourceUserProfileJsonObject.emailAddress.toString() : EMPTY_STRING;
-    targetUserProfile.threadsTotal = sourceUserProfileJsonObject.threadsTotal != null ?
-                                                    sourceUserProfileJsonObject.threadsTotal.toString() : EMPTY_STRING;
-    targetUserProfile.messagesTotal = sourceUserProfileJsonObject.messagesTotal != null ?
-                                                    sourceUserProfileJsonObject.messagesTotal.toString() : EMPTY_STRING;
-    targetUserProfile.historyId = sourceUserProfileJsonObject.historyId != null ?
-                                                        sourceUserProfileJsonObject.historyId.toString() : EMPTY_STRING;
+    targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress.toString() but { () => EMPTY_STRING };
+    targetUserProfile.threadsTotal = sourceUserProfileJsonObject.threadsTotal.toString() but { () => EMPTY_STRING };
+    targetUserProfile.messagesTotal = sourceUserProfileJsonObject.messagesTotal.toString() but { () => EMPTY_STRING };
+    targetUserProfile.historyId = sourceUserProfileJsonObject.historyId.toString() but { () => EMPTY_STRING };
     return targetUserProfile;
 }
