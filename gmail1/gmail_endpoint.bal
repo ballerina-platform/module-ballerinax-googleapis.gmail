@@ -15,22 +15,22 @@
 // under the License.
 
 import ballerina/http;
-import wso2/oauth2;
+import oauth2;
 
-@Description {value:"Gmail Endpoint type."}
-public type GmailClient object {
+@Description {value:"GMail Endpoint type."}
+public type GMailClient object {
     public {
         oauth2:OAuth2Client oauthEP;
-        GmailConfiguration gmailConfig;
-        GmailConnector gmailConnector;
+        GMailConfiguration gMailConfig;
+        GMailConnector gMailConnector;
     }
 
     new () {}
 
-    @Description {value:"Initialize the gmail endpoint"}
-    public function init(GmailConfiguration gmailConfig) {
-        self.oauthEP.init(gmailConfig.oauthClientConfig);
-        self.gmailConnector.oauthEndpoint = self.oauthEP;
+    @Description {value:"Initialize the gMail endpoint"}
+    public function init(GMailConfiguration gMailConfig) {
+        self.oauthEP.init(gMailConfig.oAuth2ClientConfig);
+        self.gMailConnector.oauthEndpoint = self.oauthEP;
     }
 
 
@@ -44,8 +44,8 @@ public type GmailClient object {
 
     @Description {value:"Returns the connector that client code uses"}
     @Return {value:"The connector that client code uses"}
-    public function getClient() returns GmailConnector {
-        return self.gmailConnector;
+    public function getClient() returns GMailConnector {
+        return self.gMailConnector;
     }
 
     @Description {value:"Stops the registered service"}
@@ -56,7 +56,7 @@ public type GmailClient object {
 
 };
 
-@Description {value:"Type to set the Gmail configuration."}
-public type GmailConfiguration {
-    oauth2:OAuth2ClientEndpointConfig oauthClientConfig;
+@Description {value:"Type to set the GMail configuration."}
+public type GMailConfiguration {
+    oauth2:OAuth2ClientEndpointConfig oAuth2ClientConfig;
 };

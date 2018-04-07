@@ -133,8 +133,8 @@ public type Message object {
     @Param {value:"content: the string html content or the string inline image file path"}
     @Param {value:"contentType: the content type"}
     @Return {value:"Returns true if the content is set successfully"}
-    @Return {value:"Returns GmailError if the content type is not supported"}
-    public function setContent (string content, string contentType) returns (boolean|GmailError) {
+    @Return {value:"Returns GMailError if the content type is not supported"}
+    public function setContent (string content, string contentType) returns (boolean|GMailError) {
         //If the mime type of the content is text/html
         if (isMimeType(contentType, TEXT_HTML)) {
             //Set the html body part of the message
@@ -148,14 +148,14 @@ public type Message object {
             match encodeFile(content) {
                 string eFile => encodedFile = eFile;
                 io:IOError ioError => {
-                    GmailError gmailError = {};
-                    gmailError.errorMessage = ioError.message;
-                    return gmailError;
+                    GMailError gMailError = {};
+                    gMailError.errorMessage = ioError.message;
+                    return gMailError;
                 }
                 mime:Base64EncodeError encodeError => {
-                    GmailError gmailError = {};
-                    gmailError.errorMessage = encodeError.message;
-                    return gmailError;
+                    GMailError gMailError = {};
+                    gMailError.errorMessage = encodeError.message;
+                    return gMailError;
                 }
             }
             //Set the inline image body part of the message
@@ -174,9 +174,9 @@ public type Message object {
             self.inlineImgParts[lengthof self.inlineImgParts] = inlineImgBody;
         } else {
             //Return an error if an un supported content type other than text/html or image/* is passed
-            GmailError gmailError = {};
-            gmailError.errorMessage = ERROR_CONTENT_TYPE_UNSUPPORTED;
-            return gmailError;
+            GMailError gMailError = {};
+            gMailError.errorMessage = ERROR_CONTENT_TYPE_UNSUPPORTED;
+            return gMailError;
         }
         return true;
     }
@@ -186,20 +186,20 @@ public type Message object {
     @Param {value:"contentType: the content type of the attachment"}
     @Return {value:"Returns true if the attachment process is success"}
     @Return {value:"Returns IOError if there's any error while performaing I/O operation"}
-    public function addAttachment (string filePath, string contentType) returns boolean|GmailError {
+    public function addAttachment (string filePath, string contentType) returns boolean|GMailError {
         string encodedFile;
         //Open and encode the file into base64. Return an IOError if fails.
         match encodeFile(filePath) {
             string eFile => encodedFile = eFile;
             io:IOError ioError => {
-                GmailError gmailError = {};
-                gmailError.errorMessage = ioError.message;
-                return gmailError;
+                GMailError gMailError = {};
+                gMailError.errorMessage = ioError.message;
+                return gMailError;
             }
             mime:Base64EncodeError encodeError => {
-                GmailError gmailError = {};
-                gmailError.errorMessage = encodeError.message;
-                return gmailError;
+                GMailError gMailError = {};
+                gMailError.errorMessage = encodeError.message;
+                return gMailError;
             }
         }
         MessageAttachment attachment = new ();
@@ -292,7 +292,7 @@ public type MessagePartHeader {
 };
 
 @Description {value:"Type to define message error"}
-public type GmailError {
+public type GMailError {
     string errorMessage;
     int statusCode;
 };
@@ -315,7 +315,7 @@ public type SearchFilter {
     //Page token to retrieve a specific page of results in the list
     string pageToken;
     //Only returns messages/threads matching the specified query.
-    //Supports the same query format as the Gmail search box
+    //Supports the same query format as the GMail search box
     string q;
 };
 

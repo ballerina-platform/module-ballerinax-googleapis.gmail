@@ -17,10 +17,10 @@
 import ballerina/io;
 import ballerina/mime;
 import ballerina/http;
-import wso2/oauth2;
+import oauth2;
 
-@Description {value:"Type to define the Gmail Client Connector"}
-public type GmailConnector object {
+@Description {value:"Type to define the GMail Client Connector"}
+public type GMailConnector object {
     public {
         oauth2:OAuth2Client oauthEndpoint;
     }
@@ -30,10 +30,10 @@ public type GmailConnector object {
     user"}
     @Param {value:"filter: SearchFilter type with optional query parameters"}
     @Return {value:"MessageListPage type with array of messages, size estimation and next page token"}
-    @Return {value:"GmailError is thrown if any error occurs in sending the request and receiving the response"}
-    public function listAllMails(string userId, SearchFilter filter) returns (MessageListPage|GmailError) {
+    @Return {value:"GMailError is thrown if any error occurs in sending the request and receiving the response"}
+    public function listAllMails(string userId, SearchFilter filter) returns (MessageListPage|GMailError) {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         MessageListPage messageListPage = {};
         http:Request request = new ();
         string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
@@ -49,8 +49,8 @@ public type GmailConnector object {
             match http:encode(filter.q, UTF_8) {
                 string encodedQuery => uriParams += QUERY + encodedQuery;
                 error e => {
-                    gmailError.errorMessage = "Error occured during encoding the query";
-                    return gmailError;
+                    gMailError.errorMessage = "Error occured during encoding the query";
+                    return gMailError;
                 }
             }
         }
@@ -77,22 +77,22 @@ public type GmailConnector object {
                                 messageListPage.messages[i] = mail;
                                 i++;
                             }
-                            GmailError err => return err;
+                            GMailError err => return err;
                         }
                     }
                 }
             } else {
-                gmailError.errorMessage = jsonlistMsgResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonlistMsgResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return messageListPage;
     }
@@ -103,8 +103,8 @@ public type GmailConnector object {
     @Param {value:"message: Message to send"}
     @Return {value:"Returns the message id of the successfully sent message"}
     @Return {value:"Returns the thread id of the succesfully sent message"}
-    @Return {value:"Returns GmailError if the message is not sent successfully"}
-    public function sendMessage(string userId, Message message) returns (string, string)|GmailError {
+    @Return {value:"Returns GMailError if the message is not sent successfully"}
+    public function sendMessage(string userId, Message message) returns (string, string)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         string concatRequest = EMPTY_STRING;
         //Set the general headers of the message
@@ -179,16 +179,16 @@ public type GmailConnector object {
         match (util:base64EncodeString(concatRequest)){
             string encodeString => encodedRequest = encodeString;
             util:Base64EncodeError err => {
-                GmailError gmailError = {};
-                gmailError.errorMessage = err.message;
-                return gmailError;
+                GMailError gMailError = {};
+                gMailError.errorMessage = err.message;
+                return gMailError;
             }
         }
         encodedRequest = encodedRequest.replace("+", "-").replace("/", "_");
         //Set the encoded message as raw
         message.raw = encodedRequest;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         string msgId;
         string threadId;
         json jsonPayload = {"raw":message.raw};
@@ -204,17 +204,17 @@ public type GmailConnector object {
                 msgId = jsonSendMessageResponse.id.toString() but { () => EMPTY_STRING };
                 threadId = jsonSendMessageResponse.threadId.toString() but { () => EMPTY_STRING };
             } else {
-                gmailError.errorMessage = jsonSendMessageResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonSendMessageResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return (msgId, threadId);
     }
@@ -225,12 +225,12 @@ public type GmailConnector object {
     @Param {value:"filter: GetMessageThreadFilter type object with the optional format and metadataHeaders query
     parameters"}
     @Return {value:"Returns the specified mail as a Message type"}
-    @Return {value:"Returns GmailError if the message cannot be read successfully"}
+    @Return {value:"Returns GMailError if the message cannot be read successfully"}
     public function readMail(string userId, string messageId, GetMessageThreadFilter filter)
-                                                                                        returns (Message)|GmailError {
+                                                                                        returns (Message)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         Message message = new ();
         string uriParams = "";
         string readMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId;
@@ -247,25 +247,25 @@ public type GmailConnector object {
             var jsonResponse = response.getJsonPayload();
             json jsonMail = check jsonResponse;
             if (response.statusCode == STATUS_CODE_200_OK) {
-                //Transform the json mail response from Gmail API to Message type
+                //Transform the json mail response from GMail API to Message type
                 match (convertJsonMailToMessage(jsonMail)){
                     Message m => message = m;
-                    GmailError err => return gmailError;
+                    GMailError err => return gMailError;
                 }
             }
             else {
-                gmailError.errorMessage = jsonMail.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonMail.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
 
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return message;
     }
@@ -275,12 +275,12 @@ public type GmailConnector object {
     @Param {value:"messageId: message id of the specified mail to retrieve"}
     @Param {value:"attachmentId: the ID of the attachment."}
     @Param {value:"Returns the specified mail as a MessageAttachment type"}
-    @Return {value:"Returns GmailError if the attachment read is not successful"}
+    @Return {value:"Returns GMailError if the attachment read is not successful"}
     public function getAttachment(string userId, string messageId, string attachmentId)
-        returns (MessageAttachment)|GmailError {
+        returns (MessageAttachment)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         MessageAttachment attachment = new ();
         string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId +
         ATTACHMENT_RESOURCE + attachmentId;
@@ -290,21 +290,21 @@ public type GmailConnector object {
             var jsonResponse = response.getJsonPayload();
             json jsonAttachment = check jsonResponse;
             if (response.statusCode == STATUS_CODE_200_OK) {
-                //Transform the json mail response from Gmail API to MessageAttachment type
+                //Transform the json mail response from GMail API to MessageAttachment type
                 attachment = convertJsonMessageBodyToMsgAttachment(jsonAttachment);
             }
             else {
-                gmailError.errorMessage = jsonAttachment.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonAttachment.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return attachment;
     }
@@ -313,11 +313,11 @@ public type GmailConnector object {
     @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
     @Param {value:"messageId: The ID of the message to trash"}
     @Return {value:"Returns true if trashing the message is successful"}
-    @Return {value:"Returns GmailError if trashing is not successdul"}
-    public function trashMail(string userId, string messageId) returns boolean|GmailError {
+    @Return {value:"Returns GMailError if trashing is not successdul"}
+    public function trashMail(string userId, string messageId) returns boolean|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         json jsonPayload = {};
         string trashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId + "/trash";
         request.setJsonPayload(jsonPayload);
@@ -331,17 +331,17 @@ public type GmailConnector object {
                 trashMailResponse = true;
             }
             else {
-                gmailError.errorMessage = jsonTrashMailResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonTrashMailResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return trashMailResponse;
     }
@@ -350,11 +350,11 @@ public type GmailConnector object {
     @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
     @Param {value:"messageId: The ID of the message to untrash"}
     @Return {value:"Returns true if untrashing the message is successful"}
-    @Return {value:"Returns GmailError if untrashing is not successdul"}
-    public function untrashMail(string userId, string messageId) returns boolean|GmailError {
+    @Return {value:"Returns GMailError if untrashing is not successdul"}
+    public function untrashMail(string userId, string messageId) returns boolean|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         json jsonPayload = {};
         string untrashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId + "/untrash";
         request.setJsonPayload(jsonPayload);
@@ -368,17 +368,17 @@ public type GmailConnector object {
                 untrashMailResponse = true;
             }
             else {
-                gmailError.errorMessage = jsonUntrashMailResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonUntrashMailResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return untrashMailResponse;
     }
@@ -387,11 +387,11 @@ public type GmailConnector object {
     @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
     @Param {value:"messageId: The ID of the message to untrash"}
     @Return {value:"Returns true if deleting the message is successful"}
-    @Return {value:"Returns GmailError if deleting is not successdul"}
-    public function deleteMail(string userId, string messageId) returns boolean|GmailError {
+    @Return {value:"Returns GMailError if deleting is not successdul"}
+    public function deleteMail(string userId, string messageId) returns boolean|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         string deleteMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId;
         boolean deleteMailResponse;
         try {
@@ -403,17 +403,17 @@ public type GmailConnector object {
             else {
                 var jsonResponse = response.getJsonPayload();
                 json jsonDeleteMailResponse = check jsonResponse;
-                gmailError.errorMessage = jsonDeleteMailResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonDeleteMailResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return deleteMailResponse;
     }
@@ -423,12 +423,12 @@ public type GmailConnector object {
     user"}
     @Param {value:"filter: SearchFilter type with optional query parameters"}
     @Return {value:"ThreadListPage type with thread list, result set size estimation and next page token"}
-    @Return {value:"GmailError is thrown if any error occurs in sending the request and receiving the response"}
+    @Return {value:"GMailError is thrown if any error occurs in sending the request and receiving the response"}
     public function listThreads(string userId, SearchFilter filter)
-        returns (ThreadListPage)|GmailError {
+        returns (ThreadListPage)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         ThreadListPage threadListPage = {};
         string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
         string uriParams = "";
@@ -443,8 +443,8 @@ public type GmailConnector object {
             match http:encode(filter.q, UTF_8) {
                 string encodedQuery => uriParams += QUERY + encodedQuery;
                 error e => {
-                    gmailError.errorMessage = "Error occured during encoding the query";
-                    return gmailError;
+                    gMailError.errorMessage = "Error occured during encoding the query";
+                    return gMailError;
                 }
             }
         }
@@ -470,22 +470,22 @@ public type GmailConnector object {
                                 threadListPage.threads[i] = messageThread;
                                 i++;
                             }
-                            GmailError err => return err;
+                            GMailError err => return err;
                         }
                     }
                 }
             } else {
-                gmailError.errorMessage = jsonlistThreadResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonlistThreadResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return threadListPage;
     }
@@ -496,12 +496,12 @@ public type GmailConnector object {
     @Param {value:"filter: GetMessageThreadFilter type object with the optional format and metadataHeaders
     query parameters"}
     @Param {value:"Returns the specified thread as a Thread type"}
-    @Return {value:"Returns GmailError if the thread cannot be read successfully"}
+    @Return {value:"Returns GMailError if the thread cannot be read successfully"}
     public function readThread(string userId, string threadId, GetMessageThreadFilter filter)
-        returns (Thread)|GmailError {
+        returns (Thread)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         Thread thread = {};
         string uriParams = "";
         string readThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId;
@@ -519,24 +519,24 @@ public type GmailConnector object {
             var jsonResponse = response.getJsonPayload();
             json jsonThread = check jsonResponse;
             if (response.statusCode == STATUS_CODE_200_OK) {
-                //Transform the json mail response from Gmail API to Thread type
+                //Transform the json mail response from GMail API to Thread type
                 match convertJsonThreadToThreadType(jsonThread){
                     Thread t => thread = t;
-                    GmailError err => return err;
+                    GMailError err => return err;
                 }
             }
             else {
-                gmailError.errorMessage = jsonThread.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonThread.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return thread;
     }
@@ -545,11 +545,11 @@ public type GmailConnector object {
     @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
     @Param {value:"threadId: The ID of the thread to trash"}
     @Return {value:"Returns true if trashing the thrad is successful"}
-    @Return {value:"Returns GmailError if trashing is not successdul"}
-    public function trashThread(string userId, string threadId) returns boolean|GmailError {
+    @Return {value:"Returns GMailError if trashing is not successdul"}
+    public function trashThread(string userId, string threadId) returns boolean|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         json jsonPayload = {};
         string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId + "/trash";
         request.setJsonPayload(jsonPayload);
@@ -563,17 +563,17 @@ public type GmailConnector object {
                 trashThreadReponse = true;
             }
             else {
-                gmailError.errorMessage = jsonTrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonTrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return trashThreadReponse;
     }
@@ -582,11 +582,11 @@ public type GmailConnector object {
     @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
     @Param {value:"threadId: The ID of the thread to untrash"}
     @Return {value:"Returns true if untrashing the thread is successful"}
-    @Return {value:"Returns GmailError if untrashing is not successdul"}
-    public function untrashThread(string userId, string threadId) returns boolean|GmailError {
+    @Return {value:"Returns GMailError if untrashing is not successdul"}
+    public function untrashThread(string userId, string threadId) returns boolean|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         json jsonPayload = {};
         boolean untrashThreadReponse;
         string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId + "/untrash";
@@ -599,17 +599,17 @@ public type GmailConnector object {
             if (response.statusCode == STATUS_CODE_200_OK) {
                 untrashThreadReponse = true;
             } else {
-                gmailError.errorMessage = jsonUntrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonUntrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return untrashThreadReponse;
     }
@@ -618,11 +618,11 @@ public type GmailConnector object {
     @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
     @Param {value:"threadId: The ID of the thread to untrash"}
     @Return {value:"Returns true if deleting the thread is successful"}
-    @Return {value:"Returns GmailError if deleting is not successdul"}
-    public function deleteThread(string userId, string threadId) returns boolean|GmailError {
+    @Return {value:"Returns GMailError if deleting is not successdul"}
+    public function deleteThread(string userId, string threadId) returns boolean|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId;
         boolean deleteThreadResponse;
         try {
@@ -634,30 +634,30 @@ public type GmailConnector object {
             else {
                 var jsonResponse = response.getJsonPayload();
                 json jsonDeleteThreadResponse = check jsonResponse;
-                gmailError.errorMessage = jsonDeleteThreadResponse.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonDeleteThreadResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return deleteThreadResponse;
     }
 
-    @Description {value:"Get the current user's Gmail Profile"}
+    @Description {value:"Get the current user's GMail Profile"}
     @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
     @Return {value:"Returns UserProfile type if success"}
-    @Return {value:"Returns GmailError if unsuccessful"}
-    public function getUserProfile(string userId) returns UserProfile|GmailError {
+    @Return {value:"Returns GMailError if unsuccessful"}
+    public function getUserProfile(string userId) returns UserProfile|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         UserProfile profile = {};
-        GmailError gmailError = {};
+        GMailError gMailError = {};
         string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
         try {
             var getResponse = oauthEP -> get(getProfilePath, request);
@@ -665,21 +665,21 @@ public type GmailConnector object {
             var jsonResponse = response.getJsonPayload();
             json jsonProfile = check jsonResponse;
             if (response.statusCode == STATUS_CODE_200_OK) {
-                //Transform the json profile response from Gmail API to User Profile type
+                //Transform the json profile response from GMail API to User Profile type
                 profile = convertJsonProfileToUserProfileType(jsonProfile);
             }
             else {
-                gmailError.errorMessage = jsonProfile.error.message.toString() but { () => EMPTY_STRING };
-                gmailError.statusCode = response.statusCode;
-                return gmailError;
+                gMailError.errorMessage = jsonProfile.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.statusCode = response.statusCode;
+                return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
-            gmailError.errorMessage = connectErr.message;
-            gmailError.statusCode = connectErr.statusCode;
-            return gmailError;
+            gMailError.errorMessage = connectErr.message;
+            gMailError.statusCode = connectErr.statusCode;
+            return gMailError;
         } catch (mime:EntityError err){
-            gmailError.errorMessage = err.message;
-            return gmailError;
+            gMailError.errorMessage = err.message;
+            return gMailError;
         }
         return profile;
     }

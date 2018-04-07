@@ -21,8 +21,8 @@ import ballerina/util;
 @Description {value:"Convert the json message array into Message type array"}
 @Param {value:"sourceMessageArrayJsonObject: json message array"}
 @Return {value:"Message type array"}
-@Return {value:"Returns GmailError if coversion not successful"}
-function convertToMessageArray(json sourceMessageArrayJsonObject) returns Message[]|GmailError {
+@Return {value:"Returns GMailError if coversion not successful"}
+function convertToMessageArray(json sourceMessageArrayJsonObject) returns Message[]|GMailError {
     Message[] messages = [];
     int i = 0;
     foreach jsonMessage in sourceMessageArrayJsonObject {
@@ -31,7 +31,7 @@ function convertToMessageArray(json sourceMessageArrayJsonObject) returns Messag
                 messages[i] = msg;
                 i++;
             }
-            GmailError err => return err;
+            GMailError err => return err;
         }
     }
     return messages;
@@ -40,8 +40,8 @@ function convertToMessageArray(json sourceMessageArrayJsonObject) returns Messag
 @Description {value:"Decode the message body of text/* mime message parts"}
 @Param {value:"sourceMessagePartJsonObject: json message part"}
 @Return {value:"base 64 decoded message body string"}
-@Return {value:"Returns GmailError if error occurs in base64 encoding"}
-function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GmailError {
+@Return {value:"Returns GMailError if error occurs in base64 encoding"}
+function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMailError {
     string decodedBody;
     string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
     if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
@@ -50,9 +50,9 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|Gmai
         match (util:base64DecodeString(decodedBody)){
             string decodeString => decodedBody = decodeString;
             util:Base64DecodeError err => {
-                GmailError gmailError = {};
-                gmailError.errorMessage = err.message;
-                return gmailError;
+                GMailError gMailError = {};
+                gMailError.errorMessage = err.message;
+                return gMailError;
             }
         }
     }
@@ -93,10 +93,10 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
 @Param {value:"messagePayload: parent json message payload in MIME Message"}
 @Param {value:"inlineMailImages: intial array of inline image message parts"}
 @Return {value:"Returns array of MessageBodyPart"}
-@Return {value:"Returns GmailError if unsuccessful"}
+@Return {value:"Returns GMailError if unsuccessful"}
 //Extract inline image MIME message parts from the email
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
-                                                        returns @tainted MessageBodyPart[]|GmailError {
+                                                        returns @tainted MessageBodyPart[]|GMailError {
     MessageBodyPart[] inlineImgParts = inlineMailImages;
     MessagePartHeader contentDispositionHeader =
     getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
@@ -107,7 +107,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
     if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
             MessageBodyPart bodyPart => inlineImgParts[lengthof inlineImgParts] = bodyPart;
-            GmailError err => return err;
+            GMailError err => return err;
         }
     } //Else if is any multipart/*
     else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != null)) {
@@ -118,7 +118,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
                 //Recursively check each ith child mime part
                 match getInlineImgPartsFromPayloadByMimeType(part, inlineImgParts){
                     MessageBodyPart[] bodyParts => inlineImgParts = bodyParts;
-                    GmailError err => return err;
+                    GMailError err => return err;
                 }
             }
         }
@@ -134,9 +134,9 @@ otherwise it will return with first found matching message part"}
 @Param {value:"messagePayload: parent json message payload in MIME Message"}
 @Param {value:"inlineMailImages: intial array of inline image message parts"}
 @Return {value:"Returns array of MessageBodyPart"}
-@Return {value:"Returns GmailError if unsuccessful"}
+@Return {value:"Returns GMailError if unsuccessful"}
 function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePayload)
-                                                                        returns @tainted MessageBodyPart|GmailError {
+                                                                        returns @tainted MessageBodyPart|GMailError {
     MessageBodyPart msgBodyPart = new ();
     MessagePartHeader contentDispositionHeader =
     getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
@@ -147,7 +147,7 @@ function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePa
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
             MessageBodyPart body => msgBodyPart = body;
-            GmailError err => return err;
+            GMailError err => return err;
         }
     } //Else if is any multipart/*
     else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != null)) {
@@ -158,7 +158,7 @@ function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePa
                 //Recursively check each ith child mime part
                 match getMessageBodyPartFromPayloadByMimeType(mimeType, part){
                     MessageBodyPart body => msgBodyPart = body;
-                    GmailError err => return err;
+                    GMailError err => return err;
                 }
                 //If the returned msg body is a match for given mime type stop iterating over the other child parts
                 if (msgBodyPart.mimeType != "" && isMimeType(msgBodyPart.mimeType, mimeType)) {

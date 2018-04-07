@@ -21,8 +21,8 @@ import ballerina/io;
 @Description {value:"Transform JSON Mail into Message type"}
 @Param {value:"sourceMailJsonObject: json mail object"}
 @Return {value:"Message type object"}
-@Return {value:"Returns GmailError if conversion unsuccesful"}
-function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GmailError {
+@Return {value:"Returns GMailError if conversion unsuccesful"}
+function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMailError {
     Message targetMessageType = new ();
     targetMessageType.id = sourceMailJsonObject.id.toString() but { () => EMPTY_STRING };
     targetMessageType.threadId = sourceMailJsonObject.threadId.toString() but { () => EMPTY_STRING };
@@ -54,15 +54,15 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|Gma
                                             targetMessageType.isMultipart = isMimeType(payloadMimeType, MULTIPART_ANY);
     match getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload){
         MessageBodyPart body => targetMessageType.plainTextBodyPart = body;
-        GmailError err => return err;
+        GMailError err => return err;
     }
     match getMessageBodyPartFromPayloadByMimeType(TEXT_HTML, sourceMailJsonObject.payload){
         MessageBodyPart body => targetMessageType.htmlBodyPart = body;
-        GmailError err => return err;
+        GMailError err => return err;
     }
     match getInlineImgPartsFromPayloadByMimeType(sourceMailJsonObject.payload, []){
         MessageBodyPart[] bodyParts => targetMessageType.inlineImgParts = bodyParts;
-        GmailError err => return err;
+        GMailError err => return err;
     }
     targetMessageType.msgAttachments = sourceMailJsonObject.payload != () ?
     getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
@@ -72,13 +72,13 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|Gma
 @Description {value:"Transform MIME Message Part JSON into MessageBody type"}
 @Param {value:"sourceMessagePartJsonObject: json message part object"}
 @Return {value:"MessageBodyPart type object"}
-@Return {value:"Returns GmailError if conversion unsuccesful"}
-function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GmailError {
+@Return {value:"Returns GMailError if conversion unsuccesful"}
+function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GMailError {
     MessageBodyPart targetMessageBodyType = new ();
     targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId.toString() but { () => EMPTY_STRING };
     match decodeMsgBodyData(sourceMessagePartJsonObject){
         string decodeBody => targetMessageBodyType.body = decodeBody;
-        GmailError err => return err;
+        GMailError err => return err;
     }
     targetMessageBodyType.size = sourceMessagePartJsonObject.body.size.toString() but { () => EMPTY_STRING };
     targetMessageBodyType.mimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
@@ -137,14 +137,14 @@ function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject)
 @Description {value:"Transform thread JSON object into Thread type"}
 @Param {value:"sourceThreadJsonObject: json message thread object"}
 @Return {value:"Thread type object"}
-@Return {value:"Returns GmailError if conversion unsuccesful"}
-function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GmailError{
+@Return {value:"Returns GMailError if conversion unsuccesful"}
+function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GMailError{
     Thread targetThreadType = {};
     targetThreadType.id = sourceThreadJsonObject.id.toString() but { () => EMPTY_STRING };
     targetThreadType.historyId = sourceThreadJsonObject.historyId.toString() but { () => EMPTY_STRING };
     match (convertToMessageArray(sourceThreadJsonObject.messages)){
         Message[] msgs => targetThreadType.messages = msgs;
-        GmailError err => return err;
+        GMailError err => return err;
     }
     return targetThreadType;
 }
