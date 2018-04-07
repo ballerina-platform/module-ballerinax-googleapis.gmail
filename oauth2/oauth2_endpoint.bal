@@ -15,24 +15,23 @@
 // under the License.
 
 import ballerina/http;
-import wso2/oauth2;
 
-@Description {value:"Gmail Endpoint type."}
-public type GmailClient object {
+public type OAuth2Client object {
     public {
-        oauth2:OAuth2Client oauthEP;
-        GmailConfiguration gmailConfig;
-        GmailConnector gmailConnector;
+        OAuth2Connector conn;
+        OAuth2ClientEndpointConfig config;
     }
 
-    new () {}
+    new () {
 
-    @Description {value:"Initialize the gmail endpoint"}
-    public function init(GmailConfiguration gmailConfig) {
-        self.oauthEP.init(gmailConfig.oauthClientConfig);
-        self.gmailConnector.oauthEndpoint = self.oauthEP;
     }
 
+    public function init(OAuth2ClientEndpointConfig config) {
+        self.config = config;
+        self.conn = new (config.accessToken, config.baseUrl, config.clientId, config.clientSecret, config.refreshToken,
+            config.refreshTokenEP, config.refreshTokenPath, config.useUriParams, config.setCredentialsInHeader,
+            http:createHttpClient(config.baseUrl, config.clientConfig), config.clientConfig);
+    }
 
     public function register(typedesc serviceType) {
 
@@ -44,8 +43,8 @@ public type GmailClient object {
 
     @Description {value:"Returns the connector that client code uses"}
     @Return {value:"The connector that client code uses"}
-    public function getClient() returns GmailConnector {
-        return self.gmailConnector;
+    public function getClient() returns OAuth2Connector {
+        return self.conn;
     }
 
     @Description {value:"Stops the registered service"}
@@ -53,10 +52,17 @@ public type GmailClient object {
     public function stop() {
 
     }
-
 };
 
-@Description {value:"Type to set the Gmail configuration."}
-public type GmailConfiguration {
-    oauth2:OAuth2ClientEndpointConfig oauthClientConfig;
+public type OAuth2ClientEndpointConfig {
+    string accessToken;
+    string baseUrl;
+    string clientId;
+    string clientSecret;
+    string refreshToken;
+    string refreshTokenEP;
+    string refreshTokenPath;
+    boolean useUriParams = false;
+    boolean setCredentialsInHeader = false;
+    http:ClientEndpointConfiguration clientConfig;
 };
