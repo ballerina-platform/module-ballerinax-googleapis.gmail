@@ -17,7 +17,7 @@
 import ballerina/io;
 import ballerina/mime;
 import ballerina/http;
-import oauth2;
+import wso2/oauth2;
 
 @Description {value:"Type to define the GMail Client Connector"}
 public type GMailConnector object {

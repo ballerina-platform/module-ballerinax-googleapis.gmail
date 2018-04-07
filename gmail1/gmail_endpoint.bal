@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/http;
-import oauth2;
+import wso2/oauth2;
 
 @Description {value:"GMail Endpoint type."}
 public type GMailClient object {
