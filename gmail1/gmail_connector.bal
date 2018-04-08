@@ -15,11 +15,11 @@
 // under the License.
 
 import ballerina/io;
-import ballerina/mime;
 import ballerina/http;
 import wso2/oauth2;
 
 @Description {value:"Type to define the GMail Client Connector"}
+@Field {value:"oauthEndpoint: OAuth2Client used in GMail connector"}
 public type GMailConnector object {
     public {
         oauth2:OAuth2Client oauthEndpoint;
@@ -62,7 +62,7 @@ public type GMailConnector object {
             json jsonlistMsgResponse = check jsonResponse;
             if (response.statusCode == STATUS_CODE_200_OK) {
                 int i = 0;
-                if (jsonlistMsgResponse.messages != null) {
+                if (jsonlistMsgResponse.messages != ()) {
                     messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate.toString() but {
                         () => EMPTY_STRING };
                     messageListPage.nextPageToken = jsonlistMsgResponse.nextPageToken.toString() but {
@@ -89,7 +89,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-                                                                                + "; message: " + connectErr.message;
+                                                                            + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -129,17 +129,19 @@ public type GMailConnector object {
         concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
         //------Start of multipart/related mime part------
         concatRequest += CONTENT_TYPE + ":" + MULTIPART_RELATED + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_1 +
-        "\"" + NEW_LINE;
+                                                                                                    "\"" + NEW_LINE;
         concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
         //------Start of multipart/alternative mime part------
         concatRequest += CONTENT_TYPE + ":" + MULTIPART_ALTERNATIVE + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_2 +
-        "\"" + NEW_LINE;
+                                                                                                    "\"" + NEW_LINE;
         //Set the body part : text/plain
-        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
-        foreach header in message.plainTextBodyPart.bodyHeaders {
-            concatRequest += header.name + ":" + header.value + NEW_LINE;
+        if (message.plainTextBodyPart.body != ""){
+            concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+            foreach header in message.plainTextBodyPart.bodyHeaders {
+                concatRequest += header.name + ":" + header.value + NEW_LINE;
+            }
+            concatRequest += NEW_LINE + message.plainTextBodyPart.body + NEW_LINE;
         }
-        concatRequest += NEW_LINE + message.plainTextBodyPart.body + NEW_LINE;
         //Set the body part : text/html
         if (message.htmlBodyPart.body != "") {
             concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
@@ -214,7 +216,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -233,7 +235,7 @@ public type GMailConnector object {
     @Return {value:"Returns the specified mail as a Message type"}
     @Return {value:"Returns GMailError if the message cannot be read successfully"}
     public function readMail(string userId, string messageId, GetMessageThreadFilter filter)
-        returns (Message)|GMailError {
+                                                                                        returns (Message)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
@@ -267,7 +269,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -282,10 +284,10 @@ public type GMailConnector object {
     @Param {value:"userId: user's email address. The special value -> me"}
     @Param {value:"messageId: message id of the specified mail to retrieve"}
     @Param {value:"attachmentId: the ID of the attachment."}
-    @Param {value:"Returns the specified mail as a MessageAttachment type"}
+    @Return {value:"Returns the specified mail as a MessageAttachment type"}
     @Return {value:"Returns GMailError if the attachment read is not successful"}
     public function getAttachment(string userId, string messageId, string attachmentId)
-        returns (MessageAttachment)|GMailError {
+                                                                                returns (MessageAttachment)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
@@ -309,7 +311,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -349,7 +351,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -389,7 +391,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -427,7 +429,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -444,8 +446,7 @@ public type GMailConnector object {
     @Param {value:"filter: SearchFilter type with optional query parameters"}
     @Return {value:"ThreadListPage type with thread list, result set size estimation and next page token"}
     @Return {value:"GMailError is thrown if any error occurs in sending the request and receiving the response"}
-    public function listThreads(string userId, SearchFilter filter)
-        returns (ThreadListPage)|GMailError {
+    public function listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
@@ -502,7 +503,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -521,7 +522,7 @@ public type GMailConnector object {
     @Param {value:"Returns the specified thread as a Thread type"}
     @Return {value:"Returns GMailError if the thread cannot be read successfully"}
     public function readThread(string userId, string threadId, GetMessageThreadFilter filter)
-        returns (Thread)|GMailError {
+                                                                                        returns (Thread)|GMailError {
         endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
@@ -556,7 +557,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -596,7 +597,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -635,7 +636,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -673,7 +674,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
@@ -711,7 +712,7 @@ public type GMailConnector object {
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
             gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
-            + "; message: " + connectErr.message;
+                                                                                + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){

@@ -52,20 +52,22 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
     targetMessageType.mimeType = sourceMailJsonObject.payload.mimeType.toString() but { () => EMPTY_STRING };
     string payloadMimeType = sourceMailJsonObject.payload.mimeType.toString() but { () => EMPTY_STRING };
                                             targetMessageType.isMultipart = isMimeType(payloadMimeType, MULTIPART_ANY);
-    match getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload){
-        MessageBodyPart body => targetMessageType.plainTextBodyPart = body;
-        GMailError err => return err;
-    }
-    match getMessageBodyPartFromPayloadByMimeType(TEXT_HTML, sourceMailJsonObject.payload){
-        MessageBodyPart body => targetMessageType.htmlBodyPart = body;
-        GMailError err => return err;
-    }
-    match getInlineImgPartsFromPayloadByMimeType(sourceMailJsonObject.payload, []){
-        MessageBodyPart[] bodyParts => targetMessageType.inlineImgParts = bodyParts;
-        GMailError err => return err;
+    if (sourceMailJsonObject.payload != ()){
+        match getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload){
+            MessageBodyPart body => targetMessageType.plainTextBodyPart = body;
+            GMailError err => return err;
+        }
+        match getMessageBodyPartFromPayloadByMimeType(TEXT_HTML, sourceMailJsonObject.payload){
+            MessageBodyPart body => targetMessageType.htmlBodyPart = body;
+            GMailError err => return err;
+        }
+        match getInlineImgPartsFromPayloadByMimeType(sourceMailJsonObject.payload, []){
+            MessageBodyPart[] bodyParts => targetMessageType.inlineImgParts = bodyParts;
+            GMailError err => return err;
+        }
     }
     targetMessageType.msgAttachments = sourceMailJsonObject.payload != () ?
-    getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
+                                                getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
     return targetMessageType;
 }
 
@@ -75,17 +77,19 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
 @Return {value:"Returns GMailError if conversion unsuccesful"}
 function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GMailError {
     MessageBodyPart targetMessageBodyType = new ();
-    targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId.toString() but { () => EMPTY_STRING };
-    match decodeMsgBodyData(sourceMessagePartJsonObject){
-        string decodeBody => targetMessageBodyType.body = decodeBody;
-        GMailError err => return err;
-    }
-    targetMessageBodyType.size = sourceMessagePartJsonObject.body.size.toString() but { () => EMPTY_STRING };
-    targetMessageBodyType.mimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
-    targetMessageBodyType.partId = sourceMessagePartJsonObject.partId.toString() but { () => EMPTY_STRING };
-    targetMessageBodyType.fileName = sourceMessagePartJsonObject.filename.toString() but { () => EMPTY_STRING };
-    targetMessageBodyType.bodyHeaders = sourceMessagePartJsonObject.headers != () ?
+    if (sourceMessagePartJsonObject != ()){
+        targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId.toString() but { () => EMPTY_STRING };
+        match decodeMsgBodyData(sourceMessagePartJsonObject){
+            string decodeBody => targetMessageBodyType.body = decodeBody;
+            GMailError err => return err;
+        }
+        targetMessageBodyType.size = sourceMessagePartJsonObject.body.size.toString() but { () => EMPTY_STRING };
+        targetMessageBodyType.mimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
+        targetMessageBodyType.partId = sourceMessagePartJsonObject.partId.toString() but { () => EMPTY_STRING };
+        targetMessageBodyType.fileName = sourceMessagePartJsonObject.filename.toString() but { () => EMPTY_STRING };
+        targetMessageBodyType.bodyHeaders = sourceMessagePartJsonObject.headers != () ?
                                                 convertToMsgPartHeaders(sourceMessagePartJsonObject.headers) : [];
+    }
     return targetMessageBodyType;
 }
 
@@ -98,12 +102,9 @@ function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) ret
                                                                                                 () => EMPTY_STRING };
     targetMessageAttachmentType.attachmentBody = sourceMessagePartJsonObject.body.data.toString() but {
                                                                                                 () => EMPTY_STRING };
-    targetMessageAttachmentType.size = sourceMessagePartJsonObject.body.size.toString() but {
-                                                                                                () => EMPTY_STRING };
-    targetMessageAttachmentType.mimeType = sourceMessagePartJsonObject.mimeType.toString() but {
-                                                                                                () => EMPTY_STRING };
-    targetMessageAttachmentType.partId = sourceMessagePartJsonObject.partId.toString() but {
-                                                                                                () => EMPTY_STRING };
+    targetMessageAttachmentType.size = sourceMessagePartJsonObject.body.size.toString() but { () => EMPTY_STRING };
+    targetMessageAttachmentType.mimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
+    targetMessageAttachmentType.partId = sourceMessagePartJsonObject.partId.toString() but { () => EMPTY_STRING };
     targetMessageAttachmentType.attachmentFileName = sourceMessagePartJsonObject.filename.toString() but {
                                                                                                 () => EMPTY_STRING };
     targetMessageAttachmentType.attachmentHeaders = sourceMessagePartJsonObject.headers != () ?
@@ -142,9 +143,11 @@ function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thre
     Thread targetThreadType = {};
     targetThreadType.id = sourceThreadJsonObject.id.toString() but { () => EMPTY_STRING };
     targetThreadType.historyId = sourceThreadJsonObject.historyId.toString() but { () => EMPTY_STRING };
-    match (convertToMessageArray(sourceThreadJsonObject.messages)){
-        Message[] msgs => targetThreadType.messages = msgs;
-        GMailError err => return err;
+    if (sourceThreadJsonObject.messages != ()){
+        match (convertToMessageArray(sourceThreadJsonObject.messages)){
+            Message[] msgs => targetThreadType.messages = msgs;
+            GMailError err => return err;
+        }
     }
     return targetThreadType;
 }

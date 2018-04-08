@@ -19,25 +19,25 @@ import ballerina/io;
 
 @Description {value:"Record to define the UserProfile"}
 public type UserProfile {
-//The user's email address
+    //The user's email address
     string emailAddress;
-//The total number of messages in the mailbox
+    //The total number of messages in the mailbox
     string messagesTotal;
-//The total number of threads in the mailbox
+    //The total number of threads in the mailbox
     string threadsTotal;
-//The ID of the mailbox's current history record
+    //The ID of the mailbox's current history record
     string historyId;
 };
 
 @Description {value:"Record to define the threads resource"}
 public type Thread {
-//The unique ID of the thread
+    //The unique ID of the thread
     string id;
-//A short part of the message text
+    //A short part of the message text
     string snippet;
-//The ID of the last history record that modified this thread
+    //The ID of the last history record that modified this thread
     string historyId;
-//The list of messages in the thread
+    //The list of messages in the thread
     Message[] messages;
 };
 
@@ -89,12 +89,51 @@ public type Message object {
 
     //Functions binded to Message type
 
-    @Description {value:"Create a message"}
-    @Param {value:"recipient:  email address of the receiver"}
-    @Param {value:"subject: subject of the email"}
-    @Param {value:"bodyText: body text of the email"}
-    @Param {value:"options: other optional headers of the email including Cc, Bcc and From"}
-    public function createMessage (string recipient, string subject, string bodyText, MessageOptions options) {
+    @Description{value:"Create a text email message"}
+    @Param{value:"recipient: Email recipient's email addresss"}
+    @Param{value:"subject: Email subject"}
+    @Param{value:"bodyText: Email text body"}
+    @Param{value:"options: MessageOptions with optional email headers as Sender,Cc,Bcc"}
+    public function createTextMessage (string recipient, string subject, string bodyText, MessageOptions options) {
+        //Set email Headers
+        self.setMailHeaders(recipient, subject, options);
+        //Set the plain text type MIME Message body part of the message
+        self.plainTextBodyPart.setMessageBody(bodyText, TEXT_PLAIN);
+        self.plainTextBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_PLAIN + ";" + CHARSET + "=\"" + UTF_8 +
+                                                                                                                "\""}];
+        self.plainTextBodyPart.mimeType = TEXT_PLAIN;
+    }
+
+    @Description{value:"Create a html email message"}
+    @Param{value:"recipient: Email recipient's email addresss"}
+    @Param{value:"subject: Email subject"}
+    @Param{value:"bodyText: Email text body"}
+    @Param{value:"options: MessageOptions with optional email headers as Sender,Cc,Bcc"}
+    @Param{value:"images: InlineImage array with inline images of html email"}
+    @Return{value:"Returns GMailError if html error creation unsuccessful"}
+    public function createHTMLMessage (string recipient, string subject, string bodyText, MessageOptions options,
+                                                                        InlineImage[] images) returns ()|GMailError {
+        //Set email Headers
+        self.setMailHeaders(recipient, subject, options);
+        //Set the html body part of the message
+        self.htmlBodyPart.mimeType = TEXT_HTML;
+        self.htmlBodyPart.setMessageBody(bodyText, TEXT_HTML);
+        self.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
+        if (lengthof images != 0){
+            foreach image in images{
+                match self.setInlineImage(image.imagePath, image.contentType){
+                    GMailError err => return err;
+                }
+            }
+        }
+        return ();
+    }
+
+    @Description{value:"Set common email headers"}
+    @Param{value:"recipient: Email recipient's email addresss"}
+    @Param{value:"subject: Email subject"}
+    @Param{value:"options: MessageOptions with optional email headers as Sender,Cc,Bcc"}
+    function setMailHeaders (string recipient, string subject, MessageOptions options) {
         //set the general header To of top level message part
         self.headerTo = {name:TO, value:recipient};
         //Include the seperate header to the existing header list
@@ -115,74 +154,60 @@ public type Message object {
         }
         //Set the general content type header of top level MIME message part as multipart/mixed with the
         //boundary=boundaryString
-        self.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + ";" + BOUNDARY +
-        "=\"" + BOUNDARY_STRING + "\""};
+        self.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + ";" + BOUNDARY + "=\""
+                                                                                            + BOUNDARY_STRING + "\""};
         self.headers[lengthof self.headers] = self.headerContentType;
         self.mimeType = MULTIPART_MIXED;
         self.isMultipart = true;
-        //Set the plain text type MIME Message body part of the message
-        self.plainTextBodyPart.setMessageBody(bodyText, TEXT_PLAIN);
-        self.plainTextBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_PLAIN + ";" + CHARSET + "=\"" + UTF_8 +
-        "\""}];
-        self.plainTextBodyPart.mimeType = TEXT_PLAIN;
     }
 
-    @Description {value:"Set the html content or inline image content of the message. If you are sending an inline image,
-    set a html body in email and put the image into the body by using <img> tag. Give the src value of img element as
-    'cid:image-<Your image name with extension>' Eg: <img src=\"cid:image-ImageName.jpg\""}
-    @Param {value:"content: the string html content or the string inline image file path"}
+    @Description {value:"Set the inline image content of the message. Put the image into the html body by using <img> tag.
+    Give the src value of img element as cid:image-<Your image name with extension>'
+    Eg: <img src=\"cid:image-ImageName.jpg\""}
+    @Param {value:"imagePath: the string inline image file path"}
     @Param {value:"contentType: the content type"}
-    @Return {value:"Returns true if the content is set successfully"}
     @Return {value:"Returns GMailError if the content type is not supported"}
-    public function setContent (string content, string contentType) returns (boolean|GMailError) {
+    public function setInlineImage (string imagePath, string contentType) returns ()|GMailError {
         if (contentType == EMPTY_STRING){
             GMailError gMailError = {};
-            gMailError.errorMessage = "content type cannot be empty";
+            gMailError.errorMessage = "image content type cannot be empty";
             return gMailError;
         }
-        //If the mime type of the content is text/html
-        if (isMimeType(contentType, TEXT_HTML)) {
-            //Set the html body part of the message
-            self.htmlBodyPart.mimeType = TEXT_HTML;
-            self.htmlBodyPart.setMessageBody(content, contentType);
-            self.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + ";" + CHARSET + "=\"" + UTF_8 +
-            "\""}];
-        } else if (isMimeType(contentType, IMAGE_ANY)) {
+        if (isMimeType(contentType, IMAGE_ANY)) {
             string encodedFile;
             //Open and encode the image file into base64. Return an IOError if fails.
-            match encodeFile(content) {
+            match encodeFile(imagePath) {
                 string eFile => encodedFile = eFile;
                 GMailError gMailError => return gMailError;
             }
             //Set the inline image body part of the message
             MessageBodyPart inlineImgBody = new ();
-            inlineImgBody.fileName = getFileNameFromPath(content);
+            inlineImgBody.fileName = getFileNameFromPath(imagePath);
             MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
-            inlineImgBody.fileName + "\""};
+                                                                                    inlineImgBody.fileName + "\""};
             MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:INLINE + "; " + FILE_NAME
-            + "=\"" + inlineImgBody.fileName + "\""};
+                                                                            + "=\"" + inlineImgBody.fileName + "\""};
             MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
             MessagePartHeader contentIdHeader = {name:CONTENT_ID, value:"<" + INLINE_IMAGE_CONTENT_ID_PREFIX +
-            inlineImgBody.fileName + ">"};
+                                                                                        inlineImgBody.fileName + ">"};
             inlineImgBody.bodyHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader, contentIdHeader];
             inlineImgBody.setMessageBody(encodedFile, contentType);
             inlineImgBody.mimeType = contentType;
             self.inlineImgParts[lengthof self.inlineImgParts] = inlineImgBody;
         } else {
-            //Return an error if an un supported content type other than text/html or image/* is passed
+            //Return an error if an un supported content type other than image/* is passed
             GMailError gMailError = {};
             gMailError.errorMessage = ERROR_CONTENT_TYPE_UNSUPPORTED;
             return gMailError;
         }
-        return true;
+        return ();
     }
 
     @Description {value:"Add an attachment to the message"}
     @Param {value:"filePath: the string file path of the attachment"}
     @Param {value:"contentType: the content type of the attachment"}
-    @Return {value:"Returns true if the attachment process is success"}
-    @Return {value:"Returns IOError if there's any error while performaing I/O operation"}
-    public function addAttachment (string filePath, string contentType) returns boolean|GMailError {
+    @Return {value:"Returns GMailError if the attachment process is unsuccessful"}
+    public function addAttachment (string filePath, string contentType) returns ()|GMailError {
         if (contentType == EMPTY_STRING){
             GMailError gMailError = {};
             gMailError.errorMessage = "content type of attachment cannot be empty";
@@ -202,16 +227,15 @@ public type Message object {
         attachment.mimeType = contentType;
         attachment.attachmentFileName = getFileNameFromPath(filePath);
         MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
-        attachment.attachmentFileName + "\""};
+                                                                            attachment.attachmentFileName + "\""};
         MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:ATTACHMENT + "; " + FILE_NAME + "=\"" +
-        attachment.attachmentFileName + "\""};
+                                                                            attachment.attachmentFileName + "\""};
         MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
         attachment.attachmentHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader];
         attachment.setAttachment(encodedFile, contentType);
         self.msgAttachments[lengthof self.msgAttachments] = attachment;
-        return true;
+        return ();
     }
-
 };
 
 @Description {value:"Type to define the MIME Message Body Part"}
@@ -244,7 +268,6 @@ public type MessageBodyPart object {
         self.body = body;
         self.mimeType = mimeType;
     }
-
 };
 
 @Description {value:"Type to define the MIME Message Part which represents an attachment"}
@@ -278,7 +301,6 @@ public type MessageAttachment object {
         self.attachmentBody = encodedAttachment;
         self.mimeType = mimeType;
     }
-
 };
 
 @Description {value:"Type to define the message part header"}
@@ -303,47 +325,53 @@ public type MessageOptions {
 
 @Description {value:"Type to define the optional search message filter fields"}
 public type SearchFilter {
-//Includes messages/threads from SPAM and TRASH in the results
+    //Includes messages/threads from SPAM and TRASH in the results
     boolean includeSpamTrash;
-//Only return messages/threads with labels that match all of the specified label IDs
+    //Only return messages/threads with labels that match all of the specified label IDs
     string[] labelIds;
-//Maximum number of messages/threads to return in the page for a single request
+    //Maximum number of messages/threads to return in the page for a single request
     string maxResults;
-//Page token to retrieve a specific page of results in the list
+    //Page token to retrieve a specific page of results in the list
     string pageToken;
-//Only returns messages/threads matching the specified query.
-//Supports the same query format as the GMail search box
+    //Only returns messages/threads matching the specified query.
+    //Supports the same query format as the GMail search box
     string q;
 };
 
 @Description {value:"Type to define the optional get message filter fields"}
 public type GetMessageThreadFilter {
-//Acceptable values for format for a get message/thread request are:
-//"full": Returns the full email message data with body content parsed in the payload field;
-//the raw field is not used. (default)
-//"metadata": Returns only email message ID, labels, and email headers.
-//"minimal": Returns only email message ID and labels; does not return the email headers, body, or payload.
-//"raw": Returns the full email message data with body content in the raw field as a base64url encoded string;
-//the payload field is not used."}
+    //Acceptable values for format for a get message/thread request are:
+    //"full": Returns the full email message data with body content parsed in the payload field;
+    //the raw field is not used. (default)
+    //"metadata": Returns only email message ID, labels, and email headers.
+    //"minimal": Returns only email message ID and labels; does not return the email headers, body, or payload.
+    //"raw": Returns the full email message data with body content in the raw field as a base64url encoded string;
+    //the payload field is not used."}
     string format;
-//metaDataHeaders: when given and format is METADATA, only include the metadDataHeaders specified.
+    //metaDataHeaders: when given and format is METADATA, only include the metadDataHeaders specified.
     string[] metadataHeaders;
 };
 
 @Description {value:"Type to define a page of message list"}
 public type MessageListPage {
     Message[] messages;
-//Estimated size of the whole list
+    //Estimated size of the whole list
     string resultSizeEstimate;
-//Token for next page of message list
+    //Token for next page of message list
     string nextPageToken;
 };
 
 @Description {value:"Type to define a page of thread list"}
 public type ThreadListPage {
     Thread[] threads;
-//Estimated size of the whole list
+    //Estimated size of the whole list
     string resultSizeEstimate;
-//Token for next page of thread list
+    //Token for next page of thread list
     string nextPageToken;
+};
+
+@Description {value:"Type to define inline image of an email"}
+public type InlineImage {
+    string imagePath;
+    string contentType;
 };

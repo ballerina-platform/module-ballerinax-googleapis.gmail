@@ -65,18 +65,21 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
 @Param {value:"msgAttachments: intial array of attachment message parts"}
 @Return {value:"Returns array of MessageAttachment"}
 function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
-    returns @tainted MessageAttachment[] {
+                                                                                returns @tainted MessageAttachment[] {
     MessageAttachment[] attachmentParts = msgAttachments;
-    MessagePartHeader contentDispositionHeader =
-    getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-    string[] headerParts = contentDispositionHeader.value.split(";");
-    string disposition = headerParts[0];
+    string disposition = "";
+    if (messagePayload.headers != ()){
+        MessagePartHeader contentDispositionHeader =
+        getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+        string[] headerParts = contentDispositionHeader.value.split(";");
+        disposition = headerParts[0];
+    }
     string messagePayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
         attachmentParts[lengthof attachmentParts] = convertJsonMsgPartToMsgAttachment(messagePayload);
     } //Else if is any multipart/*
-    else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != null)) {
+    else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
         json messageParts = messagePayload.parts;
         if (lengthof messageParts != 0) {
             //Iterate each child parts of the parent mime part
@@ -97,12 +100,15 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
 @Return {value:"Returns GMailError if unsuccessful"}
 //Extract inline image MIME message parts from the email
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
-    returns @tainted MessageBodyPart[]|GMailError {
+                                                                        returns @tainted MessageBodyPart[]|GMailError {
     MessageBodyPart[] inlineImgParts = inlineMailImages;
-    MessagePartHeader contentDispositionHeader =
-    getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-    string[] headerParts = contentDispositionHeader.value.split(";");
-    string disposition = headerParts[0];
+    string disposition = "";
+    if (messagePayload.headers != ()){
+        MessagePartHeader contentDispositionHeader =
+        getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+        string[] headerParts = contentDispositionHeader.value.split(";");
+        disposition = headerParts[0];
+    }
     string messagePayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
     //If parent mime part is image/* and it is inline
     if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
@@ -111,7 +117,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
             GMailError err => return err;
         }
     } //Else if is any multipart/*
-    else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != null)) {
+    else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
         json messageParts = messagePayload.parts;
         if (lengthof messageParts != 0) {
             //Iterate each child parts of the parent mime part
@@ -123,7 +129,6 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
                 }
             }
         }
-
     }
     return inlineImgParts;
 }
@@ -137,12 +142,15 @@ otherwise it will return with first found matching message part"}
 @Return {value:"Returns array of MessageBodyPart"}
 @Return {value:"Returns GMailError if unsuccessful"}
 function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePayload)
-    returns @tainted MessageBodyPart|GMailError {
+                                                                        returns @tainted MessageBodyPart|GMailError {
     MessageBodyPart msgBodyPart = new ();
-    MessagePartHeader contentDispositionHeader =
-    getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-    string[] headerParts = contentDispositionHeader.value.split(";");
-    string disposition = headerParts[0];
+    string disposition = "";
+    if (messagePayload.headers != ()){
+        MessagePartHeader contentDispositionHeader =
+        getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+        string[] headerParts = contentDispositionHeader.value.split(";");
+        disposition = headerParts[0];
+    }
     string messageBodyPayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
     //If parent mime part is given mime type and not an attachment or an inline part
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
@@ -151,7 +159,7 @@ function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePa
             GMailError err => return err;
         }
     } //Else if is any multipart/*
-    else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != null)) {
+    else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
         json messageParts = messagePayload.parts;
         if (lengthof messageParts != 0) {
             //Iterate each child parts of the parent mime part
@@ -285,6 +293,7 @@ function convertToMsgPartHeaders(json jsonMsgPartHeaders) returns MessagePartHea
         msgPartHeaders[i] = convertJsonToMesagePartHeader(jsonHeader);
         i++;
     }
+
     return msgPartHeaders;
 }
 
