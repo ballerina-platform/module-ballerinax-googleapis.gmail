@@ -343,7 +343,7 @@ function encodeFile(string filePath) returns (string|GMailError) {
         mime:Base64EncodeError err => {
             GMailError gMailError = {};
             gMailError.errorMessage = "Error occured while base64 encoding blob";
-            gMailError.cause[0] = err;
+            gMailError.cause = err.cause;
             return gMailError;
         }
     }
@@ -380,7 +380,7 @@ function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int
         (blob, int)readChannel => (bytes, numberOfBytesRead) = readChannel;
         io:IOError e => {
             GMailError gMailError = {};
-            gMailError.cause[0] = e;
+            gMailError.cause = e.cause;
             gMailError.errorMessage = "Error occured while reading byte channel";
             return gMailError;
         }
