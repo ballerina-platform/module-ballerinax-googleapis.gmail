@@ -18,19 +18,26 @@ import ballerina/io;
 import ballerina/http;
 import ballerina/log;
 import ballerina/test;
+import ballerina/config;
+
+string url = setConfParams(config:getAsString("ENDPOINT"));
+string accessToken = setConfParams(config:getAsString("ACCESS_TOKEN"));
+string clientId = setConfParams(config:getAsString("CLIENT_ID"));
+string clientSecret = setConfParams(config:getAsString("CLIENT_SECRET"));
+string refreshToken = setConfParams(config:getAsString("REFRESH_TOKEN"));
+string refreshTokenEndpoint = setConfParams(config:getAsString("REFRESH_TOKEN_ENDPOINT"));
+string refreshTokenPath = setConfParams(config:getAsString("REFRESH_TOKEN_PATH"));
 
 endpoint GMailClient gMailEP {
     oAuth2ClientConfig:{
-        accessToken:"",
-        clientId:"",
-        clientSecret:"",
-        refreshToken:"",
-        refreshTokenEP:REFRESH_TOKEN_EP,
-        refreshTokenPath:REFRESH_TOKEN_PATH,
-        baseUrl:BASE_URL,
-        clientConfig:{},
-        useUriParams:true,
-        setCredentialsInHeader:false
+        accessToken:accessToken,
+        baseUrl:url,
+        clientId:clientId,
+        clientSecret:clientSecret,
+        refreshToken:refreshToken,
+        refreshTokenEP:refreshTokenEndpoint,
+        refreshTokenPath:refreshTokenPath,
+        clientConfig:{}
     }
 };
 
@@ -90,7 +97,6 @@ function testSendSimpleMail() {
         }
         GMailError e => test:assertFail(msg = e.errorMessage);
     }
-
 }
 
 @test:Config {
@@ -138,7 +144,7 @@ function testSendHtmlInlineImage() {
 
     match mail.setContent(inlineImagePath, imageContentType) {
         boolean imgInlineSetStatus => test:assertTrue(imgInlineSetStatus,
-            msg = "Set Html Content and inline image Failed");
+                                                            msg = "Set Html Content and inline image Failed");
         GMailError er => test:assertFail(msg = er.errorMessage);
     }
     //----Send the mail----
@@ -222,8 +228,7 @@ function testListAllMails() {
     SearchFilter filter = {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"", pageToken:"", q:""};
     var msgList = gMailEP -> listAllMails("me", filter);
     match msgList {
-        MessageListPage list => test:assertTrue(lengthof list.messages != 0,
-            msg = "List messages in inbox failed");
+        MessageListPage list => test:assertTrue(lengthof list.messages != 0, msg = "List messages in inbox failed");
         GMailError e => test:assertFail(msg = e.errorMessage);
     }
 }
@@ -403,5 +408,17 @@ function testgetUserProfile() {
     match profile {
         UserProfile p => test:assertTrue(p.emailAddress != null, msg = "Get User Profile failed");
         GMailError e => test:assertFail(msg = e.errorMessage);
+    }
+}
+
+function setConfParams(string|() confParam) returns string {
+    match confParam {
+        string param => {
+            return param;
+        }
+        () => {
+            log:printInfo("Empty value, found nil!!");
+            return "";
+        }
     }
 }
