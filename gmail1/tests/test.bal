@@ -58,165 +58,80 @@ string sentTextMailId;
 //Thread id of text mail which will be sent from testSendSimpleMail()
 string sentTextMailThreadId;
 //Mail id of the html mail which will be sent from testSendHtml()
-string sentHtmlMailId = "";
-//Message id of mail with attachment which will be sent from testSendWithAttachment()
-string sentAttachmentMailId;
+string sentHtmlMailId;
 //Attachment id of attachment which will be sent from testSendWithAttachment()
 string readAttachmentFileId;
 
-function createMail() {
-    mail = new ();
-    //Create a simple mail with text content
-    log:printInfo("createMessage()");
-    //-----Define the email parameters------
-    string subject = "Email-Subject";
-    string messageBody = "Email Test Body";
+@test:Config {
+    groups:["TextMailTestGroup"]
+}
+function testSendTextMail() {
+    string subject = "Text-Email-Subject";
+    string messageBody = "Text Message Body";
     MessageOptions options = {};
     options.sender = sender;
     options.cc = cc;
-    mail.createMessage(recipient, subject, messageBody, options);
-}
-
-@test:Config {
-    before:"createMail",
-    groups:["sendMailTestGroup", "simpleTextMailTestGroup"]
-}
-function testSendSimpleMail() {
-    //Send a simple mail with text content
-    log:printInfo("testSendSimpleMail");
-    log:printInfo("gMailEP -> sendMessage()");
-    var sendMessageResponse = gMailEP -> sendMessage(userId, mail);
-    string messageId;
-    string threadId;
-    match sendMessageResponse {
-        (string, string)sendStatus => {
-            (messageId, threadId) = sendStatus;
-            sentTextMailId = messageId;
-            sentTextMailThreadId = threadId;
-            test:assertTrue(messageId != null && threadId != null, msg = "Send Simple text Message Failed");
-        }
+    Message m = new Message();
+    log:printInfo("testSendHTMLMail");
+    log:printInfo("createTextMessage()");
+    m.createTextMessage(recipient, subject, messageBody, options);
+    log:printInfo("addAttachment()");
+    match m.addAttachment(attachmentPath, attachmentContentType) {
         GMailError e => test:assertFail(msg = e.errorMessage);
-    }
-}
-
-@test:Config {
-    before:"createMail",
-    groups:["sendMailTestGroup", "htmlMailTestGroup"]
-}
-function testSendHtml() {
-    //Send a html mail with html content
-    //----Set Html content----
-    string htmlBody = "<h1> Email Test Html Body </h1>";
-    match mail.setContent(htmlBody, "text/html") {
-        boolean htmlSetStatus => test:assertTrue(htmlSetStatus, msg = "Set Html Content Failed");
-        GMailError er => test:assertFail(msg = er.errorMessage);
-    }
-    //----Send the mail----
-    log:printInfo("testSendHtml");
-    log:printInfo("gMailEP -> sendMessage()");
-    string messageId;
-    string threadId;
-    var sendMessageResponse = gMailEP -> sendMessage(userId, mail);
-    match sendMessageResponse {
-        (string, string)sendStatus => {
-            (messageId, threadId) = sendStatus;
-            sentHtmlMailId = messageId;
-            test:assertTrue(messageId != null && threadId != null, msg = "Send HTML message failed");
+        () => {
+            log:printInfo("gMailEP -> sendMessage()");
+            var sendMessageResponse = gMailEP -> sendMessage(userId, m);
+            string messageId;
+            string threadId;
+            match sendMessageResponse {
+                (string, string)sendStatus => {
+                    (messageId, threadId) = sendStatus;
+                    sentTextMailId = messageId;
+                    sentTextMailThreadId = threadId;
+                    test:assertTrue(messageId != () && threadId != (), msg = "Send Text Message Failed");
+                }
+                GMailError e => test:assertFail(msg = e.errorMessage);
+            }
         }
-        GMailError e => test:assertFail(msg = e.errorMessage);
     }
 }
 
 @test:Config {
-    before:"createMail",
-    groups:["sendMailTestGroup"]
+    groups:["htmlMailTestGroup"]
 }
-function testSendHtmlInlineImage() {
-    //Send a html mail with html content and inline image
-    //----Set Html content----
-    //If you are sending an inline image, create a html body email and put the image into the body by using <img> tag.
-    //Give the src value as "cid:image-<Your image name with extension>".
+function testSendHTMLMail() {
+    string subject = "HTML-Email-Subject";
+    MessageOptions options = {};
+    options.sender = sender;
+    options.cc = cc;
+    Message m = new Message();
     string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
-    match mail.setContent(htmlBody, "text/html") {
-        boolean htmlSetStatus => test:assertTrue(htmlSetStatus, msg = "Set Html Content Failed");
-        GMailError er => test:assertFail(msg = er.errorMessage);
-    }
-
-    match mail.setContent(inlineImagePath, imageContentType) {
-        boolean imgInlineSetStatus => test:assertTrue(imgInlineSetStatus,
-                                                            msg = "Set Html Content and inline image Failed");
-        GMailError er => test:assertFail(msg = er.errorMessage);
-    }
-    //----Send the mail----
-    log:printInfo("testSendHtmlInlineImage");
-    log:printInfo("gMailEP -> sendMessage()");
-    var sendMessageResponse = gMailEP -> sendMessage(userId, mail);
-    string messageId;
-    string threadId;
-    match sendMessageResponse {
-        (string, string)sendStatus => {
-            (messageId, threadId) = sendStatus;
-            test:assertTrue(messageId != null && threadId != null, msg = "Send HTML message failed");
+    InlineImage[] images = [{imagePath:inlineImagePath, contentType:imageContentType}];
+    log:printInfo("testSendHTMLMail");
+    log:printInfo("createHTMLMessage()");
+    match m.createHTMLMessage(recipient, subject, htmlBody, options, images){
+        GMailError e => test:assertFail(msg = e.errorMessage);
+        () => {
+            log:printInfo("addAttachment()");
+            match m.addAttachment(attachmentPath, attachmentContentType) {
+                GMailError e => test:assertFail(msg = e.errorMessage);
+                () => {
+                    //----Send the mail----
+                    log:printInfo("gMailEP -> sendMessage()");
+                    var sendMessageResponse = gMailEP -> sendMessage(userId, m);
+                    string messageId;
+                    string threadId;
+                    match sendMessageResponse {
+                        (string, string)sendStatus => {
+                            (messageId, threadId) = sendStatus;
+                            sentHtmlMailId = messageId;
+                            test:assertTrue(messageId != () && threadId != (), msg = "Send HTML message failed");
+                        }
+                        GMailError e => test:assertFail(msg = e.errorMessage);
+                    }
+                }
+            }
         }
-        GMailError e => test:assertFail(msg = e.errorMessage);
-    }
-}
-
-@test:Config {
-    before:"createMail",
-    groups:["sendMailTestGroup", "mailWithAttachmentTestGroup"]
-}
-function testSendWithAttachment() {
-    //Send a mail with text content and attachment
-    //----Add Attachment----
-    match mail.addAttachment(attachmentPath, attachmentContentType) {
-        boolean attachStatus => test:assertTrue(attachStatus, msg = "Add attachment Failed");
-        GMailError e => test:assertFail(msg = e.errorMessage);
-    }
-    //----Send the mail----
-    log:printInfo("testSendWithAttachment");
-    log:printInfo("gMailEP -> sendMessage()");
-    var sendMessageResponse = gMailEP -> sendMessage(userId, mail);
-    string messageId;
-    string threadId;
-    match sendMessageResponse {
-        (string, string)sendStatus => {
-            (messageId, threadId) = sendStatus;
-            sentAttachmentMailId = messageId;
-            test:assertTrue(messageId != null && threadId != null, msg = "Send HTML message with attachment failed");
-        }
-        GMailError e => test:assertFail(msg = e.errorMessage);
-    }
-}
-
-@test:Config {
-    before:"createMail",
-    groups:["sendMailTestGroup"]
-}
-function testSendHtmlWithAttachment() {
-    //Send a html mail with html content and attachment
-    //----Set Html content----
-    string htmlBody = "<h1> Email Test Html Body </h1>";
-    match mail.setContent(htmlBody, "text/html") {
-        boolean htmlSetStatus => test:assertTrue(htmlSetStatus, msg = "Set Html Content Failed");
-        GMailError er => test:assertFail(msg = er.errorMessage);
-    }
-    //----Add Attachment----
-    match mail.addAttachment(attachmentPath, attachmentContentType) {
-        boolean attachStatus => test:assertTrue(attachStatus, msg = "Add attachment Failed");
-        GMailError er => test:assertFail(msg = er.errorMessage);
-    }
-    //----Send the mail----
-    log:printInfo("testSendHtmlWithAttachment");
-    log:printInfo("gMailEP -> sendMessage()");
-    var sendMessageResponse = gMailEP -> sendMessage(userId, mail);
-    string messageId;
-    string threadId;
-    match sendMessageResponse {
-        (string, string)sendStatus => {(messageId, threadId) = sendStatus;
-        test:assertTrue(messageId != null && threadId != null, msg = "Send HTML message with attachment failed");
-        }
-        GMailError e => test:assertFail(msg = e.errorMessage);
     }
 }
 
@@ -234,48 +149,48 @@ function testListAllMails() {
 }
 
 @test:Config {
-    dependsOn:["testSendSimpleMail"],
-    groups:["simpleTextMailTestGroup"]
+    dependsOn:["testSendTextMail"],
+    groups:["TextMailTestGroup"]
 }
 function testReadTextMail() {
     //Read mail with message id which sent in testSendSimpleMail
     log:printInfo("testReadTextMail");
     log:printInfo("gMailEP -> readMail()");
     GetMessageThreadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
-    var reponse = gMailEP -> readMail(userId, sentTextMailId, filter);
+    var reponse = gMailEP -> readMail(userId, sentHtmlMailId, filter);
     match reponse {
-        Message m => test:assertEquals(m.id, sentTextMailId, msg = "Read text mail failed");
+        Message m => test:assertEquals(m.id, sentHtmlMailId, msg = "Read text mail failed");
         GMailError e => test:assertFail(msg = e.errorMessage);
     }
 }
 
 @test:Config {
-    dependsOn:["testSendWithAttachment"],
-    groups:["mailWithAttachmentTestGroup"]
+    dependsOn:["testSendHTMLMail"],
+    groups:["htmlMailTestGroup"]
 }
-function testReadMailWithAttachment() {
+function testReadHTMLMailWithAttachment() {
     //Read mail with message id which sent in testSendWithAttachment
     log:printInfo("testReadMailWithAttachment");
     log:printInfo("gMailEP -> readMail()");
     GetMessageThreadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
-    var response = gMailEP -> readMail(userId, sentAttachmentMailId, filter);
+    var response = gMailEP -> readMail(userId, sentHtmlMailId, filter);
     match response {
         Message m => {
             readAttachmentFileId = m.msgAttachments[0].attachmentFileId;
-            test:assertEquals(m.id, sentAttachmentMailId, msg = "Read mail with attachment failed");
+            test:assertEquals(m.id, sentHtmlMailId, msg = "Read mail with attachment failed");
         }
         GMailError e => test:assertFail(msg = e.errorMessage);
     }
 }
 
 @test:Config {
-    dependsOn:["testReadMailWithAttachment"],
-    groups:["mailWithAttachmentTestGroup"]
+    dependsOn:["testReadHTMLMailWithAttachment"],
+    groups:["htmlMailTestGroup"]
 }
 function testgetAttachment() {
     log:printInfo("testgetAttachment");
     log:printInfo("gMailEP -> getAttachment()");
-    var attachment = gMailEP -> getAttachment(userId, sentAttachmentMailId, readAttachmentFileId);
+    var attachment = gMailEP -> getAttachment(userId, sentHtmlMailId, readAttachmentFileId);
     match attachment {
         GMailError e => test:assertFail(msg = e.errorMessage);
         MessageAttachment attach => {
@@ -286,7 +201,7 @@ function testgetAttachment() {
 }
 
 @test:Config {
-    dependsOn:["testSendHtml"],
+    dependsOn:["testgetAttachment"],
     groups:["htmlMailTestGroup"]
 }
 function testTrashMail() {
@@ -342,7 +257,7 @@ function testListAllThreads() {
 
 @test:Config {
     dependsOn:["testReadTextMail"],
-    groups:["simpleTextMailTestGroup"]
+    groups:["TextMailTestGroup"]
 }
 function testReadThread() {
     log:printInfo("testReadThread");
@@ -357,7 +272,7 @@ function testReadThread() {
 
 @test:Config {
     dependsOn:["testReadThread"],
-    groups:["simpleTextMailTestGroup"]
+    groups:["TextMailTestGroup"]
 }
 function testTrashThread() {
     log:printInfo("testTrashThread");
@@ -371,7 +286,7 @@ function testTrashThread() {
 
 @test:Config {
     dependsOn:["testTrashThread"],
-    groups:["simpleTextMailTestGroup"]
+    groups:["TextMailTestGroup"]
 }
 function testUnTrashThread() {
     log:printInfo("testUnTrashThread");
@@ -386,7 +301,7 @@ function testUnTrashThread() {
 
 @test:Config {
     dependsOn:["testUnTrashThread"],
-    groups:["simpleTextMailTestGroup"]
+    groups:["TextMailTestGroup"]
 }
 function testDeleteThread() {
     log:printInfo("testDeleteThread");
@@ -406,7 +321,7 @@ function testgetUserProfile() {
     log:printInfo("gMailEP -> getUserProfile()");
     var profile = gMailEP -> getUserProfile(userId);
     match profile {
-        UserProfile p => test:assertTrue(p.emailAddress != null, msg = "Get User Profile failed");
+        UserProfile p => test:assertTrue(p.emailAddress != (), msg = "Get User Profile failed");
         GMailError e => test:assertFail(msg = e.errorMessage);
     }
 }
