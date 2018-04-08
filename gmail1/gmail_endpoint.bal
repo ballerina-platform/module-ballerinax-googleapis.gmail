@@ -53,7 +53,6 @@ public type GMailClient object {
     public function stop() {
 
     }
-
 };
 
 @Description {value:"Type to set the GMail configuration."}

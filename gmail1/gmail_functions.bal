@@ -51,7 +51,8 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
             string decodeString => decodedBody = decodeString;
             util:Base64DecodeError err => {
                 GMailError gMailError = {};
-                gMailError.errorMessage = err.message;
+                gMailError.errorMessage = "Error occured while base64 decoding text/* message body";
+                gMailError.cause[0] = err;
                 return gMailError;
             }
         }
@@ -64,7 +65,7 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
 @Param {value:"msgAttachments: intial array of attachment message parts"}
 @Return {value:"Returns array of MessageAttachment"}
 function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
-                                                                                returns @tainted MessageAttachment[] {
+    returns @tainted MessageAttachment[] {
     MessageAttachment[] attachmentParts = msgAttachments;
     MessagePartHeader contentDispositionHeader =
     getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
@@ -96,7 +97,7 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
 @Return {value:"Returns GMailError if unsuccessful"}
 //Extract inline image MIME message parts from the email
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
-                                                        returns @tainted MessageBodyPart[]|GMailError {
+    returns @tainted MessageBodyPart[]|GMailError {
     MessageBodyPart[] inlineImgParts = inlineMailImages;
     MessagePartHeader contentDispositionHeader =
     getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
@@ -136,7 +137,7 @@ otherwise it will return with first found matching message part"}
 @Return {value:"Returns array of MessageBodyPart"}
 @Return {value:"Returns GMailError if unsuccessful"}
 function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePayload)
-                                                                        returns @tainted MessageBodyPart|GMailError {
+    returns @tainted MessageBodyPart|GMailError {
     MessageBodyPart msgBodyPart = new ();
     MessagePartHeader contentDispositionHeader =
     getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
@@ -327,7 +328,7 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 @Return {value:"Returns the encoded string"}
 @Return {value:"Returns IOError if there's any error while performaing I/O operation"}
 @Return {value:"Returns Base64EncodeError if fails to encode"}
-function encodeFile(string filePath) returns (string|io:IOError|mime:Base64EncodeError) {
+function encodeFile(string filePath) returns (string|GMailError) {
     io:ByteChannel fileChannel = getFileChannel(filePath, "r");
     int bytesChunk = BYTES_CHUNK;
     blob readContent;
@@ -335,11 +336,16 @@ function encodeFile(string filePath) returns (string|io:IOError|mime:Base64Encod
     string encodedFile;
     match readBytes(fileChannel, bytesChunk) {
         (blob, int)readChannel => (readContent, readCount) = readChannel;
-        io:IOError err => return err;
+        GMailError err => return err;
     }
     match mime:base64EncodeBlob(readContent) {
         blob blobEncode => encodedFile = blobEncode.toString(UTF_8);
-        mime:Base64EncodeError err => return err;
+        mime:Base64EncodeError err => {
+            GMailError gMailError = {};
+            gMailError.errorMessage = "Error occured while base64 encoding blob";
+            gMailError.cause[0] = err;
+            return gMailError;
+        }
     }
     return encodedFile;
 }
@@ -367,12 +373,17 @@ function getFileChannel(string filePath, string permission) returns (io:ByteChan
 @Return {value:"The bytes which were read"}
 @Return {value:"Number of bytes read"}
 @Return {value:"Returns IOError if there's any error while performaing I/O operation"}
-function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int)|io:IOError {
+function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int)|GMailError {
     blob bytes;
     int numberOfBytesRead;
     match channel.read(numberOfBytes) {
         (blob, int)readChannel => (bytes, numberOfBytesRead) = readChannel;
-        io:IOError e => return e;
+        io:IOError e => {
+            GMailError gMailError = {};
+            gMailError.cause[0] = e;
+            gMailError.errorMessage = "Error occured while reading byte channel";
+            return gMailError;
+        }
     }
     return (bytes, numberOfBytesRead);
 }

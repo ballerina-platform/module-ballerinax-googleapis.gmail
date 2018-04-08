@@ -19,25 +19,25 @@ import ballerina/io;
 
 @Description {value:"Record to define the UserProfile"}
 public type UserProfile {
-    //The user's email address
+//The user's email address
     string emailAddress;
-    //The total number of messages in the mailbox
+//The total number of messages in the mailbox
     string messagesTotal;
-    //The total number of threads in the mailbox
+//The total number of threads in the mailbox
     string threadsTotal;
-    //The ID of the mailbox's current history record
+//The ID of the mailbox's current history record
     string historyId;
 };
 
 @Description {value:"Record to define the threads resource"}
 public type Thread {
-    //The unique ID of the thread
+//The unique ID of the thread
     string id;
-    //A short part of the message text
+//A short part of the message text
     string snippet;
-    //The ID of the last history record that modified this thread
+//The ID of the last history record that modified this thread
     string historyId;
-    //The list of messages in the thread
+//The list of messages in the thread
     Message[] messages;
 };
 
@@ -123,7 +123,7 @@ public type Message object {
         //Set the plain text type MIME Message body part of the message
         self.plainTextBodyPart.setMessageBody(bodyText, TEXT_PLAIN);
         self.plainTextBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_PLAIN + ";" + CHARSET + "=\"" + UTF_8 +
-                                                                                                                "\""}];
+        "\""}];
         self.plainTextBodyPart.mimeType = TEXT_PLAIN;
     }
 
@@ -135,28 +135,24 @@ public type Message object {
     @Return {value:"Returns true if the content is set successfully"}
     @Return {value:"Returns GMailError if the content type is not supported"}
     public function setContent (string content, string contentType) returns (boolean|GMailError) {
+        if (contentType == EMPTY_STRING){
+            GMailError gMailError = {};
+            gMailError.errorMessage = "content type cannot be empty";
+            return gMailError;
+        }
         //If the mime type of the content is text/html
         if (isMimeType(contentType, TEXT_HTML)) {
             //Set the html body part of the message
             self.htmlBodyPart.mimeType = TEXT_HTML;
             self.htmlBodyPart.setMessageBody(content, contentType);
             self.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + ";" + CHARSET + "=\"" + UTF_8 +
-                                                                                                                "\""}];
+            "\""}];
         } else if (isMimeType(contentType, IMAGE_ANY)) {
             string encodedFile;
             //Open and encode the image file into base64. Return an IOError if fails.
             match encodeFile(content) {
                 string eFile => encodedFile = eFile;
-                io:IOError ioError => {
-                    GMailError gMailError = {};
-                    gMailError.errorMessage = ioError.message;
-                    return gMailError;
-                }
-                mime:Base64EncodeError encodeError => {
-                    GMailError gMailError = {};
-                    gMailError.errorMessage = encodeError.message;
-                    return gMailError;
-                }
+                GMailError gMailError => return gMailError;
             }
             //Set the inline image body part of the message
             MessageBodyPart inlineImgBody = new ();
@@ -187,20 +183,20 @@ public type Message object {
     @Return {value:"Returns true if the attachment process is success"}
     @Return {value:"Returns IOError if there's any error while performaing I/O operation"}
     public function addAttachment (string filePath, string contentType) returns boolean|GMailError {
+        if (contentType == EMPTY_STRING){
+            GMailError gMailError = {};
+            gMailError.errorMessage = "content type of attachment cannot be empty";
+            return gMailError;
+        } else if (filePath == EMPTY_STRING){
+            GMailError gMailError = {};
+            gMailError.errorMessage = "file path of attachment cannot be empty";
+            return gMailError;
+        }
         string encodedFile;
         //Open and encode the file into base64. Return an IOError if fails.
         match encodeFile(filePath) {
             string eFile => encodedFile = eFile;
-            io:IOError ioError => {
-                GMailError gMailError = {};
-                gMailError.errorMessage = ioError.message;
-                return gMailError;
-            }
-            mime:Base64EncodeError encodeError => {
-                GMailError gMailError = {};
-                gMailError.errorMessage = encodeError.message;
-                return gMailError;
-            }
+            GMailError gMailError => return gMailError;
         }
         MessageAttachment attachment = new ();
         attachment.mimeType = contentType;
@@ -295,6 +291,7 @@ public type MessagePartHeader {
 public type GMailError {
     string errorMessage;
     int statusCode;
+    error[] cause;
 };
 
 @Description {value:"Type to define the optional parameters which are used to create a mail."}
@@ -306,47 +303,47 @@ public type MessageOptions {
 
 @Description {value:"Type to define the optional search message filter fields"}
 public type SearchFilter {
-    //Includes messages/threads from SPAM and TRASH in the results
+//Includes messages/threads from SPAM and TRASH in the results
     boolean includeSpamTrash;
-    //Only return messages/threads with labels that match all of the specified label IDs
+//Only return messages/threads with labels that match all of the specified label IDs
     string[] labelIds;
-    //Maximum number of messages/threads to return in the page for a single request
+//Maximum number of messages/threads to return in the page for a single request
     string maxResults;
-    //Page token to retrieve a specific page of results in the list
+//Page token to retrieve a specific page of results in the list
     string pageToken;
-    //Only returns messages/threads matching the specified query.
-    //Supports the same query format as the GMail search box
+//Only returns messages/threads matching the specified query.
+//Supports the same query format as the GMail search box
     string q;
 };
 
 @Description {value:"Type to define the optional get message filter fields"}
 public type GetMessageThreadFilter {
-    //Acceptable values for format for a get message/thread request are:
-    //"full": Returns the full email message data with body content parsed in the payload field;
-    //the raw field is not used. (default)
-    //"metadata": Returns only email message ID, labels, and email headers.
-    //"minimal": Returns only email message ID and labels; does not return the email headers, body, or payload.
-    //"raw": Returns the full email message data with body content in the raw field as a base64url encoded string;
-    //the payload field is not used."}
+//Acceptable values for format for a get message/thread request are:
+//"full": Returns the full email message data with body content parsed in the payload field;
+//the raw field is not used. (default)
+//"metadata": Returns only email message ID, labels, and email headers.
+//"minimal": Returns only email message ID and labels; does not return the email headers, body, or payload.
+//"raw": Returns the full email message data with body content in the raw field as a base64url encoded string;
+//the payload field is not used."}
     string format;
-    //metaDataHeaders: when given and format is METADATA, only include the metadDataHeaders specified.
+//metaDataHeaders: when given and format is METADATA, only include the metadDataHeaders specified.
     string[] metadataHeaders;
 };
 
 @Description {value:"Type to define a page of message list"}
 public type MessageListPage {
     Message[] messages;
-    //Estimated size of the whole list
+//Estimated size of the whole list
     string resultSizeEstimate;
-    //Token for next page of message list
+//Token for next page of message list
     string nextPageToken;
 };
 
 @Description {value:"Type to define a page of thread list"}
 public type ThreadListPage {
     Thread[] threads;
-    //Estimated size of the whole list
+//Estimated size of the whole list
     string resultSizeEstimate;
-    //Token for next page of thread list
+//Token for next page of thread list
     string nextPageToken;
 };
