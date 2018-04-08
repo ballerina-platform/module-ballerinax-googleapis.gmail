@@ -29,6 +29,7 @@ public type GMailClient object {
 
     @Description {value:"Initialize the gMail endpoint"}
     public function init(GMailConfiguration gMailConfig) {
+        gMailConfig.oAuth2ClientConfig.useUriParams = true;
         self.oauthEP.init(gMailConfig.oAuth2ClientConfig);
         self.gMailConnector.oauthEndpoint = self.oauthEP;
     }
