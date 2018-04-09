@@ -18,7 +18,7 @@ import ballerina/http;
 import wso2/oauth2;
 
 @Description {value:"GMail Endpoint type."}
-public type GMailClient object {
+public type Client object {
     public {
         oauth2:OAuth2Client oauthEP;
         GMailConfiguration gMailConfig;

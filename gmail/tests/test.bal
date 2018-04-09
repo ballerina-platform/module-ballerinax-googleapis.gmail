@@ -28,7 +28,7 @@ string refreshToken = setConfParams(config:getAsString("REFRESH_TOKEN"));
 string refreshTokenEndpoint = setConfParams(config:getAsString("REFRESH_TOKEN_ENDPOINT"));
 string refreshTokenPath = setConfParams(config:getAsString("REFRESH_TOKEN_PATH"));
 
-endpoint GMailClient gMailEP {
+endpoint Client gMailEP {
     oAuth2ClientConfig:{
         accessToken:accessToken,
         baseUrl:url,
