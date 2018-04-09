@@ -6,10 +6,26 @@
 Ballerina GMail connector allows you to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/) and perfom actions like creating and sending a simple text mail, mail
 with html content and inline images, mail with attachments, search and get mail etc.
 
+Following are the gmail api methods supported by the current version
+
+* Send Message
+* Get Message
+* Delete Message
+* Trash Message
+* Untrash Message
+* List Messages
+* Get Message Attachment
+* List Threads
+* Get Thread
+* Delete Thread
+* Trash Thread
+* Untrash Thread
+* Get User Profile
+
 ## Compatibility
 | Language Version        | Connector Version          |
 | ------------- |:-------------:|
-| ballerina-tools-0.970.0-alpha1-SNAPSHOT     | 0.6 | 
+| ballerina-tools-0.970.0-alpha1-SNAPSHOT     | 0.8 | 
 
 
 ### Getting started
