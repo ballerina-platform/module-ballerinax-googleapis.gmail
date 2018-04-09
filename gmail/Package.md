@@ -1,15 +1,31 @@
-# Ballerina Gmail Connector
+# Ballerina GMail Connector
 
 [Gmail](https://www.google.com/gmail/) is a free, Web-based e-mail service provided by Google.
 ### Why would you use a Ballerina connector for Gmail
 
-Ballerina Gmail connector allows you to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/) and perfom actions like creating and sending a simple text mail, mail
+Ballerina GMail connector allows you to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/) and perfom actions like creating and sending a simple text mail, mail
 with html content and inline images, mail with attachments, search and get mail etc.
+
+Following are the gmail api methods supported by the current version
+
+* Send Message
+* Get Message
+* Delete Message
+* Trash Message
+* Untrash Message
+* List Messages
+* Get Message Attachment
+* List Threads
+* Get Thread
+* Delete Thread
+* Trash Thread
+* Untrash Thread
+* Get User Profile
 
 ## Compatibility
 | Language Version        | Connector Version          |
 | ------------- |:-------------:|
-| ballerina-tools-0.970.0-alpha1-SNAPSHOT     | 0.6 | 
+| ballerina-tools-0.970.0-alpha1-SNAPSHOT     | 0.8.0 | 
 
 ### Getting started
 
@@ -41,4 +57,5 @@ git clone https://github.com/wso2-ballerina/package-gmail
     * Refresh Token Endpoint (https://www.googleapis.com)
     * Refresh Token Path (/oauth2/v3/token)
     
-Please note that gmail connector has already defined base url, refresh token endpoint and refresh token path as constant strings for you to use   
+*Please note that ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path are optional if you using only access token.
+*Similary, please note that access token is optional if you are using only ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path.

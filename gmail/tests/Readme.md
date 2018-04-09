@@ -2,7 +2,7 @@
 
 | Ballerina Version         | Connector Version         | API Version |
 | ------------------------- | ------------------------- | ------------|
-| ballerina-tools-0.970.0-alpha1-SNAPSHOT  | 0.6   |   v1     |
+| ballerina-tools-0.970.0-alpha1-SNAPSHOT  | 0.8.0   |   v1     |
 
 ### Prerequisites
 Get Access Token and Refresh Token for Gmail
@@ -24,54 +24,52 @@ Get Access Token and Refresh Token for Gmail
     * Refresh Token Endpoint (https://www.googleapis.com)
     * Refresh Token Path (/oauth2/v3/token)
     
-Please note that gmail connector has already defined base url, refresh token endpoint and refresh token path as constant strings for you to use.   
-
-IMPORTANT: This access token and refresh token can be used to make API requests on your own account's behalf. Do not share your access token, client secret with anyone.
-
-
 ### Working with Gmail REST connector.
 
 In order to use the Gmail connector, first you need to create a Gmail endpoint by passing above mentioned parameters.
 
 Visit `test.bal` file to find the way of creating Gmail endpoint.
-#### Gmail struct
-```ballerina
-public struct GmailConnector {
-    oauth2:OAuth2Endpoint oauthEndpoint;
-}
-```
-#### Gmail Endpoint
-```ballerina
-public struct GmailEndpoint {
-    oauth2:OAuth2Endpoint oauthEP;
-    GmailConfiguration gmailConfig;
-    GmailConnector gmailConnector;
-}
-```
-#### init() function
-```ballerina
-public function <GmailEndpoint ep> init (GmailConfiguration gmailConfig) {
-    ep.oauthEP.init(gmailConfig.oauthClientConfig);
-    ep.gmailConnector.oauthEndpoint = ep.oauthEP;
-}
-```
+
 #### Running gmail tests
-Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal
+In order to run the tests, the user will need to have a Gmail account and configure the `ballerina.conf` configuration
+file with the obtained tokens.
+
+###### ballerina.conf
+```ballerina.conf
+ENDPOINT="enter your endpoint here"
+ACCESS_TOKEN="enter your access token here"
+CLIENT_ID="enter your client id here"
+CLIENT_SECRET="enter your client secret here"
+REFRESH_TOKEN="enter your refresh token here"
+REFRESH_TOKEN_ENDPOINT="enter your refresh token endpoint here"
+REFRESH_TOKEN_PATH="enter your refresh token path here"
+```
+
+Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal in either way following,
 ```ballerina
-endpoint GmailEndpoint gmailEP {
-    oauthClientConfig:{
-        accessToken:"",
-        clientId:"",
-        clientSecret:"",
-        refreshToken:"",
-        refreshTokenEP: REFRESH_TOKEN_EP,
-        refreshTokenPath: REFRESH_TOKEN_PATH,
-        baseUrl: BASE_URL,
-        clientConfig:{},
-        useUriParams:true
+endpoint Client gMailEP {
+    oAuth2ClientConfig:{
+        accessToken:accessToken,
+        baseUrl:url,
+        clientConfig:{}
     }
 };
 ```
+
+```ballerina
+endpoint Client gMailEP {
+    oAuth2ClientConfig:{
+        baseUrl:url,
+        clientId:clientId,
+        clientSecret:clientSecret,
+        refreshToken:refreshToken,
+        refreshTokenEP:refreshTokenEndpoint,
+        refreshTokenPath:refreshTokenPath,
+        clientConfig:{}
+    }
+};
+```
+
 Assign values for the following variables defined at the top in test.bal file.
 * recipient (Example: "recipient@gmail.com")
 * sender (Example: "sender@gmail.com")
@@ -83,8 +81,9 @@ Assign values for the following variables defined at the top in test.bal file.
 * imageContentType (Example: "image/jpeg")
 
 Run tests :
+
 ```
 ballerina init
-ballerina test gmail1
+ballerina test gmail
 ```
  

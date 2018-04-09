@@ -18,9 +18,9 @@ import ballerina/http;
 import wso2/oauth2;
 
 @Description {value:"GMail Endpoint type."}
-public type GMailClient object {
+public type Client object {
     public {
-        oauth2:OAuth2Client oauthEP;
+        oauth2:Client oauthEP;
         GMailConfiguration gMailConfig;
         GMailConnector gMailConnector;
     }
@@ -58,5 +58,5 @@ public type GMailClient object {
 
 @Description {value:"Type to set the GMail configuration."}
 public type GMailConfiguration {
-    oauth2:OAuth2ClientEndpointConfig oAuth2ClientConfig;
+    oauth2:OAuth2ClientEndpointConfiguration oAuth2ClientConfig;
 };
