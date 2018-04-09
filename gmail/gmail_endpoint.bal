@@ -58,5 +58,5 @@ public type Client object {
 
 @Description {value:"Type to set the GMail configuration."}
 public type GMailConfiguration {
-    oauth2:OAuth2ClientEndpointConfig oAuth2ClientConfig;
+    oauth2:OAuth2ClientEndpointConfiguration oAuth2ClientConfig;
 };
