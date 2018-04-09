@@ -723,3 +723,131 @@ public type GMailConnector object {
         return profile;
     }
 };
+
+@Description {value:"Create the raw base 64 encoded string of the whole message and send the email from the user's
+    mailbox to its recipient."}
+@Param {value:"userId: User's email address. The special value -> me"}
+@Param {value:"message: Message to send"}
+@Return {value:"Returns the message id of the successfully sent message"}
+@Return {value:"Returns the thread id of the succesfully sent message"}
+@Return {value:"Returns GMailError if the message is not sent successfully"}
+public function sendMessage2(string userId, Message message) returns (string, string)|GMailError {
+    endpoint oauth2:OAuth2Client oauthEP = self.oauthEndpoint;
+
+    //string concatRequest = EMPTY_STRING;
+    ////Set the general headers of the message
+    //concatRequest += TO + ":" + message.headerTo.value + NEW_LINE;
+    //concatRequest += SUBJECT + ":" + message.headerSubject.value + NEW_LINE;
+    //
+    //if (message.headerFrom.value != EMPTY_STRING) {
+    //    concatRequest += FROM + ":" + message.headerFrom.value + NEW_LINE;
+    //}
+    //if (message.headerCc.value != EMPTY_STRING) {
+    //    concatRequest += CC + ":" + message.headerCc.value + NEW_LINE;
+    //}
+    //if (message.headerBcc.value != EMPTY_STRING) {
+    //    concatRequest += BCC + ":" + message.headerBcc.value + NEW_LINE;
+    //}
+    ////------Start of multipart/mixed mime part (parent mime part)------
+    ////Set the content type header of top level MIME message part
+    //concatRequest += message.headerContentType.name + ":" + message.headerContentType.value + NEW_LINE;
+    //concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
+    ////------Start of multipart/related mime part------
+    //concatRequest += CONTENT_TYPE + ":" + MULTIPART_RELATED + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_1 +
+    //"\"" + NEW_LINE;
+    //concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
+    ////------Start of multipart/alternative mime part------
+    //concatRequest += CONTENT_TYPE + ":" + MULTIPART_ALTERNATIVE + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_2 +
+    //"\"" + NEW_LINE;
+    ////Set the body part : text/plain
+    //if (message.plainTextBodyPart.body != ""){
+    //    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+    //    foreach header in message.plainTextBodyPart.bodyHeaders {
+    //        concatRequest += header.name + ":" + header.value + NEW_LINE;
+    //    }
+    //    concatRequest += NEW_LINE + message.plainTextBodyPart.body + NEW_LINE;
+    //}
+    ////Set the body part : text/html
+    //if (message.htmlBodyPart.body != "") {
+    //    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+    //    foreach header in message.htmlBodyPart.bodyHeaders {
+    //        concatRequest += header.name + ":" + header.value + NEW_LINE;
+    //    }
+    //    concatRequest += NEW_LINE + message.htmlBodyPart.body + NEW_LINE + NEW_LINE;
+    //    concatRequest += "--" + BOUNDARY_STRING_2 + "--";
+    //}
+    ////------End of multipart/alternative mime part------
+    ////Set inline Images as body parts
+    //boolean isExistInlineImageBody = false;
+    //foreach inlineImagePart in message.inlineImgParts {
+    //    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
+    //    foreach header in inlineImagePart.bodyHeaders {
+    //        concatRequest += header.name + ":" + header.value + NEW_LINE;
+    //    }
+    //    concatRequest += NEW_LINE + inlineImagePart.body + NEW_LINE + NEW_LINE;
+    //    isExistInlineImageBody = true;
+    //}
+    //if (isExistInlineImageBody) {
+    //    concatRequest += "--" + BOUNDARY_STRING_1 + "--" + NEW_LINE;
+    //}
+    ////------End of multipart/related mime part------
+    ////Set attachments
+    //boolean isExistAttachment = false;
+    //foreach attachment in message.msgAttachments {
+    //    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
+    //    foreach header in attachment.attachmentHeaders {
+    //        concatRequest += header.name + ":" + header.value + NEW_LINE;
+    //    }
+    //    concatRequest += NEW_LINE + attachment.attachmentBody + NEW_LINE + NEW_LINE;
+    //    isExistAttachment = true;
+    //}
+    //if (isExistInlineImageBody) {
+    //    concatRequest += "--" + BOUNDARY_STRING + "--";
+    //}
+    string encodedRequest;
+    //------End of multipart/mixed mime part------
+    match (util:base64EncodeString(concatRequest)){
+        string encodeString => encodedRequest = encodeString;
+        util:Base64EncodeError err => {
+            GMailError gMailError = {};
+            gMailError.errorMessage = err.message;
+            return gMailError;
+        }
+    }
+    encodedRequest = encodedRequest.replace("+", "-").replace("/", "_");
+    //Set the encoded message as raw
+    message.raw = encodedRequest;
+    http:Request request = new ();
+    GMailError gMailError = {};
+    string msgId;
+    string threadId;
+    json jsonPayload = {"raw":message.raw};
+    string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
+    request.setJsonPayload(jsonPayload);
+    request.setHeader(CONTENT_TYPE, APPLICATION_JSON);
+    try {
+        var postResponse = oauthEP -> post(sendMessagePath, request);
+        http:Response response = check postResponse;
+        var jsonResponse = response.getJsonPayload();
+        json jsonSendMessageResponse = check jsonResponse;
+        if (response.statusCode == STATUS_CODE_200_OK) {
+            msgId = jsonSendMessageResponse.id.toString() but { () => EMPTY_STRING };
+            threadId = jsonSendMessageResponse.threadId.toString() but { () => EMPTY_STRING };
+        } else {
+            gMailError.errorMessage = jsonSendMessageResponse.error.message.toString() but { () => EMPTY_STRING };
+            gMailError.statusCode = response.statusCode;
+            return gMailError;
+        }
+    } catch (http:HttpConnectorError connectErr){
+        gMailError.cause = connectErr.cause;
+        gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+        + "; message: " + connectErr.message;
+        gMailError.statusCode = connectErr.statusCode;
+        return gMailError;
+    } catch (http:PayloadError err){
+        gMailError.errorMessage = "Error occured while receiving Json Payload";
+        gMailError.cause = err.cause;
+        return gMailError;
+    }
+    return (msgId, threadId);
+}

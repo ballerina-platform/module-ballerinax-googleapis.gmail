@@ -85,6 +85,6 @@ Assign values for the following variables defined at the top in test.bal file.
 Run tests :
 ```
 ballerina init
-ballerina test gmail1
+ballerina test gmail
 ```
  
