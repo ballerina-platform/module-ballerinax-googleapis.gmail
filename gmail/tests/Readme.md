@@ -2,7 +2,7 @@
 
 | Ballerina Version         | Connector Version         | API Version |
 | ------------------------- | ------------------------- | ------------|
-| ballerina-tools-0.970.0-alpha1-SNAPSHOT  | 0.8   |   v1     |
+| ballerina-tools-0.970.0-alpha1-SNAPSHOT  | 0.8.0   |   v1     |
 
 ### Prerequisites
 Get Access Token and Refresh Token for Gmail

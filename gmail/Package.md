@@ -25,7 +25,7 @@ Following are the gmail api methods supported by the current version
 ## Compatibility
 | Language Version        | Connector Version          |
 | ------------- |:-------------:|
-| ballerina-tools-0.970.0-alpha1-SNAPSHOT     | 0.8 | 
+| ballerina-tools-0.970.0-alpha1-SNAPSHOT     | 0.8.0 | 
 
 ### Getting started
 
