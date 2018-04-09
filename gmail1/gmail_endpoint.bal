@@ -14,50 +14,49 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package gmail1;
-
 import ballerina/http;
 import wso2/oauth2;
 
-@Description {value:"Struct to set the Gmail configuration."}
-public struct GmailConfiguration {
-    oauth2:OAuth2Configuration oauthClientConfig;
-}
+@Description {value:"GMail Endpoint type."}
+public type GMailClient object {
+    public {
+        oauth2:OAuth2Client oauthEP;
+        GMailConfiguration gMailConfig;
+        GMailConnector gMailConnector;
+    }
 
-@Description {value:"Set the client configuration."}
-public function <GmailConfiguration gmailConfig> GmailConfiguration () {
-    gmailConfig.oauthClientConfig = {};
-}
+    new () {}
 
-@Description {value:"Gmail Endpoint struct."}
-public struct GmailEndpoint {
-    oauth2:OAuth2Endpoint oauthEP;
-    GmailConfiguration gmailConfig;
-    GmailConnector gmailConnector;
-}
+    @Description {value:"Initialize the gMail endpoint"}
+    public function init(GMailConfiguration gMailConfig) {
+        gMailConfig.oAuth2ClientConfig.useUriParams = true;
+        self.oauthEP.init(gMailConfig.oAuth2ClientConfig);
+        self.gMailConnector.oauthEndpoint = self.oauthEP;
+    }
 
-@Description {value:"Initialize the gmail endpoint"}
-public function <GmailEndpoint ep> init (GmailConfiguration gmailConfig) {
-    ep.oauthEP.init(gmailConfig.oauthClientConfig);
-    ep.gmailConnector.oauthEndpoint = ep.oauthEP;
-}
 
-public function <GmailEndpoint ep> register (typedesc serviceType) {
+    public function register(typedesc serviceType) {
 
-}
+    }
 
-public function <GmailEndpoint ep> start () {
+    public function start() {
 
-}
+    }
 
-@Description {value:"Returns the connector that client code uses"}
-@Return {value:"The connector that client code uses"}
-public function <GmailEndpoint ep> getClient () returns GmailConnector {
-    return ep.gmailConnector;
-}
+    @Description {value:"Returns the connector that client code uses"}
+    @Return {value:"The connector that client code uses"}
+    public function getClient() returns GMailConnector {
+        return self.gMailConnector;
+    }
 
-@Description {value:"Stops the registered service"}
-@Return {value:"Error occured during registration"}
-public function <GmailEndpoint ep> stop () {
+    @Description {value:"Stops the registered service"}
+    @Return {value:"Error occured during registration"}
+    public function stop() {
 
-}
+    }
+};
+
+@Description {value:"Type to set the GMail configuration."}
+public type GMailConfiguration {
+    oauth2:OAuth2ClientEndpointConfig oAuth2ClientConfig;
+};
