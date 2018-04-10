@@ -52,7 +52,7 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
             util:Base64DecodeError err => {
                 GMailError gMailError = {};
                 gMailError.errorMessage = "Error occured while base64 decoding text/* message body";
-                gMailError.cause[0] = err;
+                gMailError.cause = err;
                 return gMailError;
             }
         }
