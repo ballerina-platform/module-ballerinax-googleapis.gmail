@@ -60,7 +60,7 @@ public type GMailConnector object {
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonlistMsgResponse = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 int i = 0;
                 if (jsonlistMsgResponse.messages != ()) {
                     messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate.toString() but {
@@ -205,7 +205,7 @@ public type GMailConnector object {
             http:Response response = check postResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonSendMessageResponse = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 msgId = jsonSendMessageResponse.id.toString() but { () => EMPTY_STRING };
                 threadId = jsonSendMessageResponse.threadId.toString() but { () => EMPTY_STRING };
             } else {
@@ -254,7 +254,7 @@ public type GMailConnector object {
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonMail = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 //Transform the json mail response from GMail API to Message type
                 match (convertJsonMailToMessage(jsonMail)){
                     Message m => message = m;
@@ -299,7 +299,7 @@ public type GMailConnector object {
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonAttachment = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 //Transform the json mail response from GMail API to MessageAttachment type
                 attachment = convertJsonMessageBodyToMsgAttachment(jsonAttachment);
             }
@@ -340,7 +340,7 @@ public type GMailConnector object {
             http:Response response = check postResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonTrashMailResponse = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 trashMailResponse = true;
             }
             else {
@@ -380,7 +380,7 @@ public type GMailConnector object {
             http:Response response = check postResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonUntrashMailResponse = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 untrashMailResponse = true;
             }
             else {
@@ -416,7 +416,7 @@ public type GMailConnector object {
         try {
             var deleteResponse = oauthEP -> delete(deleteMailPath, request);
             http:Response response = check deleteResponse;
-            if (response.statusCode == STATUS_CODE_204_NO_CONTENT) {
+            if (response.statusCode == http:NO_CONTENT_204) {
                 deleteMailResponse = true;
             }
             else {
@@ -475,7 +475,7 @@ public type GMailConnector object {
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonlistThreadResponse = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 if (jsonlistThreadResponse.threads != ()) {
                     threadListPage.resultSizeEstimate = jsonlistThreadResponse.resultSizeEstimate.toString() but {
                         () => EMPTY_STRING };
@@ -542,7 +542,7 @@ public type GMailConnector object {
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonThread = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 //Transform the json mail response from GMail API to Thread type
                 match convertJsonThreadToThreadType(jsonThread){
                     Thread t => thread = t;
@@ -586,7 +586,7 @@ public type GMailConnector object {
             http:Response response = check postRespone;
             var jsonResponse = response.getJsonPayload();
             json jsonTrashThreadResponse = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 trashThreadReponse = true;
             }
             else {
@@ -626,7 +626,7 @@ public type GMailConnector object {
             http:Response response = check postResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonUntrashThreadResponse = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 untrashThreadReponse = true;
             } else {
                 gMailError.errorMessage = jsonUntrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
@@ -661,7 +661,7 @@ public type GMailConnector object {
         try {
             var deleteResponse = oauthEP -> delete(deleteThreadPath, request);
             http:Response response = check deleteResponse;
-            if (response.statusCode == STATUS_CODE_204_NO_CONTENT) {
+            if (response.statusCode == http:NO_CONTENT_204) {
                 deleteThreadResponse = true;
             }
             else {
@@ -700,7 +700,7 @@ public type GMailConnector object {
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonProfile = check jsonResponse;
-            if (response.statusCode == STATUS_CODE_200_OK) {
+            if (response.statusCode == http:OK_200) {
                 //Transform the json profile response from GMail API to User Profile type
                 profile = convertJsonProfileToUserProfileType(jsonProfile);
             }
