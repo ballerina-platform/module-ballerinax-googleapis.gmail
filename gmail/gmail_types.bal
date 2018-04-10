@@ -313,7 +313,7 @@ public type MessagePartHeader {
 public type GMailError {
     string errorMessage;
     int statusCode;
-    error[] cause;
+    error? cause;
 };
 
 @Description {value:"Type to define the optional parameters which are used to create a mail."}
