@@ -20,7 +20,7 @@ import wso2/oauth2;
 @Description {value:"GMail Endpoint type."}
 public type Client object {
     public {
-        oauth2:Client oauthEP;
+        oauth2:APIClient oauthEP;
         GMailConfiguration gMailConfig;
         GMailConnector gMailConnector;
     }

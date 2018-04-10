@@ -57,5 +57,5 @@ git clone https://github.com/wso2-ballerina/package-gmail
     * Refresh Token Endpoint (https://www.googleapis.com)
     * Refresh Token Path (/oauth2/v3/token)
     
-*Please note that ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path are optional if you using only access token.
-*Similary, please note that access token is optional if you are using only ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path.
+* Please note that ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path are optional if you are using access token only.
+* Similary, please note that access token is optional if you are using only ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path.

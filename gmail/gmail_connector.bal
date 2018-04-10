@@ -22,7 +22,7 @@ import wso2/oauth2;
 @Field {value:"oauthEndpoint: OAuth2Client used in GMail connector"}
 public type GMailConnector object {
     public {
-        oauth2:Client oauthEndpoint;
+        oauth2:APIClient oauthEndpoint;
     }
 
     @Description {value:"List the messages in user's mailbox"}
@@ -32,7 +32,7 @@ public type GMailConnector object {
     @Return {value:"MessageListPage type with array of messages, size estimation and next page token"}
     @Return {value:"GMailError is thrown if any error occurs in sending the request and receiving the response"}
     public function listAllMails(string userId, SearchFilter filter) returns (MessageListPage|GMailError) {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         GMailError gMailError = {};
         MessageListPage messageListPage = {};
         http:Request request = new ();
@@ -108,7 +108,7 @@ public type GMailConnector object {
     @Return {value:"Returns the thread id of the succesfully sent message"}
     @Return {value:"Returns GMailError if the message is not sent successfully"}
     public function sendMessage(string userId, Message message) returns (string, string)|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         string concatRequest = EMPTY_STRING;
         //Set the general headers of the message
         concatRequest += TO + ":" + message.headerTo.value + NEW_LINE;
@@ -236,7 +236,7 @@ public type GMailConnector object {
     @Return {value:"Returns GMailError if the message cannot be read successfully"}
     public function readMail(string userId, string messageId, GetMessageThreadFilter filter)
                                                                                         returns (Message)|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         Message message = new ();
@@ -288,7 +288,7 @@ public type GMailConnector object {
     @Return {value:"Returns GMailError if the attachment read is not successful"}
     public function getAttachment(string userId, string messageId, string attachmentId)
                                                                                 returns (MessageAttachment)|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         MessageAttachment attachment = new ();
@@ -328,7 +328,7 @@ public type GMailConnector object {
     @Return {value:"Returns true if trashing the message is successful"}
     @Return {value:"Returns GMailError if trashing is not successdul"}
     public function trashMail(string userId, string messageId) returns boolean|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         json jsonPayload = {};
@@ -368,7 +368,7 @@ public type GMailConnector object {
     @Return {value:"Returns true if untrashing the message is successful"}
     @Return {value:"Returns GMailError if untrashing is not successdul"}
     public function untrashMail(string userId, string messageId) returns boolean|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         json jsonPayload = {};
@@ -408,7 +408,7 @@ public type GMailConnector object {
     @Return {value:"Returns true if deleting the message is successful"}
     @Return {value:"Returns GMailError if deleting is not successdul"}
     public function deleteMail(string userId, string messageId) returns boolean|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         string deleteMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId;
@@ -447,7 +447,7 @@ public type GMailConnector object {
     @Return {value:"ThreadListPage type with thread list, result set size estimation and next page token"}
     @Return {value:"GMailError is thrown if any error occurs in sending the request and receiving the response"}
     public function listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         ThreadListPage threadListPage = {};
@@ -523,7 +523,7 @@ public type GMailConnector object {
     @Return {value:"Returns GMailError if the thread cannot be read successfully"}
     public function readThread(string userId, string threadId, GetMessageThreadFilter filter)
                                                                                         returns (Thread)|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         Thread thread = {};
@@ -574,7 +574,7 @@ public type GMailConnector object {
     @Return {value:"Returns true if trashing the thrad is successful"}
     @Return {value:"Returns GMailError if trashing is not successdul"}
     public function trashThread(string userId, string threadId) returns boolean|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         json jsonPayload = {};
@@ -614,7 +614,7 @@ public type GMailConnector object {
     @Return {value:"Returns true if untrashing the thread is successful"}
     @Return {value:"Returns GMailError if untrashing is not successdul"}
     public function untrashThread(string userId, string threadId) returns boolean|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         json jsonPayload = {};
@@ -653,7 +653,7 @@ public type GMailConnector object {
     @Return {value:"Returns true if deleting the thread is successful"}
     @Return {value:"Returns GMailError if deleting is not successdul"}
     public function deleteThread(string userId, string threadId) returns boolean|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         GMailError gMailError = {};
         string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId;
@@ -690,7 +690,7 @@ public type GMailConnector object {
     @Return {value:"Returns UserProfile type if success"}
     @Return {value:"Returns GMailError if unsuccessful"}
     public function getUserProfile(string userId) returns UserProfile|GMailError {
-        endpoint oauth2:Client oauthEP = self.oauthEndpoint;
+        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
         UserProfile profile = {};
         GMailError gMailError = {};
