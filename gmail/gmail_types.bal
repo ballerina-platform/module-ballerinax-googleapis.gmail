@@ -274,7 +274,6 @@ documentation{
     F{{partId}} - The part id of the message part.
     F{{size}} - Number of bytes of message part data.
 }
-@Description {value:"Type to define the MIME Message Body Part"}
 public type MessageBodyPart object {
     public {
         string body;
@@ -286,116 +285,158 @@ public type MessageBodyPart object {
         @readonly string size;
     }
 
-    @Description {value:"set the values of message body part of an email "}
-    @Param {value:"body: body of the message part. This could be plain text, html content or encoded inline image"}
-    @Param {value:"mimeType: mime type of message part"}
+    documentation{
+        Sets the values of message body part of an email
+        P{{body}} - Body of the message part
+        P{{mimeType}} - The mime type of the message part
+    }
     function setMessageBody (string body, string mimeType) {
         self.body = body;
         self.mimeType = mimeType;
     }
 };
+documentation{
+        Represents Message Part with an attachment
 
-@Description {value:"Type to define the MIME Message Part which represents an attachment"}
+        F{{attachmentFileId}} - The file id of the attachment in the message.
+        F{{attachmentBody}} - Base 64 encoded attachment body of the Message Part. *This is empty when the attachment
+                              body data is sent as a seperate attachment*
+        F{{size}} - Size of the attachment message part.
+        F{{attachmentFileName}} - File name of the attachment in the message.
+        F{{mimeType}} - Mime Type of the message part.
+        F{{attachmentHeaders}} - Headers of message part.
+        F{{partId}} - Part Id of the message part
+}
 public type MessageAttachment object {
     public {
-        //File ID of the attachment in the message.
         string attachmentFileId;
-        //Attachment body of the MIME Message Part encoded with base64
-        //This is empty when the attachment body data is sent as a seperate attachment
         string attachmentBody;
-        //Size of the attachment message part
         string size;
-        //File name of the attachment in the message
         string attachmentFileName;
-        //Mime Type of the MIME message part which represent the attachment
         string mimeType;
-        //Headers of MIME Message Part representing the attachment
         MessagePartHeader[] attachmentHeaders;
-    }
-    private {
-        //Part Id of the message part
-        string partId;
+        @readonly string partId;
     }
 
-    //Functions binded to MessageAttachment type
+    documentation{
+        Sets the values of an attachment part of an email.
 
-    @Description {value:"set the values of an attachment part of an email "}
-    @Param {value:"encodedAttachment: body of the attachment."}
-    @Param {value:"mimeType: mime type of the attachment"}
+        P{{encodedAttachment}} - Body of the attachment
+        P{{mimeType}} -  The mime type of the attachment
+    }
     function setAttachment (string encodedAttachment, string mimeType) {
         self.attachmentBody = encodedAttachment;
         self.mimeType = mimeType;
     }
 };
 
-@Description {value:"Type to define the message part header"}
+documentation{
+    Represents message part header
+
+    F{{name}} - Header name
+    F{{value}} - Header value
+}
 public type MessagePartHeader {
     string name;
     string value;
 };
 
-@Description {value:"Type to define message error"}
+documentation{
+    Represents GMail error
+
+    F{{errorMessage}} - GMail error message
+    F{{cause}} - The error which caused the GMail error
+    F{{statusCode}} - The error status code
+}
 public type GMailError {
     string errorMessage;
     int statusCode;
     error? cause;
 };
 
-@Description {value:"Type to define the optional parameters which are used to create a mail."}
+documentation{
+    Represents the optional parameters which are used to create a mail.
+
+    F{{sender}} - Sender of the mail
+    F{{cc}} - Cc recepient of the mail
+    F{{bcc}} - Bcc recepient of the mail
+}
 public type MessageOptions {
     string sender;
     string cc;
     string bcc;
 };
 
-@Description {value:"Type to define the optional search message filter fields"}
+documentation{
+    Represents the optional search message filter fields.
+
+    F{{includeSpamTrash}} - Specifies whether to include messages/threads from SPAM and TRASH in the results.
+    F{{labelIds}} - Array of label ids. *Only return messages/threads with labels that match all of the specified
+                    label Ids*
+    F{{maxResults}} - Maximum number of messages/threads to return in the page for a single request.
+    F{{pageToken}} - Page token to retrieve a specific page of results in the list.
+    F{{q}} - Query for searching messages/threads. *Only returns messages/threads matching the specified query. Supports
+             the same query format as the GMail search box.*
+}
 public type SearchFilter {
-    //Includes messages/threads from SPAM and TRASH in the results
     boolean includeSpamTrash;
-    //Only return messages/threads with labels that match all of the specified label IDs
     string[] labelIds;
-    //Maximum number of messages/threads to return in the page for a single request
     string maxResults;
-    //Page token to retrieve a specific page of results in the list
     string pageToken;
-    //Only returns messages/threads matching the specified query.
-    //Supports the same query format as the GMail search box
     string q;
 };
 
-@Description {value:"Type to define the optional get message filter fields"}
+documentation{
+    Represents the optional message filter fields in get message api call.
+
+    F{{format}} - Format of the get message/thread response.
+                    *Acceptable values for format for a get message/thread request are:
+                        * "full": Returns the full email message data with body content parsed in the payload field;
+                                  the raw field is not used. (default)
+                        * "metadata": Returns only email message ID, labels, and email headers.
+                        * "minimal": Returns only email message ID and labels; does not return the email headers, body,
+                                     or payload.
+                        * "raw": Returns the full email message data with body content in the raw field as a base64url
+                                 encoded string. (the payload field is not included in the response)*
+    F{{metadataHeaders}} - The meta data headers array to include in the reponse when the format is given as *METADATA*.
+}
 public type MessageThreadFilter {
-    //Acceptable values for format for a get message/thread request are:
-    //"full": Returns the full email message data with body content parsed in the payload field;
-    //the raw field is not used. (default)
-    //"metadata": Returns only email message ID, labels, and email headers.
-    //"minimal": Returns only email message ID and labels; does not return the email headers, body, or payload.
-    //"raw": Returns the full email message data with body content in the raw field as a base64url encoded string;
-    //the payload field is not used."}
     string format;
-    //metaDataHeaders: when given and format is METADATA, only include the metadDataHeaders specified.
     string[] metadataHeaders;
 };
 
-@Description {value:"Type to define a page of message list"}
+documentation{
+    Represents a page of the message list received as reponse for list messages api call
+
+    F{{messages}} - Message list in the page
+    F{{resultSizeEstimate}} - Estimated size of the whole list
+    F{{nextPageToken}} - Token for next page of message list
+}
 public type MessageListPage {
     Message[] messages;
-    //Estimated size of the whole list
     string resultSizeEstimate;
-    //Token for next page of message list
     string nextPageToken;
 };
 
-@Description {value:"Type to define a page of thread list"}
+documentation{
+    Represents a page of the mail thread list received as reponse for list threads api call
+
+    F{{threads}} - Thread list in the page
+    F{{resultSizeEstimate}} - Estimated size of the whole list
+    F{{nextPageToken}} - Token for next page of mail thread list
+}
 public type ThreadListPage {
     Thread[] threads;
-    //Estimated size of the whole list
     string resultSizeEstimate;
-    //Token for next page of thread list
     string nextPageToken;
 };
 
-@Description {value:"Type to define inline image of an email"}
+documentation{
+    Represents an inline image of an email.
+
+    F{{imagePath}} - The file path of the image.
+    F{{contentType}} - The content type of the image.
+}
 public type InlineImage {
     string imagePath;
     string contentType;
