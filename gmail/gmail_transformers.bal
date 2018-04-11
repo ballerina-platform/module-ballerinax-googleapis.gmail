@@ -18,10 +18,13 @@ import ballerina/io;
 
 //All the transformers that transform required json to types and vice versa
 
-@Description {value:"Transform JSON Mail into Message type"}
-@Param {value:"sourceMailJsonObject: json mail object"}
-@Return {value:"Message type object"}
-@Return {value:"Returns GMailError if conversion unsuccesful"}
+documentation{
+    Transforms JSON mail object into Message type object.
+
+    P{{sourceMailJsonObject}} - Json mail object
+    R{{targetMessageType}} - Returns Message type object if the conversion successful.
+    R{{gMailError}} - Returns GMailError if the conversion is unsuccessful.
+}
 function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMailError {
     Message targetMessageType = new ();
     targetMessageType.id = sourceMailJsonObject.id.toString() but { () => EMPTY_STRING };
@@ -54,15 +57,15 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
     if (sourceMailJsonObject.payload != ()){
         match getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload){
             MessageBodyPart body => targetMessageType.plainTextBodyPart = body;
-            GMailError err => return err;
+            GMailError gmailError => return gmailError;
         }
         match getMessageBodyPartFromPayloadByMimeType(TEXT_HTML, sourceMailJsonObject.payload){
             MessageBodyPart body => targetMessageType.htmlBodyPart = body;
-            GMailError err => return err;
+            GMailError gmailError => return gmailError;
         }
         match getInlineImgPartsFromPayloadByMimeType(sourceMailJsonObject.payload, []){
             MessageBodyPart[] bodyParts => targetMessageType.inlineImgParts = bodyParts;
-            GMailError err => return err;
+            GMailError gmailError => return gmailError;
         }
     }
     targetMessageType.msgAttachments = sourceMailJsonObject.payload != () ?
@@ -70,17 +73,20 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
     return targetMessageType;
 }
 
-@Description {value:"Transform MIME Message Part JSON into MessageBody type"}
-@Param {value:"sourceMessagePartJsonObject: json message part object"}
-@Return {value:"MessageBodyPart type object"}
-@Return {value:"Returns GMailError if conversion unsuccesful"}
+documentation{
+    Transforms MIME Message Part Json into MessageBody type object.
+
+    P{{sourceMessagePartJsonObject}} - Json message part object
+    R{{targetMessageBodyType}} - Returns MessageBodyPart type object if the conversion successful.
+    R{{gMailError}} - Returns GMailError if conversion unsuccesful.
+}
 function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GMailError {
     MessageBodyPart targetMessageBodyType = new ();
     if (sourceMessagePartJsonObject != ()){
         targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId.toString() but { () => EMPTY_STRING };
         match decodeMsgBodyData(sourceMessagePartJsonObject){
             string decodeBody => targetMessageBodyType.body = decodeBody;
-            GMailError err => return err;
+            GMailError gMailError => return gMailError;
         }
         targetMessageBodyType.size = sourceMessagePartJsonObject.body.size.toString() but { () => EMPTY_STRING };
         targetMessageBodyType.mimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
@@ -92,9 +98,12 @@ function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) r
     return targetMessageBodyType;
 }
 
-@Description {value:"Transform MIME Message Part JSON into MessageAttachment type"}
-@Param {value:"sourceMessagePartJsonObject: json message part object"}
-@Return {value:"MessageAttachment type object"}
+documentation{
+    Transforms MIME Message Part JSON into MessageAttachment type object.
+
+    P{{sourceMessagePartJsonObject}} - Json message part object
+    R{{targetMessageAttachmentType}}- Returns MessageAttachment type object.
+}
 function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) returns MessageAttachment {
     MessageAttachment targetMessageAttachmentType = new ();
     targetMessageAttachmentType.attachmentFileId = sourceMessagePartJsonObject.body.attachmentId.toString() but {
@@ -111,9 +120,12 @@ function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) ret
     return targetMessageAttachmentType;
 }
 
-@Description {value:"Transform MIME Message Part Header into MessagePartHeader type"}
-@Param {value:"sourceMessagePartHeader: json message part header object"}
-@Return {value:"MessagePartHeader type object"}
+documentation{
+    Transforms MIME Message Part Header into MessagePartHeader type.
+
+    P{{sourceMessagePartHeader}} - Json message part header object
+    R{{targetMessagePartHeader}} - Returns MessagePartHeader type.
+}
 function convertJsonToMesagePartHeader(json sourceMessagePartHeader) returns MessagePartHeader {
     MessagePartHeader targetMessagePartHeader = {};
     targetMessagePartHeader.name = sourceMessagePartHeader.name.toString() but { () => EMPTY_STRING };
@@ -121,9 +133,12 @@ function convertJsonToMesagePartHeader(json sourceMessagePartHeader) returns Mes
     return targetMessagePartHeader;
 }
 
-@Description {value:"Transform single body of MIME Message part into MessageAttachment type"}
-@Param {value:"sourceMessageBodyJsonObject: json message body object"}
-@Return {value:"MessageAttachment type object"}
+documentation{
+    Transforms single body of MIME Message part into MessageAttachment type object.
+
+    P{{sourceMessageBodyJsonObject}} - Json message body object
+    R{{targetMessageAttachmentType}} - Returns MessageAttachment type object.
+}
 function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageAttachment {
     MessageAttachment targetMessageAttachmentType = new ();
     targetMessageAttachmentType.attachmentFileId = sourceMessageBodyJsonObject.attachmentId.toString() but {
@@ -134,10 +149,13 @@ function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject)
     return targetMessageAttachmentType;
 }
 
-@Description {value:"Transform thread JSON object into Thread type"}
-@Param {value:"sourceThreadJsonObject: json message thread object"}
-@Return {value:"Thread type object"}
-@Return {value:"Returns GMailError if conversion unsuccesful"}
+documentation{
+    Transforms mail thread Json object into Thread type
+
+    P{{sourceThreadJsonObject}} - Json message thread object
+    R{{targetThreadType}} - Returns Thread type
+    R{{gMailError}} - Returns GMailError if conversion is unsuccessful.
+}
 function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GMailError{
     Thread targetThreadType = {};
     targetThreadType.id = sourceThreadJsonObject.id.toString() but { () => EMPTY_STRING };
@@ -151,9 +169,12 @@ function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thre
     return targetThreadType;
 }
 
-@Description {value:"Transform user profile JSON object into UserProfile type"}
-@Param {value:"sourceUserProfileJsonObject: json user profile object"}
-@Return {value:"UserProfile type object"}
+documentation{
+    Transforms user profile json object into UserProfile type.
+
+    P{{sourceUserProfileJsonObject}} - Json user profile object
+    R{{targetUserProfile}} - UserProfile type
+}
 function convertJsonProfileToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
     UserProfile targetUserProfile = {};
     targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress.toString() but { () => EMPTY_STRING };
