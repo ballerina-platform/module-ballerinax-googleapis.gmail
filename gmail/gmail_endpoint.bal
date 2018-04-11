@@ -32,7 +32,7 @@ public type Client object {
     }
 
     documentation{
-        Gets called when the gMail endpoint is beign initialized
+        Gets called when the gMail endpoint is beign initialized.
 
         P{{gMailConfig}} - GMail connector configuration
     }
@@ -43,30 +43,30 @@ public type Client object {
     }
 
     documentation{
-        Register gMail connector endpoint
+        Register gMail connector endpoint.
 
-        P{{serviceType}} = The type of the service to be registered
+        P{{serviceType}} = The type of the service to be registered.
     }
     public function register(typedesc serviceType) {
 
     }
 
     documentation{
-        Starts the gMail connector endpoint
+        Starts the gMail connector endpoint.
     }
     public function start() {
 
     }
 
     documentation{
-        Returns the connector that client code uses
+        Returns the connector that client code uses.
     }
     public function getClient() returns GMailConnector {
         return self.gMailConnector;
     }
 
     documentation {
-        Stops the registered service
+        Stops the registered service.
     }
     public function stop() {
 
@@ -74,9 +74,9 @@ public type Client object {
 };
 
 documentation{
-    Represents the GMail client endpoint configuration
+    Represents the GMail client endpoint configuration.
 
-    F{{oAuth2ClientConfig}} - The OAuth2 Client endpoint configuration
+    F{{oAuth2ClientConfig}} - The OAuth2 Client endpoint configuration.
 }
 public type GMailConfiguration {
     oauth2:OAuth2ClientEndpointConfiguration oAuth2ClientConfig;
