@@ -37,8 +37,6 @@
 
 @final public string ERROR_CONNECTOR_NOT_INITALIZED = "Connector is not initalized. Invoke init method first.";
 @final public string ERROR_CONTENT_TYPE_UNSUPPORTED = "The given content type is unsupported to add to the body.";
-@final public int STATUS_CODE_200_OK = 200;
-@final public int STATUS_CODE_204_NO_CONTENT = 204;
 @final public string APPLICATION_JSON =  "Application/json";
 @final public string CONTENT_TYPE = "Content-Type";
 @final public string CONTENT_DISPOSITION = "Content-Disposition";

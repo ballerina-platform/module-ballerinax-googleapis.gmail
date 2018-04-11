@@ -52,7 +52,7 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
             util:Base64DecodeError err => {
                 GMailError gMailError = {};
                 gMailError.errorMessage = "Error occured while base64 decoding text/* message body";
-                gMailError.cause[0] = err;
+                gMailError.cause = err;
                 return gMailError;
             }
         }
@@ -143,7 +143,7 @@ otherwise it will return with first found matching message part"}
 @Return {value:"Returns GMailError if unsuccessful"}
 function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePayload)
                                                                         returns @tainted MessageBodyPart|GMailError {
-    MessageBodyPart msgBodyPart = new ();
+    MessageBodyPart msgBodyPart = new();
     string disposition = "";
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
@@ -340,22 +340,24 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 function encodeFile(string filePath) returns (string|GMailError) {
     io:ByteChannel fileChannel = getFileChannel(filePath, "r");
     int bytesChunk = BYTES_CHUNK;
-    blob readContent;
-    int readCount;
+    blob readEncodedContent;
+    int readEncodedCount;
     string encodedFile;
-    match readBytes(fileChannel, bytesChunk) {
-        (blob, int)readChannel => (readContent, readCount) = readChannel;
-        GMailError err => return err;
-    }
-    match mime:base64EncodeBlob(readContent) {
-        blob blobEncode => encodedFile = blobEncode.toString(UTF_8);
-        mime:Base64EncodeError err => {
+    match util:base64EncodeByteChannel(fileChannel){
+        io:ByteChannel encodedfileChannel => {
+            match readBytes(encodedfileChannel, bytesChunk) {
+                (blob, int) readEncodedChannel => (readEncodedContent, readEncodedCount) = readEncodedChannel;
+                GMailError err => return err;
+            }
+        }
+        util:Base64EncodeError err => {
             GMailError gMailError = {};
-            gMailError.errorMessage = "Error occured while base64 encoding blob";
+            gMailError.errorMessage = "Error occured while base64 encoding byte channel";
             gMailError.cause = err.cause;
             return gMailError;
         }
     }
+    encodedFile = readEncodedContent.toString(UTF_8);
     return encodedFile;
 }
 
@@ -386,7 +388,7 @@ function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int
     blob bytes;
     int numberOfBytesRead;
     match channel.read(numberOfBytes) {
-        (blob, int)readChannel => (bytes, numberOfBytesRead) = readChannel;
+        (blob, int) readChannel => (bytes, numberOfBytesRead) = readChannel;
         io:IOError e => {
             GMailError gMailError = {};
             gMailError.cause = e.cause;
