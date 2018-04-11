@@ -51,7 +51,6 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
                         getMsgPartHeaderContentType(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
     targetMessageType.mimeType = sourceMailJsonObject.payload.mimeType.toString() but { () => EMPTY_STRING };
     string payloadMimeType = sourceMailJsonObject.payload.mimeType.toString() but { () => EMPTY_STRING };
-                                            targetMessageType.isMultipart = isMimeType(payloadMimeType, MULTIPART_ANY);
     if (sourceMailJsonObject.payload != ()){
         match getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload){
             MessageBodyPart body => targetMessageType.plainTextBodyPart = body;

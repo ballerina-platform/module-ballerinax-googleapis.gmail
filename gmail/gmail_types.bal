@@ -17,43 +17,73 @@
 import ballerina/util;
 import ballerina/io;
 
-@Description {value:"Record to define the UserProfile"}
+documentation{
+    Represents GMail UserProfile.
+
+    F{{emailAddress}} - The user's email address.
+    F{{messagesTotal}} - The total number of messages in the mailbox.
+    F{{threadsTotal}} - The total number of threads in the mailbox.
+    F{{historyId}} - The ID of the mailbox's current history record.
+}
 public type UserProfile {
-    //The user's email address
-    string emailAddress;
-    //The total number of messages in the mailbox
-    string messagesTotal;
-    //The total number of threads in the mailbox
-    string threadsTotal;
-    //The ID of the mailbox's current history record
-    string historyId;
+    @readonly string emailAddress;
+    @readonly string messagesTotal;
+    @readonly string threadsTotal;
+    @readonly string historyId;
 };
 
-@Description {value:"Record to define the threads resource"}
+documentation{
+    Represents mail thread resource.
+
+    F{{id}} - The unique ID of the thread.
+    F{{snippet}} - A short part of the message text.
+    F{{historyId}} - The ID of the last history record that modified this thread.
+    F{{messages}} - The list of messages in the thread.
+}
 public type Thread {
-    //The unique ID of the thread
-    string id;
-    //A short part of the message text
-    string snippet;
-    //The ID of the last history record that modified this thread
-    string historyId;
-    //The list of messages in the thread
-    Message[] messages;
+    @readonly string id;
+    @readonly string snippet;
+    @readonly string historyId;
+    @readonly Message[] messages;
 };
 
-@Description {value:"Record to define the message resource"}
+documentation{
+    Represents message resource.
+
+    F{{threadId}} - Thread ID which the message belongs to.
+    F{{id}} - Message Id
+    F{{labelIds}} - The label ids of the message.
+    F{{raw}} - Represent the entire message in base64 encoded string
+    F{{snippet}} - Short part of the message text
+    F{{historyId}} - The id of the last history record that modified the message
+    F{{internalDate}} - The internal message creation timestamp(epoch ms)
+    F{{sizeEstimate}} - Estimated size of the message in bytes
+    F{{headers}} - The headers in the top level message part representing the entire message payload in a  standard RFC
+                   2822 message.
+    F{{headerTo}} - Email header **To**.
+    F{{headerFrom}} - Email header **From**.
+    F{{headerBcc}} - Email header **Bcc**.
+    F{{headerCc}} - Email header **Cc**.
+    F{{headerSubject}} - Email header **Subject**.
+    F{{headerDate}} - Email header **Date**.
+    F{{headerContentType}} - Email header **ContentType**.
+    F{{mimeType}} - MIME type of the top level message part.
+    F{{plainTextBodyPart}} - MIME Message Part with text/plain content type
+    F{{htmlBodyPart}} - MIME Message Part with text/html content type
+    F{{inlineImgParts}} - MIME Message Parts with inline images with the image/* content type
+    F{{msgAttachments}} - MIME Message Parts of the message consisting the attachments
+}
 public type Message object {
     public {
-        //Thread ID which the message belongs to
-        string threadId;
-        //Message Id
-        string id;
-        //The label ids of the message
-        string[] labelIds;
-        //The headers in the top level message part representing the entire message payload in a  standard RFC 2822
-        //message
+        @readonly string threadId;
+        @readonly string id;
+        @readonly string[] labelIds;
+        @readonly string raw;
+        @readonly string snippet;
+        @readonly string historyId;
+        @readonly string internalDate;
+        @readonly string sizeEstimate;
         MessagePartHeader[] headers;
-        //Following are the set of general headers taken from above header list
         MessagePartHeader headerTo;
         MessagePartHeader headerFrom;
         MessagePartHeader headerBcc;
@@ -61,39 +91,21 @@ public type Message object {
         MessagePartHeader headerSubject;
         MessagePartHeader headerDate;
         MessagePartHeader headerContentType;
-        //MIME type of the top level message part.
         string mimeType;
-        //MIME Message Part with the content type as text/plain
         MessageBodyPart plainTextBodyPart;
-        //MIME Message Part with the content type as text/html
         MessageBodyPart htmlBodyPart;
-        //MIME Message Part for the inline images with the content type as image/*
         MessageBodyPart[] inlineImgParts;
-        //MIME Message Parts of the message consisting the attachments
         MessageAttachment[] msgAttachments;
-        //If the top level message part is multipart/*
-        boolean isMultipart;
-    }
-    private {
-        //Represent the entire message in base64 encoded string
-        string raw;
-        //Short part of the message text
-        string snippet;
-        //ID of the last history record that modified the message
-        string historyId;
-        //Internal message creation timestamp(epoch ms)
-        string internalDate;
-        //Estimated size of the message in bytes
-        string sizeEstimate;
     }
 
-    //Functions binded to Message type
+    documentation {
+        Creates a text email message
 
-    @Description{value:"Create a text email message"}
-    @Param{value:"recipient: Email recipient's email addresss"}
-    @Param{value:"subject: Email subject"}
-    @Param{value:"bodyText: Email text body"}
-    @Param{value:"options: MessageOptions with optional email headers as Sender,Cc,Bcc"}
+        P{{recipient}} - Email recipient's email addresss
+        P{{subject}} - Email subject
+        P{{bodyText}} - Email text body
+        P{{options}} - MessageOptions with optional email headers (Sender,Cc,Bcc)
+    }
     public function createTextMessage (string recipient, string subject, string bodyText, MessageOptions options) {
         //Set email Headers
         self.setMailHeaders(recipient, subject, options);
@@ -104,13 +116,16 @@ public type Message object {
         self.plainTextBodyPart.mimeType = TEXT_PLAIN;
     }
 
-    @Description{value:"Create a html email message"}
-    @Param{value:"recipient: Email recipient's email addresss"}
-    @Param{value:"subject: Email subject"}
-    @Param{value:"bodyText: Email text body"}
-    @Param{value:"options: MessageOptions with optional email headers as Sender,Cc,Bcc"}
-    @Param{value:"images: InlineImage array with inline images of html email"}
-    @Return{value:"Returns GMailError if html error creation unsuccessful"}
+    documentation {
+        Creates a html email message
+
+        P{{recipient}} - Email recipient's email addresss
+        P{{subject}} - Email subject
+        P{{bodyText}} - Email text body
+        P{{options}} - MessageOptions with optional email headers (Sender,Cc,Bcc)
+        P{{images}} - InlineImage arrya with inline images
+        R{{gMailError}} - Returns GMailError if html message creation is unsuccessful
+    }
     public function createHTMLMessage (string recipient, string subject, string bodyText, MessageOptions options,
                                                                         InlineImage[] images) returns ()|GMailError {
         //Set email Headers
@@ -122,19 +137,22 @@ public type Message object {
         if (lengthof images != 0){
             foreach image in images{
                 match self.setInlineImage(image.imagePath, image.contentType){
-                    GMailError err => return err;
+                    GMailError gMailError => return gMailError;
                 }
             }
         }
         return ();
     }
 
-    @Description{value:"Set common email headers"}
-    @Param{value:"recipient: Email recipient's email addresss"}
-    @Param{value:"subject: Email subject"}
-    @Param{value:"options: MessageOptions with optional email headers as Sender,Cc,Bcc"}
+    documentation{
+        Sets the common email headers in the message
+
+        P{{recipient}} - Email recipient's email addresss
+        P{{subject}} - Email subject
+        P{{options}} - MessageOptions with optional email headers (Sender,Cc,Bcc)
+    }
     function setMailHeaders (string recipient, string subject, MessageOptions options) {
-        //set the general header To of top level message part
+        //Set the general header To of top level message part
         self.headerTo = {name:TO, value:recipient};
         //Include the seperate header to the existing header list
         self.headers[0] = self.headerTo;
@@ -158,15 +176,17 @@ public type Message object {
                                                                                             + BOUNDARY_STRING + "\""};
         self.headers[lengthof self.headers] = self.headerContentType;
         self.mimeType = MULTIPART_MIXED;
-        self.isMultipart = true;
     }
 
-    @Description {value:"Set the inline image content of the message. Put the image into the html body by using <img> tag.
-    Give the src value of img element as cid:image-<Your image name with extension>'
-    Eg: <img src=\"cid:image-ImageName.jpg\""}
-    @Param {value:"imagePath: the string inline image file path"}
-    @Param {value:"contentType: the content type"}
-    @Return {value:"Returns GMailError if the content type is not supported"}
+    documentation {
+        Sets the inline image content of the message.
+        *Note: Inline images can only be set in html body messages. Put the image into the html body by using <img> tag.
+        Give the src value of img element as cid:image-<Your image name with extension>'
+                                    Eg: <img src="cid:image-ImageName.jpg">*
+        P{{imagePath}} - The inline image file path
+        P{{contentType}} - The image content type
+        R{{gMailError}} - Returns GMailError if the content type is not supported
+    }
     public function setInlineImage (string imagePath, string contentType) returns ()|GMailError {
         if (contentType == EMPTY_STRING){
             GMailError gMailError = {};
@@ -203,10 +223,13 @@ public type Message object {
         return ();
     }
 
-    @Description {value:"Add an attachment to the message"}
-    @Param {value:"filePath: the string file path of the attachment"}
-    @Param {value:"contentType: the content type of the attachment"}
-    @Return {value:"Returns GMailError if the attachment process is unsuccessful"}
+    documentation {
+        Adds an attachment to the message.
+
+        P{{filePath}} - The file path of the attachment
+        P{{contentType}} - The content type of the attachment
+        R{{gmailError}} - Returns GMailError if the attaching unsuccessful
+    }
     public function addAttachment (string filePath, string contentType) returns ()|GMailError {
         if (contentType == EMPTY_STRING){
             GMailError gMailError = {};
@@ -238,28 +261,30 @@ public type Message object {
     }
 };
 
+documentation{
+    Represents the email message body part.
+
+    F{{body}} - The body data of the message part. This is a base64 encoded string.
+    F{{mimeType}} - MIME type of the message part.
+    F{{bodyHeaders}} - Headers of the MIME Message Part.
+    F{{fileId}} - The file id of the attachment in message part. *(This is empty unless the message part represent an
+                  inline image)*
+    F{{fileName}} - The file name of the attachment in message part. *(This is empty unless the message part represent an
+                    inline image)*
+    F{{partId}} - The part id of the message part.
+    F{{size}} - Number of bytes of message part data.
+}
 @Description {value:"Type to define the MIME Message Body Part"}
 public type MessageBodyPart object {
     public {
-        //The body data of a MIME message part. If not a text/*, this would be a base64 encoded string
         string body;
-        //Number of bytes of message part data
-        string size;
-        //MIME type of the message part
         string mimeType;
-        //Headers of the MIME Message Part
         MessagePartHeader[] bodyHeaders;
-        //File ID of the attachment in message part (This is empty unless the message part represent an inline image)
         string fileId;
-        //File name of the attachment in message part (This is empty unless the message part represent an inline image)
         string fileName;
+        @readonly string partId;
+        @readonly string size;
     }
-    private {
-        //Part id of the message part
-        string partId;
-    }
-
-    //Functions binded to MessageBodyPart type
 
     @Description {value:"set the values of message body part of an email "}
     @Param {value:"body: body of the message part. This could be plain text, html content or encoded inline image"}
@@ -339,7 +364,7 @@ public type SearchFilter {
 };
 
 @Description {value:"Type to define the optional get message filter fields"}
-public type GetMessageThreadFilter {
+public type MessageThreadFilter {
     //Acceptable values for format for a get message/thread request are:
     //"full": Returns the full email message data with body content parsed in the payload field;
     //the raw field is not used. (default)
