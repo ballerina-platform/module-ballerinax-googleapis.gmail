@@ -38,6 +38,10 @@ public type Client object {
     }
     public function init(GMailConfiguration gMailConfig) {
         gMailConfig.oAuth2ClientConfig.useUriParams = true;
+        gMailConfig.oAuth2ClientConfig.baseUrl = BASE_URL;
+        gMailConfig.oAuth2ClientConfig.refreshTokenEP = REFRESH_TOKEN_EP;
+        gMailConfig.oAuth2ClientConfig.refreshTokenPath = REFRESH_TOKEN_PATH;
+        gMailConfig.oAuth2ClientConfig.clientConfig = {};
         self.oauthEP.init(gMailConfig.oAuth2ClientConfig);
         self.gMailConnector.oauthEndpoint = self.oauthEP;
     }
