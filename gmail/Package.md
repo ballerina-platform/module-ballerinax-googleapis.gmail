@@ -49,13 +49,10 @@ git clone https://github.com/wso2-ballerina/package-gmail
 * Visit OAuth 2.0 Playground (https://developers.google.com/oauthplayground/), select the needed api scopes and give the obtained client id and client secret and obtain the refresh token and access token 
 
 * So to use gmail connector, you need to provide the following:
-    * Base URl (https://www.googleapis.com/gmail)
     * Client Id
     * Client Secret
     * Access Token
     * Refresh Token
-    * Refresh Token Endpoint (https://www.googleapis.com)
-    * Refresh Token Path (/oauth2/v3/token)
     
 * Please note that ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path are optional if you are using access token only.
 * Similary, please note that access token is optional if you are using only ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path.

@@ -179,7 +179,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
             //Iterate each child parts of the parent mime part
             foreach part in messageParts {
                 //Recursively check each ith child mime part
-                match getMessageBodyPartFromPayloadByMimeType(mimeType, part){
+                match getMessageBodyPartFromPayloadByMimeType(part, mimeType){
                     MessageBodyPart body => msgBodyPart = body;
                     GMailError gmailError => return gmailError;
                 }

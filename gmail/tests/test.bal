@@ -20,24 +20,17 @@ import ballerina/log;
 import ballerina/test;
 import ballerina/config;
 
-string url = setConfParams(config:getAsString("ENDPOINT"));
 string accessToken = setConfParams(config:getAsString("ACCESS_TOKEN"));
 string clientId = setConfParams(config:getAsString("CLIENT_ID"));
 string clientSecret = setConfParams(config:getAsString("CLIENT_SECRET"));
 string refreshToken = setConfParams(config:getAsString("REFRESH_TOKEN"));
-string refreshTokenEndpoint = setConfParams(config:getAsString("REFRESH_TOKEN_ENDPOINT"));
-string refreshTokenPath = setConfParams(config:getAsString("REFRESH_TOKEN_PATH"));
 
 endpoint Client gMailEP {
     oAuth2ClientConfig:{
         accessToken:accessToken,
-        baseUrl:url,
         clientId:clientId,
         clientSecret:clientSecret,
-        refreshToken:refreshToken,
-        refreshTokenEP:refreshTokenEndpoint,
-        refreshTokenPath:refreshTokenPath,
-        clientConfig:{}
+        refreshToken:refreshToken
     }
 };
 
@@ -52,7 +45,6 @@ string inlineImageName = ""; //Example: "Picture2.jpg"
 string imageContentType = ""; //Example: "image/jpeg"
 
 string userId = "me";
-Message mail = new ();
 //Message id of text mail which will be sent from testSendSimpleMail()
 string sentTextMailId;
 //Thread id of text mail which will be sent from testSendSimpleMail()
@@ -156,7 +148,7 @@ function testReadTextMail() {
     //Read mail with message id which sent in testSendSimpleMail
     log:printInfo("testReadTextMail");
     log:printInfo("gMailEP -> readMail()");
-    GetMessageThreadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
+    MessageThreadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
     var reponse = gMailEP -> readMail(userId, sentHtmlMailId, filter);
     match reponse {
         Message m => test:assertEquals(m.id, sentHtmlMailId, msg = "Read text mail failed");
@@ -172,7 +164,7 @@ function testReadHTMLMailWithAttachment() {
     //Read mail with message id which sent in testSendWithAttachment
     log:printInfo("testReadMailWithAttachment");
     log:printInfo("gMailEP -> readMail()");
-    GetMessageThreadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
+    MessageThreadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
     var response = gMailEP -> readMail(userId, sentHtmlMailId, filter);
     match response {
         Message m => {
@@ -262,7 +254,7 @@ function testListAllThreads() {
 function testReadThread() {
     log:printInfo("testReadThread");
     log:printInfo("gMailEP -> readThread()");
-    GetMessageThreadFilter filter = {format:FORMAT_METADATA, metadataHeaders:["Subject"]};
+    MessageThreadFilter filter = {format:FORMAT_METADATA, metadataHeaders:["Subject"]};
     var thread = gMailEP -> readThread(userId, sentTextMailThreadId, filter);
     match thread{
         Thread t => test:assertEquals(t.id, sentTextMailThreadId, msg = "Read thread failed");

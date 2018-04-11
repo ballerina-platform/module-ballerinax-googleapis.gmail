@@ -55,11 +55,11 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
     targetMessageType.mimeType = sourceMailJsonObject.payload.mimeType.toString() but { () => EMPTY_STRING };
     string payloadMimeType = sourceMailJsonObject.payload.mimeType.toString() but { () => EMPTY_STRING };
     if (sourceMailJsonObject.payload != ()){
-        match getMessageBodyPartFromPayloadByMimeType(TEXT_PLAIN, sourceMailJsonObject.payload){
+        match getMessageBodyPartFromPayloadByMimeType(sourceMailJsonObject.payload, TEXT_PLAIN){
             MessageBodyPart body => targetMessageType.plainTextBodyPart = body;
             GMailError gmailError => return gmailError;
         }
-        match getMessageBodyPartFromPayloadByMimeType(TEXT_HTML, sourceMailJsonObject.payload){
+        match getMessageBodyPartFromPayloadByMimeType(sourceMailJsonObject.payload, TEXT_HTML){
             MessageBodyPart body => targetMessageType.htmlBodyPart = body;
             GMailError gmailError => return gmailError;
         }
@@ -163,7 +163,7 @@ function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thre
     if (sourceThreadJsonObject.messages != ()){
         match (convertToMessageArray(sourceThreadJsonObject.messages)){
             Message[] msgs => targetThreadType.messages = msgs;
-            GMailError err => return err;
+            GMailError gMailError => return gMailError;
         }
     }
     return targetThreadType;
