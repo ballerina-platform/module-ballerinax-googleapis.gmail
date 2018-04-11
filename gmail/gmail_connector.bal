@@ -18,19 +18,24 @@ import ballerina/io;
 import ballerina/http;
 import wso2/oauth2;
 
-@Description {value:"Type to define the GMail Client Connector"}
-@Field {value:"oauthEndpoint: OAuth2Client used in GMail connector"}
+documentation{
+    Represents the GMail Client Connector.
+
+    F{{oauthEndpoint}} - OAuth2Client used in GMail connector.
+}
 public type GMailConnector object {
     public {
         oauth2:APIClient oauthEndpoint;
     }
 
-    @Description {value:"List the messages in user's mailbox"}
-    @Param {value:"userId: The user's email address. The special value *me* can be used to indicate the authenticated
-    user"}
-    @Param {value:"filter: SearchFilter type with optional query parameters"}
-    @Return {value:"MessageListPage type with array of messages, size estimation and next page token"}
-    @Return {value:"GMailError is thrown if any error occurs in sending the request and receiving the response"}
+    documentation{
+        List the messages in user's mailbox.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{filter}} - SearchFilter with optional query parameters to search emails.
+        R{{messageListPage}} -  Returns MessageListPage with an array of messages, size estimation and next page token.
+        R{{gMailError}} - Returns GMailError if any error occurs in sending the request and receiving the response.
+    }
     public function listAllMails(string userId, SearchFilter filter) returns (MessageListPage|GMailError) {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         GMailError gMailError = {};
@@ -100,13 +105,16 @@ public type GMailConnector object {
         return messageListPage;
     }
 
-    @Description {value:"Create the raw base 64 encoded string of the whole message and send the email from the user's
-    mailbox to its recipient."}
-    @Param {value:"userId: User's email address. The special value -> me"}
-    @Param {value:"message: Message to send"}
-    @Return {value:"Returns the message id of the successfully sent message"}
-    @Return {value:"Returns the thread id of the succesfully sent message"}
-    @Return {value:"Returns GMailError if the message is not sent successfully"}
+    documentation{
+        Create the raw base 64 encoded string of the whole message and send it as an email from the user's
+        mailbox to its recipient.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{message}} - Message to send.
+        R{{msgId}} - Returns the message id of the successfully sent message.
+        R{{threadId}} - Returns the thread id of the succesfully sent message.
+        R{{gMailError}} - Returns GMailError if the message is not sent successfully.
+    }
     public function sendMessage(string userId, Message message) returns (string, string)|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         string concatRequest = EMPTY_STRING;
@@ -227,14 +235,16 @@ public type GMailConnector object {
         return (msgId, threadId);
     }
 
-    @Description {value:"Read the specified mail from users mailbox"}
-    @Param {value:"userId: user's email address. The special value -> me"}
-    @Param {value:"messageId: message id of the specified mail to retrieve"}
-    @Param {value:"filter: GetMessageThreadFilter type object with the optional format and metadataHeaders query
-    parameters"}
-    @Return {value:"Returns the specified mail as a Message type"}
-    @Return {value:"Returns GMailError if the message cannot be read successfully"}
-    public function readMail(string userId, string messageId, GetMessageThreadFilter filter)
+    documentation{
+        Read the specified mail from users mailbox.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} -  The message id of the specified mail to retrieve.
+        P{{filter}} - MessageThreadFilter with the optional parameters of response format and metadataHeaders.
+        R{{message}} - Returns the specified mail as a Message.
+        R{{gMailError}} - Returns GMailError if the message cannot be read successfully.
+    }
+    public function readMail(string userId, string messageId, MessageThreadFilter filter)
                                                                                         returns (Message)|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -280,12 +290,15 @@ public type GMailConnector object {
         return message;
     }
 
-    @Description {value:"Gets the specified message attachment from users mailbox"}
-    @Param {value:"userId: user's email address. The special value -> me"}
-    @Param {value:"messageId: message id of the specified mail to retrieve"}
-    @Param {value:"attachmentId: the ID of the attachment."}
-    @Return {value:"Returns the specified mail as a MessageAttachment type"}
-    @Return {value:"Returns GMailError if the attachment read is not successful"}
+    documentation{
+        Gets the specified message attachment from users mailbox.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} -  The message id of the specified mail to retrieve.
+        P{{attachmentId}} - The id of the attachment to retrieve.
+        R{{attachment}} - Returns the specified attachment as a MessageAttachment.
+        R{{gMailError}} - Returns GMailError if the attachment cannot be read successfully.
+    }
     public function getAttachment(string userId, string messageId, string attachmentId)
                                                                                 returns (MessageAttachment)|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
@@ -322,11 +335,14 @@ public type GMailConnector object {
         return attachment;
     }
 
-    @Description {value:"Move the specified message to the trash"}
-    @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
-    @Param {value:"messageId: The ID of the message to trash"}
-    @Return {value:"Returns true if trashing the message is successful"}
-    @Return {value:"Returns GMailError if trashing is not successdul"}
+    documentation{
+        Move the specified message to the trash.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} -  The message id of the specified mail to trash.
+        R{{trashMailResponse}} - Returns true if trashing the message is successful.
+        R{{gMailError}} - Returns GMailError if trashing the message is unsuccessful.
+    }
     public function trashMail(string userId, string messageId) returns boolean|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -362,11 +378,14 @@ public type GMailConnector object {
         return trashMailResponse;
     }
 
-    @Description {value:"Removes the specified message from the trash"}
-    @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
-    @Param {value:"messageId: The ID of the message to untrash"}
-    @Return {value:"Returns true if untrashing the message is successful"}
-    @Return {value:"Returns GMailError if untrashing is not successdul"}
+    documentation{
+        Removes the specified message from the trash.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} - The message id of the specified message to untrash.
+        R{{untrashMailResponse}} - Returns true if untrashing the message is successful.
+        R{{gMailError}} - Returns GMailError if the untrashing is unsuccessful.
+    }
     public function untrashMail(string userId, string messageId) returns boolean|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -402,11 +421,15 @@ public type GMailConnector object {
         return untrashMailResponse;
     }
 
-    @Description {value:"Immediately and permanently deletes the specified message. This operation cannot be undone."}
-    @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
-    @Param {value:"messageId: The ID of the message to untrash"}
-    @Return {value:"Returns true if deleting the message is successful"}
-    @Return {value:"Returns GMailError if deleting is not successdul"}
+
+    documentation{
+        Immediately and permanently deletes the specified message. This operation cannot be undone.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} - The message id of the specified message to delete.
+        R{{deleteMailResponse}} - Returns true if deleting the message is successful.
+        R{{gMailError}} - Returns GMailError if the deletion is unsuccessful.
+    }
     public function deleteMail(string userId, string messageId) returns boolean|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -440,12 +463,14 @@ public type GMailConnector object {
         return deleteMailResponse;
     }
 
-    @Description {value:"List the threads in user's mailbox"}
-    @Param {value:"userId: The user's email address. The special value *me* can be used to indicate the authenticated
-    user"}
-    @Param {value:"filter: SearchFilter type with optional query parameters"}
-    @Return {value:"ThreadListPage type with thread list, result set size estimation and next page token"}
-    @Return {value:"GMailError is thrown if any error occurs in sending the request and receiving the response"}
+    documentation{
+        List the threads in user's mailbox.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{filter}} - The SearchFilter with optional query parameters to search a thread.
+        R{{threadListPage}} - Returns ThreadListPage with thread list, result set size estimation and next page token.
+        R{{gMailError}} - Returns GMailError if any error occurs in sending the request and receiving the response.
+    }
     public function listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -514,14 +539,16 @@ public type GMailConnector object {
         return threadListPage;
     }
 
-    @Description {value:"Read the specified thread from users mailbox"}
-    @Param {value:"userId: user's email address. The special value -> me"}
-    @Param {value:"threadId: thread id of the specified mail to retrieve"}
-    @Param {value:"filter: GetMessageThreadFilter type object with the optional format and metadataHeaders
-    query parameters"}
-    @Param {value:"Returns the specified thread as a Thread type"}
-    @Return {value:"Returns GMailError if the thread cannot be read successfully"}
-    public function readThread(string userId, string threadId, GetMessageThreadFilter filter)
+    documentation{
+        Read the specified thread from users mailbox.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{threadId}} -  The thread id of the specified mail to retrieve.
+        P{{filter}} - MessageThreadFilter with the optional parameters of response format and metadataHeaders.
+        R{{thread}} - Returns the specified thread as a Thread.
+        R{{gMailError}} - Returns GMailError if the thread cannot be read successfully.
+    }
+    public function readThread(string userId, string threadId, MessageThreadFilter filter)
                                                                                         returns (Thread)|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -568,11 +595,14 @@ public type GMailConnector object {
         return thread;
     }
 
-    @Description {value:"Move the specified thread to the trash"}
-    @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
-    @Param {value:"threadId: The ID of the thread to trash"}
-    @Return {value:"Returns true if trashing the thrad is successful"}
-    @Return {value:"Returns GMailError if trashing is not successdul"}
+    documentation{
+        Move the specified mail thread to the trash.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{threadId}} -  The thread id of the specified mail thread to trash.
+        R{{trashThreadReponse}} - Returns true if trashing the thread is successful.
+        R{{gMailError}} - Returns GMailError if trashing the thread is unsuccessful.
+    }
     public function trashThread(string userId, string threadId) returns boolean|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -608,11 +638,14 @@ public type GMailConnector object {
         return trashThreadReponse;
     }
 
-    @Description {value:"Removes the specified thread from the trash"}
-    @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
-    @Param {value:"threadId: The ID of the thread to untrash"}
-    @Return {value:"Returns true if untrashing the thread is successful"}
-    @Return {value:"Returns GMailError if untrashing is not successdul"}
+    documentation{
+        Removes the specified mail thread from the trash.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{threadId}} - The thread id of the specified mail thread to untrash.
+        R{{untrashThreadReponse}} - Returns true if untrashing the mail thread is successful.
+        R{{gMailError}} - Returns GMailError if the untrashing is unsuccessful.
+    }
     public function untrashThread(string userId, string threadId) returns boolean|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -647,11 +680,14 @@ public type GMailConnector object {
         return untrashThreadReponse;
     }
 
-    @Description {value:"Immediately and permanently deletes the specified thread. This operation cannot be undone."}
-    @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
-    @Param {value:"threadId: The ID of the thread to untrash"}
-    @Return {value:"Returns true if deleting the thread is successful"}
-    @Return {value:"Returns GMailError if deleting is not successdul"}
+    documentation{
+        Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{threadId}} - The thread id of the specified mail thread to delete.
+        R{{deleteThreadPath}} - Returns true if deleting the mail thread is successful.
+        R{{gMailError}} - Returns GMailError if the deletion is unsuccessful.
+    }
     public function deleteThread(string userId, string threadId) returns boolean|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();
@@ -685,10 +721,13 @@ public type GMailConnector object {
         return deleteThreadResponse;
     }
 
-    @Description {value:"Get the current user's GMail Profile"}
-    @Param {value:"userId: user's email address. The special value me can be used to indicate the authenticated user."}
-    @Return {value:"Returns UserProfile type if success"}
-    @Return {value:"Returns GMailError if unsuccessful"}
+    documentation{
+        Get the current user's GMail Profile.
+
+        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
+        R{{profile}} - Returns UserProfile if successful.
+        R{{gMailError}} - Returns GMailError if unsuccessful.
+    }
     public function getUserProfile(string userId) returns UserProfile|GMailError {
         endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
         http:Request request = new ();

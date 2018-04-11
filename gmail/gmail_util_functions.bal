@@ -15,13 +15,15 @@
 // under the License.
 
 import ballerina/io;
-import ballerina/mime;
 import ballerina/util;
 
-@Description {value:"Convert the json message array into Message type array"}
-@Param {value:"sourceMessageArrayJsonObject: json message array"}
-@Return {value:"Message type array"}
-@Return {value:"Returns GMailError if coversion not successful"}
+documentation{
+    Converts the json message array into Message type array
+
+    P{{sourceMessageArrayJsonObject}} - Json message array object
+    R{{messages}} - Message type array
+    R{{gmailError}} - Returns GMailError if coversion is not successful
+}
 function convertToMessageArray(json sourceMessageArrayJsonObject) returns Message[]|GMailError {
     Message[] messages = [];
     int i = 0;
@@ -31,16 +33,19 @@ function convertToMessageArray(json sourceMessageArrayJsonObject) returns Messag
                 messages[i] = msg;
                 i++;
             }
-            GMailError err => return err;
+            GMailError gmailError => return gmailError;
         }
     }
     return messages;
 }
 
-@Description {value:"Decode the message body of text/* mime message parts"}
-@Param {value:"sourceMessagePartJsonObject: json message part"}
-@Return {value:"base 64 decoded message body string"}
-@Return {value:"Returns GMailError if error occurs in base64 encoding"}
+documentation{
+    Decodes the message body of text/* mime message parts.
+
+    P{{sourceMessagePartJsonObject}} - Json message part object
+    R{{decodedBody}} - Base 64 decoded message body
+    R{{gmailError}} - Returns GMailError if error occurs in base64 encoding
+}
 function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMailError {
     string decodedBody;
     string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
@@ -60,10 +65,13 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
     return decodedBody;
 }
 
-@Description {value:"Get only the attachment MIME messageParts from the json message payload of th email"}
-@Param {value:"messagePayload: parent json message payload in MIME Message"}
-@Param {value:"msgAttachments: intial array of attachment message parts"}
-@Return {value:"Returns array of MessageAttachment"}
+documentation{
+    Gets only the attachment MIME messageParts from the json message payload of the email.
+
+    P{{messagePayload}} - Json message payload which is the parent message part of the email.
+    P{{msgAttachments}} - Initial array of attachment message parts.
+    R{{attachmentParts}} - Returns an array of MessageAttachments.
+}
 function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
                                                                                 returns @tainted MessageAttachment[] {
     MessageAttachment[] attachmentParts = msgAttachments;
@@ -93,11 +101,14 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
     return attachmentParts;
 }
 
-@Description {value:"Get only inline MIME messageParts from the json message payload of the email"}
-@Param {value:"messagePayload: parent json message payload in MIME Message"}
-@Param {value:"inlineMailImages: intial array of inline image message parts"}
-@Return {value:"Returns array of MessageBodyPart"}
-@Return {value:"Returns GMailError if unsuccessful"}
+documentation{
+    Gets only the inline image MIME messageParts from the json message payload of the email.
+
+    P{{messagePayload}} - Json message payload which is the parent message part of the email.
+    P{{inlineMailImages}} - Initial array of inline image message parts.
+    R{{inlineImgParts}} - Returns an array of MessageBodyParts.
+    R{{gmailError}} - Returns GMailError if unsuccessful.
+}
 //Extract inline image MIME message parts from the email
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
                                                                         returns @tainted MessageBodyPart[]|GMailError {
@@ -114,7 +125,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
     if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
             MessageBodyPart bodyPart => inlineImgParts[lengthof inlineImgParts] = bodyPart;
-            GMailError err => return err;
+            GMailError gmailError => return gmailError;
         }
     } //Else if is any multipart/*
     else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
@@ -125,7 +136,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
                 //Recursively check each ith child mime part
                 match getInlineImgPartsFromPayloadByMimeType(part, inlineImgParts){
                     MessageBodyPart[] bodyParts => inlineImgParts = bodyParts;
-                    GMailError err => return err;
+                    GMailError gmailError => return gmailError;
                 }
             }
         }
@@ -133,15 +144,18 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
     return inlineImgParts;
 }
 
-@Description {value:"Get the body MIME messageParts(excluding attachments and inline images) from the json
-message payload of the email.
-Can be used only if there is only one message part with the given mime type in the email payload,
-otherwise it will return with first found matching message part"}
-@Param {value:"messagePayload: parent json message payload in MIME Message"}
-@Param {value:"inlineMailImages: intial array of inline image message parts"}
-@Return {value:"Returns array of MessageBodyPart"}
-@Return {value:"Returns GMailError if unsuccessful"}
-function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePayload)
+documentation{
+    Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
+    from the json message payload of the email.
+    *Can be used only if there is only one message part with the given mime type in the email payload,
+    otherwise, it will return with first found matching message part.*
+
+    P{{messagePayload}} - Json message payload which is the parent message part of the email.
+    P{{mimeType}} - Initial array of inline image message parts.
+    R{{msgBodyPart}} - Returns the MessageBodyPart.
+    R{{gmailError}} - Returns GMailError if unsuccessful.
+}
+function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
                                                                         returns @tainted MessageBodyPart|GMailError {
     MessageBodyPart msgBodyPart = new();
     string disposition = "";
@@ -156,7 +170,7 @@ function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePa
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
             MessageBodyPart body => msgBodyPart = body;
-            GMailError err => return err;
+            GMailError gmailError => return gmailError;
         }
     } //Else if is any multipart/*
     else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
@@ -165,9 +179,9 @@ function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePa
             //Iterate each child parts of the parent mime part
             foreach part in messageParts {
                 //Recursively check each ith child mime part
-                match getMessageBodyPartFromPayloadByMimeType(mimeType, part){
+                match getMessageBodyPartFromPayloadByMimeType(part, mimeType){
                     MessageBodyPart body => msgBodyPart = body;
-                    GMailError err => return err;
+                    GMailError gmailError => return gmailError;
                 }
                 //If the returned msg body is a match for given mime type stop iterating over the other child parts
                 if (msgBodyPart.mimeType != "" && isMimeType(msgBodyPart.mimeType, mimeType)) {
@@ -179,9 +193,12 @@ function getMessageBodyPartFromPayloadByMimeType(string mimeType, json messagePa
     return msgBodyPart;
 }
 
-@Description {value:"Get the message header Content-Disposition"}
-@Param {value:"headers: array of MessagePart headers"}
-@Return {value:"Returns message part header Content-Disposition"}
+documentation {
+    Gets the message header Content-Disposition from the message part header array.
+
+    P{{headers}} - An array of MessagePart headers
+    R{{headerContentDisposition}} - Returns **Content-Disposition** header
+}
 function getMsgPartHeaderContentDisposition(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerContentDisposition = {};
     foreach header in headers {
@@ -192,9 +209,12 @@ function getMsgPartHeaderContentDisposition(MessagePartHeader[] headers) returns
     return headerContentDisposition;
 }
 
-@Description {value:"Get the message header To"}
-@Param {value:"headers: array of MessagePart headers"}
-@Return {value:"Returns message part header To"}
+documentation{
+    Gets the message header **To** from the message part header array.
+
+    P{{headers}} - An array of MessagePart headers
+    R{{headerTo}} - Returns **To** header
+}
 function getMsgPartHeaderTo(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerTo = {};
     foreach header in headers {
@@ -205,9 +225,12 @@ function getMsgPartHeaderTo(MessagePartHeader[] headers) returns MessagePartHead
     return headerTo;
 }
 
-@Description {value:"Get the message header From"}
-@Param {value:"headers: array of MessagePart headers"}
-@Return {value:"Returns message part header From"}
+documentation{
+    Gets the message header **From** from the message part header array.
+
+    P{{headers}} - An array of MessagePart headers
+    R{{headerFrom}} - Returns **From** header
+}
 function getMsgPartHeaderFrom(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerFrom = {};
     foreach header in headers {
@@ -218,9 +241,12 @@ function getMsgPartHeaderFrom(MessagePartHeader[] headers) returns MessagePartHe
     return headerFrom;
 }
 
-@Description {value:"Get the message header Cc"}
-@Param {value:"headers: array of MessagePart headers"}
-@Return {value:"Returns message part header Cc"}
+documentation{
+    Gets the message header Cc from the message part header array.
+
+    P{{headers}} - An array of MessagePart headers
+    R{{headerCc}} - Returns **Cc** header
+}
 function getMsgPartHeaderCc(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerCc = {};
     foreach header in headers {
@@ -231,9 +257,12 @@ function getMsgPartHeaderCc(MessagePartHeader[] headers) returns MessagePartHead
     return headerCc;
 }
 
-@Description {value:"Get the message header Bcc"}
-@Param {value:"headers: array of MessagePart headers"}
-@Return {value:"Returns message part header Bcc"}
+documentation{
+    Gets the message header Bcc from the message part header array.
+
+    P{{headers}} - An array of MessagePart headers
+    R{{headerBcc}} - Returns **Bcc** header
+}
 function getMsgPartHeaderBcc(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerBcc = {};
     foreach header in headers {
@@ -244,9 +273,12 @@ function getMsgPartHeaderBcc(MessagePartHeader[] headers) returns MessagePartHea
     return headerBcc;
 }
 
-@Description {value:"Get the message header Subject"}
-@Param {value:"headers: array of MessagePart headers"}
-@Return {value:"Returns message part header Subject"}
+documentation{
+    Gets the message header Subject from the message part header array.
+
+    P{{headers}} - An array of MessagePart headers
+    R{{headerSubject}} - Returns **Subject** header
+}
 function getMsgPartHeaderSubject(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerSubject = {};
     foreach header in headers {
@@ -257,9 +289,12 @@ function getMsgPartHeaderSubject(MessagePartHeader[] headers) returns MessagePar
     return headerSubject;
 }
 
-@Description {value:"Get the message header Date"}
-@Param {value:"headers: array of MessagePart headers"}
-@Return {value:"Returns message part header Date"}
+documentation{
+    Gets the message header Date from the message part header array.
+
+    P{{headers}} - An array of MessagePart headers
+    R{{headerDate}} - Returns **Date** header
+}
 function getMsgPartHeaderDate(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerDate = {};
     foreach header in headers {
@@ -270,9 +305,12 @@ function getMsgPartHeaderDate(MessagePartHeader[] headers) returns MessagePartHe
     return headerDate;
 }
 
-@Description {value:"Get the message header ContentType"}
-@Param {value:"headers: array of MessagePart headers"}
-@Return {value:"Returns message part header ContetnType"}
+documentation{
+    Gets the message header ContentType from the message part header array.
+
+    P{{headers}} - An array of MessagePart headers
+    R{{headerContentType}} - Returns **ContentType** header
+}
 function getMsgPartHeaderContentType(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerContentType = {};
     foreach header in headers {
@@ -283,9 +321,12 @@ function getMsgPartHeaderContentType(MessagePartHeader[] headers) returns Messag
     return headerContentType;
 }
 
-@Description {value:"Convert the message part header json array to MessagePartHeader type array"}
-@Param {value:"jsonMsgPartHeaders: json array of message part headers"}
-@Return {value:"Returns MessagePartHeader type array"}
+documentation{
+    Converts the message part header json array to MessagePartHeader array.
+
+    P{{jsonMsgPartHeaders}} - Json array of message part headers
+    R{{msgPartHeaders}} - Returns MessagePartHeader array
+}
 function convertToMsgPartHeaders(json jsonMsgPartHeaders) returns MessagePartHeader[] {
     MessagePartHeader[] msgPartHeaders = [];
     int i = 0;
@@ -293,13 +334,15 @@ function convertToMsgPartHeaders(json jsonMsgPartHeaders) returns MessagePartHea
         msgPartHeaders[i] = convertJsonToMesagePartHeader(jsonHeader);
         i++;
     }
-
     return msgPartHeaders;
 }
 
-@Description {value:"Convert json array to string array"}
-@Param {value:"sourceJsonObject: json array"}
-@Return {value:"Return string array"}
+documentation{
+    Converts json string array to string array.
+
+    P{{sourceJsonObject}} - Json array
+    R{{targetStringArray}} - String array
+}
 function convertJSONArrayToStringArray(json sourceJsonObject) returns string[] {
     string[] targetStringArray = [];
     int i = 0;
@@ -310,10 +353,13 @@ function convertJSONArrayToStringArray(json sourceJsonObject) returns string[] {
     return targetStringArray;
 }
 
-@Description {value:"Check whether mime type in the message part is same as the given the mime type"}
-@Param {value:"msgMimeType: mime type of the message part"}
-@Param {value:"mType: given mime type which you wants check against with"}
-@Return {value:"Returns true or false whether mime types match"}
+documentation{
+    Checks whether mime type in the message part is same as the given the mime type. Returns true if both types
+    matches, returns false if not.
+
+    P{{msgMimeType}} - The mime type of the message part you want check
+    P{{mType}} - The given mime type which you wants check against with
+}
 function isMimeType(string msgMimeType, string mType) returns boolean {
     string[] msgTypes = msgMimeType.split("/");
     string msgPrimaryType = msgTypes[0];
@@ -332,11 +378,13 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
     }
 }
 
-@Description {value:"Encode a file into base 64 using MimeBase64Encoder"}
-@Param {value:"filePath: string file path"}
-@Return {value:"Returns the encoded string"}
-@Return {value:"Returns IOError if there's any error while performaing I/O operation"}
-@Return {value:"Returns Base64EncodeError if fails to encode"}
+documentation{
+    Opens a file from file path and returns the as base 64 encoded string.
+
+    P{{filePath}} - File path
+    R{{encodedFile}} - Encoded file
+    R{{gmailError}} - Returns GMailError if fails to open and encode.
+}
 function encodeFile(string filePath) returns (string|GMailError) {
     io:ByteChannel fileChannel = getFileChannel(filePath, "r");
     int bytesChunk = BYTES_CHUNK;
@@ -347,7 +395,7 @@ function encodeFile(string filePath) returns (string|GMailError) {
         io:ByteChannel encodedfileChannel => {
             match readBytes(encodedfileChannel, bytesChunk) {
                 (blob, int) readEncodedChannel => (readEncodedContent, readEncodedCount) = readEncodedChannel;
-                GMailError err => return err;
+                GMailError gmailError => return gmailError;
             }
         }
         util:Base64EncodeError err => {
@@ -361,29 +409,38 @@ function encodeFile(string filePath) returns (string|GMailError) {
     return encodedFile;
 }
 
-@Description {value:"Get the file name from the given file path"}
-@Param {value:"filePath: string file path (including the file name and extension at the end)"}
-@Return {value:"string file name extracted from the file path"}
+documentation{
+    Gets the file name from the given file path.
+
+    P{{filePath}} - File path **(including the file name and extension at the end)**
+    R{{pathParts}} - Returns the file name extracted from the file path.
+}
 function getFileNameFromPath(string filePath) returns string {
     string[] pathParts = filePath.split("/");
     return pathParts[lengthof pathParts - 1];
 }
 
-@Description {value:"Open the file and return the byte channel"}
-@Param {value:"filePath: string file path"}
-@Param {value:"permission: string permission to open the file with, for example for read permission give as: r"}
-@Return {value:"Return byte channel of the file"}
+documentation{
+    Opens the file and returns the byte channel.
+
+    P{{filePath}} - File path
+    P{{permission}} - Permission to open the file with, for example for read permission give as *r*
+    R{{channel}} - Returns byte channel of the file
+}
 function getFileChannel(string filePath, string permission) returns (io:ByteChannel) {
     io:ByteChannel channel = io:openFile(filePath, permission);
     return channel;
 }
 
-@Description {value:"Get the blob content from the byte channel"}
-@Param {value:"channel: ByteChannel of the file"}
-@Param {value:"num: Number of bytes which should be read"}
-@Return {value:"The bytes which were read"}
-@Return {value:"Number of bytes read"}
-@Return {value:"Returns IOError if there's any error while performaing I/O operation"}
+documentation{
+    Gets the blob content from the byte channel.
+
+    P{{channel}} - ByteChannel of the file
+    P{{numberOfBytes}} - Number of bytes which should be read
+    R{{bytes}} - The bytes which were read
+    R{{numberOfBytesRead}} - Number of bytes read
+    R{{gMailError}} - Returns GMailError if fails to read blob content.
+}
 function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int)|GMailError {
     blob bytes;
     int numberOfBytesRead;

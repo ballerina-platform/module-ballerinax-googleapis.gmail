@@ -2,7 +2,7 @@
 
 | Ballerina Version         | Connector Version         | API Version |
 | ------------------------- | ------------------------- | ------------|
-| ballerina-tools-0.970.0-alpha1-SNAPSHOT  | 0.8.0   |   v1     |
+| ballerina-tools-0.970.0-alpha4-SNAPSHOT  | 0.8.0   |   v1     |
 
 ### Prerequisites
 Get Access Token and Refresh Token for Gmail
@@ -16,13 +16,10 @@ Get Access Token and Refresh Token for Gmail
 * Visit OAuth 2.0 Playground (https://developers.google.com/oauthplayground/), select the needed api scopes and give the obtained client id and client secret and obtain the refresh token and access token 
 
 * So to use gmail connector, you need to provide the following:
-    * Base URl (https://www.googleapis.com/gmail)
     * Client Id
     * Client Secret
     * Access Token
     * Refresh Token
-    * Refresh Token Endpoint (https://www.googleapis.com)
-    * Refresh Token Path (/oauth2/v3/token)
     
 ### Working with Gmail REST connector.
 
@@ -36,13 +33,10 @@ file with the obtained tokens.
 
 ###### ballerina.conf
 ```ballerina.conf
-ENDPOINT="enter your endpoint here"
 ACCESS_TOKEN="enter your access token here"
 CLIENT_ID="enter your client id here"
 CLIENT_SECRET="enter your client secret here"
 REFRESH_TOKEN="enter your refresh token here"
-REFRESH_TOKEN_ENDPOINT="enter your refresh token endpoint here"
-REFRESH_TOKEN_PATH="enter your refresh token path here"
 ```
 
 Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal in either way following,
@@ -50,8 +44,6 @@ Assign the values for the accessToken, clientId, clientSecret and refreshToken i
 endpoint Client gMailEP {
     oAuth2ClientConfig:{
         accessToken:accessToken,
-        baseUrl:url,
-        clientConfig:{}
     }
 };
 ```
@@ -59,13 +51,10 @@ endpoint Client gMailEP {
 ```ballerina
 endpoint Client gMailEP {
     oAuth2ClientConfig:{
-        baseUrl:url,
+        accessToken:accessToken,
         clientId:clientId,
         clientSecret:clientSecret,
-        refreshToken:refreshToken,
-        refreshTokenEP:refreshTokenEndpoint,
-        refreshTokenPath:refreshTokenPath,
-        clientConfig:{}
+        refreshToken:refreshToken
     }
 };
 ```
@@ -86,4 +75,5 @@ Run tests :
 ballerina init
 ballerina test gmail
 ```
- 
+You will receive 2 two mails to the recepient inbox, one in text/plain with an attachment and other one
+in text/html with the same attachment. The 2 mails will be deleted from your sender's sent mail box as well.  
