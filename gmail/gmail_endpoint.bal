@@ -17,7 +17,13 @@
 import ballerina/http;
 import wso2/oauth2;
 
-@Description {value:"GMail Endpoint type."}
+documentation{
+    Represents GMail endpoint
+
+    F{{oauthEP}} - OAuth2 endpoint
+    F{{gMailConfig}} - GMail endpoint configuration
+    F{{gMailConnector}} - GMail connector
+}
 public type Client object {
     public {
         oauth2:APIClient oauthEP;
@@ -25,38 +31,53 @@ public type Client object {
         GMailConnector gMailConnector;
     }
 
-    new () {}
+    documentation{
+        Gets called when the gMail endpoint is beign initialized
 
-    @Description {value:"Initialize the gMail endpoint"}
+        P{{gMailConfig}} - GMail connector configuration
+    }
     public function init(GMailConfiguration gMailConfig) {
         gMailConfig.oAuth2ClientConfig.useUriParams = true;
         self.oauthEP.init(gMailConfig.oAuth2ClientConfig);
         self.gMailConnector.oauthEndpoint = self.oauthEP;
     }
 
+    documentation{
+        Register gMail connector endpoint
 
+        P{{serviceType}} = The type of the service to be registered
+    }
     public function register(typedesc serviceType) {
 
     }
 
+    documentation{
+        Starts the gMail connector endpoint
+    }
     public function start() {
 
     }
 
-    @Description {value:"Returns the connector that client code uses"}
-    @Return {value:"The connector that client code uses"}
+    documentation{
+        Returns the connector that client code uses
+    }
     public function getClient() returns GMailConnector {
         return self.gMailConnector;
     }
 
-    @Description {value:"Stops the registered service"}
-    @Return {value:"Error occured during registration"}
+    documentation {
+        Stops the registered service
+    }
     public function stop() {
 
     }
 };
 
-@Description {value:"Type to set the GMail configuration."}
+documentation{
+    Represents the GMail client endpoint configuration
+
+    F{{oAuth2ClientConfig}} - The OAuth2 Client endpoint configuration
+}
 public type GMailConfiguration {
     oauth2:OAuth2ClientEndpointConfiguration oAuth2ClientConfig;
 };
