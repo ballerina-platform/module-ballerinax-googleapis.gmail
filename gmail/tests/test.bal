@@ -20,17 +20,19 @@ import ballerina/log;
 import ballerina/test;
 import ballerina/config;
 
-string accessToken = setConfParams(config:getAsString("ACCESS_TOKEN"));
-string clientId = setConfParams(config:getAsString("CLIENT_ID"));
-string clientSecret = setConfParams(config:getAsString("CLIENT_SECRET"));
-string refreshToken = setConfParams(config:getAsString("REFRESH_TOKEN"));
+string accessToken = config:getAsString("ACCESS_TOKEN");
+string clientId = config:getAsString("CLIENT_ID");
+string clientSecret = config:getAsString("CLIENT_SECRET");
+string refreshToken = config:getAsString("REFRESH_TOKEN");
 
 endpoint Client gMailEP {
-    oAuth2ClientConfig:{
-        accessToken:accessToken,
-        clientId:clientId,
-        clientSecret:clientSecret,
-        refreshToken:refreshToken
+    clientConfig:{
+        auth:{
+            accessToken:accessToken,
+            clientId:clientId,
+            clientSecret:clientSecret,
+            refreshToken:refreshToken
+        }
     }
 };
 
@@ -64,7 +66,7 @@ function testSendTextMail() {
     options.sender = sender;
     options.cc = cc;
     Message m = new Message();
-    log:printInfo("testSendHTMLMail");
+    log:printInfo("testSendTextMail");
     log:printInfo("createTextMessage()");
     m.createTextMessage(recipient, subject, messageBody, options);
     log:printInfo("addAttachment()");
@@ -315,17 +317,5 @@ function testgetUserProfile() {
     match profile {
         UserProfile p => test:assertTrue(p.emailAddress != (), msg = "Get User Profile failed");
         GMailError e => test:assertFail(msg = e.errorMessage);
-    }
-}
-
-function setConfParams(string|() confParam) returns string {
-    match confParam {
-        string param => {
-            return param;
-        }
-        () => {
-            log:printInfo("Empty value, found nil!!");
-            return "";
-        }
     }
 }

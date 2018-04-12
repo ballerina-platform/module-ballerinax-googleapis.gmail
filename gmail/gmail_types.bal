@@ -124,7 +124,7 @@ public type Message object {
         P{{bodyText}} - Email text body
         P{{options}} - MessageOptions with optional email headers (Sender,Cc,Bcc)
         P{{images}} - InlineImage arrya with inline images
-        R{{gMailError}} - Returns GMailError if html message creation is unsuccessful
+        R{{}} - GMailError if html message creation is unsuccessful.
     }
     public function createHTMLMessage (string recipient, string subject, string bodyText, MessageOptions options,
                                                                         InlineImage[] images) returns ()|GMailError {
@@ -185,7 +185,7 @@ public type Message object {
                                     Eg: <img src="cid:image-ImageName.jpg">*
         P{{imagePath}} - The inline image file path
         P{{contentType}} - The image content type
-        R{{gMailError}} - Returns GMailError if the content type is not supported
+        R{{}} - GMailError if the content type is not supported.
     }
     public function setInlineImage (string imagePath, string contentType) returns ()|GMailError {
         if (contentType == EMPTY_STRING){
@@ -228,7 +228,7 @@ public type Message object {
 
         P{{filePath}} - The file path of the attachment
         P{{contentType}} - The content type of the attachment
-        R{{gmailError}} - Returns GMailError if the attaching unsuccessful
+        R{{}} - GMailError if the attaching unsuccessful.
     }
     public function addAttachment (string filePath, string contentType) returns ()|GMailError {
         if (contentType == EMPTY_STRING){

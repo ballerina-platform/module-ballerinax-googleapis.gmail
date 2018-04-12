@@ -15,23 +15,21 @@
 // under the License.
 
 documentation { Constant field 'BASE_URL'. Holds the value for base url of gmail api. }
-@final public string BASE_URL = "https://www.googleapis.com/gmail";
-documentation { Constant field 'REFRESH_TOKEN_EP'. Holds the value for url of refresh token end point. }
-@final public string REFRESH_TOKEN_EP = "https://www.googleapis.com";
-documentation { Constant field 'REFRESH_TOKEN_PATH'. Holds the value for refresh token path.}
-@final public string REFRESH_TOKEN_PATH = "/oauth2/v3/token";
+@final string BASE_URL = "https://www.googleapis.com/gmail";
+documentation { Constant field 'REFRESH_TOKEN_URL'. Holds the value for url of refresh token end point. }
+@final string REFRESH_TOKEN_EP = "https://www.googleapis.com/oauth2/v3/token";
 documentation { Constant field 'USER_RESOURCE'. Holds the value for user resource path. }
-@final public string USER_RESOURCE = "/v1/users/";
+@final string USER_RESOURCE = "/v1/users/";
 documentation { Constant field 'MESSAGE_RESOURCE'. Holds the value for messages resource path. }
-@final public string MESSAGE_RESOURCE = "/messages";
+@final string MESSAGE_RESOURCE = "/messages";
 documentation { Constant field 'MESSAGE_SEND_RESOURCE'. Holds the value for send messages resource. }
-@final public string MESSAGE_SEND_RESOURCE = "/messages/send";
+@final string MESSAGE_SEND_RESOURCE = "/messages/send";
 documentation { Constant field 'ATTACHMENT_RESOURCE'. Holds the value for attachments resource path. }
-@final public string ATTACHMENT_RESOURCE = "/attachments/";
+@final string ATTACHMENT_RESOURCE = "/attachments/";
 documentation { Constant field 'THREAD_RESOURCE'. Holds the value for threads resoure path. }
-@final public string THREAD_RESOURCE = "/threads";
+@final string THREAD_RESOURCE = "/threads";
 documentation { Constant field 'PROFILE_RESOURCE'. Holds the value for profile resource path.}
-@final public string PROFILE_RESOURCE = "/profile";
+@final string PROFILE_RESOURCE = "/profile";
 
 documentation { Constant field 'EMPTY_STRING'. Holds the value for empty string. }
 @final string EMPTY_STRING = "";

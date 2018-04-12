@@ -2,7 +2,7 @@
 
 | Ballerina Version         | Connector Version         | API Version |
 | ------------------------- | ------------------------- | ------------|
-| ballerina-tools-0.970.0-alpha4-SNAPSHOT  | 0.8.0   |   v1     |
+| ballerina-tools-0.970.0-alpha6-SNAPSHOT  | 0.8.4   |   v1     |
 
 ### Prerequisites
 Get Access Token and Refresh Token for Gmail
@@ -42,19 +42,23 @@ REFRESH_TOKEN="enter your refresh token here"
 Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal in either way following,
 ```ballerina
 endpoint Client gMailEP {
-    oAuth2ClientConfig:{
-        accessToken:accessToken,
+    clientConfig:{
+        auth:{
+            accessToken:accessToken
+        }
     }
 };
 ```
 
 ```ballerina
 endpoint Client gMailEP {
-    oAuth2ClientConfig:{
-        accessToken:accessToken,
-        clientId:clientId,
-        clientSecret:clientSecret,
-        refreshToken:refreshToken
+    clientConfig:{
+        auth:{
+            accessToken:accessToken,
+            clientId:clientId,
+            clientSecret:clientSecret,
+            refreshToken:refreshToken
+        }
     }
 };
 ```

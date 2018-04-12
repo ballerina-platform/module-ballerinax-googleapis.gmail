@@ -22,8 +22,8 @@ documentation{
     Transforms JSON mail object into Message type object.
 
     P{{sourceMailJsonObject}} - Json mail object
-    R{{targetMessageType}} - Returns Message type object if the conversion successful.
-    R{{gMailError}} - Returns GMailError if the conversion is unsuccessful.
+    R{{}} - Message type object if the conversion is successful.
+    R{{}} - GMailError if the conversion is unsuccessful.
 }
 function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMailError {
     Message targetMessageType = new ();
@@ -77,8 +77,8 @@ documentation{
     Transforms MIME Message Part Json into MessageBody type object.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
-    R{{targetMessageBodyType}} - Returns MessageBodyPart type object if the conversion successful.
-    R{{gMailError}} - Returns GMailError if conversion unsuccesful.
+    R{{}} - MessageBodyPart type object if the conversion successful.
+    R{{}} - GMailError if conversion unsuccesful.
 }
 function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GMailError {
     MessageBodyPart targetMessageBodyType = new ();
@@ -102,7 +102,7 @@ documentation{
     Transforms MIME Message Part JSON into MessageAttachment type object.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
-    R{{targetMessageAttachmentType}}- Returns MessageAttachment type object.
+    R{{}}- MessageAttachment type object
 }
 function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) returns MessageAttachment {
     MessageAttachment targetMessageAttachmentType = new ();
@@ -124,7 +124,7 @@ documentation{
     Transforms MIME Message Part Header into MessagePartHeader type.
 
     P{{sourceMessagePartHeader}} - Json message part header object
-    R{{targetMessagePartHeader}} - Returns MessagePartHeader type.
+    R{{}} - MessagePartHeader type
 }
 function convertJsonToMesagePartHeader(json sourceMessagePartHeader) returns MessagePartHeader {
     MessagePartHeader targetMessagePartHeader = {};
@@ -137,7 +137,7 @@ documentation{
     Transforms single body of MIME Message part into MessageAttachment type object.
 
     P{{sourceMessageBodyJsonObject}} - Json message body object
-    R{{targetMessageAttachmentType}} - Returns MessageAttachment type object.
+    R{{}} - MessageAttachment type object
 }
 function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageAttachment {
     MessageAttachment targetMessageAttachmentType = new ();
@@ -153,8 +153,8 @@ documentation{
     Transforms mail thread Json object into Thread type
 
     P{{sourceThreadJsonObject}} - Json message thread object
-    R{{targetThreadType}} - Returns Thread type
-    R{{gMailError}} - Returns GMailError if conversion is unsuccessful.
+    R{{}} - Thread type
+    R{{}} - GMailError if conversion is unsuccessful.
 }
 function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GMailError{
     Thread targetThreadType = {};
@@ -173,7 +173,7 @@ documentation{
     Transforms user profile json object into UserProfile type.
 
     P{{sourceUserProfileJsonObject}} - Json user profile object
-    R{{targetUserProfile}} - UserProfile type
+    R{{}} - UserProfile type
 }
 function convertJsonProfileToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
     UserProfile targetUserProfile = {};

@@ -15,20 +15,17 @@
 // under the License.
 
 import ballerina/http;
-import wso2/oauth2;
 
 documentation{
-    Represents GMail endpoint
+    Represents GMail endpoint.
 
-    F{{oauthEP}} - OAuth2 endpoint
     F{{gMailConfig}} - GMail endpoint configuration
     F{{gMailConnector}} - GMail connector
 }
 public type Client object {
     public {
-        oauth2:APIClient oauthEP;
-        GMailConfiguration gMailConfig;
-        GMailConnector gMailConnector;
+        GMailConfiguration gMailConfig = {};
+        GMailConnector gMailConnector = new ();
     }
 
     documentation{
@@ -37,13 +34,15 @@ public type Client object {
         P{{gMailConfig}} - GMail connector configuration
     }
     public function init(GMailConfiguration gMailConfig) {
-        gMailConfig.oAuth2ClientConfig.useUriParams = true;
-        gMailConfig.oAuth2ClientConfig.baseUrl = BASE_URL;
-        gMailConfig.oAuth2ClientConfig.refreshTokenEP = REFRESH_TOKEN_EP;
-        gMailConfig.oAuth2ClientConfig.refreshTokenPath = REFRESH_TOKEN_PATH;
-        gMailConfig.oAuth2ClientConfig.clientConfig = {};
-        self.oauthEP.init(gMailConfig.oAuth2ClientConfig);
-        self.gMailConnector.oauthEndpoint = self.oauthEP;
+        gMailConfig.clientConfig.targets = [{url:BASE_URL}];
+        match gMailConfig.clientConfig.auth {
+            () => {}
+            http:AuthConfig authConfig => {
+                authConfig.refreshUrl = REFRESH_TOKEN_EP;
+                authConfig.scheme = "oauth";
+            }
+        }
+        self.gMailConnector.client.init(gMailConfig.clientConfig);
     }
 
     documentation{
@@ -80,8 +79,8 @@ public type Client object {
 documentation{
     Represents the GMail client endpoint configuration.
 
-    F{{oAuth2ClientConfig}} - The OAuth2 Client endpoint configuration.
+    F{{clientConfig}} - The HTTP Client endpoint configuration.
 }
 public type GMailConfiguration {
-    oauth2:OAuth2ClientEndpointConfiguration oAuth2ClientConfig;
+    http:ClientEndpointConfig clientConfig;
 };

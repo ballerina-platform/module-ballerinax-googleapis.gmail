@@ -21,8 +21,8 @@ documentation{
     Converts the json message array into Message type array
 
     P{{sourceMessageArrayJsonObject}} - Json message array object
-    R{{messages}} - Message type array
-    R{{gmailError}} - Returns GMailError if coversion is not successful
+    R{{}} - Message type array
+    R{{}} - GMailError if coversion is not successful.
 }
 function convertToMessageArray(json sourceMessageArrayJsonObject) returns Message[]|GMailError {
     Message[] messages = [];
@@ -43,8 +43,8 @@ documentation{
     Decodes the message body of text/* mime message parts.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
-    R{{decodedBody}} - Base 64 decoded message body
-    R{{gmailError}} - Returns GMailError if error occurs in base64 encoding
+    R{{}} - String base 64 decoded message body.
+    R{{}} - GMailError if error occurs in base64 encoding.
 }
 function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMailError {
     string decodedBody;
@@ -70,7 +70,7 @@ documentation{
 
     P{{messagePayload}} - Json message payload which is the parent message part of the email.
     P{{msgAttachments}} - Initial array of attachment message parts.
-    R{{attachmentParts}} - Returns an array of MessageAttachments.
+    R{{}} -  An array of MessageAttachments.
 }
 function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
                                                                                 returns @tainted MessageAttachment[] {
@@ -106,8 +106,8 @@ documentation{
 
     P{{messagePayload}} - Json message payload which is the parent message part of the email.
     P{{inlineMailImages}} - Initial array of inline image message parts.
-    R{{inlineImgParts}} - Returns an array of MessageBodyParts.
-    R{{gmailError}} - Returns GMailError if unsuccessful.
+    R{{}} - An array of MessageBodyParts.
+    R{{}} - GMailError if unsuccessful.
 }
 //Extract inline image MIME message parts from the email
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
@@ -152,8 +152,8 @@ documentation{
 
     P{{messagePayload}} - Json message payload which is the parent message part of the email.
     P{{mimeType}} - Initial array of inline image message parts.
-    R{{msgBodyPart}} - Returns the MessageBodyPart.
-    R{{gmailError}} - Returns GMailError if unsuccessful.
+    R{{}} -  MessageBodyPart
+    R{{}} - GMailError if unsuccessful.
 }
 function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
                                                                         returns @tainted MessageBodyPart|GMailError {
@@ -197,7 +197,7 @@ documentation {
     Gets the message header Content-Disposition from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
-    R{{headerContentDisposition}} - Returns **Content-Disposition** header
+    R{{}} - **Content-Disposition** header
 }
 function getMsgPartHeaderContentDisposition(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerContentDisposition = {};
@@ -213,7 +213,7 @@ documentation{
     Gets the message header **To** from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
-    R{{headerTo}} - Returns **To** header
+    R{{}} - **To** header
 }
 function getMsgPartHeaderTo(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerTo = {};
@@ -229,7 +229,7 @@ documentation{
     Gets the message header **From** from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
-    R{{headerFrom}} - Returns **From** header
+    R{{}} - **From** header
 }
 function getMsgPartHeaderFrom(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerFrom = {};
@@ -245,7 +245,7 @@ documentation{
     Gets the message header Cc from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
-    R{{headerCc}} - Returns **Cc** header
+    R{{}} - **Cc** header
 }
 function getMsgPartHeaderCc(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerCc = {};
@@ -261,7 +261,7 @@ documentation{
     Gets the message header Bcc from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
-    R{{headerBcc}} - Returns **Bcc** header
+    R{{}} - **Bcc** header
 }
 function getMsgPartHeaderBcc(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerBcc = {};
@@ -277,7 +277,7 @@ documentation{
     Gets the message header Subject from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
-    R{{headerSubject}} - Returns **Subject** header
+    R{{}} - **Subject** header
 }
 function getMsgPartHeaderSubject(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerSubject = {};
@@ -293,7 +293,7 @@ documentation{
     Gets the message header Date from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
-    R{{headerDate}} - Returns **Date** header
+    R{{}} - **Date** header
 }
 function getMsgPartHeaderDate(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerDate = {};
@@ -309,7 +309,7 @@ documentation{
     Gets the message header ContentType from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
-    R{{headerContentType}} - Returns **ContentType** header
+    R{{}} - **ContentType** header
 }
 function getMsgPartHeaderContentType(MessagePartHeader[] headers) returns MessagePartHeader {
     MessagePartHeader headerContentType = {};
@@ -325,7 +325,7 @@ documentation{
     Converts the message part header json array to MessagePartHeader array.
 
     P{{jsonMsgPartHeaders}} - Json array of message part headers
-    R{{msgPartHeaders}} - Returns MessagePartHeader array
+    R{{}} - MessagePartHeader array
 }
 function convertToMsgPartHeaders(json jsonMsgPartHeaders) returns MessagePartHeader[] {
     MessagePartHeader[] msgPartHeaders = [];
@@ -341,7 +341,7 @@ documentation{
     Converts json string array to string array.
 
     P{{sourceJsonObject}} - Json array
-    R{{targetStringArray}} - String array
+    R{{}} - String array
 }
 function convertJSONArrayToStringArray(json sourceJsonObject) returns string[] {
     string[] targetStringArray = [];
@@ -359,6 +359,7 @@ documentation{
 
     P{{msgMimeType}} - The mime type of the message part you want check
     P{{mType}} - The given mime type which you wants check against with
+    R{{}} - Boolean status of mime type match
 }
 function isMimeType(string msgMimeType, string mType) returns boolean {
     string[] msgTypes = msgMimeType.split("/");
@@ -383,7 +384,7 @@ documentation{
 
     P{{filePath}} - File path
     R{{encodedFile}} - Encoded file
-    R{{gmailError}} - Returns GMailError if fails to open and encode.
+    R{{}} - GMailError if fails to open and encode.
 }
 function encodeFile(string filePath) returns (string|GMailError) {
     io:ByteChannel fileChannel = getFileChannel(filePath, "r");
@@ -413,7 +414,7 @@ documentation{
     Gets the file name from the given file path.
 
     P{{filePath}} - File path **(including the file name and extension at the end)**
-    R{{pathParts}} - Returns the file name extracted from the file path.
+    R{{}} -  The file name extracted from the file path.
 }
 function getFileNameFromPath(string filePath) returns string {
     string[] pathParts = filePath.split("/");
@@ -425,7 +426,7 @@ documentation{
 
     P{{filePath}} - File path
     P{{permission}} - Permission to open the file with, for example for read permission give as *r*
-    R{{channel}} - Returns byte channel of the file
+    R{{}} - The byte channel of the file
 }
 function getFileChannel(string filePath, string permission) returns (io:ByteChannel) {
     io:ByteChannel channel = io:openFile(filePath, permission);
@@ -437,9 +438,9 @@ documentation{
 
     P{{channel}} - ByteChannel of the file
     P{{numberOfBytes}} - Number of bytes which should be read
-    R{{bytes}} - The bytes which were read
-    R{{numberOfBytesRead}} - Number of bytes read
-    R{{gMailError}} - Returns GMailError if fails to read blob content.
+    R{{}} - The bytes which were read
+    R{{}} - Number of bytes read
+    R{{}} - GMailError if fails to read blob content.
 }
 function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int)|GMailError {
     blob bytes;
