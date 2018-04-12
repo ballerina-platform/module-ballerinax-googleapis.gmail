@@ -16,16 +16,15 @@
 
 import ballerina/io;
 import ballerina/http;
-import wso2/oauth2;
 
 documentation{
     Represents the GMail Client Connector.
 
-    F{{oauthEndpoint}} - OAuth2Client used in GMail connector.
+    F{{client}} - HTTP Client used in GMail connector.
 }
 public type GMailConnector object {
     public {
-        oauth2:APIClient oauthEndpoint;
+        http:Client client;
     }
 
     documentation{
@@ -37,7 +36,7 @@ public type GMailConnector object {
         R{{}} - GMailError if any error occurs in sending the request and receiving the response.
     }
     public function listAllMails(string userId, SearchFilter filter) returns (MessageListPage|GMailError) {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         GMailError gMailError = {};
         MessageListPage messageListPage = {};
         http:Request request = new ();
@@ -61,7 +60,7 @@ public type GMailConnector object {
         }
         getListMessagesPath = getListMessagesPath + uriParams;
         try {
-            var getResponse = oauthEP -> get(getListMessagesPath, request);
+            var getResponse = httpClient -> get(getListMessagesPath, request);
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonlistMsgResponse = check jsonResponse;
@@ -116,7 +115,7 @@ public type GMailConnector object {
         R{{}} - GMailError if the message is not sent successfully.
     }
     public function sendMessage(string userId, Message message) returns (string, string)|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         string concatRequest = EMPTY_STRING;
         //Set the general headers of the message
         concatRequest += TO + ":" + message.headerTo.value + NEW_LINE;
@@ -209,7 +208,7 @@ public type GMailConnector object {
         request.setJsonPayload(jsonPayload);
         request.setHeader(CONTENT_TYPE, APPLICATION_JSON);
         try {
-            var postResponse = oauthEP -> post(sendMessagePath, request);
+            var postResponse = httpClient -> post(sendMessagePath, request);
             http:Response response = check postResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonSendMessageResponse = check jsonResponse;
@@ -246,7 +245,7 @@ public type GMailConnector object {
     }
     public function readMail(string userId, string messageId, MessageThreadFilter filter)
                                                                                         returns (Message)|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         Message message = new ();
@@ -260,7 +259,7 @@ public type GMailConnector object {
         }
         readMailPath = uriParams != "" ? readMailPath + "?" + uriParams.subString(1, uriParams.length()) : readMailPath;
         try {
-            var getResponse = oauthEP -> get(readMailPath, request);
+            var getResponse = httpClient -> get(readMailPath, request);
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonMail = check jsonResponse;
@@ -301,14 +300,14 @@ public type GMailConnector object {
     }
     public function getAttachment(string userId, string messageId, string attachmentId)
                                                                                 returns (MessageAttachment)|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         MessageAttachment attachment = new ();
         string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId +
         ATTACHMENT_RESOURCE + attachmentId;
         try {
-            var getResponse = oauthEP -> get(getAttachmentPath, request);
+            var getResponse = httpClient -> get(getAttachmentPath, request);
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonAttachment = check jsonResponse;
@@ -344,7 +343,7 @@ public type GMailConnector object {
         R{{}} - GMailError if trashing the message is unsuccessful.
     }
     public function trashMail(string userId, string messageId) returns boolean|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         json jsonPayload = {};
@@ -352,7 +351,7 @@ public type GMailConnector object {
         request.setJsonPayload(jsonPayload);
         boolean trashMailResponse;
         try {
-            var postResponse = oauthEP -> post(trashMailPath, request);
+            var postResponse = httpClient -> post(trashMailPath, request);
             http:Response response = check postResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonTrashMailResponse = check jsonResponse;
@@ -388,7 +387,7 @@ public type GMailConnector object {
         R{{}} - GMailError if the untrashing is unsuccessful.
     }
     public function untrashMail(string userId, string messageId) returns boolean|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         json jsonPayload = {};
@@ -396,7 +395,7 @@ public type GMailConnector object {
         request.setJsonPayload(jsonPayload);
         boolean untrashMailResponse;
         try {
-            var postResponse = oauthEP -> post(untrashMailPath, request);
+            var postResponse = httpClient -> post(untrashMailPath, request);
             http:Response response = check postResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonUntrashMailResponse = check jsonResponse;
@@ -432,13 +431,13 @@ public type GMailConnector object {
         R{{}} - GMailError if the deletion is unsuccessful.
     }
     public function deleteMail(string userId, string messageId) returns boolean|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         string deleteMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId;
         boolean deleteMailResponse;
         try {
-            var deleteResponse = oauthEP -> delete(deleteMailPath, request);
+            var deleteResponse = httpClient -> delete(deleteMailPath, request);
             http:Response response = check deleteResponse;
             if (response.statusCode == http:NO_CONTENT_204) {
                 deleteMailResponse = true;
@@ -473,7 +472,7 @@ public type GMailConnector object {
         R{{}} - GMailError if any error occurs in sending the request and receiving the response.
     }
     public function listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         ThreadListPage threadListPage = {};
@@ -497,7 +496,7 @@ public type GMailConnector object {
         }
         getListThreadPath = getListThreadPath + uriParams;
         try {
-            var getResponse = oauthEP -> get(getListThreadPath, request);
+            var getResponse = httpClient -> get(getListThreadPath, request);
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonlistThreadResponse = check jsonResponse;
@@ -551,7 +550,7 @@ public type GMailConnector object {
     }
     public function readThread(string userId, string threadId, MessageThreadFilter filter)
                                                                                         returns (Thread)|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         Thread thread = {};
@@ -566,7 +565,7 @@ public type GMailConnector object {
         readThreadPath = uriParams != "" ? readThreadPath + "?" +
         uriParams.subString(1, uriParams.length()) : readThreadPath;
         try {
-            var getResponse = oauthEP -> get(readThreadPath, request);
+            var getResponse = httpClient -> get(readThreadPath, request);
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonThread = check jsonResponse;
@@ -605,7 +604,7 @@ public type GMailConnector object {
         R{{}} - GMailError if trashing the thread is unsuccessful.
     }
     public function trashThread(string userId, string threadId) returns boolean|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         json jsonPayload = {};
@@ -613,7 +612,7 @@ public type GMailConnector object {
         request.setJsonPayload(jsonPayload);
         boolean trashThreadReponse;
         try {
-            var postRespone = oauthEP -> post(trashThreadPath, request);
+            var postRespone = httpClient -> post(trashThreadPath, request);
             http:Response response = check postRespone;
             var jsonResponse = response.getJsonPayload();
             json jsonTrashThreadResponse = check jsonResponse;
@@ -648,7 +647,7 @@ public type GMailConnector object {
         R{{}} - GMailError if the untrashing is unsuccessful.
     }
     public function untrashThread(string userId, string threadId) returns boolean|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         json jsonPayload = {};
@@ -656,7 +655,7 @@ public type GMailConnector object {
         string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId + "/untrash";
         request.setJsonPayload(jsonPayload);
         try {
-            var postResponse = oauthEP -> post(untrashThreadPath, request);
+            var postResponse = httpClient -> post(untrashThreadPath, request);
             http:Response response = check postResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonUntrashThreadResponse = check jsonResponse;
@@ -690,13 +689,13 @@ public type GMailConnector object {
         R{{}} - GMailError if the deletion is unsuccessful.
     }
     public function deleteThread(string userId, string threadId) returns boolean|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
         string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId;
         boolean deleteThreadResponse;
         try {
-            var deleteResponse = oauthEP -> delete(deleteThreadPath, request);
+            var deleteResponse = httpClient -> delete(deleteThreadPath, request);
             http:Response response = check deleteResponse;
             if (response.statusCode == http:NO_CONTENT_204) {
                 deleteThreadResponse = true;
@@ -730,13 +729,13 @@ public type GMailConnector object {
         R{{}} - GMailError if unsuccessful.
     }
     public function getUserProfile(string userId) returns UserProfile|GMailError {
-        endpoint oauth2:APIClient oauthEP = self.oauthEndpoint;
+        endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         UserProfile profile = {};
         GMailError gMailError = {};
         string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
         try {
-            var getResponse = oauthEP -> get(getProfilePath, request);
+            var getResponse = httpClient -> get(getProfilePath, request);
             http:Response response = check getResponse;
             var jsonResponse = response.getJsonPayload();
             json jsonProfile = check jsonResponse;
