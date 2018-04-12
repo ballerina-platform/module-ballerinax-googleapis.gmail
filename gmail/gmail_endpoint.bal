@@ -18,7 +18,7 @@ import ballerina/http;
 import wso2/oauth2;
 
 documentation{
-    Represents GMail endpoint
+    Represents GMail endpoint.
 
     F{{oauthEP}} - OAuth2 endpoint
     F{{gMailConfig}} - GMail endpoint configuration
