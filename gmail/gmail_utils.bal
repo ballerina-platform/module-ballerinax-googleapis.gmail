@@ -56,7 +56,7 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
             string decodeString => decodedBody = decodeString;
             util:Base64DecodeError err => {
                 GMailError gMailError = {};
-                gMailError.errorMessage = "Error occured while base64 decoding text/* message body";
+                gMailError.message = "Error occured while base64 decoding text/* message body";
                 gMailError.cause = err;
                 return gMailError;
             }
@@ -401,7 +401,7 @@ function encodeFile(string filePath) returns (string|GMailError) {
         }
         util:Base64EncodeError err => {
             GMailError gMailError = {};
-            gMailError.errorMessage = "Error occured while base64 encoding byte channel";
+            gMailError.message = "Error occured while base64 encoding byte channel";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -450,7 +450,7 @@ function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int
         io:IOError e => {
             GMailError gMailError = {};
             gMailError.cause = e.cause;
-            gMailError.errorMessage = "Error occured while reading byte channel";
+            gMailError.message = "Error occured while reading byte channel";
             return gMailError;
         }
     }

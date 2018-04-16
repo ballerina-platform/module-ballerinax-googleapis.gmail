@@ -16,7 +16,7 @@
 
 import ballerina/io;
 
-//All the transformers that transform required json to types and vice versa
+//Includes all the transforming functions which transform required json to type object/record and vice versa
 
 documentation{
     Transforms JSON mail object into Message type object.

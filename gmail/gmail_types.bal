@@ -106,15 +106,7 @@ public type Message object {
         P{{bodyText}} - Email text body
         P{{options}} - MessageOptions with optional email headers (Sender,Cc,Bcc)
     }
-    public function createTextMessage (string recipient, string subject, string bodyText, MessageOptions options) {
-        //Set email Headers
-        self.setMailHeaders(recipient, subject, options);
-        //Set the plain text type MIME Message body part of the message
-        self.plainTextBodyPart.setMessageBody(bodyText, TEXT_PLAIN);
-        self.plainTextBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_PLAIN + ";" + CHARSET + "=\"" + UTF_8 +
-                                                                                                                "\""}];
-        self.plainTextBodyPart.mimeType = TEXT_PLAIN;
-    }
+    public function createTextMessage (string recipient, string subject, string bodyText, MessageOptions options);
 
     documentation {
         Creates a html email message
@@ -127,22 +119,7 @@ public type Message object {
         R{{}} - GMailError if html message creation is unsuccessful.
     }
     public function createHTMLMessage (string recipient, string subject, string bodyText, MessageOptions options,
-                                                                        InlineImage[] images) returns ()|GMailError {
-        //Set email Headers
-        self.setMailHeaders(recipient, subject, options);
-        //Set the html body part of the message
-        self.htmlBodyPart.mimeType = TEXT_HTML;
-        self.htmlBodyPart.setMessageBody(bodyText, TEXT_HTML);
-        self.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
-        if (lengthof images != 0){
-            foreach image in images{
-                match self.setInlineImage(image.imagePath, image.contentType){
-                    GMailError gMailError => return gMailError;
-                }
-            }
-        }
-        return ();
-    }
+                                                                        InlineImage[] images) returns ()|GMailError;
 
     documentation{
         Sets the common email headers in the message
@@ -151,32 +128,7 @@ public type Message object {
         P{{subject}} - Email subject
         P{{options}} - MessageOptions with optional email headers (Sender,Cc,Bcc)
     }
-    function setMailHeaders (string recipient, string subject, MessageOptions options) {
-        //Set the general header To of top level message part
-        self.headerTo = {name:TO, value:recipient};
-        //Include the seperate header to the existing header list
-        self.headers[0] = self.headerTo;
-        self.headerSubject = {name:SUBJECT, value:subject};
-        self.headers[1] = self.headerSubject;
-        if (options.sender != "") {
-            self.headerFrom = {name:FROM, value:options.sender};
-            self.headers[lengthof self.headers] = self.headerFrom;
-        }
-        if (options.cc != "") {
-            self.headerCc = {name:CC, value:options.cc};
-            self.headers[lengthof self.headers] = self.headerCc;
-        }
-        if (options.bcc != "") {
-            self.headerBcc = {name:BCC, value:options.bcc};
-            self.headers[lengthof self.headers] = self.headerBcc;
-        }
-        //Set the general content type header of top level MIME message part as multipart/mixed with the
-        //boundary=boundaryString
-        self.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + ";" + BOUNDARY + "=\""
-                                                                                            + BOUNDARY_STRING + "\""};
-        self.headers[lengthof self.headers] = self.headerContentType;
-        self.mimeType = MULTIPART_MIXED;
-    }
+    function setMailHeaders (string recipient, string subject, MessageOptions options);
 
     documentation {
         Sets the inline image content of the message.
@@ -187,41 +139,7 @@ public type Message object {
         P{{contentType}} - The image content type
         R{{}} - GMailError if the content type is not supported.
     }
-    public function setInlineImage (string imagePath, string contentType) returns ()|GMailError {
-        if (contentType == EMPTY_STRING){
-            GMailError gMailError = {};
-            gMailError.errorMessage = "image content type cannot be empty";
-            return gMailError;
-        }
-        if (isMimeType(contentType, IMAGE_ANY)) {
-            string encodedFile;
-            //Open and encode the image file into base64. Return an IOError if fails.
-            match encodeFile(imagePath) {
-                string eFile => encodedFile = eFile;
-                GMailError gMailError => return gMailError;
-            }
-            //Set the inline image body part of the message
-            MessageBodyPart inlineImgBody = new ();
-            inlineImgBody.fileName = getFileNameFromPath(imagePath);
-            MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
-                                                                                    inlineImgBody.fileName + "\""};
-            MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:INLINE + "; " + FILE_NAME
-                                                                            + "=\"" + inlineImgBody.fileName + "\""};
-            MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
-            MessagePartHeader contentIdHeader = {name:CONTENT_ID, value:"<" + INLINE_IMAGE_CONTENT_ID_PREFIX +
-                                                                                        inlineImgBody.fileName + ">"};
-            inlineImgBody.bodyHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader, contentIdHeader];
-            inlineImgBody.setMessageBody(encodedFile, contentType);
-            inlineImgBody.mimeType = contentType;
-            self.inlineImgParts[lengthof self.inlineImgParts] = inlineImgBody;
-        } else {
-            //Return an error if an un supported content type other than image/* is passed
-            GMailError gMailError = {};
-            gMailError.errorMessage = ERROR_CONTENT_TYPE_UNSUPPORTED;
-            return gMailError;
-        }
-        return ();
-    }
+    function addInlineImage (string imagePath, string contentType) returns ()|GMailError;
 
     documentation {
         Adds an attachment to the message.
@@ -230,35 +148,7 @@ public type Message object {
         P{{contentType}} - The content type of the attachment
         R{{}} - GMailError if the attaching unsuccessful.
     }
-    public function addAttachment (string filePath, string contentType) returns ()|GMailError {
-        if (contentType == EMPTY_STRING){
-            GMailError gMailError = {};
-            gMailError.errorMessage = "content type of attachment cannot be empty";
-            return gMailError;
-        } else if (filePath == EMPTY_STRING){
-            GMailError gMailError = {};
-            gMailError.errorMessage = "file path of attachment cannot be empty";
-            return gMailError;
-        }
-        string encodedFile;
-        //Open and encode the file into base64. Return an IOError if fails.
-        match encodeFile(filePath) {
-            string eFile => encodedFile = eFile;
-            GMailError gMailError => return gMailError;
-        }
-        MessageAttachment attachment = new ();
-        attachment.mimeType = contentType;
-        attachment.attachmentFileName = getFileNameFromPath(filePath);
-        MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
-                                                                            attachment.attachmentFileName + "\""};
-        MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:ATTACHMENT + "; " + FILE_NAME + "=\"" +
-                                                                            attachment.attachmentFileName + "\""};
-        MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
-        attachment.attachmentHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader];
-        attachment.setAttachment(encodedFile, contentType);
-        self.msgAttachments[lengthof self.msgAttachments] = attachment;
-        return ();
-    }
+    public function addAttachment (string filePath, string contentType) returns ()|GMailError;
 };
 
 documentation{
@@ -290,11 +180,9 @@ public type MessageBodyPart object {
         P{{body}} - Body of the message part
         P{{mimeType}} - The mime type of the message part
     }
-    function setMessageBody (string body, string mimeType) {
-        self.body = body;
-        self.mimeType = mimeType;
-    }
+    function setMessageBody (string body, string mimeType);
 };
+
 documentation{
         Represents Message Part with an attachment
 
@@ -324,10 +212,7 @@ public type MessageAttachment object {
         P{{encodedAttachment}} - Body of the attachment
         P{{mimeType}} -  The mime type of the attachment
     }
-    function setAttachment (string encodedAttachment, string mimeType) {
-        self.attachmentBody = encodedAttachment;
-        self.mimeType = mimeType;
-    }
+    function setAttachment (string encodedAttachment, string mimeType);
 };
 
 documentation{
@@ -344,22 +229,22 @@ public type MessagePartHeader {
 documentation{
     Represents GMail error
 
-    F{{errorMessage}} - GMail error message
+    F{{message}} - GMail error message
     F{{cause}} - The error which caused the GMail error
     F{{statusCode}} - The error status code
 }
 public type GMailError {
-    string errorMessage;
-    int statusCode;
+    string message;
     error? cause;
+    int statusCode;
 };
 
 documentation{
     Represents the optional parameters which are used to create a mail.
 
     F{{sender}} - Sender of the mail
-    F{{cc}} - Cc recepient of the mail
-    F{{bcc}} - Bcc recepient of the mail
+    F{{cc}} - Cc recipient of the mail
+    F{{bcc}} - Bcc recipient of the mail
 }
 public type MessageOptions {
     string sender;
@@ -441,3 +326,134 @@ public type InlineImage {
     string imagePath;
     string contentType;
 };
+
+public function Message::createTextMessage (string recipient, string subject, string bodyText, MessageOptions options) {
+    //Set email Headers
+    self.setMailHeaders(recipient, subject, options);
+    //Set the plain text type MIME Message body part of the message
+    self.plainTextBodyPart.setMessageBody(bodyText, TEXT_PLAIN);
+    self.plainTextBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_PLAIN + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
+    self.plainTextBodyPart.mimeType = TEXT_PLAIN;
+}
+
+public function Message::createHTMLMessage (string recipient, string subject, string bodyText, MessageOptions options,
+    InlineImage[] images) returns ()|GMailError {
+    //Set email Headers
+    self.setMailHeaders(recipient, subject, options);
+    //Set the html body part of the message
+    self.htmlBodyPart.mimeType = TEXT_HTML;
+    self.htmlBodyPart.setMessageBody(bodyText, TEXT_HTML);
+    self.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
+    if (lengthof images != 0){
+        foreach image in images{
+            match self.addInlineImage(image.imagePath, image.contentType){
+                GMailError gMailError => return gMailError;
+                () => {}
+            }
+        }
+    }
+    return ();
+}
+
+function Message::setMailHeaders (string recipient, string subject, MessageOptions options) {
+    //Set the general header To of top level message part
+    self.headerTo = {name:TO, value:recipient};
+    //Include the seperate header to the existing header list
+    self.headers[0] = self.headerTo;
+    self.headerSubject = {name:SUBJECT, value:subject};
+    self.headers[1] = self.headerSubject;
+    if (options.sender != "") {
+        self.headerFrom = {name:FROM, value:options.sender};
+        self.headers[lengthof self.headers] = self.headerFrom;
+    }
+    if (options.cc != "") {
+        self.headerCc = {name:CC, value:options.cc};
+        self.headers[lengthof self.headers] = self.headerCc;
+    }
+    if (options.bcc != "") {
+        self.headerBcc = {name:BCC, value:options.bcc};
+        self.headers[lengthof self.headers] = self.headerBcc;
+    }
+    //Set the general content type header of top level MIME message part as multipart/mixed with the
+    //boundary=boundaryString
+    self.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + ";" + BOUNDARY + "=\""
+                                                                                            + BOUNDARY_STRING + "\""};
+    self.headers[lengthof self.headers] = self.headerContentType;
+    self.mimeType = MULTIPART_MIXED;
+}
+
+function Message::addInlineImage (string imagePath, string contentType) returns ()|GMailError {
+    if (contentType == EMPTY_STRING){
+        GMailError gMailError = {};
+        gMailError.message = "image content type cannot be empty";
+        return gMailError;
+    }
+    if (isMimeType(contentType, IMAGE_ANY)) {
+        string encodedFile;
+        //Open and encode the image file into base64. Return an IOError if fails.
+        match encodeFile(imagePath) {
+            string eFile => encodedFile = eFile;
+            GMailError gMailError => return gMailError;
+        }
+        //Set the inline image body part of the message
+        MessageBodyPart inlineImgBody = new ();
+        inlineImgBody.fileName = getFileNameFromPath(imagePath);
+        MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
+                                                                                       inlineImgBody.fileName + "\""};
+        MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:INLINE + "; " + FILE_NAME
+                                                                            + "=\"" + inlineImgBody.fileName + "\""};
+        MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
+        MessagePartHeader contentIdHeader = {name:CONTENT_ID, value:"<" + INLINE_IMAGE_CONTENT_ID_PREFIX +
+                                                                                        inlineImgBody.fileName + ">"};
+        inlineImgBody.bodyHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader, contentIdHeader];
+        inlineImgBody.setMessageBody(encodedFile, contentType);
+        inlineImgBody.mimeType = contentType;
+        self.inlineImgParts[lengthof self.inlineImgParts] = inlineImgBody;
+    } else {
+        //Return an error if an un supported content type other than image/* is passed
+        GMailError gMailError = {};
+        gMailError.message = ERROR_CONTENT_TYPE_UNSUPPORTED;
+        return gMailError;
+    }
+    return ();
+}
+
+public function Message::addAttachment (string filePath, string contentType) returns ()|GMailError {
+    if (contentType == EMPTY_STRING){
+        GMailError gMailError = {};
+        gMailError.message = "content type of attachment cannot be empty";
+        return gMailError;
+    } else if (filePath == EMPTY_STRING){
+        GMailError gMailError = {};
+        gMailError.message = "file path of attachment cannot be empty";
+        return gMailError;
+    }
+    string encodedFile;
+    //Open and encode the file into base64. Return an IOError if fails.
+    match encodeFile(filePath) {
+        string eFile => encodedFile = eFile;
+        GMailError gMailError => return gMailError;
+    }
+    MessageAttachment attachment = new ();
+    attachment.mimeType = contentType;
+    attachment.attachmentFileName = getFileNameFromPath(filePath);
+    MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
+                                                                                attachment.attachmentFileName + "\""};
+    MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:ATTACHMENT + "; " + FILE_NAME + "=\"" +
+                                                                                attachment.attachmentFileName + "\""};
+    MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
+    attachment.attachmentHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader];
+    attachment.setAttachment(encodedFile, contentType);
+    self.msgAttachments[lengthof self.msgAttachments] = attachment;
+    return ();
+}
+
+function MessageBodyPart::setMessageBody (string body, string mimeType) {
+    self.body = body;
+    self.mimeType = mimeType;
+}
+
+function MessageAttachment::setAttachment (string encodedAttachment, string mimeType) {
+    self.attachmentBody = encodedAttachment;
+    self.mimeType = mimeType;
+}

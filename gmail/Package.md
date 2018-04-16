@@ -6,7 +6,7 @@
 Ballerina GMail connector allows you to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/) and perfom actions like creating and sending a simple text mail, mail
 with html content and inline images, mail with attachments, search and get mail etc.
 
-Following are the gmail api methods supported by the current version
+Following are the gmail api methods supported by the current version.
 
 * Send Message
 * Get Message
@@ -23,9 +23,9 @@ Following are the gmail api methods supported by the current version
 * Get User Profile
 
 ## Compatibility
-| Language Version        | Connector Version          |
-| ------------- |:-------------:|
-| ballerina-tools-0.970.0-alpha6-SNAPSHOT     | 0.8.4 | 
+| Language Version                             | Connector Version          |
+| ---------------------------------------------|:--------------------------:|
+| ballerina-tools-0.970.0-alpha6-SNAPSHOT      | 0.8.5                      | 
 
 ### Getting started
 
@@ -54,5 +54,5 @@ git clone https://github.com/wso2-ballerina/package-gmail
     * Access Token
     * Refresh Token
     
-* Please note that ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path are optional if you are using access token only.
-* Similary, please note that access token is optional if you are using only ClientId, Client Secret, Refresh Token, Refresh Token Endpoint, Refresh Token Path.
+* Please note that ClientId, Client Secret, Refresh Token are optional if you are using Access Token only.
+* Similarly, please note that access token is optional if you are using ClientId, Client Secret and Refresh Token.

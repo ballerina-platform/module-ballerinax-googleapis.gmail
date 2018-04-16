@@ -1,8 +1,8 @@
 ## Compatibility
 
-| Ballerina Version         | Connector Version         | API Version |
-| ------------------------- | ------------------------- | ------------|
-| ballerina-tools-0.970.0-alpha6-SNAPSHOT  | 0.8.4   |   v1     |
+| Ballerina Version                         |  Connector Version         | API Version |
+| ----------------------------------------  | -------------------------  | ------------|
+| ballerina-tools-0.970.0-alpha6-SNAPSHOT   |  0.8.5                     | v1          |
 
 ### Prerequisites
 Get Access Token and Refresh Token for Gmail
@@ -79,5 +79,5 @@ Run tests :
 ballerina init
 ballerina test gmail
 ```
-You will receive 2 two mails to the recepient inbox, one in text/plain with an attachment and other one
-in text/html with the same attachment. The 2 mails will be deleted from your sender's sent mail box as well.  
+You will receive 2 two mails to the recipient inbox, one in text/plain with an attachment and other one
+in text/html with the same attachment. The two mails will be deleted from your sender's sent mail box as well.  

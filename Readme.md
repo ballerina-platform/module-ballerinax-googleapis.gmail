@@ -23,9 +23,9 @@ Following are the gmail api methods supported by the current version
 * Get User Profile
 
 ## Compatibility
-| Language Version        | Connector Version          |
-| ------------- |:-------------:|
-| ballerina-tools-0.970.0-alpha6-SNAPSHOT     | 0.8.4 | 
+| Language Version                             | Connector Version          |
+| -------------------------------------------- |:--------------------------:|
+| ballerina-tools-0.970.0-alpha6-SNAPSHOT      | 0.8.5                      | 
 
 
 ### Getting started
