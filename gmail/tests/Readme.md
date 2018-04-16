@@ -79,5 +79,5 @@ Run tests :
 ballerina init
 ballerina test gmail
 ```
-You will receive 2 two mails to the recepient inbox, one in text/plain with an attachment and other one
-in text/html with the same attachment. The 2 mails will be deleted from your sender's sent mail box as well.  
+You will receive 2 two mails to the recipient inbox, one in text/plain with an attachment and other one
+in text/html with the same attachment. The two mails will be deleted from your sender's sent mail box as well.  

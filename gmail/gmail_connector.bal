@@ -53,7 +53,7 @@ public type GMailConnector object {
             match http:encode(filter.q, UTF_8) {
                 string encodedQuery => uriParams += QUERY + encodedQuery;
                 error e => {
-                    gMailError.errorMessage = "Error occured during encoding the query";
+                    gMailError.message = "Error occured during encoding the query";
                     return gMailError;
                 }
             }
@@ -86,18 +86,18 @@ public type GMailConnector object {
                     }
                 }
             } else {
-                gMailError.errorMessage = jsonlistMsgResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonlistMsgResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                             + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -192,7 +192,7 @@ public type GMailConnector object {
             string encodeString => encodedRequest = encodeString;
             util:Base64EncodeError err => {
                 GMailError gMailError = {};
-                gMailError.errorMessage = err.message;
+                gMailError.message = err.message;
                 return gMailError;
             }
         }
@@ -216,18 +216,18 @@ public type GMailConnector object {
                 msgId = jsonSendMessageResponse.id.toString() but { () => EMPTY_STRING };
                 threadId = jsonSendMessageResponse.threadId.toString() but { () => EMPTY_STRING };
             } else {
-                gMailError.errorMessage = jsonSendMessageResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonSendMessageResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -271,18 +271,18 @@ public type GMailConnector object {
                 }
             }
             else {
-                gMailError.errorMessage = jsonMail.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonMail.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -316,18 +316,18 @@ public type GMailConnector object {
                 attachment = convertJsonMessageBodyToMsgAttachment(jsonAttachment);
             }
             else {
-                gMailError.errorMessage = jsonAttachment.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonAttachment.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -359,18 +359,18 @@ public type GMailConnector object {
                 trashMailResponse = true;
             }
             else {
-                gMailError.errorMessage = jsonTrashMailResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonTrashMailResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -403,18 +403,18 @@ public type GMailConnector object {
                 untrashMailResponse = true;
             }
             else {
-                gMailError.errorMessage = jsonUntrashMailResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonUntrashMailResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -445,18 +445,18 @@ public type GMailConnector object {
             else {
                 var jsonResponse = response.getJsonPayload();
                 json jsonDeleteMailResponse = check jsonResponse;
-                gMailError.errorMessage = jsonDeleteMailResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonDeleteMailResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -489,7 +489,7 @@ public type GMailConnector object {
             match http:encode(filter.q, UTF_8) {
                 string encodedQuery => uriParams += QUERY + encodedQuery;
                 error e => {
-                    gMailError.errorMessage = "Error occured during encoding the query";
+                    gMailError.message = "Error occured during encoding the query";
                     return gMailError;
                 }
             }
@@ -521,18 +521,18 @@ public type GMailConnector object {
                     }
                 }
             } else {
-                gMailError.errorMessage = jsonlistThreadResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonlistThreadResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -577,18 +577,18 @@ public type GMailConnector object {
                 }
             }
             else {
-                gMailError.errorMessage = jsonThread.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonThread.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -620,18 +620,18 @@ public type GMailConnector object {
                 trashThreadReponse = true;
             }
             else {
-                gMailError.errorMessage = jsonTrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonTrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -662,18 +662,18 @@ public type GMailConnector object {
             if (response.statusCode == http:OK_200) {
                 untrashThreadReponse = true;
             } else {
-                gMailError.errorMessage = jsonUntrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonUntrashThreadResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -703,18 +703,18 @@ public type GMailConnector object {
             else {
                 var jsonResponse = response.getJsonPayload();
                 json jsonDeleteThreadResponse = check jsonResponse;
-                gMailError.errorMessage = jsonDeleteThreadResponse.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonDeleteThreadResponse.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -744,18 +744,18 @@ public type GMailConnector object {
                 profile = convertJsonProfileToUserProfileType(jsonProfile);
             }
             else {
-                gMailError.errorMessage = jsonProfile.error.message.toString() but { () => EMPTY_STRING };
+                gMailError.message = jsonProfile.error.message.toString() but { () => EMPTY_STRING };
                 gMailError.statusCode = response.statusCode;
                 return gMailError;
             }
         } catch (http:HttpConnectorError connectErr){
             gMailError.cause = connectErr.cause;
-            gMailError.errorMessage = "Http error occurred -> status code: " + <string>connectErr.statusCode
+            gMailError.message = "Http error occurred -> status code: " + <string>connectErr.statusCode
                                                                                 + "; message: " + connectErr.message;
             gMailError.statusCode = connectErr.statusCode;
             return gMailError;
         } catch (http:PayloadError err){
-            gMailError.errorMessage = "Error occured while receiving Json Payload";
+            gMailError.message = "Error occured while receiving Json Payload";
             gMailError.cause = err.cause;
             return gMailError;
         }
