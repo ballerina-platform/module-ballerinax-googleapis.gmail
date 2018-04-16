@@ -235,8 +235,8 @@ documentation{
 }
 public type GMailError {
     string message;
-    int statusCode;
     error? cause;
+    int statusCode;
 };
 
 documentation{
