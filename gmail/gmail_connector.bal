@@ -346,9 +346,7 @@ public type GMailConnector object {
         endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
-        json jsonPayload = {};
         string trashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId + "/trash";
-        request.setJsonPayload(jsonPayload);
         boolean trashMailResponse;
         try {
             var postResponse = httpClient -> post(trashMailPath, request);
@@ -390,9 +388,7 @@ public type GMailConnector object {
         endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
-        json jsonPayload = {};
         string untrashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId + "/untrash";
-        request.setJsonPayload(jsonPayload);
         boolean untrashMailResponse;
         try {
             var postResponse = httpClient -> post(untrashMailPath, request);
@@ -607,9 +603,7 @@ public type GMailConnector object {
         endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
-        json jsonPayload = {};
         string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId + "/trash";
-        request.setJsonPayload(jsonPayload);
         boolean trashThreadReponse;
         try {
             var postRespone = httpClient -> post(trashThreadPath, request);
@@ -650,10 +644,8 @@ public type GMailConnector object {
         endpoint http:Client httpClient = self.client;
         http:Request request = new ();
         GMailError gMailError = {};
-        json jsonPayload = {};
         boolean untrashThreadReponse;
         string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId + "/untrash";
-        request.setJsonPayload(jsonPayload);
         try {
             var postResponse = httpClient -> post(untrashThreadPath, request);
             http:Response response = check postResponse;
