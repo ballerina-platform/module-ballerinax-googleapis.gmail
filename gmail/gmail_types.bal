@@ -348,6 +348,7 @@ public function Message::createHTMLMessage (string recipient, string subject, st
         foreach image in images{
             match self.setInlineImage(image.imagePath, image.contentType){
                 GMailError gMailError => return gMailError;
+                () => {}
             }
         }
     }
@@ -381,7 +382,7 @@ function Message::setMailHeaders (string recipient, string subject, MessageOptio
     self.mimeType = MULTIPART_MIXED;
 }
 
-function Message::setInlineImage (string imagePath, string contentType) returns ()|GMailError {
+public function Message::setInlineImage (string imagePath, string contentType) returns ()|GMailError {
     if (contentType == EMPTY_STRING){
         GMailError gMailError = {};
         gMailError.message = "image content type cannot be empty";
