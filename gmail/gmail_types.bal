@@ -139,7 +139,7 @@ public type Message object {
         P{{contentType}} - The image content type
         R{{}} - GMailError if the content type is not supported.
     }
-    public function setInlineImage (string imagePath, string contentType) returns ()|GMailError;
+    function addInlineImage (string imagePath, string contentType) returns ()|GMailError;
 
     documentation {
         Adds an attachment to the message.
@@ -346,7 +346,7 @@ public function Message::createHTMLMessage (string recipient, string subject, st
     self.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
     if (lengthof images != 0){
         foreach image in images{
-            match self.setInlineImage(image.imagePath, image.contentType){
+            match self.addInlineImage(image.imagePath, image.contentType){
                 GMailError gMailError => return gMailError;
                 () => {}
             }
@@ -382,7 +382,7 @@ function Message::setMailHeaders (string recipient, string subject, MessageOptio
     self.mimeType = MULTIPART_MIXED;
 }
 
-public function Message::setInlineImage (string imagePath, string contentType) returns ()|GMailError {
+function Message::addInlineImage (string imagePath, string contentType) returns ()|GMailError {
     if (contentType == EMPTY_STRING){
         GMailError gMailError = {};
         gMailError.message = "image content type cannot be empty";
