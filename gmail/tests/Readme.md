@@ -1,6 +1,6 @@
 ## Compatibility
 
-| Ballerina Version                         |  Connector Version         | API Version |
+| Ballerina Version                         |  Endpoint Version         | API Version |
 | ----------------------------------------  | -------------------------  | ------------|
 | ballerina-tools-0.970.0-alpha6-SNAPSHOT   |  0.8.5                     | v1          |
 
@@ -15,15 +15,15 @@ Get Access Token and Refresh Token for Gmail
     (Give the redirect URI as (https://developers.google.com/oauthplayground), if you are using OAuth2 playground to obtain access token and refresh token )
 * Visit OAuth 2.0 Playground (https://developers.google.com/oauthplayground/), select the needed api scopes and give the obtained client id and client secret and obtain the refresh token and access token 
 
-* So to use gmail connector, you need to provide the following:
+* So to use gmail endpoint, you need to provide the following:
     * Client Id
     * Client Secret
     * Access Token
     * Refresh Token
     
-### Working with Gmail REST connector.
+### Working with Gmail REST endpoint.
 
-In order to use the Gmail connector, first you need to create a Gmail endpoint by passing above mentioned parameters.
+In order to use the Gmail endpoint, first you need to create a Gmail endpoint by passing above mentioned parameters.
 
 Visit `test.bal` file to find the way of creating Gmail endpoint.
 
