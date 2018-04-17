@@ -25,7 +25,7 @@ documentation{
 public type Client object {
     public {
         GMailConfiguration gMailConfig = {};
-        GMailConnector gMailConnector = new ();
+        GMailConnector gMailConnector = new;
     }
 
     documentation{
@@ -39,7 +39,7 @@ public type Client object {
             () => {}
             http:AuthConfig authConfig => {
                 authConfig.refreshUrl = REFRESH_TOKEN_EP;
-                authConfig.scheme = "oauth";
+                authConfig.scheme = OAUTH;
             }
         }
         self.gMailConnector.client.init(gMailConfig.clientConfig);

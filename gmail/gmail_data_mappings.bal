@@ -26,7 +26,7 @@ documentation{
     R{{}} - GMailError if the conversion is unsuccessful.
 }
 function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMailError {
-    Message targetMessageType = new ();
+    Message targetMessageType = new;
     targetMessageType.id = sourceMailJsonObject.id.toString() but { () => EMPTY_STRING };
     targetMessageType.threadId = sourceMailJsonObject.threadId.toString() but { () => EMPTY_STRING };
     targetMessageType.labelIds = sourceMailJsonObject.labelIds != () ?
@@ -81,7 +81,7 @@ documentation{
     R{{}} - GMailError if conversion unsuccesful.
 }
 function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GMailError {
-    MessageBodyPart targetMessageBodyType = new ();
+    MessageBodyPart targetMessageBodyType = new;
     if (sourceMessagePartJsonObject != ()){
         targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId.toString() but { () => EMPTY_STRING };
         match decodeMsgBodyData(sourceMessagePartJsonObject){
@@ -105,7 +105,7 @@ documentation{
     R{{}}- MessageAttachment type object
 }
 function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) returns MessageAttachment {
-    MessageAttachment targetMessageAttachmentType = new ();
+    MessageAttachment targetMessageAttachmentType = new;
     targetMessageAttachmentType.attachmentFileId = sourceMessagePartJsonObject.body.attachmentId.toString() but {
                                                                                                 () => EMPTY_STRING };
     targetMessageAttachmentType.attachmentBody = sourceMessagePartJsonObject.body.data.toString() but {
@@ -140,7 +140,7 @@ documentation{
     R{{}} - MessageAttachment type object
 }
 function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageAttachment {
-    MessageAttachment targetMessageAttachmentType = new ();
+    MessageAttachment targetMessageAttachmentType = new;
     targetMessageAttachmentType.attachmentFileId = sourceMessageBodyJsonObject.attachmentId.toString() but {
                                                                                                 () => EMPTY_STRING };
     targetMessageAttachmentType.attachmentBody = sourceMessageBodyJsonObject.data.toString() but {

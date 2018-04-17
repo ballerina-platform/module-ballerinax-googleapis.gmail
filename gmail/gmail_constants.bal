@@ -18,6 +18,8 @@ documentation { Constant field 'BASE_URL'. Holds the value for base url of gmail
 @final string BASE_URL = "https://www.googleapis.com/gmail";
 documentation { Constant field 'REFRESH_TOKEN_URL'. Holds the value for url of refresh token end point. }
 @final string REFRESH_TOKEN_EP = "https://www.googleapis.com/oauth2/v3/token";
+documentation { Constatnt field 'OAUTH_SCHEME'. Holds the value for oauth scheme. }
+@final string OAUTH = "oauth";
 documentation { Constant field 'USER_RESOURCE'. Holds the value for user resource path. }
 @final string USER_RESOURCE = "/v1/users/";
 documentation { Constant field 'MESSAGE_RESOURCE'. Holds the value for messages resource path. }
@@ -35,6 +37,26 @@ documentation { Constant field 'EMPTY_STRING'. Holds the value for empty string.
 @final string EMPTY_STRING = "";
 documentation { Constant field 'NEW_LINE'. Holds the value for new line string. }
 @final string NEW_LINE = "\n";
+documentation { Constant field 'COLON'. Holds the value for ":" string. }
+@final string COLON = ":";
+documentation {Constant field 'DASH'. Holds the value for "-" string. }
+@final string DASH = "-";
+documentation {Constant field 'FORWARD_SLASH'. Holds the value for "/" string. }
+@final string FORWARD_SLASH = "/";
+documentation {Constant field 'PLUS'. Holds the value for "+" string. }
+@final string PLUS = "+";
+documentation {Constant field 'UNDERSCORE'. Holds the value for "_" string. }
+@final string UNDERSCORE = "_";
+documentation {Constant field 'SEMICOLON'. Holds the value for ";" string. }
+@final string SEMICOLON = ";";
+documentation {Constant fields 'EQUAL'. Holds the value for "=" string. }
+@final string EQUAL = "=";
+documentation {Constant field 'WHITE_SPACE'. Holds the value for ";" string. }
+@final string WHITE_SPACE = " ";
+documentation {Constant field 'APOSTROPHE'. Holds the value for "\"" string. }
+@final string APOSTROPHE = "\"";
+documentation {Constant field 'QUESTION_MARK'. Holds the value for "?" string. }
+@final string QUESTION_MARK = "?";
 
 documentation { Constant field 'INCLUDE_SPAMTRASH'. Holds the value for optional parameter name 'includeSpamTrash'}
 @final string INCLUDE_SPAMTRASH = "?includeSpamTrash=";
@@ -107,6 +129,10 @@ documentation { Constant field 'UTF_8'. Holds value for UTF-8'}
 @final string UTF_8 = "UTF-8";
 documentation { Constant field 'BYTES_CHUNK'. Holds default value for bytes chunk to read from a byte channel'}
 @final int BYTES_CHUNK = 100000000;
+documentation { Constant field 'trash'. Holds the value for trash'}
+@final string TRASH = "trash";
+documentation { Constant field 'untrash'. Holds the value for untrash'}
+@final string UNTRASH = "untrash";
 
 documentation { Constant field 'TO'. Holds name for header To'}
 @final string TO = "To";

@@ -396,7 +396,7 @@ function Message::addInlineImage (string imagePath, string contentType) returns 
             GMailError gMailError => return gMailError;
         }
         //Set the inline image body part of the message
-        MessageBodyPart inlineImgBody = new ();
+        MessageBodyPart inlineImgBody = new;
         inlineImgBody.fileName = getFileNameFromPath(imagePath);
         MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
                                                                                        inlineImgBody.fileName + "\""};
@@ -434,7 +434,7 @@ public function Message::addAttachment (string filePath, string contentType) ret
         string eFile => encodedFile = eFile;
         GMailError gMailError => return gMailError;
     }
-    MessageAttachment attachment = new ();
+    MessageAttachment attachment = new;
     attachment.mimeType = contentType;
     attachment.attachmentFileName = getFileNameFromPath(filePath);
     MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +

@@ -168,9 +168,9 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
     endpoint http:Client httpClient = self.client;
     GMailError gMailError = {};
     MessageListPage messageListPage = {};
-    http:Request request = new();
+    http:Request request = new;
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
-    string uriParams = "";
+    string uriParams = EMPTY_STRING;
     //Add optional query parameters
     uriParams = uriParams + INCLUDE_SPAMTRASH + filter.includeSpamTrash;
     foreach labelId in filter.labelIds {
@@ -237,72 +237,72 @@ public function GMailConnector::sendMessage(string userId, Message message) retu
     endpoint http:Client httpClient = self.client;
     string concatRequest = EMPTY_STRING;
     //Set the general headers of the message
-    concatRequest += TO + ":" + message.headerTo.value + NEW_LINE;
-    concatRequest += SUBJECT + ":" + message.headerSubject.value + NEW_LINE;
+    concatRequest += TO + COLON + message.headerTo.value + NEW_LINE;
+    concatRequest += SUBJECT + COLON + message.headerSubject.value + NEW_LINE;
     if (message.headerFrom.value != EMPTY_STRING) {
-        concatRequest += FROM + ":" + message.headerFrom.value + NEW_LINE;
+        concatRequest += FROM + COLON + message.headerFrom.value + NEW_LINE;
     }
     if (message.headerCc.value != EMPTY_STRING) {
-        concatRequest += CC + ":" + message.headerCc.value + NEW_LINE;
+        concatRequest += CC + COLON + message.headerCc.value + NEW_LINE;
     }
     if (message.headerBcc.value != EMPTY_STRING) {
-        concatRequest += BCC + ":" + message.headerBcc.value + NEW_LINE;
+        concatRequest += BCC + COLON + message.headerBcc.value + NEW_LINE;
     }
     //------Start of multipart/mixed mime part (parent mime part)------
     //Set the content type header of top level MIME message part
-    concatRequest += message.headerContentType.name + ":" + message.headerContentType.value + NEW_LINE;
-    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
+    concatRequest += message.headerContentType.name + COLON + message.headerContentType.value + NEW_LINE;
+    concatRequest += NEW_LINE + DASH + DASH + BOUNDARY_STRING + NEW_LINE;
     //------Start of multipart/related mime part------
-    concatRequest += CONTENT_TYPE + ":" + MULTIPART_RELATED + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_1 +
-        "\"" + NEW_LINE;
-    concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
+    concatRequest += CONTENT_TYPE + COLON + MULTIPART_RELATED + SEMICOLON + WHITE_SPACE + BOUNDARY + EQUAL + APOSTROPHE + BOUNDARY_STRING_1 +
+        APOSTROPHE + NEW_LINE;
+    concatRequest += NEW_LINE + DASH + DASH + BOUNDARY_STRING_1 + NEW_LINE;
     //------Start of multipart/alternative mime part------
-    concatRequest += CONTENT_TYPE + ":" + MULTIPART_ALTERNATIVE + "; " + BOUNDARY + "=\"" + BOUNDARY_STRING_2 +
-        "\"" + NEW_LINE;
+    concatRequest += CONTENT_TYPE + COLON + MULTIPART_ALTERNATIVE + SEMICOLON + WHITE_SPACE + BOUNDARY + EQUAL + APOSTROPHE + BOUNDARY_STRING_2 +
+APOSTROPHE + NEW_LINE;
     //Set the body part : text/plain
-    if (message.plainTextBodyPart.body != ""){
-        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+    if (message.plainTextBodyPart.body != EMPTY_STRING){
+        concatRequest += NEW_LINE + DASH + DASH + BOUNDARY_STRING_2 + NEW_LINE;
         foreach header in message.plainTextBodyPart.bodyHeaders {
-            concatRequest += header.name + ":" + header.value + NEW_LINE;
+            concatRequest += header.name + COLON + header.value + NEW_LINE;
         }
         concatRequest += NEW_LINE + message.plainTextBodyPart.body + NEW_LINE;
     }
     //Set the body part : text/html
-    if (message.htmlBodyPart.body != "") {
-        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_2 + NEW_LINE;
+    if (message.htmlBodyPart.body != EMPTY_STRING) {
+        concatRequest += NEW_LINE + DASH + DASH + BOUNDARY_STRING_2 + NEW_LINE;
         foreach header in message.htmlBodyPart.bodyHeaders {
-            concatRequest += header.name + ":" + header.value + NEW_LINE;
+            concatRequest += header.name + COLON + header.value + NEW_LINE;
         }
         concatRequest += NEW_LINE + message.htmlBodyPart.body + NEW_LINE + NEW_LINE;
-        concatRequest += "--" + BOUNDARY_STRING_2 + "--";
+        concatRequest += DASH + DASH + BOUNDARY_STRING_2 + DASH + DASH;
     }
     //------End of multipart/alternative mime part------
     //Set inline Images as body parts
     boolean isExistInlineImageBody = false;
     foreach inlineImagePart in message.inlineImgParts {
-        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING_1 + NEW_LINE;
+        concatRequest += NEW_LINE + DASH + DASH + BOUNDARY_STRING_1 + NEW_LINE;
         foreach header in inlineImagePart.bodyHeaders {
-            concatRequest += header.name + ":" + header.value + NEW_LINE;
+            concatRequest += header.name + COLON + header.value + NEW_LINE;
         }
         concatRequest += NEW_LINE + inlineImagePart.body + NEW_LINE + NEW_LINE;
         isExistInlineImageBody = true;
     }
     if (isExistInlineImageBody) {
-        concatRequest += "--" + BOUNDARY_STRING_1 + "--" + NEW_LINE;
+        concatRequest += DASH + DASH + BOUNDARY_STRING_1 + DASH + DASH + NEW_LINE;
     }
     //------End of multipart/related mime part------
     //Set attachments
     boolean isExistAttachment = false;
     foreach attachment in message.msgAttachments {
-        concatRequest += NEW_LINE + "--" + BOUNDARY_STRING + NEW_LINE;
+        concatRequest += NEW_LINE + DASH + DASH + BOUNDARY_STRING + NEW_LINE;
         foreach header in attachment.attachmentHeaders {
-            concatRequest += header.name + ":" + header.value + NEW_LINE;
+            concatRequest += header.name + COLON + header.value + NEW_LINE;
         }
         concatRequest += NEW_LINE + attachment.attachmentBody + NEW_LINE + NEW_LINE;
         isExistAttachment = true;
     }
     if (isExistInlineImageBody) {
-        concatRequest += "--" + BOUNDARY_STRING + "--";
+        concatRequest += DASH + DASH + BOUNDARY_STRING + DASH + DASH;
     }
     string encodedRequest;
     //------End of multipart/mixed mime part------
@@ -314,14 +314,14 @@ public function GMailConnector::sendMessage(string userId, Message message) retu
             return gMailError;
         }
     }
-    encodedRequest = encodedRequest.replace("+", "-").replace("/", "_");
+    encodedRequest = encodedRequest.replace(PLUS, DASH).replace(FORWARD_SLASH, UNDERSCORE);
     //Set the encoded message as raw
     message.raw = encodedRequest;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
     string msgId;
     string threadId;
-    json jsonPayload = {"raw":message.raw};
+    json jsonPayload = {FORMAT_RAW:message.raw};
     string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
     request.setJsonPayload(jsonPayload);
     request.setHeader(CONTENT_TYPE, APPLICATION_JSON);
@@ -355,18 +355,18 @@ public function GMailConnector::sendMessage(string userId, Message message) retu
 public function GMailConnector::readMail(string userId, string messageId, MessageThreadFilter filter)
                                                                                         returns (Message)|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
-    Message message = new();
-    string uriParams = "";
-    string readMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId;
+    Message message = new;
+    string uriParams = EMPTY_STRING;
+    string readMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH + messageId;
     //Add format optional query parameter
-    uriParams = filter.format != "" ? uriParams + FORMAT + filter.format : uriParams;
+    uriParams = filter.format != EMPTY_STRING ? uriParams + FORMAT + filter.format : uriParams;
     //Add the optional meta data headers as query parameters
     foreach metaDataHeader in filter.metadataHeaders {
-        uriParams = metaDataHeader != "" ? uriParams + METADATA_HEADERS + metaDataHeader:uriParams;
+        uriParams = metaDataHeader != EMPTY_STRING ? uriParams + METADATA_HEADERS + metaDataHeader:uriParams;
     }
-    readMailPath = uriParams != "" ? readMailPath + "?" + uriParams.subString(1, uriParams.length()) : readMailPath;
+    readMailPath = uriParams != EMPTY_STRING ? readMailPath + QUESTION_MARK + uriParams.subString(1, uriParams.length()) : readMailPath;
     try {
         var getResponse = httpClient -> get(readMailPath, request);
         http:Response response = check getResponse;
@@ -401,10 +401,10 @@ public function GMailConnector::readMail(string userId, string messageId, Messag
 public function GMailConnector::getAttachment(string userId, string messageId, string attachmentId)
                                                                             returns (MessageAttachment)|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new ;
     GMailError gMailError = {};
-    MessageAttachment attachment = new();
-    string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId +
+    MessageAttachment attachment = new;
+    string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH + messageId +
         ATTACHMENT_RESOURCE + attachmentId;
     try {
         var getResponse = httpClient -> get(getAttachmentPath, request);
@@ -436,9 +436,9 @@ public function GMailConnector::getAttachment(string userId, string messageId, s
 
 public function GMailConnector::trashMail(string userId, string messageId) returns boolean|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
-    string trashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId + "/trash";
+    string trashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH + messageId + FORWARD_SLASH + TRASH;
     boolean trashMailResponse;
     try {
         var postResponse = httpClient -> post(trashMailPath, request);
@@ -469,9 +469,9 @@ public function GMailConnector::trashMail(string userId, string messageId) retur
 
 public function GMailConnector::untrashMail(string userId, string messageId) returns boolean|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
-    string untrashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId + "/untrash";
+    string untrashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH + messageId + FORWARD_SLASH + UNTRASH;
     boolean untrashMailResponse;
     try {
         var postResponse = httpClient -> post(untrashMailPath, request);
@@ -502,9 +502,9 @@ public function GMailConnector::untrashMail(string userId, string messageId) ret
 
 public function GMailConnector::deleteMail(string userId, string messageId) returns boolean|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
-    string deleteMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + "/" + messageId;
+    string deleteMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH + messageId;
     boolean deleteMailResponse;
     try {
         var deleteResponse = httpClient -> delete(deleteMailPath, request);
@@ -535,11 +535,11 @@ public function GMailConnector::deleteMail(string userId, string messageId) retu
 
 public function GMailConnector::listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
     ThreadListPage threadListPage = {};
     string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
-    string uriParams = "";
+    string uriParams = EMPTY_STRING;
     //Add optional query parameters
     uriParams = uriParams + INCLUDE_SPAMTRASH + filter.includeSpamTrash;
     foreach labelId in filter.labelIds {
@@ -604,18 +604,18 @@ public function GMailConnector::listThreads(string userId, SearchFilter filter) 
 public function GMailConnector::readThread(string userId, string threadId, MessageThreadFilter filter)
                                                                                         returns (Thread)|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
     Thread thread = {};
-    string uriParams = "";
-    string readThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId;
+    string uriParams = EMPTY_STRING;
+    string readThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH + threadId;
     //Add format optional query parameter
-    uriParams = filter.format != "" ? uriParams + FORMAT + filter.format : uriParams;
+    uriParams = filter.format != EMPTY_STRING ? uriParams + FORMAT + filter.format : uriParams;
     //Add the optional meta data headers as query parameters
     foreach metaDataHeader in filter.metadataHeaders {
-        uriParams = metaDataHeader != "" ? uriParams + METADATA_HEADERS + metaDataHeader:uriParams;
+        uriParams = metaDataHeader != EMPTY_STRING ? uriParams + METADATA_HEADERS + metaDataHeader:uriParams;
     }
-    readThreadPath = uriParams != "" ? readThreadPath + "?" +
+    readThreadPath = uriParams != EMPTY_STRING ? readThreadPath + QUESTION_MARK +
         uriParams.subString(1, uriParams.length()) : readThreadPath;
     try {
         var getResponse = httpClient -> get(readThreadPath, request);
@@ -650,9 +650,9 @@ public function GMailConnector::readThread(string userId, string threadId, Messa
 
 public function GMailConnector::trashThread(string userId, string threadId) returns boolean|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
-    string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId + "/trash";
+    string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH + threadId + FORWARD_SLASH + TRASH;
     boolean trashThreadReponse;
     try {
         var postRespone = httpClient -> post(trashThreadPath, request);
@@ -683,10 +683,10 @@ public function GMailConnector::trashThread(string userId, string threadId) retu
 
 public function GMailConnector::untrashThread(string userId, string threadId) returns boolean|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
     boolean untrashThreadReponse;
-    string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId + "/untrash";
+    string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH + threadId + FORWARD_SLASH + UNTRASH;
     try {
         var postResponse = httpClient -> post(untrashThreadPath, request);
         http:Response response = check postResponse;
@@ -715,9 +715,9 @@ public function GMailConnector::untrashThread(string userId, string threadId) re
 
 public function GMailConnector::deleteThread(string userId, string threadId) returns boolean|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     GMailError gMailError = {};
-    string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + "/" + threadId;
+    string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH + threadId;
     boolean deleteThreadResponse;
     try {
         var deleteResponse = httpClient -> delete(deleteThreadPath, request);
@@ -748,7 +748,7 @@ public function GMailConnector::deleteThread(string userId, string threadId) ret
 
 public function GMailConnector::getUserProfile(string userId) returns UserProfile|GMailError {
     endpoint http:Client httpClient = self.client;
-    http:Request request = new();
+    http:Request request = new;
     UserProfile profile = {};
     GMailError gMailError = {};
     string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
