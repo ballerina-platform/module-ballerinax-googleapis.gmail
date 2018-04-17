@@ -332,7 +332,7 @@ public function Message::createTextMessage (string recipient, string subject, st
     self.setMailHeaders(recipient, subject, options);
     //Set the plain text type MIME Message body part of the message
     self.plainTextBodyPart.setMessageBody(bodyText, TEXT_PLAIN);
-    self.plainTextBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_PLAIN + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
+    self.plainTextBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_PLAIN + SEMICOLON + CHARSET + EQUAL + APOSTROPHE + UTF_8 + APOSTROPHE}];
     self.plainTextBodyPart.mimeType = TEXT_PLAIN;
 }
 
@@ -343,7 +343,7 @@ public function Message::createHTMLMessage (string recipient, string subject, st
     //Set the html body part of the message
     self.htmlBodyPart.mimeType = TEXT_HTML;
     self.htmlBodyPart.setMessageBody(bodyText, TEXT_HTML);
-    self.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + ";" + CHARSET + "=\"" + UTF_8 + "\""}];
+    self.htmlBodyPart.bodyHeaders = [{name:CONTENT_TYPE, value:TEXT_HTML + SEMICOLON + CHARSET + EQUAL + APOSTROPHE + UTF_8 + APOSTROPHE}];
     if (lengthof images != 0){
         foreach image in images{
             match self.addInlineImage(image.imagePath, image.contentType){
@@ -362,22 +362,22 @@ function Message::setMailHeaders (string recipient, string subject, MessageOptio
     self.headers[0] = self.headerTo;
     self.headerSubject = {name:SUBJECT, value:subject};
     self.headers[1] = self.headerSubject;
-    if (options.sender != "") {
+    if (options.sender != EMPTY_STRING) {
         self.headerFrom = {name:FROM, value:options.sender};
         self.headers[lengthof self.headers] = self.headerFrom;
     }
-    if (options.cc != "") {
+    if (options.cc != EMPTY_STRING) {
         self.headerCc = {name:CC, value:options.cc};
         self.headers[lengthof self.headers] = self.headerCc;
     }
-    if (options.bcc != "") {
+    if (options.bcc != EMPTY_STRING) {
         self.headerBcc = {name:BCC, value:options.bcc};
         self.headers[lengthof self.headers] = self.headerBcc;
     }
     //Set the general content type header of top level MIME message part as multipart/mixed with the
     //boundary=boundaryString
-    self.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + ";" + BOUNDARY + "=\""
-                                                                                            + BOUNDARY_STRING + "\""};
+    self.headerContentType = {name:CONTENT_TYPE, value:MULTIPART_MIXED + SEMICOLON + BOUNDARY + EQUAL + APOSTROPHE
+                                                                                            + BOUNDARY_STRING + APOSTROPHE};
     self.headers[lengthof self.headers] = self.headerContentType;
     self.mimeType = MULTIPART_MIXED;
 }
@@ -398,13 +398,13 @@ function Message::addInlineImage (string imagePath, string contentType) returns 
         //Set the inline image body part of the message
         MessageBodyPart inlineImgBody = new;
         inlineImgBody.fileName = getFileNameFromPath(imagePath);
-        MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
-                                                                                       inlineImgBody.fileName + "\""};
-        MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:INLINE + "; " + FILE_NAME
-                                                                            + "=\"" + inlineImgBody.fileName + "\""};
+        MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + SEMICOLON + WHITE_SPACE + NAME + EQUAL + APOSTROPHE +
+                                                                                       inlineImgBody.fileName + APOSTROPHE};
+        MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:INLINE + SEMICOLON + WHITE_SPACE + FILE_NAME
+                                                                            + EQUAL + APOSTROPHE + inlineImgBody.fileName + APOSTROPHE};
         MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
-        MessagePartHeader contentIdHeader = {name:CONTENT_ID, value:"<" + INLINE_IMAGE_CONTENT_ID_PREFIX +
-                                                                                        inlineImgBody.fileName + ">"};
+        MessagePartHeader contentIdHeader = {name:CONTENT_ID, value:LESS_THAN + INLINE_IMAGE_CONTENT_ID_PREFIX +
+                                                                                        inlineImgBody.fileName + GREATER_THAN};
         inlineImgBody.bodyHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader, contentIdHeader];
         inlineImgBody.setMessageBody(encodedFile, contentType);
         inlineImgBody.mimeType = contentType;
@@ -437,10 +437,10 @@ public function Message::addAttachment (string filePath, string contentType) ret
     MessageAttachment attachment = new;
     attachment.mimeType = contentType;
     attachment.attachmentFileName = getFileNameFromPath(filePath);
-    MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + "; " + NAME + "=\"" +
-                                                                                attachment.attachmentFileName + "\""};
-    MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:ATTACHMENT + "; " + FILE_NAME + "=\"" +
-                                                                                attachment.attachmentFileName + "\""};
+    MessagePartHeader contentTypeHeader = {name:CONTENT_TYPE, value:contentType + SEMICOLON + WHITE_SPACE + NAME + EQUAL + APOSTROPHE +
+                                                                                attachment.attachmentFileName + APOSTROPHE};
+    MessagePartHeader dispositionHeader = {name:CONTENT_DISPOSITION, value:ATTACHMENT + SEMICOLON + WHITE_SPACE + FILE_NAME + EQUAL + APOSTROPHE +
+                                                                                attachment.attachmentFileName + APOSTROPHE};
     MessagePartHeader transferEncodeHeader = {name:CONTENT_TRANSFER_ENCODING, value:BASE_64};
     attachment.attachmentHeaders = [contentTypeHeader, dispositionHeader, transferEncodeHeader];
     attachment.setAttachment(encodedFile, contentType);

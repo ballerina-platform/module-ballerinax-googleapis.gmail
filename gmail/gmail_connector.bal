@@ -172,15 +172,15 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
     string uriParams = EMPTY_STRING;
     //Add optional query parameters
-    uriParams = uriParams + INCLUDE_SPAMTRASH + filter.includeSpamTrash;
+    uriParams = uriParams + QUESTION_MARK + INCLUDE_SPAMTRASH + EQUAL + filter.includeSpamTrash;
     foreach labelId in filter.labelIds {
-        uriParams = labelId != EMPTY_STRING ? uriParams + LABEL_IDS + labelId:uriParams;
+        uriParams = labelId != EMPTY_STRING ? uriParams + AMPERSAND + LABEL_IDS + EQUAL + labelId:uriParams;
     }
-    uriParams = filter.maxResults != EMPTY_STRING ? uriParams + MAX_RESULTS + filter.maxResults : uriParams;
-    uriParams = filter.pageToken != EMPTY_STRING ? uriParams + PAGE_TOKEN + filter.pageToken : uriParams;
+    uriParams = filter.maxResults != EMPTY_STRING ? uriParams + AMPERSAND + MAX_RESULTS + EQUAL + filter.maxResults : uriParams;
+    uriParams = filter.pageToken != EMPTY_STRING ? uriParams + AMPERSAND + PAGE_TOKEN + EQUAL + filter.pageToken : uriParams;
     if (filter.q != EMPTY_STRING) {
         match http:encode(filter.q, UTF_8) {
-            string encodedQuery => uriParams += QUERY + encodedQuery;
+            string encodedQuery => uriParams += AMPERSAND + QUERY + EQUAL + encodedQuery;
             error e => {
                 gMailError.message = "Error occured during encoding the query";
                 return gMailError;
@@ -361,10 +361,10 @@ public function GMailConnector::readMail(string userId, string messageId, Messag
     string uriParams = EMPTY_STRING;
     string readMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH + messageId;
     //Add format optional query parameter
-    uriParams = filter.format != EMPTY_STRING ? uriParams + FORMAT + filter.format : uriParams;
+    uriParams = filter.format != EMPTY_STRING ? uriParams + AMPERSAND + FORMAT + EQUAL + filter.format : uriParams;
     //Add the optional meta data headers as query parameters
     foreach metaDataHeader in filter.metadataHeaders {
-        uriParams = metaDataHeader != EMPTY_STRING ? uriParams + METADATA_HEADERS + metaDataHeader:uriParams;
+        uriParams = metaDataHeader != EMPTY_STRING ? uriParams + AMPERSAND + METADATA_HEADERS + EQUAL + metaDataHeader:uriParams;
     }
     readMailPath = uriParams != EMPTY_STRING ? readMailPath + QUESTION_MARK + uriParams.subString(1, uriParams.length()) : readMailPath;
     try {
@@ -541,15 +541,15 @@ public function GMailConnector::listThreads(string userId, SearchFilter filter) 
     string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
     string uriParams = EMPTY_STRING;
     //Add optional query parameters
-    uriParams = uriParams + INCLUDE_SPAMTRASH + filter.includeSpamTrash;
+    uriParams = uriParams + QUESTION_MARK + INCLUDE_SPAMTRASH + EQUAL + filter.includeSpamTrash;
     foreach labelId in filter.labelIds {
-        uriParams = labelId != EMPTY_STRING ? uriParams + LABEL_IDS + labelId:uriParams;
+        uriParams = labelId != EMPTY_STRING ? uriParams + AMPERSAND + LABEL_IDS + EQUAL + labelId:uriParams;
     }
-    uriParams = filter.maxResults != EMPTY_STRING ? uriParams + MAX_RESULTS + filter.maxResults : uriParams;
-    uriParams = filter.pageToken != EMPTY_STRING ? uriParams + PAGE_TOKEN + filter.pageToken : uriParams;
+    uriParams = filter.maxResults != EMPTY_STRING ? uriParams + AMPERSAND + MAX_RESULTS + EQUAL + filter.maxResults : uriParams;
+    uriParams = filter.pageToken != EMPTY_STRING ? uriParams +  AMPERSAND + PAGE_TOKEN + EQUAL + filter.pageToken : uriParams;
     if (filter.q != EMPTY_STRING) {
         match http:encode(filter.q, UTF_8) {
-            string encodedQuery => uriParams += QUERY + encodedQuery;
+            string encodedQuery => uriParams += AMPERSAND + QUERY + EQUAL + encodedQuery;
             error e => {
                 gMailError.message = "Error occured during encoding the query";
                 return gMailError;
@@ -610,10 +610,10 @@ public function GMailConnector::readThread(string userId, string threadId, Messa
     string uriParams = EMPTY_STRING;
     string readThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH + threadId;
     //Add format optional query parameter
-    uriParams = filter.format != EMPTY_STRING ? uriParams + FORMAT + filter.format : uriParams;
+    uriParams = filter.format != EMPTY_STRING ? uriParams + AMPERSAND + FORMAT + EQUAL + filter.format : uriParams;
     //Add the optional meta data headers as query parameters
     foreach metaDataHeader in filter.metadataHeaders {
-        uriParams = metaDataHeader != EMPTY_STRING ? uriParams + METADATA_HEADERS + metaDataHeader:uriParams;
+        uriParams = metaDataHeader != EMPTY_STRING ? uriParams + AMPERSAND + METADATA_HEADERS + EQUAL + metaDataHeader:uriParams;
     }
     readThreadPath = uriParams != EMPTY_STRING ? readThreadPath + QUESTION_MARK +
         uriParams.subString(1, uriParams.length()) : readThreadPath;

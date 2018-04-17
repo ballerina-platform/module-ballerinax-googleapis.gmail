@@ -51,7 +51,7 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
     string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
     if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
         string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString() but { () => EMPTY_STRING };
-        decodedBody = sourceMessagePartBody.replace("-", "+").replace("_", "/").replace("*", "=");
+        decodedBody = sourceMessagePartBody.replace(DASH, PLUS).replace(UNDERSCORE, FORWARD_SLASH).replace(STAR, EQUAL);
         match (util:base64DecodeString(decodedBody)){
             string decodeString => decodedBody = decodeString;
             util:Base64DecodeError err => {
@@ -75,11 +75,11 @@ documentation{
 function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
                                                                                 returns @tainted MessageAttachment[] {
     MessageAttachment[] attachmentParts = msgAttachments;
-    string disposition = "";
+    string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
         getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-        string[] headerParts = contentDispositionHeader.value.split(";");
+        string[] headerParts = contentDispositionHeader.value.split(SEMICOLON);
         disposition = headerParts[0];
     }
     string messagePayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
@@ -113,7 +113,7 @@ documentation{
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
                                                                         returns @tainted MessageBodyPart[]|GMailError {
     MessageBodyPart[] inlineImgParts = inlineMailImages;
-    string disposition = "";
+    string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
         getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
@@ -157,12 +157,12 @@ documentation{
 }
 function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
                                                                         returns @tainted MessageBodyPart|GMailError {
-    MessageBodyPart msgBodyPart = new();
-    string disposition = "";
+    MessageBodyPart msgBodyPart = new;
+    string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
         getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-        string[] headerParts = contentDispositionHeader.value.split(";");
+        string[] headerParts = contentDispositionHeader.value.split(SEMICOLON);
         disposition = headerParts[0];
     }
     string messageBodyPayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
@@ -184,7 +184,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
                     GMailError gmailError => return gmailError;
                 }
                 //If the returned msg body is a match for given mime type stop iterating over the other child parts
-                if (msgBodyPart.mimeType != "" && isMimeType(msgBodyPart.mimeType, mimeType)) {
+                if (msgBodyPart.mimeType != EMPTY_STRING && isMimeType(msgBodyPart.mimeType, mimeType)) {
                     break;
                 }
             }
@@ -362,17 +362,17 @@ documentation{
     R{{}} - Boolean status of mime type match
 }
 function isMimeType(string msgMimeType, string mType) returns boolean {
-    string[] msgTypes = msgMimeType.split("/");
+    string[] msgTypes = msgMimeType.split(FORWARD_SLASH);
     string msgPrimaryType = msgTypes[0];
     string msgSecondaryType = msgTypes[1];
 
-    string[] requestmTypes = mType.split("/");
+    string[] requestmTypes = mType.split(FORWARD_SLASH);
     string reqPrimaryType = requestmTypes[0];
     string reqSecondaryType = requestmTypes[1];
 
     if (!msgPrimaryType.equalsIgnoreCase(reqPrimaryType)) {
         return false;
-    } else if ((reqSecondaryType.subString(0, 1) != "*") && (msgSecondaryType.subString(0, 1) != "*")) {
+    } else if ((reqSecondaryType.subString(0, 1) != STAR) && (msgSecondaryType.subString(0, 1) != STAR)) {
         return msgSecondaryType.equalsIgnoreCase(reqSecondaryType);
     } else {
         return true;
@@ -387,7 +387,7 @@ documentation{
     R{{}} - GMailError if fails to open and encode.
 }
 function encodeFile(string filePath) returns (string|GMailError) {
-    io:ByteChannel fileChannel = getFileChannel(filePath, "r");
+    io:ByteChannel fileChannel = getFileChannel(filePath, READ_ACCESS);
     int bytesChunk = BYTES_CHUNK;
     blob readEncodedContent;
     int readEncodedCount;
@@ -417,7 +417,7 @@ documentation{
     R{{}} -  The file name extracted from the file path.
 }
 function getFileNameFromPath(string filePath) returns string {
-    string[] pathParts = filePath.split("/");
+    string[] pathParts = filePath.split(FORWARD_SLASH);
     return pathParts[lengthof pathParts - 1];
 }
 

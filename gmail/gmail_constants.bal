@@ -49,7 +49,7 @@ documentation {Constant field 'UNDERSCORE'. Holds the value for "_" string. }
 @final string UNDERSCORE = "_";
 documentation {Constant field 'SEMICOLON'. Holds the value for ";" string. }
 @final string SEMICOLON = ";";
-documentation {Constant fields 'EQUAL'. Holds the value for "=" string. }
+documentation {Constant field 'EQUAL'. Holds the value for "=" string. }
 @final string EQUAL = "=";
 documentation {Constant field 'WHITE_SPACE'. Holds the value for ";" string. }
 @final string WHITE_SPACE = " ";
@@ -57,21 +57,31 @@ documentation {Constant field 'APOSTROPHE'. Holds the value for "\"" string. }
 @final string APOSTROPHE = "\"";
 documentation {Constant field 'QUESTION_MARK'. Holds the value for "?" string. }
 @final string QUESTION_MARK = "?";
+documentation {Constant field 'AMPERSAND'. Holds the value for "&" string. }
+@final string AMPERSAND = "&";
+documentation {Constant field 'GREATER_THAN'. Holds the value for ">" string. }
+@final string GREATER_THAN = ">";
+documentation {Constant field 'LESS_THAN'. Holds the value for "<" string. }
+@final string LESS_THAN = "<";
+documentation {Constant field 'STAR'. Holds the value for "*" string. }
+@final string STAR = "*";
 
+documentation {Constant field 'READ_ACCESS'. Holds the value for file read access. }
+@final string READ_ACCESS = "r";
 documentation { Constant field 'INCLUDE_SPAMTRASH'. Holds the value for optional parameter name 'includeSpamTrash'}
-@final string INCLUDE_SPAMTRASH = "?includeSpamTrash=";
+@final string INCLUDE_SPAMTRASH = "includeSpamTrash";
 documentation { Constant field 'LABEL_IDS'. Holds the value for optional parameter name 'labelIds'}
-@final string LABEL_IDS = "&labelIds=";
+@final string LABEL_IDS = "labelIds";
 documentation { Constant field 'MAX_RESULTS'. Holds the value for optional parameter name 'maxResults' }
-@final string MAX_RESULTS = "&maxResults=";
+@final string MAX_RESULTS = "maxResults";
 documentation { Constant field 'PAGE_TOKEN'. Holds the value fo optional parameter name 'pageToken' }
-@final string PAGE_TOKEN = "&pageToken=";
+@final string PAGE_TOKEN = "pageToken";
 documentation { Constant field 'QUERY'. Holds the value for optional parameter name 'q' }
-@final string QUERY = "&q=";
+@final string QUERY = "q";
 documentation { Constant field 'FORMAT'. Holds the value for optional parameter name 'format'}
-@final string FORMAT = "&format=";
+@final string FORMAT = "format";
 documentation { Constant field 'METADATA_HEADERS'. Holds the value for optional parameter name 'metadataHeaders' }
-@final string METADATA_HEADERS = "&metadataHeaders=";
+@final string METADATA_HEADERS = "metadataHeaders";
 
 documentation { Constant field 'ERROR_CONTENT_TYPE_UNSUPPORTED'. Holds value for content type unsupported Error. }
 @final string ERROR_CONTENT_TYPE_UNSUPPORTED = "The given content type is unsupported to add to the body.";
