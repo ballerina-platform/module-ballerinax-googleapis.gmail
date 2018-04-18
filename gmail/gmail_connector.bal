@@ -196,14 +196,12 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
         json jsonlistMsgResponse => {
             MessageListPage messageListPage;
             if (jsonlistMsgResponse.messages != ()) {
-                messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate.toString() but {
-                                                                                                () => EMPTY_STRING };
-                messageListPage.nextPageToken = jsonlistMsgResponse.nextPageToken.toString() but {
-                                                                                                () => EMPTY_STRING };
+                messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate.toString();
+                messageListPage.nextPageToken = jsonlistMsgResponse.nextPageToken.toString();
                 int i = 0;
                 //for each message resource in messages json array of the response
                 foreach message in jsonlistMsgResponse.messages {
-                    string msgId = message.id.toString() but { () => EMPTY_STRING };
+                    string msgId = message.id.toString();
                     //read mail from the message id
                     match self.readMail(userId, msgId, {}){
                         Message mail => {
@@ -378,8 +376,8 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     var httpResponse = httpClient -> post(sendMessagePath, request);
     match handleResponse(httpResponse){
         json jsonSendMessageResponse => {
-            string msgId = jsonSendMessageResponse.id.toString() but { () => EMPTY_STRING };
-            string threadId = jsonSendMessageResponse.threadId.toString() but { () => EMPTY_STRING };
+            string msgId = jsonSendMessageResponse.id.toString();
+            string threadId = jsonSendMessageResponse.threadId.toString();
             return (msgId, threadId);
         }
         GMailError gMailError => return gMailError;
@@ -503,15 +501,13 @@ public function GMailConnector::listThreads(string userId, SearchFilter filter) 
         json jsonListThreadResponse => {
             ThreadListPage threadListPage;
             if (jsonListThreadResponse.threads != ()) {
-                threadListPage.resultSizeEstimate = jsonListThreadResponse.resultSizeEstimate.toString() but {
-                                                                                                () => EMPTY_STRING };
-                threadListPage.nextPageToken = jsonListThreadResponse.nextPageToken.toString() but {
-                                                                                                () => EMPTY_STRING };
+                threadListPage.resultSizeEstimate = jsonListThreadResponse.resultSizeEstimate.toString();
+                threadListPage.nextPageToken = jsonListThreadResponse.nextPageToken.toString();
                 int i = 0;
                 //for each thread resource in threads json array of the response
                 foreach thread in jsonListThreadResponse.threads {
                     //read thread from the thread id
-                    match self.readThread(userId, thread.id.toString() but { () => EMPTY_STRING }, {}){
+                    match self.readThread(userId, thread.id.toString(), {}){
                         Thread messageThread => {
                             //Add the thread to the thread list page's list of threads
                             threadListPage.threads[i] = messageThread;

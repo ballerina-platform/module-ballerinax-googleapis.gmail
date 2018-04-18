@@ -48,9 +48,9 @@ documentation{
 }
 function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMailError {
     string decodedBody;
-    string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
+    string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString();
     if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
-        string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString() but { () => EMPTY_STRING };
+        string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString();
         decodedBody = sourceMessagePartBody.replace(DASH_SYMBOL, PLUS_SYMBOL).replace(UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL).replace(STAR_SYMBOL, EQUAL_SYMBOL);
         match (util:base64DecodeString(decodedBody)){
             string decodeString => decodedBody = decodeString;
@@ -82,7 +82,7 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
         string[] headerParts = contentDispositionHeader.value.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
-    string messagePayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
+    string messagePayloadMimeType = messagePayload.mimeType.toString();
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
         attachmentParts[lengthof attachmentParts] = convertJsonMsgPartToMsgAttachment(messagePayload);
@@ -120,7 +120,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
         string[] headerParts = contentDispositionHeader.value.split(";");
         disposition = headerParts[0];
     }
-    string messagePayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
+    string messagePayloadMimeType = messagePayload.mimeType.toString();
     //If parent mime part is image/* and it is inline
     if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
@@ -165,7 +165,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
         string[] headerParts = contentDispositionHeader.value.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
-    string messageBodyPayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
+    string messageBodyPayloadMimeType = messagePayload.mimeType.toString();
     //If parent mime part is given mime type and not an attachment or an inline part
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
@@ -347,7 +347,7 @@ function convertJSONArrayToStringArray(json sourceJsonObject) returns string[] {
     string[] targetStringArray = [];
     int i = 0;
     foreach element in sourceJsonObject {
-        targetStringArray[i] = element.toString() but { () => EMPTY_STRING };
+        targetStringArray[i] = element.toString();
         i++;
     }
     return targetStringArray;
@@ -428,8 +428,8 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
                     }
                     else {
                         int statusCode = httpResponse.statusCode;
-                        string reason = jsonPayload.error.errors[0].reason.toString() but {() => EMPTY_STRING };
-                        string message = jsonPayload.error.errors[0].message.toString() but {() => EMPTY_STRING};
+                        string reason = jsonPayload.error.errors[0].reason.toString();
+                        string message = jsonPayload.error.errors[0].message.toString();
                         GMailError gMailError;
                         gMailError.message = "Error occurred during HTTP Client invocation; statusCode:" + statusCode
                                                + "; reason:" + reason + "; message:" + message;
