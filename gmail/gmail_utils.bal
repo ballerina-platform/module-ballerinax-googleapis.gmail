@@ -51,7 +51,7 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
     string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
     if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
         string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString() but { () => EMPTY_STRING };
-        decodedBody = sourceMessagePartBody.replace(DASH, PLUS).replace(UNDERSCORE, FORWARD_SLASH).replace(STAR, EQUAL);
+        decodedBody = sourceMessagePartBody.replace(DASH_SYMBOL, PLUS_SYMBOL).replace(UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL).replace(STAR_SYMBOL, EQUAL_SYMBOL);
         match (util:base64DecodeString(decodedBody)){
             string decodeString => decodedBody = decodeString;
             util:Base64DecodeError err => {
@@ -79,7 +79,7 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
         getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-        string[] headerParts = contentDispositionHeader.value.split(SEMICOLON);
+        string[] headerParts = contentDispositionHeader.value.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
     string messagePayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
@@ -162,7 +162,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
         getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-        string[] headerParts = contentDispositionHeader.value.split(SEMICOLON);
+        string[] headerParts = contentDispositionHeader.value.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
     string messageBodyPayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
@@ -362,17 +362,17 @@ documentation{
     R{{}} - Boolean status of mime type match
 }
 function isMimeType(string msgMimeType, string mType) returns boolean {
-    string[] msgTypes = msgMimeType.split(FORWARD_SLASH);
+    string[] msgTypes = msgMimeType.split(FORWARD_SLASH_SYMBOL);
     string msgPrimaryType = msgTypes[0];
     string msgSecondaryType = msgTypes[1];
 
-    string[] requestmTypes = mType.split(FORWARD_SLASH);
+    string[] requestmTypes = mType.split(FORWARD_SLASH_SYMBOL);
     string reqPrimaryType = requestmTypes[0];
     string reqSecondaryType = requestmTypes[1];
 
     if (!msgPrimaryType.equalsIgnoreCase(reqPrimaryType)) {
         return false;
-    } else if ((reqSecondaryType.subString(0, 1) != STAR) && (msgSecondaryType.subString(0, 1) != STAR)) {
+    } else if ((reqSecondaryType.subString(0, 1) != STAR_SYMBOL) && (msgSecondaryType.subString(0, 1) != STAR_SYMBOL)) {
         return msgSecondaryType.equalsIgnoreCase(reqSecondaryType);
     } else {
         return true;
@@ -417,7 +417,7 @@ documentation{
     R{{}} -  The file name extracted from the file path.
 }
 function getFileNameFromPath(string filePath) returns string {
-    string[] pathParts = filePath.split(FORWARD_SLASH);
+    string[] pathParts = filePath.split(FORWARD_SLASH_SYMBOL);
     return pathParts[lengthof pathParts - 1];
 }
 
@@ -455,4 +455,40 @@ function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int
         }
     }
     return (bytes, numberOfBytesRead);
+}
+
+function handleResponse (http:Response|http:HttpConnectorError response) returns (json|GMailError){
+    match response {
+        http:Response httpResponse => {
+            if (httpResponse.statusCode == http:NO_CONTENT_204){
+                return true;
+            }
+            match httpResponse.getJsonPayload(){
+                json jsonPayload => {
+                    if (httpResponse.statusCode == http:OK_200) {
+                        return jsonPayload;
+                    }
+                    else {
+                        int statusCode = httpResponse.statusCode;
+                        string reason = jsonPayload.error.errors[0].reason.toString() but {() => EMPTY_STRING };
+                        string message = jsonPayload.error.errors[0].message.toString() but {() => EMPTY_STRING};
+                        GMailError gMailError = {};
+                        gMailError.message = "Error occurred during HTTP Client invocation; statusCode:" + statusCode
+                                               + "; reason:" + reason + "; message:" + message;
+                        return gMailError;
+                    }
+                }
+                http:PayloadError payloadError => {
+                    GMailError gMailError = { message:"Error occurred when parsing to json response; message: " +
+                                             payloadError.message, cause:payloadError.cause };
+                    return gMailError;
+                }
+            }
+        }
+        http:HttpConnectorError httpError => {
+            GMailError gMailError = { message:"Error occurred during HTTP Client invocation; status code:" +
+                                     httpError.statusCode + "; message: " +  httpError.message, cause:httpError.cause };
+            return gMailError;
+        }
+    }
 }

@@ -20,6 +20,7 @@ documentation { Constant field 'REFRESH_TOKEN_URL'. Holds the value for url of r
 @final string REFRESH_TOKEN_EP = "https://www.googleapis.com/oauth2/v3/token";
 documentation { Constatnt field 'OAUTH_SCHEME'. Holds the value for oauth scheme. }
 @final string OAUTH = "oauth";
+
 documentation { Constant field 'USER_RESOURCE'. Holds the value for user resource path. }
 @final string USER_RESOURCE = "/v1/users/";
 documentation { Constant field 'MESSAGE_RESOURCE'. Holds the value for messages resource path. }
@@ -37,34 +38,34 @@ documentation { Constant field 'EMPTY_STRING'. Holds the value for empty string.
 @final string EMPTY_STRING = "";
 documentation { Constant field 'NEW_LINE'. Holds the value for new line string. }
 @final string NEW_LINE = "\n";
-documentation { Constant field 'COLON'. Holds the value for ":" string. }
-@final string COLON = ":";
-documentation {Constant field 'DASH'. Holds the value for "-" string. }
-@final string DASH = "-";
-documentation {Constant field 'FORWARD_SLASH'. Holds the value for "/" string. }
-@final string FORWARD_SLASH = "/";
-documentation {Constant field 'PLUS'. Holds the value for "+" string. }
-@final string PLUS = "+";
-documentation {Constant field 'UNDERSCORE'. Holds the value for "_" string. }
-@final string UNDERSCORE = "_";
-documentation {Constant field 'SEMICOLON'. Holds the value for ";" string. }
-@final string SEMICOLON = ";";
-documentation {Constant field 'EQUAL'. Holds the value for "=" string. }
-@final string EQUAL = "=";
 documentation {Constant field 'WHITE_SPACE'. Holds the value for ";" string. }
 @final string WHITE_SPACE = " ";
-documentation {Constant field 'APOSTROPHE'. Holds the value for "\"" string. }
-@final string APOSTROPHE = "\"";
-documentation {Constant field 'QUESTION_MARK'. Holds the value for "?" string. }
-@final string QUESTION_MARK = "?";
-documentation {Constant field 'AMPERSAND'. Holds the value for "&" string. }
-@final string AMPERSAND = "&";
-documentation {Constant field 'GREATER_THAN'. Holds the value for ">" string. }
-@final string GREATER_THAN = ">";
-documentation {Constant field 'LESS_THAN'. Holds the value for "<" string. }
-@final string LESS_THAN = "<";
-documentation {Constant field 'STAR'. Holds the value for "*" string. }
-@final string STAR = "*";
+documentation { Constant field 'COLON_SYMBOL'. Holds the value for ":" string. }
+@final string COLON_SYMBOL = ":";
+documentation {Constant field 'DASH_SYMBOL'. Holds the value for "-" string. }
+@final string DASH_SYMBOL = "-";
+documentation {Constant field 'FORWARD_SLASH_SYMBOL'. Holds the value for "/" string. }
+@final string FORWARD_SLASH_SYMBOL = "/";
+documentation {Constant field 'PLUS_SYMBOL'. Holds the value for "+" string. }
+@final string PLUS_SYMBOL = "+";
+documentation {Constant field 'UNDERSCORE_SYMBOL'. Holds the value for "_" string. }
+@final string UNDERSCORE_SYMBOL = "_";
+documentation {Constant field 'SEMICOLON_SYMBOL'. Holds the value for ";" string. }
+@final string SEMICOLON_SYMBOL = ";";
+documentation {Constant field 'EQUAL_SYMBOL'. Holds the value for "=" string. }
+@final string EQUAL_SYMBOL = "=";
+documentation {Constant field 'APOSTROPHE_SYMBOL'. Holds the value for "\"" string. }
+@final string APOSTROPHE_SYMBOL = "\"";
+documentation {Constant field 'QUESTION_MARK_SYMBOL'. Holds the value for "?" string. }
+@final string QUESTION_MARK_SYMBOL = "?";
+documentation {Constant field 'AMPERSAND_SYMBOL'. Holds the value for "&" string. }
+@final string AMPERSAND_SYMBOL = "&";
+documentation {Constant field 'GREATER_THAN_SYMBOL'. Holds the value for ">" string. }
+@final string GREATER_THAN_SYMBOL = ">";
+documentation {Constant field 'LESS_THAN_SYMBOL'. Holds the value for "<" string. }
+@final string LESS_THAN_SYMBOL = "<";
+documentation {Constant field 'STAR_SYMBOL'. Holds the value for "*" string. }
+@final string STAR_SYMBOL = "*";
 
 documentation {Constant field 'READ_ACCESS'. Holds the value for file read access. }
 @final string READ_ACCESS = "r";
