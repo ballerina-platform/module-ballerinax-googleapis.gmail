@@ -183,7 +183,7 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
         match http:encode(filter.q, UTF_8) {
             string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
             error e => {
-                GMailError gMailErrorMessageResponsePartHeader;
+                GMailError gMailError;
                 gMailError.message = "Error occured during encoding the query: " + filter.q + "; message:" + e.message;
                 gMailError.cause = e.cause;
                 return gMailError;
@@ -194,7 +194,7 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
     var httpResponse = httpClient -> get(getListMessagesPath, request);
     match handleResponse(httpResponse){
         json jsonlistMsgResponse => {
-            MessageListPage messageListPageMessageResponsePartHeader;
+            MessageListPage messageListPage;
             if (jsonlistMsgResponse.messages != ()) {
                 messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate.toString() but {
                                                                                                 () => EMPTY_STRING };
@@ -224,7 +224,7 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
 public function GMailConnector::sendMessage(string userId, MessageRequest message) returns (string, string)|GMailError {
     endpoint http:Client httpClient = self.client;
     if (message.contentType == TEXT_PLAIN && (lengthof message.inlineImagePaths != 0)){
-    GMailError gMailErrorMessageResponsePartHeader;
+    GMailError gMailError;
         gMailError.message = "Does not support adding inline images to text/plain body of the email with subject: "
                              + message.subject;
         return gMailError;
@@ -284,11 +284,11 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     foreach inlineImage in message.inlineImagePaths {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
         if (inlineImage.mimeType == EMPTY_STRING){
-            GMailError gMailErrorMessageResponsePartHeader;
+            GMailError gMailError;
             gMailError.message = "Image content type cannot be empty for image: " + inlineImage.imagePath;
             return gMailError;
         } else if (inlineImage.imagePath == EMPTY_STRING){
-            GMailError gMailErrorMessageResponsePartHeader;
+            GMailError gMailError;
             gMailError.message = "File path of inline image in message with subject: " + message.subject
                                     + "cannot be empty";
             return gMailError;
@@ -314,7 +314,7 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
             concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
         } else {
             //Return an error if an un supported content type other than image/* is passed
-            GMailError gMailErrorMessageResponsePartHeader;
+            GMailError gMailError;
             gMailError.message = "The given content type:" + inlineImage.mimeType + "of the image:"
                                   + inlineImage.imagePath + "is unsupported.";
             return gMailError;
@@ -329,11 +329,11 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     foreach attachment in message.attachmentPaths {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
         if (attachment.mimeType == EMPTY_STRING){
-            GMailError gMailErrorMessageResponsePartHeader;
+            GMailError gMailError;
             gMailError.message = "Content type of attachment:" + attachment.attachmentPath + "cannot be empty";
             return gMailError;
         } else if (attachmentPath == EMPTY_STRING){
-            GMailError gMailErrorMessageResponsePartHeader;
+            GMailError gMailError;
             gMailError.message = "File path of attachment in message with subject: " + message.subject
                                     + "cannot be empty";
             return gMailError;
@@ -363,7 +363,7 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     match (util:base64EncodeString(concatRequest)){
         string encodeString => encodedRequest = encodeString;
         util:Base64EncodeError encodeError => {
-            GMailError gMailErrorMessageResponsePartHeader;
+            GMailError gMailError;
             gMailError.message = encodeError.message;
             gMailError.cause = encodeError.cause;
             return gMailError;
@@ -490,7 +490,7 @@ public function GMailConnector::listThreads(string userId, SearchFilter filter) 
         match http:encode(filter.q, UTF_8) {
             string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
             error e => {
-                GMailError gMailErrorMessageResponsePartHeader;
+                GMailError gMailError;
                 gMailError.message = "Error occured during encoding the query: " + filter.q + "; message:" + e.message;
                 gMailError.cause = e.cause;
                 return gMailError;
@@ -501,7 +501,7 @@ public function GMailConnector::listThreads(string userId, SearchFilter filter) 
     var httpResponse = httpClient -> get(getListThreadPath, request);
     match handleResponse(httpResponse) {
         json jsonListThreadResponse => {
-            ThreadListPage threadListPageMessageResponsePartHeader;
+            ThreadListPage threadListPage;
             if (jsonListThreadResponse.threads != ()) {
                 threadListPage.resultSizeEstimate = jsonListThreadResponse.resultSizeEstimate.toString() but {
                                                                                                 () => EMPTY_STRING };
