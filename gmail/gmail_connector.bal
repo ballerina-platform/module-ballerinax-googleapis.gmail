@@ -55,11 +55,11 @@ public type GMailConnector object {
 
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to retrieve.
-        P{{filter}} - MessageThreadFilter with the optional parameters of response format and metadataHeaders.
+        P{{filter}} - MessageThreadReadFilter with the optional parameters of response format and metadataHeaders.
         R{{}} - Message type object of the specified mail.
         R{{}} - GMailError if the message cannot be read successfully.
     }
-    public function readMail(string userId, string messageId, MessageThreadFilter filter) returns (Message)|GMailError;
+    public function readMail(string userId, string messageId, MessageThreadReadFilter filter) returns (Message)|GMailError;
 
     documentation{
         Gets the specified message attachment from users mailbox.
@@ -119,11 +119,11 @@ public type GMailConnector object {
 
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} -  The thread id of the specified mail to retrieve.
-        P{{filter}} - MessageThreadFilter with the optional parameters of response format and metadataHeaders.
+        P{{filter}} - MessageThreadReadFilter with the optional parameters of response format and metadataHeaders.
         R{{}} - Thread type of the specified mail thread.
         R{{}} - GMailError if the thread cannot be read successfully.
     }
-    public function readThread(string userId, string threadId, MessageThreadFilter filter) returns (Thread)|GMailError;
+    public function readThread(string userId, string threadId, MessageThreadReadFilter filter) returns (Thread)|GMailError;
 
     documentation{
         Move the specified mail thread to the trash.
@@ -384,7 +384,7 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     }
 }
 
-public function GMailConnector::readMail(string userId, string messageId, MessageThreadFilter filter)
+public function GMailConnector::readMail(string userId, string messageId, MessageThreadReadFilter filter)
                                                                                         returns (Message)|GMailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
@@ -523,7 +523,7 @@ public function GMailConnector::listThreads(string userId, SearchFilter filter) 
     }
 }
 
-public function GMailConnector::readThread(string userId, string threadId, MessageThreadFilter filter)
+public function GMailConnector::readThread(string userId, string threadId, MessageThreadReadFilter filter)
                                                                                         returns (Thread)|GMailError {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;

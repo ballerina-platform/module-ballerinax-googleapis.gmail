@@ -111,19 +111,19 @@ public type Message {
     @readonly string historyId;
     @readonly string internalDate;
     @readonly string sizeEstimate;
-    MessagePartHeader[] headers;
-    MessagePartHeader headerTo;
-    MessagePartHeader headerFrom;
-    MessagePartHeader headerBcc;
-    MessagePartHeader headerCc;
-    MessagePartHeader headerSubject;
-    MessagePartHeader headerDate;
-    MessagePartHeader headerContentType;
-    string mimeType;
-    MessageBodyPart plainTextBodyPart;
-    MessageBodyPart htmlBodyPart;
-    MessageBodyPart[] inlineImgParts;
-    MessageAttachment[] msgAttachments;
+    @readonly MessagePartHeader[] headers;
+    @readonly MessagePartHeader headerTo;
+    @readonly MessagePartHeader headerFrom;
+    @readonly MessagePartHeader headerBcc;
+    @readonly MessagePartHeader headerCc;
+    @readonly MessagePartHeader headerSubject;
+    @readonly MessagePartHeader headerDate;
+    @readonly MessagePartHeader headerContentType;
+    @readonly string mimeType;
+    @readonly MessageBodyPart plainTextBodyPart;
+    @readonly MessageBodyPart htmlBodyPart;
+    @readonly MessageBodyPart[] inlineImgParts;
+    @readonly MessageAttachment[] msgAttachments;
 };
 
 documentation{
@@ -140,11 +140,11 @@ documentation{
     F{{size}} - Number of bytes of message part data.
 }
 public type MessageBodyPart {
-    string body;
-    string mimeType;
-    MessagePartHeader[] bodyHeaders;
-    string fileId;
-    string fileName;
+    @readonly string body;
+    @readonly string mimeType;
+    @readonly MessagePartHeader[] bodyHeaders;
+    @readonly string fileId;
+    @readonly string fileName;
     @readonly string partId;
     @readonly string size;
 };
@@ -162,12 +162,12 @@ documentation{
         F{{partId}} - Part Id of the message part
 }
 public type MessageAttachment {
-    string attachmentFileId;
-    string attachmentBody;
-    string size;
-    string attachmentFileName;
-    string mimeType;
-    MessagePartHeader[] attachmentHeaders;
+    @readonly string attachmentFileId;
+    @readonly string attachmentBody;
+    @readonly string size;
+    @readonly string attachmentFileName;
+    @readonly string mimeType;
+    @readonly MessagePartHeader[] attachmentHeaders;
     @readonly string partId;
 };
 
@@ -178,8 +178,8 @@ documentation{
     F{{value}} - Header value
 }
 public type MessagePartHeader {
-    string name;
-    string value;
+    @readonly string name;
+    @readonly string value;
 };
 
 documentation{
@@ -212,22 +212,23 @@ public type SearchFilter {
     string q;
 };
 
-// TODO:remove this and put as arguments
 documentation{
     Represents the optional message filter fields in get message api call.
 
-    F{{format}} - Format of the get message/thread response.
-                    *Acceptable values for format for a get message/thread request are:
-                        * "full": Returns the full email message data with body content parsed in the payload field;
-                                  the raw field is not used. (default)
-                        * "metadata": Returns only email message ID, labels, and email headers.
-                        * "minimal": Returns only email message ID and labels; does not return the email headers, body,
-                                     or payload.
-                        * "raw": Returns the full email message data with body content in the raw field as a base64url
-                                 encoded string. (the payload field is not included in the response)*
-    F{{metadataHeaders}} - The meta data headers array to include in the reponse when the format is given as *METADATA*.
+    F{{format}} - Optional. Format of the get message/thread response.
+                    *Acceptable values for format for a get message/thread request are defined as following constants
+                        in the package:
+                        * "FORMAT_FULL": Returns the full email message data with body content parsed in the payload
+                                         field;the raw field is not used. (default)
+                        * "FORMAT_METADATA": Returns only email message ID, labels, and email headers.
+                        * "FORMAT_MINIMAL": Returns only email message ID and labels; does not return the email headers,
+                                            body, or payload.
+                        * "FORMAT_RAW": Returns the full email message data with body content in the raw field as a
+                                        base64url encoded string. (the payload field is not included in the response)*
+    F{{metadataHeaders}} - Optional. The meta data headers array to include in the reponse when the format is given as
+                           *FORMAT_METADATA*.
 }
-public type MessageThreadFilter {
+public type MessageThreadReadFilter {
     string format;
     string[] metadataHeaders;
 };
@@ -240,9 +241,9 @@ documentation{
     F{{nextPageToken}} - Token for next page of message list
 }
 public type MessageListPage {
-    Message[] messages;
-    string resultSizeEstimate;
-    string nextPageToken;
+    @readonly Message[] messages;
+    @readonly string resultSizeEstimate;
+    @readonly string nextPageToken;
 };
 
 documentation{
@@ -253,7 +254,7 @@ documentation{
     F{{nextPageToken}} - Token for next page of mail thread list
 }
 public type ThreadListPage {
-    Thread[] threads;
-    string resultSizeEstimate;
-    string nextPageToken;
+    @readonly Thread[] threads;
+    @readonly string resultSizeEstimate;
+    @readonly string nextPageToken;
 };
