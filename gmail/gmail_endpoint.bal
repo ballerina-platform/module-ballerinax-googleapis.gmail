@@ -24,7 +24,7 @@ documentation{
 }
 public type Client object {
     public {
-        GMailConfiguration gMailConfigMessageResponsePartHeader;
+        GMailConfiguration gMailConfig = {};
         GMailConnector gMailConnector = new;
     }
 
@@ -46,33 +46,10 @@ public type Client object {
     }
 
     documentation{
-        Register gMail connector endpoint.
-
-        P{{serviceType}} = The type of the service to be registered.
-    }
-    public function register(typedesc serviceType) {
-
-    }
-
-    documentation{
-        Starts the gMail connector endpoint.
-    }
-    public function start() {
-
-    }
-
-    documentation{
         Returns the connector that client code uses.
     }
     public function getClient() returns GMailConnector {
         return self.gMailConnector;
-    }
-
-    documentation {
-        Stops the registered service.
-    }
-    public function stop() {
-
     }
 };
 
