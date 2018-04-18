@@ -16,6 +16,7 @@
 
 import ballerina/io;
 import ballerina/http;
+import ballerina/file;
 
 documentation{
     Represents the GMail Client Connector.
@@ -47,7 +48,7 @@ public type GMailConnector object {
         R{{}} - String thread id of the succesfully sent message.
         R{{}} - GMailError if the message is not sent successfully.
     }
-    public function sendMessage(string userId, Message message) returns (string, string)|GMailError;
+    public function sendMessage(string userId, MessageRequest message) returns (string, string)|GMailError;
 
     documentation{
         Read the specified mail from users mailbox.
@@ -182,7 +183,7 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
         match http:encode(filter.q, UTF_8) {
             string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
             error e => {
-                GMailError gMailError = {};
+                GMailError gMailErrorMessageResponsePartHeader;
                 gMailError.message = "Error occured during encoding the query: " + filter.q + "; message:" + e.message;
                 gMailError.cause = e.cause;
                 return gMailError;
@@ -193,7 +194,7 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
     var httpResponse = httpClient -> get(getListMessagesPath, request);
     match handleResponse(httpResponse){
         json jsonlistMsgResponse => {
-            MessageListPage messageListPage = {};
+            MessageListPage messageListPageMessageResponsePartHeader;
             if (jsonlistMsgResponse.messages != ()) {
                 messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate.toString() but {
                                                                                                 () => EMPTY_STRING };
@@ -220,83 +221,149 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
     }
 }
 
-public function GMailConnector::sendMessage(string userId, Message message) returns (string, string)|GMailError {
+public function GMailConnector::sendMessage(string userId, MessageRequest message) returns (string, string)|GMailError {
     endpoint http:Client httpClient = self.client;
+    if (message.contentType == TEXT_PLAIN && (lengthof message.inlineImagePaths != 0)){
+    GMailError gMailErrorMessageResponsePartHeader;
+        gMailError.message = "Does not support adding inline images to text/plain body of the email with subject: "
+                             + message.subject;
+        return gMailError;
+    }
     string concatRequest = EMPTY_STRING;
+
     //Set the general headers of the message
-    concatRequest += TO + COLON_SYMBOL + message.headerTo.value + NEW_LINE;
-    concatRequest += SUBJECT + COLON_SYMBOL + message.headerSubject.value + NEW_LINE;
-    if (message.headerFrom.value != EMPTY_STRING) {
-        concatRequest += FROM + COLON_SYMBOL + message.headerFrom.value + NEW_LINE;
+    concatRequest += TO + COLON_SYMBOL + message.recipient + NEW_LINE;
+    concatRequest += SUBJECT + COLON_SYMBOL + message.subject + NEW_LINE;
+    if (message.sender != EMPTY_STRING) {
+        concatRequest += FROM + COLON_SYMBOL + message.sender + NEW_LINE;
     }
-    if (message.headerCc.value != EMPTY_STRING) {
-        concatRequest += CC + COLON_SYMBOL + message.headerCc.value + NEW_LINE;
+    if (message.cc != EMPTY_STRING) {
+        concatRequest += CC + COLON_SYMBOL + message.cc + NEW_LINE;
     }
-    if (message.headerBcc.value != EMPTY_STRING) {
-        concatRequest += BCC + COLON_SYMBOL + message.headerBcc.value + NEW_LINE;
+    if (message.bcc != EMPTY_STRING) {
+        concatRequest += BCC + COLON_SYMBOL + message.bcc + NEW_LINE;
     }
     //------Start of multipart/mixed mime part (parent mime part)------
+
     //Set the content type header of top level MIME message part
-    concatRequest += message.headerContentType.name + COLON_SYMBOL + message.headerContentType.value + NEW_LINE;
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + MULTIPART_MIXED + SEMICOLON_SYMBOL + BOUNDARY + EQUAL_SYMBOL
+                        + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
+
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
+
     //------Start of multipart/related mime part------
     concatRequest += CONTENT_TYPE + COLON_SYMBOL + MULTIPART_RELATED + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
                      + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
+
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
+
     //------Start of multipart/alternative mime part------
     concatRequest += CONTENT_TYPE + COLON_SYMBOL + MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
                      + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
+
     //Set the body part : text/plain
-    if (message.plainTextBodyPart.body != EMPTY_STRING){
+    if (message.contentType == TEXT_PLAIN){
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
-        foreach header in message.plainTextBodyPart.bodyHeaders {
-            concatRequest += header.name + COLON_SYMBOL + header.value + NEW_LINE;
-        }
-        concatRequest += NEW_LINE + message.plainTextBodyPart.body + NEW_LINE;
+        concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_PLAIN + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
+                         + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+        concatRequest += NEW_LINE + message.messageBody + NEW_LINE;
     }
+
     //Set the body part : text/html
-    if (message.htmlBodyPart.body != EMPTY_STRING) {
+    if (message.contentType == TEXT_HTML) {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
-        foreach header in message.htmlBodyPart.bodyHeaders {
-            concatRequest += header.name + COLON_SYMBOL + header.value + NEW_LINE;
-        }
-        concatRequest += NEW_LINE + message.htmlBodyPart.body + NEW_LINE + NEW_LINE;
-        concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + DASH_SYMBOL + DASH_SYMBOL;
+        concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_HTML + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
+                            + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+        concatRequest += NEW_LINE + message.messageBody + NEW_LINE + NEW_LINE;
     }
+
+    concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + DASH_SYMBOL + DASH_SYMBOL;
     //------End of multipart/alternative mime part------
+
     //Set inline Images as body parts
-    boolean isExistInlineImageBody = false;
-    foreach inlineImagePart in message.inlineImgParts {
+    foreach inlineImage in message.inlineImagePaths {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
-        foreach header in inlineImagePart.bodyHeaders {
-            concatRequest += header.name + COLON_SYMBOL + header.value + NEW_LINE;
+        if (inlineImage.mimeType == EMPTY_STRING){
+            GMailError gMailErrorMessageResponsePartHeader;
+            gMailError.message = "Image content type cannot be empty for image: " + inlineImage.imagePath;
+            return gMailError;
+        } else if (inlineImage.imagePath == EMPTY_STRING){
+            GMailError gMailErrorMessageResponsePartHeader;
+            gMailError.message = "File path of inline image in message with subject: " + message.subject
+                                    + "cannot be empty";
+            return gMailError;
         }
-        concatRequest += NEW_LINE + inlineImagePart.body + NEW_LINE + NEW_LINE;
-        isExistInlineImageBody = true;
+        if (isMimeType(inlineImage.mimeType, IMAGE_ANY)) {
+            file:Path filePath = new (inlineImage.imagePath);
+            string encodedFile;
+            //Open and encode the image file into base64. Return an GMailError if fails.
+            match encodeFile(filePath.getPathValue()) {
+                string eFile => encodedFile = eFile;
+                GMailError gMailError => return gMailError;
+            }
+            //Set the inline image headers of the message
+            concatRequest += CONTENT_TYPE + COLON_SYMBOL + inlineImage.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE
+                             + NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + filePath.toAbsolutePath().getName()
+                             + APOSTROPHE_SYMBOL + NEW_LINE;
+            concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + INLINE + SEMICOLON_SYMBOL + WHITE_SPACE
+                             + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + filePath.toAbsolutePath().getName()
+                             + APOSTROPHE_SYMBOL + NEW_LINE;
+            concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
+            concatRequest += CONTENT_ID + COLON_SYMBOL + LESS_THAN_SYMBOL + INLINE_IMAGE_CONTENT_ID_PREFIX
+                             + filePath.toAbsolutePath().getName() + GREATER_THAN_SYMBOL + NEW_LINE;
+            concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
+        } else {
+            //Return an error if an un supported content type other than image/* is passed
+            GMailError gMailErrorMessageResponsePartHeader;
+            gMailError.message = "The given content type:" + inlineImage.mimeType + "of the image:"
+                                  + inlineImage.imagePath + "is unsupported.";
+            return gMailError;
+        }
     }
-    if (isExistInlineImageBody) {
+    if (lengthof (message.inlineImagePaths) != 0) {
         concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + DASH_SYMBOL + DASH_SYMBOL + NEW_LINE;
     }
     //------End of multipart/related mime part------
+
     //Set attachments
-    boolean isExistAttachment = false;
-    foreach attachment in message.msgAttachments {
+    foreach attachment in message.attachmentPaths {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
-        foreach header in attachment.attachmentHeaders {
-            concatRequest += header.name + COLON_SYMBOL + header.value + NEW_LINE;
+        if (attachment.mimeType == EMPTY_STRING){
+            GMailError gMailErrorMessageResponsePartHeader;
+            gMailError.message = "Content type of attachment:" + attachment.attachmentPath + "cannot be empty";
+            return gMailError;
+        } else if (attachmentPath == EMPTY_STRING){
+            GMailError gMailErrorMessageResponsePartHeader;
+            gMailError.message = "File path of attachment in message with subject: " + message.subject
+                                    + "cannot be empty";
+            return gMailError;
         }
-        concatRequest += NEW_LINE + attachment.attachmentBody + NEW_LINE + NEW_LINE;
-        isExistAttachment = true;
+        file:Path filePath = new (attachment.attachmentPath);
+        string encodedFile;
+        //Open and encode the file into base64. Return an GMailError if fails.
+        match encodeFile(filePath.getPathValue()) {
+            string eFile => encodedFile = eFile;
+            GMailError gMailError => return gMailError;
+        }
+        concatRequest += CONTENT_TYPE + COLON_SYMBOL + attachment.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE + NAME
+                         + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + filePath.toAbsolutePath().getName()
+                         + APOSTROPHE_SYMBOL + NEW_LINE;
+        concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + ATTACHMENT + SEMICOLON_SYMBOL + WHITE_SPACE + FILE_NAME
+                         + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + filePath.toAbsolutePath().getName()
+                         + APOSTROPHE_SYMBOL + NEW_LINE;
+        concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
+        concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
     }
-    if (isExistInlineImageBody) {
+    if (lengthof (message.attachmentPaths) != 0 )   {
         concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + DASH_SYMBOL + DASH_SYMBOL;
     }
-    string encodedRequest;
     //------End of multipart/mixed mime part------
+
+    string encodedRequest;
     match (util:base64EncodeString(concatRequest)){
         string encodeString => encodedRequest = encodeString;
         util:Base64EncodeError encodeError => {
-            GMailError gMailError = {};
+            GMailError gMailErrorMessageResponsePartHeader;
             gMailError.message = encodeError.message;
             gMailError.cause = encodeError.cause;
             return gMailError;
@@ -304,7 +371,7 @@ public function GMailConnector::sendMessage(string userId, Message message) retu
     }
     encodedRequest = encodedRequest.replace(PLUS_SYMBOL, DASH_SYMBOL).replace(FORWARD_SLASH_SYMBOL, UNDERSCORE_SYMBOL);
     http:Request request = new;
-    json jsonPayload = {"raw":encodedRequest};
+    json jsonPayload = {raw:encodedRequest};
     string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
     request.setJsonPayload(jsonPayload);
     request.setHeader(CONTENT_TYPE, APPLICATION_JSON);
@@ -423,7 +490,7 @@ public function GMailConnector::listThreads(string userId, SearchFilter filter) 
         match http:encode(filter.q, UTF_8) {
             string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
             error e => {
-                GMailError gMailError = {};
+                GMailError gMailErrorMessageResponsePartHeader;
                 gMailError.message = "Error occured during encoding the query: " + filter.q + "; message:" + e.message;
                 gMailError.cause = e.cause;
                 return gMailError;
@@ -434,7 +501,7 @@ public function GMailConnector::listThreads(string userId, SearchFilter filter) 
     var httpResponse = httpClient -> get(getListThreadPath, request);
     match handleResponse(httpResponse) {
         json jsonListThreadResponse => {
-            ThreadListPage threadListPage = {};
+            ThreadListPage threadListPageMessageResponsePartHeader;
             if (jsonListThreadResponse.threads != ()) {
                 threadListPage.resultSizeEstimate = jsonListThreadResponse.resultSizeEstimate.toString() but {
                                                                                                 () => EMPTY_STRING };

@@ -31,7 +31,7 @@ documentation { Constant field 'ATTACHMENT_RESOURCE'. Holds the value for attach
 @final string ATTACHMENT_RESOURCE = "/attachments/";
 documentation { Constant field 'THREAD_RESOURCE'. Holds the value for threads resoure path. }
 @final string THREAD_RESOURCE = "/threads";
-documentation { Constant field 'PROFILE_RESOURCE'. Holds the value for profile resource path.}
+documentation { Constant field 'PROFILE_RESOURCE'. Holds the value for profile resource path. }
 @final string PROFILE_RESOURCE = "/profile";
 
 documentation { Constant field 'EMPTY_STRING'. Holds the value for empty string. }
@@ -83,9 +83,6 @@ documentation { Constant field 'FORMAT'. Holds the value for optional parameter 
 @final string FORMAT = "format";
 documentation { Constant field 'METADATA_HEADERS'. Holds the value for optional parameter name 'metadataHeaders' }
 @final string METADATA_HEADERS = "metadataHeaders";
-
-documentation { Constant field 'ERROR_CONTENT_TYPE_UNSUPPORTED'. Holds value for content type unsupported Error. }
-@final string ERROR_CONTENT_TYPE_UNSUPPORTED = "The given content type is unsupported to add to the body.";
 
 documentation { Constant field 'APPLICATION_JSON'. Holds value for Application/json' }
 @final string APPLICATION_JSON = "Application/json";

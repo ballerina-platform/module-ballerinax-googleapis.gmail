@@ -55,7 +55,7 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
         match (util:base64DecodeString(decodedBody)){
             string decodeString => decodedBody = decodeString;
             util:Base64DecodeError err => {
-                GMailError gMailError = {};
+                GMailError gMailErrorMessageResponsePartHeader;
                 gMailError.message = "Error occured while base64 decoding text/* message body";
                 gMailError.cause = err;
                 return gMailError;
@@ -157,7 +157,7 @@ documentation{
 }
 function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
                                                                         returns @tainted MessageBodyPart|GMailError {
-    MessageBodyPart msgBodyPart = new;
+    MessageBodyPart msgBodyPart;
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
@@ -200,7 +200,7 @@ documentation {
     R{{}} - **Content-Disposition** header
 }
 function getMsgPartHeaderContentDisposition(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerContentDisposition = {};
+    MessagePartHeader headerContentDispositionMessageResponsePartHeader;
     foreach header in headers {
         if (header.name == CONTENT_DISPOSITION) {
             headerContentDisposition = header;
@@ -216,7 +216,7 @@ documentation{
     R{{}} - **To** header
 }
 function getMsgPartHeaderTo(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerTo = {};
+    MessagePartHeader headerToMessageResponsePartHeader;
     foreach header in headers {
         if (header.name == TO) {
             headerTo = header;
@@ -232,7 +232,7 @@ documentation{
     R{{}} - **From** header
 }
 function getMsgPartHeaderFrom(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerFrom = {};
+    MessagePartHeader headerFromMessageResponsePartHeader;
     foreach header in headers {
         if (header.name == FROM) {
             headerFrom = header;
@@ -248,7 +248,7 @@ documentation{
     R{{}} - **Cc** header
 }
 function getMsgPartHeaderCc(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerCc = {};
+    MessagePartHeader headerCcMessageResponsePartHeader;
     foreach header in headers {
         if (header.name == CC) {
             headerCc = header;
@@ -264,7 +264,7 @@ documentation{
     R{{}} - **Bcc** header
 }
 function getMsgPartHeaderBcc(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerBcc = {};
+    MessagePartHeader headerBccMessageResponsePartHeader;
     foreach header in headers {
         if (header.name == BCC) {
             headerBcc = header;
@@ -280,7 +280,7 @@ documentation{
     R{{}} - **Subject** header
 }
 function getMsgPartHeaderSubject(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerSubject = {};
+    MessagePartHeader headerSubjectMessageResponsePartHeader;
     foreach header in headers {
         if (header.name == SUBJECT) {
             headerSubject = header;
@@ -296,7 +296,7 @@ documentation{
     R{{}} - **Date** header
 }
 function getMsgPartHeaderDate(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerDate = {};
+    MessagePartHeader headerDateMessageResponsePartHeader;
     foreach header in headers {
         if (header.name == DATE) {
             headerDate = header;
@@ -312,7 +312,7 @@ documentation{
     R{{}} - **ContentType** header
 }
 function getMsgPartHeaderContentType(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerContentType = {};
+    MessagePartHeader headerContentTypeMessageResponsePartHeader;
     foreach header in headers {
         if (header.name == CONTENT_TYPE) {
             headerContentType = header;
@@ -387,74 +387,32 @@ documentation{
     R{{}} - GMailError if fails to open and encode.
 }
 function encodeFile(string filePath) returns (string|GMailError) {
-    io:ByteChannel fileChannel = getFileChannel(filePath, READ_ACCESS);
+    io:ByteChannel fileChannel = io:openFile(filePath, READ_ACCESS);
     int bytesChunk = BYTES_CHUNK;
     blob readEncodedContent;
     int readEncodedCount;
     string encodedFile;
     match util:base64EncodeByteChannel(fileChannel){
         io:ByteChannel encodedfileChannel => {
-            match readBytes(encodedfileChannel, bytesChunk) {
-                (blob, int) readEncodedChannel => (readEncodedContent, readEncodedCount) = readEncodedChannel;
-                GMailError gmailError => return gmailError;
+            match encodedfileChannel.read(bytesChunk) {
+                (blob, int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
+                io:IOError e => {
+                    GMailError gMailErrorMessageResponsePartHeader;
+                    gMailError.cause = e.cause;
+                    gMailError.message = "Error occured while reading byte channel for file: " + filePath ;
+                    return gMailError;
+                }
             }
         }
         util:Base64EncodeError err => {
-            GMailError gMailError = {};
-            gMailError.message = "Error occured while base64 encoding byte channel";
+            GMailError gMailErrorMessageResponsePartHeader;
+            gMailError.message = "Error occured while base64 encoding byte channel for file: " + filePath;
             gMailError.cause = err.cause;
             return gMailError;
         }
     }
     encodedFile = readEncodedContent.toString(UTF_8);
     return encodedFile;
-}
-
-documentation{
-    Gets the file name from the given file path.
-
-    P{{filePath}} - File path **(including the file name and extension at the end)**
-    R{{}} -  The file name extracted from the file path.
-}
-function getFileNameFromPath(string filePath) returns string {
-    string[] pathParts = filePath.split(FORWARD_SLASH_SYMBOL);
-    return pathParts[lengthof pathParts - 1];
-}
-
-documentation{
-    Opens the file and returns the byte channel.
-
-    P{{filePath}} - File path
-    P{{permission}} - Permission to open the file with, for example for read permission give as *r*
-    R{{}} - The byte channel of the file
-}
-function getFileChannel(string filePath, string permission) returns (io:ByteChannel) {
-    io:ByteChannel channel = io:openFile(filePath, permission);
-    return channel;
-}
-
-documentation{
-    Gets the blob content from the byte channel.
-
-    P{{channel}} - ByteChannel of the file
-    P{{numberOfBytes}} - Number of bytes which should be read
-    R{{}} - The bytes which were read
-    R{{}} - Number of bytes read
-    R{{}} - GMailError if fails to read blob content.
-}
-function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int)|GMailError {
-    blob bytes;
-    int numberOfBytesRead;
-    match channel.read(numberOfBytes) {
-        (blob, int) readChannel => (bytes, numberOfBytesRead) = readChannel;
-        io:IOError e => {
-            GMailError gMailError = {};
-            gMailError.cause = e.cause;
-            gMailError.message = "Error occured while reading byte channel";
-            return gMailError;
-        }
-    }
-    return (bytes, numberOfBytesRead);
 }
 
 function handleResponse (http:Response|http:HttpConnectorError response) returns (json|GMailError){
@@ -472,7 +430,7 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
                         int statusCode = httpResponse.statusCode;
                         string reason = jsonPayload.error.errors[0].reason.toString() but {() => EMPTY_STRING };
                         string message = jsonPayload.error.errors[0].message.toString() but {() => EMPTY_STRING};
-                        GMailError gMailError = {};
+                        GMailError gMailErrorMessageResponsePartHeader;
                         gMailError.message = "Error occurred during HTTP Client invocation; statusCode:" + statusCode
                                                + "; reason:" + reason + "; message:" + message;
                         return gMailError;

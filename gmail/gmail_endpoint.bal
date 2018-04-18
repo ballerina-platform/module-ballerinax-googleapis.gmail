@@ -24,7 +24,7 @@ documentation{
 }
 public type Client object {
     public {
-        GMailConfiguration gMailConfig = {};
+        GMailConfiguration gMailConfigMessageResponsePartHeader;
         GMailConnector gMailConnector = new;
     }
 

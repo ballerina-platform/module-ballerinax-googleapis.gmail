@@ -26,7 +26,7 @@ documentation{
     R{{}} - GMailError if the conversion is unsuccessful.
 }
 function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMailError {
-    Message targetMessageType = new;
+    Message targetMessageType;
     targetMessageType.id = sourceMailJsonObject.id.toString() but { () => EMPTY_STRING };
     targetMessageType.threadId = sourceMailJsonObject.threadId.toString() but { () => EMPTY_STRING };
     targetMessageType.labelIds = sourceMailJsonObject.labelIds != () ?
@@ -81,7 +81,7 @@ documentation{
     R{{}} - GMailError if conversion unsuccesful.
 }
 function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GMailError {
-    MessageBodyPart targetMessageBodyType = new;
+    MessageBodyPart targetMessageBodyType;
     if (sourceMessagePartJsonObject != ()){
         targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId.toString() but { () => EMPTY_STRING };
         match decodeMsgBodyData(sourceMessagePartJsonObject){
@@ -105,7 +105,7 @@ documentation{
     R{{}}- MessageAttachment type object
 }
 function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) returns MessageAttachment {
-    MessageAttachment targetMessageAttachmentType = new;
+    MessageAttachment targetMessageAttachmentType;
     targetMessageAttachmentType.attachmentFileId = sourceMessagePartJsonObject.body.attachmentId.toString() but {
                                                                                                 () => EMPTY_STRING };
     targetMessageAttachmentType.attachmentBody = sourceMessagePartJsonObject.body.data.toString() but {
@@ -127,7 +127,7 @@ documentation{
     R{{}} - MessagePartHeader type
 }
 function convertJsonToMesagePartHeader(json sourceMessagePartHeader) returns MessagePartHeader {
-    MessagePartHeader targetMessagePartHeader = {};
+    MessagePartHeader targetMessagePartHeader;
     targetMessagePartHeader.name = sourceMessagePartHeader.name.toString() but { () => EMPTY_STRING };
     targetMessagePartHeader.value = sourceMessagePartHeader.value.toString() but { () => EMPTY_STRING };
     return targetMessagePartHeader;
@@ -140,7 +140,7 @@ documentation{
     R{{}} - MessageAttachment type object
 }
 function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageAttachment {
-    MessageAttachment targetMessageAttachmentType = new;
+    MessageAttachment targetMessageAttachmentType;
     targetMessageAttachmentType.attachmentFileId = sourceMessageBodyJsonObject.attachmentId.toString() but {
                                                                                                 () => EMPTY_STRING };
     targetMessageAttachmentType.attachmentBody = sourceMessageBodyJsonObject.data.toString() but {
@@ -157,7 +157,7 @@ documentation{
     R{{}} - GMailError if conversion is unsuccessful.
 }
 function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GMailError{
-    Thread targetThreadType = {};
+    Thread targetThreadType;
     targetThreadType.id = sourceThreadJsonObject.id.toString() but { () => EMPTY_STRING };
     targetThreadType.historyId = sourceThreadJsonObject.historyId.toString() but { () => EMPTY_STRING };
     if (sourceThreadJsonObject.messages != ()){
@@ -176,7 +176,7 @@ documentation{
     R{{}} - UserProfile type
 }
 function convertJsonProfileToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
-    UserProfile targetUserProfile = {};
+    UserProfile targetUserProfile;
     targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress.toString() but { () => EMPTY_STRING };
     targetUserProfile.threadsTotal = sourceUserProfileJsonObject.threadsTotal.toString() but { () => EMPTY_STRING };
     targetUserProfile.messagesTotal = sourceUserProfileJsonObject.messagesTotal.toString() but { () => EMPTY_STRING };
