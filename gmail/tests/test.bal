@@ -68,6 +68,7 @@ function testSendTextMail() {
     messageRequest.cc = cc;
     messageRequest.subject = subject;
     messageRequest.messageBody = messageBody;
+    messageRequest.contentType = TEXT_PLAIN;
     AttachmentPath[] attachments = [{attachmentPath:attachmentPath,mimeType:attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
     log:printInfo("testSendTextMail");
@@ -98,6 +99,7 @@ function testSendHTMLMail() {
     messageRequest.cc = cc;
     messageRequest.subject = subject;
     messageRequest.messageBody = htmlBody;
+    messageRequest.contentType = TEXT_HTML;
     InlineImagePath[] inlineImages = [{imagePath:inlineImagePath, mimeType:imageContentType}];
     messageRequest.inlineImagePaths = inlineImages;
     AttachmentPath[] attachments = [{attachmentPath:attachmentPath, mimeType:attachmentContentType}];
@@ -136,7 +138,7 @@ function testListAllMails() {
 function testReadTextMail() {
     //Read mail with message id which sent in testSendSimpleMail
     log:printInfo("testReadTextMail");
-    MessageThreadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
+    MessageThreadReadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
     var reponse = gMailEP -> readMail(userId, sentHtmlMailId, filter);
     match reponse {
         Message m => test:assertEquals(m.id, sentHtmlMailId, msg = "Read text mail failed");
@@ -151,7 +153,7 @@ function testReadTextMail() {
 function testReadHTMLMailWithAttachment() {
     //Read mail with message id which sent in testSendWithAttachment
     log:printInfo("testReadMailWithAttachment");
-    MessageThreadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
+    MessageThreadReadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
     var response = gMailEP -> readMail(userId, sentHtmlMailId, filter);
     match response {
         Message m => {
@@ -235,7 +237,7 @@ function testListAllThreads() {
 }
 function testReadThread() {
     log:printInfo("testReadThread");
-    MessageThreadFilter filter = {format:FORMAT_METADATA, metadataHeaders:["Subject"]};
+    MessageThreadReadFilter filter = {format:FORMAT_METADATA, metadataHeaders:["Subject"]};
     var thread = gMailEP -> readThread(userId, sentTextMailThreadId, filter);
     match thread{
         Thread t => test:assertEquals(t.id, sentTextMailThreadId, msg = "Read thread failed");
