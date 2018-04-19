@@ -226,8 +226,14 @@ public function GMailConnector::listAllMails(string userId, SearchFilter filter)
 
 public function GMailConnector::sendMessage(string userId, MessageRequest message) returns (string, string)|GMailError {
     endpoint http:Client httpClient = self.client;
+    if (message.contentType != TEXT_PLAIN && message.contentType != TEXT_HTML) {
+        GMailError gMailError;
+        gMailError.message = "Does not support the given content type: " + message.contentType
+                             + " of the email with subject: " + message.subject;
+        return gMailError;
+    }
     if (message.contentType == TEXT_PLAIN && (lengthof message.inlineImagePaths != 0)){
-    GMailError gMailError;
+        GMailError gMailError;
         gMailError.message = "Does not support adding inline images to text/plain body of the email with subject: "
                              + message.subject;
         return gMailError;
