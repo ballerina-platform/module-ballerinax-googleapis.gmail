@@ -17,6 +17,7 @@
 import ballerina/io;
 import ballerina/http;
 import ballerina/file;
+import ballerina/mime;
 
 documentation{
     Represents the GMail Client Connector.
@@ -248,19 +249,19 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     //------Start of multipart/mixed mime part (parent mime part)------
 
     //Set the content type header of top level MIME message part
-    concatRequest += CONTENT_TYPE + COLON_SYMBOL + MULTIPART_MIXED + SEMICOLON_SYMBOL + BOUNDARY + EQUAL_SYMBOL
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_MIXED + SEMICOLON_SYMBOL + BOUNDARY + EQUAL_SYMBOL
                         + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
 
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
 
     //------Start of multipart/related mime part------
-    concatRequest += CONTENT_TYPE + COLON_SYMBOL + MULTIPART_RELATED + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_RELATED + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
                      + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
 
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
 
     //------Start of multipart/alternative mime part------
-    concatRequest += CONTENT_TYPE + COLON_SYMBOL + MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
                      + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
 
     //Set the body part : text/plain
@@ -376,7 +377,7 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     json jsonPayload = {raw:encodedRequest};
     string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
     request.setJsonPayload(jsonPayload);
-    request.setHeader(CONTENT_TYPE, APPLICATION_JSON);
+    request.setHeader(CONTENT_TYPE, mime:APPLICATION_JSON);
     var httpResponse = httpClient -> post(sendMessagePath, request);
     match handleResponse(httpResponse){
         json jsonSendMessageResponse => {

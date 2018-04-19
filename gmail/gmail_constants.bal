@@ -84,8 +84,6 @@ documentation { Constant field 'FORMAT'. Holds the value for optional parameter 
 documentation { Constant field 'METADATA_HEADERS'. Holds the value for optional parameter name 'metadataHeaders' }
 @final string METADATA_HEADERS = "metadataHeaders";
 
-documentation { Constant field 'APPLICATION_JSON'. Holds value for Application/json' }
-@final string APPLICATION_JSON = "Application/json";
 documentation { Constant field 'CONTENT_TYPE'. Holds value for Content-Type' }
 @final string CONTENT_TYPE = "Content-Type";
 documentation { Constant field 'CONTENT_DISPOSITION'. Holds value for Content-Disposition' }
@@ -105,16 +103,6 @@ documentation { Constant field 'BOUNDARY_STRING_2'. Holds value for boundaryStri
 
 documentation { Constant field 'MULTIPART_ANY'. Holds value for multipart/*'}
 @final string MULTIPART_ANY = "multipart/*";
-documentation { Constant field 'MULTIPART_MIXED'. Holds value for multipart/mixed'}
-@final string MULTIPART_MIXED = "multipart/mixed";
-documentation { Constant field 'MULTIPART_ALTERNATIVE'. Holds value for multipart/alternative'}
-@final string MULTIPART_ALTERNATIVE = "multipart/alternative";
-documentation { Constant field 'MULTIPART_RELATED'. Holds value for multipart/related'}
-@final string MULTIPART_RELATED = "multipart/related";
-documentation { Constant field 'TEXT_PLAIN'. Holds value for text/plain'}
-@final string TEXT_PLAIN = "text/plain";
-documentation { Constant field 'TEXT_HTML'. Holds value for text/html'}
-@final string TEXT_HTML = "text/html";
 documentation { Constant field 'TEXT_ANY'. Holds value for text/*'}
 @final string TEXT_ANY = "text/*";
 documentation { Constant field 'IMAGE_ANY'. Holds value for image/*'}
@@ -177,3 +165,8 @@ documentation { Constant field 'FORMAT_MINIMAL'. Holds string for GMail Message/
 @final public string FORMAT_MINIMAL = "minimal";
 documentation { Constant field 'FORMAT_RAW'. Holds string for GMail Message/Thread format 'raw'. }
 @final public string FORMAT_RAW = "raw";
+
+documentation { Constant field 'TEXT_PLAIN'. Holds value for message type text/plain'}
+@final public string TEXT_PLAIN = "text/plain";
+documentation { Constant field 'TEXT_HTML'. Holds value for message type text/html'}
+@final public string TEXT_HTML = "text/html";
