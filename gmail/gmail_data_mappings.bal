@@ -19,7 +19,7 @@ import ballerina/io;
 //Includes all the transforming functions which transform required json to type object/record and vice versa
 
 documentation{
-    Transforms JSON mail object into Message type object.
+    Transforms JSON mail object into Message.
 
     P{{sourceMailJsonObject}} - Json mail object
     R{{}} - Message type object if the conversion is successful.
@@ -74,7 +74,7 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
 }
 
 documentation{
-    Transforms MIME Message Part Json into MessageBody type object.
+    Transforms MIME Message Part Json into MessageBody.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
     R{{}} - MessageBodyPart type object if the conversion successful.
@@ -99,7 +99,7 @@ function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) r
 }
 
 documentation{
-    Transforms MIME Message Part JSON into MessageAttachment type object.
+    Transforms MIME Message Part JSON into MessageAttachment.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
     R{{}}- MessageAttachment type object
@@ -118,7 +118,7 @@ function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) ret
 }
 
 documentation{
-    Transforms MIME Message Part Header into MessagePartHeader type.
+    Transforms MIME Message Part Header into MessagePartHeader.
 
     P{{sourceMessagePartHeader}} - Json message part header object
     R{{}} - MessagePartHeader type
@@ -131,7 +131,7 @@ function convertJsonToMesagePartHeader(json sourceMessagePartHeader) returns Mes
 }
 
 documentation{
-    Transforms single body of MIME Message part into MessageAttachment type object.
+    Transforms single body of MIME Message part into MessageAttachment.
 
     P{{sourceMessageBodyJsonObject}} - Json message body object
     R{{}} - MessageAttachment type object
@@ -145,7 +145,7 @@ function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject)
 }
 
 documentation{
-    Transforms mail thread Json object into Thread type
+    Transforms mail thread Json object into Thread.
 
     P{{sourceThreadJsonObject}} - Json message thread object
     R{{}} - Thread type
@@ -165,7 +165,7 @@ function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thre
 }
 
 documentation{
-    Transforms user profile json object into UserProfile type.
+    Transforms user profile json object into UserProfile.
 
     P{{sourceUserProfileJsonObject}} - Json user profile object
     R{{}} - UserProfile type
