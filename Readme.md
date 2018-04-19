@@ -1,44 +1,75 @@
-# Ballerina GMail Endpoint
+# GMail Connector
 
-[Gmail](https://www.google.com/gmail/) is a free, Web-based e-mail service provided by Google.
-### Why would you use a Ballerina endpoint for Gmail
-
-Ballerina GMail endpoint allows you to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/) and perfom actions like creating and sending a simple text mail, mail
-with html content and inline images, mail with attachments, search and get mail etc.
-
-Following are the gmail api methods supported by the current version
-
-* Send Message
-* Get Message
-* Delete Message
-* Trash Message
-* Untrash Message
-* List Messages
-* Get Message Attachment
-* List Threads
-* Get Thread
-* Delete Thread
-* Trash Thread
-* Untrash Thread
-* Get User Profile
+GMail connector provides a Ballerina API to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/). It handles [OAuth2.0](http://tools.ietf.org/html/rfc6749), provides auto completion and type safety.
 
 ## Compatibility
-| Language Version                             | Endpoint Version          |
-| -------------------------------------------- |:--------------------------:|
-| ballerina-tools-0.970.0-alpha6-SNAPSHOT      | 0.8.5                      | 
 
+| Ballerina Language Version                   | Connector Version           | API Version
+| ---------------------------------------------|:--------------------------:| :--------------:
+| 0.970.0-beta1                                | 0.8.6                      | v1
 
-### Getting started
+## Getting started
 
-* Clone the repository by running the following command
+1.  Refer https://stage.ballerina.io/learn/getting-started/ to download and install Ballerina.
+2.  To use GMail endpoint, you need to provide the following:
+
+       - Client Id
+       - Client Secret
+       - Access Token
+       - Refresh Token
+    
+       *Please note that, providing ClientId, Client Secret, Refresh Token are optional if you are only providing a valid Access                   
+       Token vise versa.*
+    
+       Refer https://developers.google.com/identity/protocols/OAuth2 to obtain the above credentials.
+
+4. Create a new Ballerina project by executing the following command.
+
+      ``<PROJECT_ROOT_DIRECTORY>$ ballerina init``
+
+5. Import the gmail package to your Ballerina project as follows.
+
+```ballerina
+import ballerina/io;
+import wso2/gmail;
+
+string accessToken = "YOUR ACCESS TOKEN";
+string clientId = "YOUR CLIENT ID";
+string clientSecret = "YOUR CLIENT SECRET";
+string refreshToken = "YOUR REFRESH TOKEN";
+string userId = "me";
+
+function main(string... args) {
+
+   endpoint gmail:Client gMailEP {
+       clientConfig:{
+           auth:{
+               accessToken:accessToken,
+               clientId:clientId,
+               clientSecret:clientSecret,
+               refreshToken:refreshToken
+           }
+       }
+   };
+
+   gmail:MessageRequest messageRequest;
+   messageRequest.recipient = "recipient@mail.com";
+   messageRequest.sender = "sender@mail.com";
+   messageRequest.cc = "cc@mail.com";
+   messageRequest.subject = "Email-Subject";
+   messageRequest.messageBody = "Email Message Body Text";
+   messageRequest.contentType = gmail:TEXT_PLAIN;
+
+   var sendMessageResponse = gMailEP -> sendMessage(userId, messageRequest);
+   match sendMessageResponse {
+       (string, string) sendStatus => {
+           string messageId;
+           string threadId;
+           (messageId, threadId) = sendStatus;
+           io:println("Sent Message Id : " + messageId);
+           io:println("Sent Thread Id : " + threadId);
+       }
+       gmail:GMailError e => io:println(e);
+   }
+}
 ```
-git clone https://github.com/wso2-ballerina/package-gmail
-```
-* Import the package to your ballerina project.
-
-##### Prerequisites
-1. Download the ballerina [distribution](https://ballerinalang.org/downloads/).
-
-2. Create a project in Google APIs console (https://console.developers.google.com/) and obtain the client credentials and obtain access tokens and refresh tokens from OAuth 2.0 Playground (https://developers.google.com/oauthplayground/).
-
-IMPORTANT: This access token and refresh token can be used to make API requests on your own account's behalf. Do not share these credentials.

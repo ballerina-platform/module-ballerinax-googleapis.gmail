@@ -18,7 +18,7 @@ import ballerina/io;
 import ballerina/util;
 
 documentation{
-    Converts the json message array into Message type array
+    Converts the json message array into Message type array.
 
     P{{sourceMessageArrayJsonObject}} - Json message array object
     R{{}} - Message type array
@@ -48,14 +48,14 @@ documentation{
 }
 function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMailError {
     string decodedBody;
-    string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString() but { () => EMPTY_STRING };
+    string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString();
     if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
-        string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString() but { () => EMPTY_STRING };
-        decodedBody = sourceMessagePartBody.replace("-", "+").replace("_", "/").replace("*", "=");
+        string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString();
+        decodedBody = sourceMessagePartBody.replace(DASH_SYMBOL, PLUS_SYMBOL).replace(UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL).replace(STAR_SYMBOL, EQUAL_SYMBOL);
         match (util:base64DecodeString(decodedBody)){
             string decodeString => decodedBody = decodeString;
             util:Base64DecodeError err => {
-                GMailError gMailError = {};
+                GMailError gMailError;
                 gMailError.message = "Error occured while base64 decoding text/* message body";
                 gMailError.cause = err;
                 return gMailError;
@@ -75,14 +75,14 @@ documentation{
 function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
                                                                                 returns @tainted MessageAttachment[] {
     MessageAttachment[] attachmentParts = msgAttachments;
-    string disposition = "";
+    string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
         getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-        string[] headerParts = contentDispositionHeader.value.split(";");
+        string[] headerParts = contentDispositionHeader.value.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
-    string messagePayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
+    string messagePayloadMimeType = messagePayload.mimeType.toString();
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
         attachmentParts[lengthof attachmentParts] = convertJsonMsgPartToMsgAttachment(messagePayload);
@@ -113,14 +113,14 @@ documentation{
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
                                                                         returns @tainted MessageBodyPart[]|GMailError {
     MessageBodyPart[] inlineImgParts = inlineMailImages;
-    string disposition = "";
+    string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
         getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
         string[] headerParts = contentDispositionHeader.value.split(";");
         disposition = headerParts[0];
     }
-    string messagePayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
+    string messagePayloadMimeType = messagePayload.mimeType.toString();
     //If parent mime part is image/* and it is inline
     if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
@@ -157,15 +157,15 @@ documentation{
 }
 function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
                                                                         returns @tainted MessageBodyPart|GMailError {
-    MessageBodyPart msgBodyPart = new();
-    string disposition = "";
+    MessageBodyPart msgBodyPart;
+    string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
         getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
-        string[] headerParts = contentDispositionHeader.value.split(";");
+        string[] headerParts = contentDispositionHeader.value.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
-    string messageBodyPayloadMimeType = messagePayload.mimeType.toString() but { () => EMPTY_STRING };
+    string messageBodyPayloadMimeType = messagePayload.mimeType.toString();
     //If parent mime part is given mime type and not an attachment or an inline part
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
@@ -184,7 +184,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
                     GMailError gmailError => return gmailError;
                 }
                 //If the returned msg body is a match for given mime type stop iterating over the other child parts
-                if (msgBodyPart.mimeType != "" && isMimeType(msgBodyPart.mimeType, mimeType)) {
+                if (msgBodyPart.mimeType != EMPTY_STRING && isMimeType(msgBodyPart.mimeType, mimeType)) {
                     break;
                 }
             }
@@ -200,7 +200,7 @@ documentation {
     R{{}} - **Content-Disposition** header
 }
 function getMsgPartHeaderContentDisposition(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerContentDisposition = {};
+    MessagePartHeader headerContentDisposition;
     foreach header in headers {
         if (header.name == CONTENT_DISPOSITION) {
             headerContentDisposition = header;
@@ -216,7 +216,7 @@ documentation{
     R{{}} - **To** header
 }
 function getMsgPartHeaderTo(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerTo = {};
+    MessagePartHeader headerTo;
     foreach header in headers {
         if (header.name == TO) {
             headerTo = header;
@@ -232,7 +232,7 @@ documentation{
     R{{}} - **From** header
 }
 function getMsgPartHeaderFrom(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerFrom = {};
+    MessagePartHeader headerFrom;
     foreach header in headers {
         if (header.name == FROM) {
             headerFrom = header;
@@ -248,7 +248,7 @@ documentation{
     R{{}} - **Cc** header
 }
 function getMsgPartHeaderCc(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerCc = {};
+    MessagePartHeader headerCc;
     foreach header in headers {
         if (header.name == CC) {
             headerCc = header;
@@ -264,7 +264,7 @@ documentation{
     R{{}} - **Bcc** header
 }
 function getMsgPartHeaderBcc(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerBcc = {};
+    MessagePartHeader headerBcc;
     foreach header in headers {
         if (header.name == BCC) {
             headerBcc = header;
@@ -280,7 +280,7 @@ documentation{
     R{{}} - **Subject** header
 }
 function getMsgPartHeaderSubject(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerSubject = {};
+    MessagePartHeader headerSubject;
     foreach header in headers {
         if (header.name == SUBJECT) {
             headerSubject = header;
@@ -296,7 +296,7 @@ documentation{
     R{{}} - **Date** header
 }
 function getMsgPartHeaderDate(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerDate = {};
+    MessagePartHeader headerDate;
     foreach header in headers {
         if (header.name == DATE) {
             headerDate = header;
@@ -312,7 +312,7 @@ documentation{
     R{{}} - **ContentType** header
 }
 function getMsgPartHeaderContentType(MessagePartHeader[] headers) returns MessagePartHeader {
-    MessagePartHeader headerContentType = {};
+    MessagePartHeader headerContentType;
     foreach header in headers {
         if (header.name == CONTENT_TYPE) {
             headerContentType = header;
@@ -347,7 +347,7 @@ function convertJSONArrayToStringArray(json sourceJsonObject) returns string[] {
     string[] targetStringArray = [];
     int i = 0;
     foreach element in sourceJsonObject {
-        targetStringArray[i] = element.toString() but { () => EMPTY_STRING };
+        targetStringArray[i] = element.toString();
         i++;
     }
     return targetStringArray;
@@ -362,17 +362,17 @@ documentation{
     R{{}} - Boolean status of mime type match
 }
 function isMimeType(string msgMimeType, string mType) returns boolean {
-    string[] msgTypes = msgMimeType.split("/");
+    string[] msgTypes = msgMimeType.split(FORWARD_SLASH_SYMBOL);
     string msgPrimaryType = msgTypes[0];
     string msgSecondaryType = msgTypes[1];
 
-    string[] requestmTypes = mType.split("/");
+    string[] requestmTypes = mType.split(FORWARD_SLASH_SYMBOL);
     string reqPrimaryType = requestmTypes[0];
     string reqSecondaryType = requestmTypes[1];
 
     if (!msgPrimaryType.equalsIgnoreCase(reqPrimaryType)) {
         return false;
-    } else if ((reqSecondaryType.subString(0, 1) != "*") && (msgSecondaryType.subString(0, 1) != "*")) {
+    } else if ((reqSecondaryType.subString(0, 1) != STAR_SYMBOL) && (msgSecondaryType.subString(0, 1) != STAR_SYMBOL)) {
         return msgSecondaryType.equalsIgnoreCase(reqSecondaryType);
     } else {
         return true;
@@ -387,21 +387,26 @@ documentation{
     R{{}} - GMailError if fails to open and encode.
 }
 function encodeFile(string filePath) returns (string|GMailError) {
-    io:ByteChannel fileChannel = getFileChannel(filePath, "r");
+    io:ByteChannel fileChannel = io:openFile(filePath, READ_ACCESS);
     int bytesChunk = BYTES_CHUNK;
     blob readEncodedContent;
     int readEncodedCount;
     string encodedFile;
     match util:base64EncodeByteChannel(fileChannel){
         io:ByteChannel encodedfileChannel => {
-            match readBytes(encodedfileChannel, bytesChunk) {
-                (blob, int) readEncodedChannel => (readEncodedContent, readEncodedCount) = readEncodedChannel;
-                GMailError gmailError => return gmailError;
+            match encodedfileChannel.read(bytesChunk) {
+                (blob, int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
+                io:IOError e => {
+                    GMailError gMailError;
+                    gMailError.cause = e.cause;
+                    gMailError.message = "Error occured while reading byte channel for file: " + filePath ;
+                    return gMailError;
+                }
             }
         }
         util:Base64EncodeError err => {
-            GMailError gMailError = {};
-            gMailError.message = "Error occured while base64 encoding byte channel";
+            GMailError gMailError;
+            gMailError.message = "Error occured while base64 encoding byte channel for file: " + filePath;
             gMailError.cause = err.cause;
             return gMailError;
         }
@@ -410,49 +415,50 @@ function encodeFile(string filePath) returns (string|GMailError) {
     return encodedFile;
 }
 
-documentation{
-    Gets the file name from the given file path.
-
-    P{{filePath}} - File path **(including the file name and extension at the end)**
-    R{{}} -  The file name extracted from the file path.
-}
-function getFileNameFromPath(string filePath) returns string {
-    string[] pathParts = filePath.split("/");
-    return pathParts[lengthof pathParts - 1];
-}
-
-documentation{
-    Opens the file and returns the byte channel.
-
-    P{{filePath}} - File path
-    P{{permission}} - Permission to open the file with, for example for read permission give as *r*
-    R{{}} - The byte channel of the file
-}
-function getFileChannel(string filePath, string permission) returns (io:ByteChannel) {
-    io:ByteChannel channel = io:openFile(filePath, permission);
-    return channel;
-}
-
-documentation{
-    Gets the blob content from the byte channel.
-
-    P{{channel}} - ByteChannel of the file
-    P{{numberOfBytes}} - Number of bytes which should be read
-    R{{}} - The bytes which were read
-    R{{}} - Number of bytes read
-    R{{}} - GMailError if fails to read blob content.
-}
-function readBytes(io:ByteChannel channel, int numberOfBytes) returns (blob, int)|GMailError {
-    blob bytes;
-    int numberOfBytesRead;
-    match channel.read(numberOfBytes) {
-        (blob, int) readChannel => (bytes, numberOfBytesRead) = readChannel;
-        io:IOError e => {
-            GMailError gMailError = {};
-            gMailError.cause = e.cause;
-            gMailError.message = "Error occured while reading byte channel";
+function handleResponse (http:Response|http:HttpConnectorError response) returns (json|GMailError){
+    match response {
+        http:Response httpResponse => {
+            if (httpResponse.statusCode == http:NO_CONTENT_204){
+                return true;
+            }
+            match httpResponse.getJsonPayload(){
+                json jsonPayload => {
+                    if (httpResponse.statusCode == http:OK_200) {
+                        return jsonPayload;
+                    }
+                    else {
+                        GMailError gMailError;
+                        gMailError.message = STATUS_CODE + COLON_SYMBOL + jsonPayload.error.code.toString()
+                                             + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE
+                                             + jsonPayload.error.message.toString();
+                        foreach err in jsonPayload.error.errors {
+                            string reason = err.reason.toString();
+                            string message = err.message.toString();
+                            string location = err.location.toString();
+                            string locationType = err.locationType.toString();
+                            string domain = err.domain.toString();
+                            gMailError.message += NEW_LINE + ERROR + COLON_SYMBOL + WHITE_SPACE + NEW_LINE + DOMAIN
+                                                  + COLON_SYMBOL + WHITE_SPACE + domain + SEMICOLON_SYMBOL + WHITE_SPACE
+                                                  + REASON + COLON_SYMBOL + WHITE_SPACE + reason + SEMICOLON_SYMBOL
+                                                  + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE + message
+                                                  + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION_TYPE + COLON_SYMBOL
+                                                  + WHITE_SPACE + locationType + SEMICOLON_SYMBOL + WHITE_SPACE
+                                                  + LOCATION + COLON_SYMBOL + WHITE_SPACE + location;
+                        }
+                        return gMailError;
+                    }
+                }
+                http:PayloadError payloadError => {
+                    GMailError gMailError = { message:"Error occurred when parsing to json response; message: " +
+                                             payloadError.message, cause:payloadError.cause };
+                    return gMailError;
+                }
+            }
+        }
+        http:HttpConnectorError httpError => {
+            GMailError gMailError = { message:"Error occurred during HTTP Client invocation; status code:" +
+                                     httpError.statusCode + "; message: " +  httpError.message, cause:httpError.cause };
             return gMailError;
         }
     }
-    return (bytes, numberOfBytesRead);
 }

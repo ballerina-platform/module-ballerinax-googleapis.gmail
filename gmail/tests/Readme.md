@@ -1,31 +1,39 @@
 ## Compatibility
 
-| Ballerina Version                         |  Endpoint Version         | API Version |
-| ----------------------------------------  | -------------------------  | ------------|
-| ballerina-tools-0.970.0-alpha6-SNAPSHOT   |  0.8.5                     | v1          |
+| Ballerina Language Version                   | Connector Version           | API Version
+| ---------------------------------------------|:--------------------------:| :--------------:
+| 0.970.0-beta1                                | 0.8.6                      | v1
 
 ### Prerequisites
-Get Access Token and Refresh Token for Gmail
 
-* First, create an application to connect with Gmail API
-* For that, visit Google APIs console (https://console.developers.google.com/) to create a project and create an app for the project
-* After creating the project, configure the OAuth consent screen under Credentials and give a product name to shown to users.
-* Then create OAuth client ID credentials. (Select webapplication -> create and give a name and a redirect URI(Get the code to request an accessToken call to Gmail API) -> create)
-
-    (Give the redirect URI as (https://developers.google.com/oauthplayground), if you are using OAuth2 playground to obtain access token and refresh token )
-* Visit OAuth 2.0 Playground (https://developers.google.com/oauthplayground/), select the needed api scopes and give the obtained client id and client secret and obtain the refresh token and access token 
-
-* So to use gmail endpoint, you need to provide the following:
+* To use GMail endpoint, you need to provide the following:
     * Client Id
     * Client Secret
     * Access Token
     * Refresh Token
     
+    *Please note that, providing ClientId, Client Secret, Refresh Token are optional if you are only providing a 
+valid Access Token vise versa.*
+
+* Go through the following steps to obtain client id, client secret, refresh token and access token for Gmail API.
+    *   Go to Google APIs console to create a project and create an app for the project to connect with Gmail API.
+    
+    *   Configure the OAuth consent screen under Credentials and give a product name to shown to users.
+    
+    *   Create OAuth client ID credentials by selecting an application type and giving a name and a redirect URI. 
+
+        *Give the redirect URI as (https://developers.google.com/oauthplayground), if you are using OAuth2 playground to 
+        receive the authorization code and obtain access token and refresh token.*
+
+    *   Visit OAuth 2.0 Playground and select the required Gmail API scopes. 
+    *   Give previously obtained client id and client secret and obtain the refresh token and access token.
+
+    
 ### Working with Gmail REST endpoint.
 
-In order to use the Gmail endpoint, first you need to create a Gmail endpoint by passing above mentioned parameters.
+In order to use the GMail endpoint, first you need to create a GMail endpoint by passing above mentioned parameters.
 
-Visit `test.bal` file to find the way of creating Gmail endpoint.
+Visit `test.bal` file to find the way of creating GMail endpoint.
 
 #### Running gmail tests
 In order to run the tests, the user will need to have a Gmail account and configure the `ballerina.conf` configuration
@@ -39,7 +47,8 @@ CLIENT_SECRET="enter your client secret here"
 REFRESH_TOKEN="enter your refresh token here"
 ```
 
-Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal in either way following,
+Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal 
+in either way following,
 ```ballerina
 endpoint Client gMailEP {
     clientConfig:{
@@ -79,5 +88,5 @@ Run tests :
 ballerina init
 ballerina test gmail
 ```
-You will receive 2 two mails to the recipient inbox, one in text/plain with an attachment and other one
-in text/html with the same attachment. The two mails will be deleted from your sender's sent mail box as well.  
+After a successful test run, you will receive two emails to the recipient inbox, one in text/plain with an attachment 
+and other one in text/html with the same attachment. The two mails will be deleted from your sender's sent mail box as well.  

@@ -25,7 +25,7 @@ documentation{
 public type Client object {
     public {
         GMailConfiguration gMailConfig = {};
-        GMailConnector gMailConnector = new ();
+        GMailConnector gMailConnector = new;
     }
 
     documentation{
@@ -39,26 +39,10 @@ public type Client object {
             () => {}
             http:AuthConfig authConfig => {
                 authConfig.refreshUrl = REFRESH_TOKEN_EP;
-                authConfig.scheme = "oauth";
+                authConfig.scheme = OAUTH;
             }
         }
         self.gMailConnector.client.init(gMailConfig.clientConfig);
-    }
-
-    documentation{
-        Register gMail connector endpoint.
-
-        P{{serviceType}} = The type of the service to be registered.
-    }
-    public function register(typedesc serviceType) {
-
-    }
-
-    documentation{
-        Starts the gMail connector endpoint.
-    }
-    public function start() {
-
     }
 
     documentation{
@@ -66,13 +50,6 @@ public type Client object {
     }
     public function getClient() returns GMailConnector {
         return self.gMailConnector;
-    }
-
-    documentation {
-        Stops the registered service.
-    }
-    public function stop() {
-
     }
 };
 
