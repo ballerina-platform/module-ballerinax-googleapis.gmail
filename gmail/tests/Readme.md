@@ -1,8 +1,8 @@
 ## Compatibility
 
-| Ballerina Language Version                   | Endpoint Version           | API Verion
+| Ballerina Language Version                   | Connector Version           | API Version
 | ---------------------------------------------|:--------------------------:| :--------------:
-| 0.970.0-beta1                                | 0.8.5                      | v1
+| 0.970.0-beta1                                | 0.8.6                      | v1
 
 ### Prerequisites
 
