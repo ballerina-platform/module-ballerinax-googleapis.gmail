@@ -17,7 +17,7 @@ with html content and inline images, mail with attachments, search and get mail 
 ```
 import wso2/gmail;
 ```
-This will download the gmail artifacts from the central repository to your local repository.
+This will download the Gmail artifacts from the central repository to your local repository.
 
 ##### Prerequisites
 1. Download the ballerina [distribution](https://ballerinalang.org/downloads/).
@@ -32,7 +32,7 @@ This will download the gmail artifacts from the central repository to your local
     (Give the redirect URI as (https://developers.google.com/oauthplayground), if you are using OAuth2 playground to obtain access token and refresh token )
 * Visit OAuth 2.0 Playground (https://developers.google.com/oauthplayground/), select the needed api scopes and give the obtained client id and client secret and obtain the refresh token and access token 
 
-* So to use gmail endpoint, you need to provide the following:
+* So to use GMail endpoint, you need to provide the following:
     * Client Id
     * Client Secret
     * Access Token
