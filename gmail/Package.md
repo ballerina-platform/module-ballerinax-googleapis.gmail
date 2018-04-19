@@ -4,13 +4,13 @@ GMail connector provides a Ballerina API to access the [Gmail REST API](https://
 
 ## Compatibility
 
-| Ballerina Language Version                   | Connector Version           | API Version
-| ---------------------------------------------|:--------------------------:| :--------------:
-| 0.970.0-beta1                                | 0.8.6                      | v1
+| Ballerina Language Version                   | Gmail API Version |  
+| :-------------------------------------------:|:-----------------:| 
+| 0.970.0-beta1                                | 0.8.6             | 
 
 ## Getting started
 
-1.  Refer https://stage.ballerina.io/learn/getting-started/ to download and install Ballerina.
+1.  Refer https://ballerina.io/learn/getting-started/ to download and install Ballerina.
 2.  To use GMail endpoint, you need to provide the following:
 
        - Client Id
@@ -31,45 +31,51 @@ GMail connector provides a Ballerina API to access the [Gmail REST API](https://
 
 ```ballerina
 import ballerina/io;
-import wso2/gmail;
+import gmail;
 
-string accessToken = "YOUR ACCESS TOKEN";
-string clientId = "YOUR CLIENT ID";
-string clientSecret = "YOUR CLIENT SECRET";
-string refreshToken = "YOUR REFRESH TOKEN";
+//User credentials to access Gmail API
+string accessToken = "<access_token>";
+string clientId = "<client_id";
+string clientSecret = "<client_secret>";
+string refreshToken = "<refresh_token>";
+//The user's email address. The special value "me" can be used to indicate the authenticated user.
 string userId = "me";
 
 function main(string... args) {
 
-   endpoint gmail:Client gMailEP {
-       clientConfig:{
-           auth:{
-               accessToken:accessToken,
-               clientId:clientId,
-               clientSecret:clientSecret,
-               refreshToken:refreshToken
-           }
-       }
-   };
+    endpoint gmail:Client gMailEP {
+        clientConfig:{
+            auth:{
+                accessToken:accessToken,
+                clientId:clientId,
+                clientSecret:clientSecret,
+                refreshToken:refreshToken
+            }
+        }
+    };
 
-   gmail:MessageRequest messageRequest;
-   messageRequest.recipient = "recipient@mail.com";
-   messageRequest.sender = "sender@mail.com";
-   messageRequest.cc = "cc@mail.com";
-   messageRequest.subject = "Email-Subject";
-   messageRequest.messageBody = "Email Message Body Text";
-   messageRequest.contentType = gmail:TEXT_PLAIN;
+    //Set headers, message body and etc to MessageRequest.
+    gmail:MessageRequest messageRequest;
+    messageRequest.recipient = "recipient@mail.com";
+    messageRequest.sender = "sender@mail.com";
+    messageRequest.cc = "cc@mail.com";
+    messageRequest.subject = "Email-Subject";
+    messageRequest.messageBody = "Email Message Body Text";
+    //Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
+    messageRequest.contentType = gmail:TEXT_PLAIN;
 
-   var sendMessageResponse = gMailEP -> sendMessage(userId, messageRequest);
-   match sendMessageResponse {
-       (string, string) sendStatus => {
-           string messageId;
-           string threadId;
-           (messageId, threadId) = sendStatus;
-           io:println("Sent Message Id : " + messageId);
-           io:println("Sent Thread Id : " + threadId);
-       }
-       gmail:GMailError e => io:println(e);
-   }
+    //Call the GMail endpoint function sendMessage().
+    var sendMessageResponse = gMailEP -> sendMessage(userId, messageRequest);
+    match sendMessageResponse {
+        (string, string) sendStatus => {
+            //For a successful message request, returns message and thread id.
+            string messageId;
+            string threadId;
+            (messageId, threadId) = sendStatus;
+            io:println("Sent Message Id : " + messageId);
+            io:println("Sent Thread Id : " + threadId);
+        }
+        gmail:GMailError e => io:println(e); //For unsuccessful attempts, returns GMail Error.
+    }
 }
 ```
