@@ -427,12 +427,24 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
                         return jsonPayload;
                     }
                     else {
-                        int statusCode = httpResponse.statusCode;
-                        string reason = jsonPayload.error.errors[0].reason.toString();
-                        string message = jsonPayload.error.errors[0].message.toString();
                         GMailError gMailError;
-                        gMailError.message = "Error occurred during HTTP Client invocation; statusCode:" + statusCode
-                                               + "; reason:" + reason + "; message:" + message;
+                        gMailError.message = STATUS_CODE + COLON_SYMBOL + jsonPayload.error.code.toString()
+                                             + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE
+                                             + jsonPayload.error.message.toString();
+                        foreach err in jsonPayload.error.errors {
+                            string reason = err.reason.toString();
+                            string message = err.message.toString();
+                            string location = err.location.toString();
+                            string locationType = err.locationType.toString();
+                            string domain = err.domain.toString();
+                            gMailError.message += NEW_LINE + ERROR + COLON_SYMBOL + WHITE_SPACE + NEW_LINE + DOMAIN
+                                                  + COLON_SYMBOL + WHITE_SPACE + domain + SEMICOLON_SYMBOL + WHITE_SPACE
+                                                  + REASON + COLON_SYMBOL + WHITE_SPACE + reason + SEMICOLON_SYMBOL
+                                                  + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE + message
+                                                  + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION_TYPE + COLON_SYMBOL
+                                                  + WHITE_SPACE + locationType + SEMICOLON_SYMBOL + WHITE_SPACE
+                                                  + LOCATION + COLON_SYMBOL + WHITE_SPACE + location;
+                        }
                         return gMailError;
                     }
                 }
