@@ -18,7 +18,7 @@ import ballerina/io;
 import ballerina/util;
 
 documentation{
-    Converts the json message array into Message type array
+    Converts the json message array into Message type array.
 
     P{{sourceMessageArrayJsonObject}} - Json message array object
     R{{}} - Message type array

@@ -47,6 +47,22 @@ public type Thread {
     @readonly Message[] messages;
 };
 
+documentation{
+    Represents message request to send a mail.
+
+    F{{recipient}} - The recipient of the mail.
+    F{{subject}} - The subject of the mail.
+    F{{messageBody}} - The message body of the mail. Can be either plain text or html text.
+    F{{contentType}} - The content type of the mail, whether it is text/plain or text/html. Only pass one of the
+                        constant values defined in the package; TEXT_PLAIN or TEXT_HTML
+    F{{sender}} - The sender of the mail.
+    F{{cc}} - The cc recipient of the mail. Optional.
+    F{{bcc}} - The bcc recipient of the mail. Optional.
+    F{{inlineImagePaths}} - The InlineImagePath array consisting the inline image file paths and mime types. Optional.
+                            Note that inline images can only be send for TEXT_HTML messages.
+    F{{attachmentPaths}} - The AttachmentPath array consisting the attachment file paths and mime types. Optional.
+}
+
 public type MessageRequest {
     string recipient;
     string subject;
@@ -60,32 +76,42 @@ public type MessageRequest {
 };
 
 documentation{
-    Represents an inline image of an email.
+    Represents image file path and mime type of an inline image in a message request.
 
     F{{imagePath}} - The file path of the image.
-    F{{mimeType}} - The content type of the image.
+    F{{mimeType}} - The mime type of the image. The primary type should be **image**.
+                    For ex: If you are sending a jpg image, give the mime type as **image/jpeg**.
+                            If you are sending a png image, give the mime type as **image/png**.
 }
 public type InlineImagePath {
     string imagePath;
     string mimeType;
 };
 
+documentation{
+    Represents an attachment file path and mime type of an attachment in a message request.
+
+    F{{attachmentPath}} - The file path of the attachment.
+    F{{mimeType}} - The mime type of the attachment.
+                    For ex: If you are sending a pdf document, give the mime type as **application/pdf**.
+                            If you are sending a text file, give the mime type as **text/plain**.
+}
 public type AttachmentPath {
     string attachmentPath;
     string mimeType;
 };
 
 documentation{
-    Represents message resource.
+    Represents message resource which will be received as a response from the Gmail API.
 
     F{{threadId}} - Thread ID which the message belongs to.
     F{{id}} - Message Id
     F{{labelIds}} - The label ids of the message.
-    F{{raw}} - Represent the entire message in base64 encoded string
-    F{{snippet}} - Short part of the message text
-    F{{historyId}} - The id of the last history record that modified the message
-    F{{internalDate}} - The internal message creation timestamp(epoch ms)
-    F{{sizeEstimate}} - Estimated size of the message in bytes
+    F{{raw}} - Represent the entire message in base64 encoded string.
+    F{{snippet}} - Short part of the message text.
+    F{{historyId}} - The id of the last history record that modified the message.
+    F{{internalDate}} - The internal message creation timestamp(epoch ms).
+    F{{sizeEstimate}} - Estimated size of the message in bytes.
     F{{headers}} - The headers in the top level message part representing the entire message payload in a  standard RFC
                    2822 message.
     F{{headerTo}} - Email header **To**.
@@ -96,10 +122,10 @@ documentation{
     F{{headerDate}} - Email header **Date**.
     F{{headerContentType}} - Email header **ContentType**.
     F{{mimeType}} - MIME type of the top level message part.
-    F{{plainTextBodyPart}} - MIME Message Part with text/plain content type
-    F{{htmlBodyPart}} - MIME Message Part with text/html content type
-    F{{inlineImgParts}} - MIME Message Parts with inline images with the image/* content type
-    F{{msgAttachments}} - MIME Message Parts of the message consisting the attachments
+    F{{plainTextBodyPart}} - MIME Message Part with text/plain content type.
+    F{{htmlBodyPart}} - MIME Message Part with text/html content type.
+    F{{inlineImgParts}} - MIME Message Parts with inline images with the image/* content type.
+    F{{msgAttachments}} - MIME Message Parts of the message consisting the attachments.
 }
 
 public type Message {
@@ -127,7 +153,7 @@ public type Message {
 };
 
 documentation{
-    Represents the email message body part.
+    Represents the email message body part of a message resource response.
 
     F{{body}} - The body data of the message part. This is a base64 encoded string.
     F{{mimeType}} - MIME type of the message part.
@@ -150,11 +176,11 @@ public type MessageBodyPart {
 };
 
 documentation{
-        Represents Message Part with an attachment
+        Represents the attachment message part of a message resource response.
 
         F{{attachmentFileId}} - The file id of the attachment in the message.
-        F{{attachmentBody}} - Base 64 encoded attachment body of the Message Part. *This is empty when the attachment
-                              body data is sent as a seperate attachment*
+        F{{attachmentBody}} - Base 64 encoded attachment body of the Message Part. This is empty when the attachment
+                              body data is sent as a seperate attachment
         F{{size}} - Size of the attachment message part.
         F{{attachmentFileName}} - File name of the attachment in the message.
         F{{mimeType}} - Mime Type of the message part.
@@ -172,7 +198,7 @@ public type MessageAttachment {
 };
 
 documentation{
-    Represents message part header
+    Represents a message part header of a message resource response.
 
     F{{name}} - Header name
     F{{value}} - Header value
@@ -183,10 +209,10 @@ public type MessagePartHeader {
 };
 
 documentation{
-    Represents GMail error
+    Represents GMail error.
 
     F{{message}} - GMail error message
-    F{{cause}} - The error which caused the GMail error
+    F{{cause}} - The error which caused the GMail error.
 }
 public type GMailError {
     string message;
@@ -197,12 +223,12 @@ documentation{
     Represents the optional search message filter fields.
 
     F{{includeSpamTrash}} - Specifies whether to include messages/threads from SPAM and TRASH in the results.
-    F{{labelIds}} - Array of label ids. *Only return messages/threads with labels that match all of the specified
-                    label Ids*
+    F{{labelIds}} - Array of label ids. Only return messages/threads with labels that match all of the specified
+                    label Ids.
     F{{maxResults}} - Maximum number of messages/threads to return in the page for a single request.
     F{{pageToken}} - Page token to retrieve a specific page of results in the list.
-    F{{q}} - Query for searching messages/threads. *Only returns messages/threads matching the specified query. Supports
-             the same query format as the GMail search box.*
+    F{{q}} - Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports
+             the same query format as the GMail search box.
 }
 public type SearchFilter {
     boolean includeSpamTrash;
@@ -216,15 +242,15 @@ documentation{
     Represents the optional message filter fields in get message api call.
 
     F{{format}} - Optional. Format of the get message/thread response.
-                    *Acceptable values for format for a get message/thread request are defined as following constants
-                        in the package:
-                        * "FORMAT_FULL": Returns the full email message data with body content parsed in the payload
-                                         field;the raw field is not used. (default)
-                        * "FORMAT_METADATA": Returns only email message ID, labels, and email headers.
-                        * "FORMAT_MINIMAL": Returns only email message ID and labels; does not return the email headers,
-                                            body, or payload.
-                        * "FORMAT_RAW": Returns the full email message data with body content in the raw field as a
-                                        base64url encoded string. (the payload field is not included in the response)*
+                  Acceptable values for format for a get message/thread request are defined as following constants
+                  in the package:
+                    *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
+                                    field;the raw field is not used. (default)
+                    *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
+                    *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
+                                      body, or payload.
+                    *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
+                                   base64url encoded string. (the payload field is not included in the response)
     F{{metadataHeaders}} - Optional. The meta data headers array to include in the reponse when the format is given as
                            *FORMAT_METADATA*.
 }

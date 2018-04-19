@@ -32,7 +32,8 @@ public type GMailConnector object {
         List the messages in user's mailbox.
 
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} - SearchFilter with optional query parameters to search emails.
+        P{{filter}} - SearchFilter with optional query parameters to search emails. If the filters are not needed pass
+                      an empty record.
         R{{}} -  MessageListPage consisting an array of messages, size estimation and next page token.
         R{{}} - GMailError if any error occurs in sending the request and receiving the response.
     }
@@ -43,7 +44,7 @@ public type GMailConnector object {
         mailbox to its recipient.
 
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{message}} - Message to send.
+        P{{message}} - MessageRequest to send.
         R{{}} - String message id of the successfully sent message.
         R{{}} - String thread id of the succesfully sent message.
         R{{}} - GMailError if the message is not sent successfully.
@@ -55,7 +56,8 @@ public type GMailConnector object {
 
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to retrieve.
-        P{{filter}} - MessageThreadReadFilter with the optional parameters of response format and metadataHeaders.
+        P{{filter}} - MessageThreadReadFilter with the optional parameters of response format and metadataHeaders. If
+                      the filters are not needed, pass an empty record.
         R{{}} - Message type object of the specified mail.
         R{{}} - GMailError if the message cannot be read successfully.
     }
@@ -108,7 +110,8 @@ public type GMailConnector object {
         List the threads in user's mailbox.
 
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} - The SearchFilter with optional query parameters to search a thread.
+        P{{filter}} - The SearchFilter with optional query parameters to search a thread. If the filters are not needed
+                      pass an empty record.
         R{{}} - ThreadListPage with thread list, result set size estimation and next page token.
         R{{}} - GMailError if any error occurs in sending the request and receiving the response.
     }
@@ -119,7 +122,8 @@ public type GMailConnector object {
 
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} -  The thread id of the specified mail to retrieve.
-        P{{filter}} - MessageThreadReadFilter with the optional parameters of response format and metadataHeaders.
+        P{{filter}} - MessageThreadReadFilter with the optional parameters of response format and metadataHeaders. If
+                      the filters are not needed, pass an empty record.
         R{{}} - Thread type of the specified mail thread.
         R{{}} - GMailError if the thread cannot be read successfully.
     }
