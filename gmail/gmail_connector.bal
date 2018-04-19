@@ -334,7 +334,7 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
             GMailError gMailError;
             gMailError.message = "Content type of attachment:" + attachment.attachmentPath + "cannot be empty";
             return gMailError;
-        } else if (attachmentPath == EMPTY_STRING){
+        } else if (attachment.attachmentPath == EMPTY_STRING){
             GMailError gMailError;
             gMailError.message = "File path of attachment in message with subject: " + message.subject
                                     + "cannot be empty";
