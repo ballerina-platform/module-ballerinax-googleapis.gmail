@@ -6,22 +6,6 @@
 Ballerina GMail endpoint allows you to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/) and perfom actions like creating and sending a simple text mail, mail
 with html content and inline images, mail with attachments, search and get mail etc.
 
-Following are the gmail api methods supported by the current version.
-
-* Send Message
-* Get Message
-* Delete Message
-* Trash Message
-* Untrash Message
-* List Messages
-* Get Message Attachment
-* List Threads
-* Get Thread
-* Delete Thread
-* Trash Thread
-* Untrash Thread
-* Get User Profile
-
 ## Compatibility
 | Language Version                             | Endpoint Version           |
 | ---------------------------------------------|:--------------------------:|
@@ -29,11 +13,11 @@ Following are the gmail api methods supported by the current version.
 
 ### Getting started
 
-* Clone the repository by running the following command
-```
-git clone https://github.com/wso2-ballerina/package-gmail
-```
 * Import the package to your ballerina project.
+```
+import wso2/gmail;
+```
+This will download the gmail artifacts from the central repository to your local repository.
 
 ##### Prerequisites
 1. Download the ballerina [distribution](https://ballerinalang.org/downloads/).
