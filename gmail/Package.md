@@ -40,3 +40,9 @@ This will download the gmail artifacts from the central repository to your local
     
 * Please note that ClientId, Client Secret, Refresh Token are optional if you are using Access Token only.
 * Similarly, please note that access token is optional if you are using ClientId, Client Secret and Refresh Token.
+
+### References
+
+> Visit the [package-gmail](https://github.com/wso2-ballerina/package-gmail) repository for the source code.
+> Visit the [test.bal](https://github.com/wso2-ballerina/package-gmail/blob/master/gmail/tests/test.bal) file
+for the sample test cases.
