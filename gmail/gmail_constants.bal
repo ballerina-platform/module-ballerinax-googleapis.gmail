@@ -137,10 +137,24 @@ documentation { Constant field 'UTF_8'. Holds value for UTF-8'}
 @final string UTF_8 = "UTF-8";
 documentation { Constant field 'BYTES_CHUNK'. Holds default value for bytes chunk to read from a byte channel'}
 @final int BYTES_CHUNK = 100000000;
-documentation { Constant field 'trash'. Holds the value for trash'}
+documentation { Constant field 'TRASH'. Holds the value for trash'}
 @final string TRASH = "trash";
-documentation { Constant field 'untrash'. Holds the value for untrash'}
+documentation { Constant field 'UNTRASH'. Holds the value for untrash'}
 @final string UNTRASH = "untrash";
+documentation { Constant field 'ERROR'. Holds the value for error'}
+@final string ERROR = "error";
+documentation { Constant field 'DOMAIN'. Holds the value for domain'}
+@final string DOMAIN = "domain";
+documentation { Constant field 'REASON'. Holds the value for reason'}
+@final string REASON = "reason";
+documentation { Constant field 'MESSAGE'. Holds the value for message'}
+@final string MESSAGE = "message";
+documentation { Constant field 'LOCATION_TYPE'. Holds the value for locationType'.}
+@final string LOCATION_TYPE = "locationType";
+documentation { Constant field 'LOCATION'. Holds the value for location'.}
+@final string LOCATION = "location";
+documentation { Constant field 'STATUS_CODE'. Holds the value for status code.'}
+@final string STATUS_CODE = "status code";
 
 documentation { Constant field 'TO'. Holds name for header To'}
 @final string TO = "To";
