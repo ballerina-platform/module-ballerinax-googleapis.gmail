@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Connector Version  | Gmail API Version |  
 | :-------------------------:|:------------------:|:-----------------:| 
-| 0.970.0-beta3              | 0.8.7              | v1                | 
+| 0.970.0-beta4              | 0.8.9              | v1                | 
 
 ### Prerequisites
 
