@@ -1,8 +1,8 @@
 ## Compatibility
 
-| Ballerina Language Version                   | Connector Version           | API Version
-| ---------------------------------------------|:--------------------------:| :--------------:
-| 0.970.0-beta1                                | 0.8.6                      | v1
+| Ballerina Language Version | Connector Version  | Gmail API Version |  
+| :-------------------------:|:------------------:|:-----------------:| 
+| 0.970.0-beta3              | 0.8.7              | v1                | 
 
 ### Prerequisites
 
@@ -29,9 +29,9 @@ valid Access Token vise versa.*
     *   Give previously obtained client id and client secret and obtain the refresh token and access token.
 
     
-### Working with Gmail REST endpoint.
+### Working with Gmail Connector.
 
-In order to use the GMail endpoint, first you need to create a GMail endpoint by passing above mentioned parameters.
+In order to use the GMail connector, first you need to create a GMail endpoint by passing above mentioned parameters.
 
 Visit `test.bal` file to find the way of creating GMail endpoint.
 
@@ -86,7 +86,7 @@ Run tests :
 
 ```
 ballerina init
-ballerina test gmail
+ballerina test gmail --config ballerina.conf
 ```
 After a successful test run, you will receive two emails to the recipient inbox, one in text/plain with an attachment 
 and other one in text/html with the same attachment. The two mails will be deleted from your sender's sent mail box as well.  

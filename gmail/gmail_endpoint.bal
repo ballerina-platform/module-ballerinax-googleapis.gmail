@@ -19,6 +19,7 @@ import ballerina/http;
 documentation{
     Represents GMail endpoint.
 
+    E{{}}
     F{{gMailConfig}} - GMail endpoint configuration
     F{{gMailConnector}} - GMail connector
 }
@@ -34,7 +35,7 @@ public type Client object {
         P{{gMailConfig}} - GMail connector configuration
     }
     public function init(GMailConfiguration gMailConfig) {
-        gMailConfig.clientConfig.targets = [{url:BASE_URL}];
+        gMailConfig.clientConfig.url = BASE_URL;
         match gMailConfig.clientConfig.auth {
             () => {}
             http:AuthConfig authConfig => {
@@ -48,7 +49,7 @@ public type Client object {
     documentation{
         Returns the connector that client code uses.
     }
-    public function getClient() returns GMailConnector {
+    public function getCallerActions() returns GMailConnector {
         return self.gMailConnector;
     }
 };
