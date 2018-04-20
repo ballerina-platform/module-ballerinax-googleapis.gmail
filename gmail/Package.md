@@ -35,7 +35,7 @@ import wso2/gmail;
 
 //User credentials to access Gmail API
 string accessToken = "<access_token>";
-string clientId = "<client_id";
+string clientId = "<client_id>";
 string clientSecret = "<client_secret>";
 string refreshToken = "<refresh_token>";
 //The user's email address. The special value "me" can be used to indicate the authenticated user.
