@@ -2,7 +2,7 @@
 
 | Ballerina Language Version                   | Gmail API Version |  
 | :-------------------------------------------:|:-----------------:| 
-| 0.970.0-beta1                                | 0.8.6             | 
+| 0.970.0-beta1                                | 0.8.7             | 
 
 
 ### Prerequisites
@@ -87,7 +87,7 @@ Run tests :
 
 ```
 ballerina init
-ballerina test gmail
+ballerina test gmail --config ballerina.conf
 ```
 After a successful test run, you will receive two emails to the recipient inbox, one in text/plain with an attachment 
 and other one in text/html with the same attachment. The two mails will be deleted from your sender's sent mail box as well.  

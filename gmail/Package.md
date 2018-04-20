@@ -6,7 +6,7 @@ GMail connector provides a Ballerina API to access the [Gmail REST API](https://
 
 | Ballerina Language Version                   | Gmail API Version |  
 | :-------------------------------------------:|:-----------------:| 
-| 0.970.0-beta1                                | 0.8.6             | 
+| 0.970.0-beta1                                | 0.8.7             | 
 
 ## Getting started
 
