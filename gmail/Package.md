@@ -6,7 +6,7 @@ GMail connector provides a Ballerina API to access the [Gmail REST API](https://
 
 | Ballerina Language Version                   | Gmail API Version |  
 | :-------------------------------------------:|:-----------------:| 
-| 0.970.0-beta1                                | 0.8.7             | 
+| 0.970.0-beta3                                | v1                | 
 
 ## Getting started
 
@@ -23,11 +23,11 @@ GMail connector provides a Ballerina API to access the [Gmail REST API](https://
     
        Refer https://developers.google.com/identity/protocols/OAuth2 to obtain the above credentials.
 
-4. Create a new Ballerina project by executing the following command.
+3. Create a new Ballerina project by executing the following command.
 
       ``<PROJECT_ROOT_DIRECTORY>$ ballerina init``
 
-5. Import the gmail package to your Ballerina program as follows.
+4. Import the gmail package to your Ballerina program as follows.
 
 ```ballerina
 import ballerina/io;
