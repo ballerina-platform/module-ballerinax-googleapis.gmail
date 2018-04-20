@@ -1,6 +1,6 @@
 # GMail Connector
 
-GMail connector provides a Ballerina API to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/). It handles [OAuth2.0](http://tools.ietf.org/html/rfc6749), provides auto completion and type safety.
+GMail connector provides a Ballerina API to access the [Gmail REST API](https://developers.google.com/gmail/api/v1/reference/). It handles [OAuth2.0](http://tools.ietf.org/html/rfc6749), provides auto completion and type conversions.
 
 ## Compatibility
 
@@ -10,7 +10,7 @@ GMail connector provides a Ballerina API to access the [Gmail REST API](https://
 
 ## Getting started
 
-1.  Refer https://ballerina.io/learn/getting-started/ to download and install Ballerina.
+1.  Refer the [Getting Started](https://ballerina.io/learn/getting-started/) guide to download and install Ballerina.
 2.  To use GMail endpoint, you need to provide the following:
 
        - Client Id
@@ -21,7 +21,7 @@ GMail connector provides a Ballerina API to access the [Gmail REST API](https://
        *Please note that, providing ClientId, Client Secret, Refresh Token are optional if you are only providing a valid Access                   
        Token vise versa.*
     
-       Refer https://developers.google.com/identity/protocols/OAuth2 to obtain the above credentials.
+       Visit [here](https://developers.google.com/identity/protocols/OAuth2) for more information on obtaining OAuth2 credentials.
 
 3. Create a new Ballerina project by executing the following command.
 
