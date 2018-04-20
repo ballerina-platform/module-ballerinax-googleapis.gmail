@@ -31,7 +31,7 @@ GMail connector provides a Ballerina API to access the [Gmail REST API](https://
 
 ```ballerina
 import ballerina/io;
-import gmail;
+import wso2/gmail;
 
 //User credentials to access Gmail API
 string accessToken = "<access_token>";
