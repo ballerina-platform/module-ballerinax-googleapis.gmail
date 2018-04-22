@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/io;
-import ballerina/util;
+import ballerina/http;
 
 documentation{
     Converts the json message array into Message type array.
@@ -24,14 +24,12 @@ documentation{
     R{{}} - Message type array
     R{{}} - GMailError if coversion is not successful.
 }
-function convertToMessageArray(json sourceMessageArrayJsonObject) returns Message[]|GMailError {
+function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[]|GMailError {
     Message[] messages = [];
-    int i = 0;
-    foreach jsonMessage in sourceMessageArrayJsonObject {
+    foreach i, jsonMessage in sourceMessageArrayJsonObject {
         match (convertJsonMailToMessage(jsonMessage)){
             Message msg => {
                 messages[i] = msg;
-                i++;
             }
             GMailError gmailError => return gmailError;
         }
@@ -52,11 +50,11 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
     if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
         string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString();
         decodedBody = sourceMessagePartBody.replace(DASH_SYMBOL, PLUS_SYMBOL).replace(UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL).replace(STAR_SYMBOL, EQUAL_SYMBOL);
-        match (util:base64DecodeString(decodedBody)){
+        match (decodedBody.base64Decode()){
             string decodeString => decodedBody = decodeString;
-            util:Base64DecodeError err => {
+            error err => {
                 GMailError gMailError;
-                gMailError.message = "Error occured while base64 decoding text/* message body";
+                gMailError.message = "Error occured while base64 decoding text/* message body: " + decodedBody;
                 gMailError.cause = err;
                 return gMailError;
             }
@@ -78,7 +76,7 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
-        getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+                    getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(check <json[]>messagePayload.headers));
         string[] headerParts = contentDispositionHeader.value.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
@@ -116,7 +114,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
-        getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+        getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(check <json[]>messagePayload.headers));
         string[] headerParts = contentDispositionHeader.value.split(";");
         disposition = headerParts[0];
     }
@@ -161,7 +159,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         MessagePartHeader contentDispositionHeader =
-        getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(messagePayload.headers));
+        getMsgPartHeaderContentDisposition(convertToMsgPartHeaders(check <json[]> messagePayload.headers));
         string[] headerParts = contentDispositionHeader.value.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
@@ -327,12 +325,10 @@ documentation{
     P{{jsonMsgPartHeaders}} - Json array of message part headers
     R{{}} - MessagePartHeader array
 }
-function convertToMsgPartHeaders(json jsonMsgPartHeaders) returns MessagePartHeader[] {
+function convertToMsgPartHeaders(json[] jsonMsgPartHeaders) returns MessagePartHeader[] {
     MessagePartHeader[] msgPartHeaders = [];
-    int i = 0;
-    foreach jsonHeader in jsonMsgPartHeaders {
+    foreach i, jsonHeader in jsonMsgPartHeaders {
         msgPartHeaders[i] = convertJsonToMesagePartHeader(jsonHeader);
-        i++;
     }
     return msgPartHeaders;
 }
@@ -343,12 +339,10 @@ documentation{
     P{{sourceJsonObject}} - Json array
     R{{}} - String array
 }
-function convertJSONArrayToStringArray(json sourceJsonObject) returns string[] {
+function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[] {
     string[] targetStringArray = [];
-    int i = 0;
-    foreach element in sourceJsonObject {
+    foreach i, element in sourceJsonObject {
         targetStringArray[i] = element.toString();
-        i++;
     }
     return targetStringArray;
 }
@@ -372,7 +366,7 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 
     if (!msgPrimaryType.equalsIgnoreCase(reqPrimaryType)) {
         return false;
-    } else if ((reqSecondaryType.subString(0, 1) != STAR_SYMBOL) && (msgSecondaryType.subString(0, 1) != STAR_SYMBOL)) {
+    } else if ((reqSecondaryType.substring(0, 1) != STAR_SYMBOL) && (msgSecondaryType.substring(0, 1) != STAR_SYMBOL)) {
         return msgSecondaryType.equalsIgnoreCase(reqSecondaryType);
     } else {
         return true;
@@ -387,32 +381,44 @@ documentation{
     R{{}} - GMailError if fails to open and encode.
 }
 function encodeFile(string filePath) returns (string|GMailError) {
-    io:ByteChannel fileChannel = io:openFile(filePath, READ_ACCESS);
+    io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
     int bytesChunk = BYTES_CHUNK;
     blob readEncodedContent;
     int readEncodedCount;
     string encodedFile;
-    match util:base64EncodeByteChannel(fileChannel){
+    match fileChannel.base64Encode(){
         io:ByteChannel encodedfileChannel => {
             match encodedfileChannel.read(bytesChunk) {
                 (blob, int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
-                io:IOError e => {
+                error err => {
                     GMailError gMailError;
-                    gMailError.cause = e.cause;
+                    gMailError.cause = err;
                     gMailError.message = "Error occured while reading byte channel for file: " + filePath ;
                     return gMailError;
                 }
             }
         }
-        util:Base64EncodeError err => {
+        error err => {
             GMailError gMailError;
             gMailError.message = "Error occured while base64 encoding byte channel for file: " + filePath;
-            gMailError.cause = err.cause;
+            gMailError.cause = err;
             return gMailError;
         }
     }
     encodedFile = readEncodedContent.toString(UTF_8);
     return encodedFile;
+}
+
+
+documentation{
+    Gets the file name from the given file path.
+
+    P{{filePath}} - File path **(including the file name and extension at the end)**
+    R{{pathParts}} - Returns the file name extracted from the file path.
+}
+function getFileNameFromPath(string filePath) returns string {
+    string[] pathParts = filePath.split("/");
+    return pathParts[lengthof pathParts - 1];
 }
 
 function handleResponse (http:Response|http:HttpConnectorError response) returns (json|GMailError){

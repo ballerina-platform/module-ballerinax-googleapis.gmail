@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
+import ballerina/log;
 
 //Includes all the transforming functions which transform required json to type object/record and vice versa
 
@@ -28,30 +28,47 @@ documentation{
 function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMailError {
     Message targetMessageType;
     targetMessageType.id = sourceMailJsonObject.id.toString();
-    targetMessageType.threadId = sourceMailJsonObject.threadId.toString() ;
-    targetMessageType.labelIds = sourceMailJsonObject.labelIds != () ?
-                                        convertJSONArrayToStringArray(sourceMailJsonObject.labelIds) : [];
+    targetMessageType.threadId = sourceMailJsonObject.threadId.toString();
+    match <json[]>sourceMailJsonObject.labelIds {
+        json[] labelIds => {
+            targetMessageType.labelIds = convertJSONArrayToStringArray(labelIds);
+        }
+        error err => {
+            //No key named labelIds in the response.
+            targetMessageType.labelIds = [];
+            log:printDebug("Mail response:" + sourceMailJsonObject.id.toString() + " does not contain any label Id");
+        }
+    }
     targetMessageType.raw = sourceMailJsonObject.raw.toString();
     targetMessageType.snippet = sourceMailJsonObject.snippet.toString();
     targetMessageType.historyId = sourceMailJsonObject.historyId.toString();
     targetMessageType.internalDate = sourceMailJsonObject.internalDate.toString();
     targetMessageType.sizeEstimate = sourceMailJsonObject.sizeEstimate.toString();
-    targetMessageType.headers = sourceMailJsonObject.payload.headers != () ?
-                                        convertToMsgPartHeaders(sourceMailJsonObject.payload.headers) : [];
+    match <json[]>sourceMailJsonObject.payload.headers {
+        json[] headers => {
+            targetMessageType.headers = convertToMsgPartHeaders(headers);
+        }
+        error err => {
+            //No key named headers in the payload part of the response
+            targetMessageType.headers = [];
+            log:printDebug("Mail response:" + sourceMailJsonObject.id.toString()
+                                                                             + "does not contain any payload headers");
+        }
+    }
     targetMessageType.headerTo = sourceMailJsonObject.payload.headers != () ?
-                                getMsgPartHeaderTo(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+                                                                     getMsgPartHeaderTo(targetMessageType.headers) : {};
     targetMessageType.headerFrom = sourceMailJsonObject.payload.headers != () ?
-                            getMsgPartHeaderFrom(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+                                                                   getMsgPartHeaderFrom(targetMessageType.headers) : {};
     targetMessageType.headerCc = sourceMailJsonObject.payload.headers != () ?
-                                getMsgPartHeaderCc(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+                                                                     getMsgPartHeaderCc(targetMessageType.headers) : {};
     targetMessageType.headerBcc = sourceMailJsonObject.payload.headers != () ?
-                                getMsgPartHeaderBcc(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+                                                                    getMsgPartHeaderBcc(targetMessageType.headers) : {};
     targetMessageType.headerSubject = sourceMailJsonObject.payload.headers != () ?
-                            getMsgPartHeaderSubject(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+                                                                getMsgPartHeaderSubject(targetMessageType.headers) : {};
     targetMessageType.headerDate = sourceMailJsonObject.payload.headers != () ?
-                            getMsgPartHeaderDate(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+                                                                   getMsgPartHeaderDate(targetMessageType.headers) : {};
     targetMessageType.headerContentType = sourceMailJsonObject.payload.headers != () ?
-                        getMsgPartHeaderContentType(convertToMsgPartHeaders(sourceMailJsonObject.payload.headers)) : {};
+                                                            getMsgPartHeaderContentType(targetMessageType.headers) : {};
     targetMessageType.mimeType = sourceMailJsonObject.payload.mimeType.toString();
     string payloadMimeType = sourceMailJsonObject.payload.mimeType.toString();
     if (sourceMailJsonObject.payload != ()){
@@ -69,7 +86,7 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
         }
     }
     targetMessageType.msgAttachments = sourceMailJsonObject.payload != () ?
-                                                getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
+                                                  getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
     return targetMessageType;
 }
 
@@ -93,7 +110,7 @@ function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) r
         targetMessageBodyType.partId = sourceMessagePartJsonObject.partId.toString();
         targetMessageBodyType.fileName = sourceMessagePartJsonObject.filename.toString();
         targetMessageBodyType.bodyHeaders = sourceMessagePartJsonObject.headers != () ?
-                                                convertToMsgPartHeaders(sourceMessagePartJsonObject.headers) : [];
+                                                convertToMsgPartHeaders(check <json[]>sourceMessagePartJsonObject.headers) : [];
     }
     return targetMessageBodyType;
 }
@@ -113,7 +130,7 @@ function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) ret
     targetMessageAttachmentType.partId = sourceMessagePartJsonObject.partId.toString();
     targetMessageAttachmentType.attachmentFileName = sourceMessagePartJsonObject.filename.toString();
     targetMessageAttachmentType.attachmentHeaders = sourceMessagePartJsonObject.headers != () ?
-                                                    convertToMsgPartHeaders(sourceMessagePartJsonObject.headers) : [];
+                                                    convertToMsgPartHeaders(check <json[]>sourceMessagePartJsonObject.headers) : [];
     return targetMessageAttachmentType;
 }
 
@@ -156,7 +173,8 @@ function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thre
     targetThreadType.id = sourceThreadJsonObject.id.toString();
     targetThreadType.historyId = sourceThreadJsonObject.historyId.toString();
     if (sourceThreadJsonObject.messages != ()){
-        match (convertToMessageArray(sourceThreadJsonObject.messages)){
+        json[]messages = check<json[]>sourceThreadJsonObject.messages;
+        match (convertToMessageArray(messages)){
             Message[] msgs => targetThreadType.messages = msgs;
             GMailError gMailError => return gMailError;
         }
