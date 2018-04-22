@@ -37,7 +37,7 @@ public type GMailConnector object {
         R{{}} -  MessageListPage consisting an array of messages, size estimation and next page token.
         R{{}} - GMailError if any error occurs in sending the request and receiving the response.
     }
-    public function listAllMails(string userId, SearchFilter filter) returns (MessageListPage|GMailError);
+    public function listMessages(string userId, SearchFilter filter) returns (MessageListPage|GMailError);
 
     documentation{
         Create the raw base 64 encoded string of the whole message and send it as an email from the user's
@@ -169,45 +169,37 @@ public type GMailConnector object {
     public function getUserProfile(string userId) returns UserProfile|GMailError;
 };
 
-public function GMailConnector::listAllMails(string userId, SearchFilter filter) returns (MessageListPage|GMailError) {
+public function GMailConnector::listMessages(string userId, SearchFilter filter) returns (MessageListPage|GMailError) {
     endpoint http:Client httpClient = self.client;
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
-    string uriParams = EMPTY_STRING;
-    //Add optional query parameters
-    uriParams = uriParams + QUESTION_MARK_SYMBOL + INCLUDE_SPAMTRASH + EQUAL_SYMBOL + filter.includeSpamTrash;
-    foreach labelId in filter.labelIds {
-        uriParams = labelId != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + LABEL_IDS + EQUAL_SYMBOL + labelId:uriParams;
-    }
-    uriParams = filter.maxResults != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + MAX_RESULTS + EQUAL_SYMBOL
-                                                                + filter.maxResults : uriParams;
-    uriParams = filter.pageToken != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + PAGE_TOKEN + EQUAL_SYMBOL
-                                                                + filter.pageToken : uriParams;
-    if (filter.q != EMPTY_STRING) {
-        match http:encode(filter.q, UTF_8) {
-            string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
-            error e => {
-                GMailError gMailError;
-                gMailError.message = "Error occured during encoding the query: " + filter.q + "; message:" + e.message;
-                gMailError.cause = e.cause;
-                return gMailError;
+    if (filter == ()){
+        string uriParams = EMPTY_STRING;
+        //The default value for include spam trash query parameter of the api call is false
+        uriParams = uriParams + QUESTION_MARK_SYMBOL + INCLUDE_SPAMTRASH + EQUAL_SYMBOL + filter.includeSpamTrash;
+        //Add optional query parameters
+        foreach labelId in filter.labelIds {
+            uriParams = labelId != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + LABEL_IDS + EQUAL_SYMBOL + labelId:uriParams;
+        }
+        uriParams = filter.maxResults != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + MAX_RESULTS + EQUAL_SYMBOL
+            + filter.maxResults : uriParams;
+        uriParams = filter.pageToken != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + PAGE_TOKEN + EQUAL_SYMBOL
+            + filter.pageToken : uriParams;
+        if (filter.q != EMPTY_STRING) {
+            match http:encode(filter.q, UTF_8) {
+                string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
+                error e => {
+                    GMailError gMailError;
+                    gMailError.message = "Error occured when listing messages;during encoding the query: " + filter.q;
+                    gMailError.cause = e;
+                    return gMailError;
+                }
             }
         }
+        getListMessagesPath = getListMessagesPath + uriParams;
     }
-    getListMessagesPath = getListMessagesPath + uriParams;
     var httpResponse = httpClient -> get(getListMessagesPath);
     match handleResponse(httpResponse){
-        json jsonlistMsgResponse => {
-            MessageListPage messageListPage;
-            messageListPage.resultSizeEstimate = jsonlistMsgResponse.resultSizeEstimate.toString();
-            messageListPage.nextPageToken = jsonlistMsgResponse.nextPageToken.toString();
-            //for each message resource in messages json array of the response
-            foreach message in jsonlistMsgResponse.messages {
-                //Add the message map with Id and thread Id as keys to the array
-                messageListPage.messages[lengthof messageListPage.messages] = {"messageId" : message.id.toString(),
-                                                                               "threadId" : message.threadId.toString()};
-            }
-            return messageListPage;
-        }
+        json jsonlistMsgResponse => return convertJsonMsgListToMessageListPageType(jsonlistMsgResponse);
         GMailError gmailError => return gmailError;
     }
 }

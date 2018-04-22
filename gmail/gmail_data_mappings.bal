@@ -196,3 +196,22 @@ function convertJsonProfileToUserProfileType(json sourceUserProfileJsonObject) r
     targetUserProfile.historyId = sourceUserProfileJsonObject.historyId.toString();
     return targetUserProfile;
 }
+
+documentation{
+    Transforms message list json object into MessageListPage.
+
+    P{{sourceMsgListJsonObject}} - Json Messsage List object
+    R{{}} - MessageListPage type
+}
+function convertJsonMsgListToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
+    MessageListPage targetMsgListPage;
+    targetMsgListPage.resultSizeEstimate = sourceMsgListJsonObject.resultSizeEstimate.toString();
+    targetMsgListPage.nextPageToken = sourceMsgListJsonObject.nextPageToken.toString();
+    //for each message resource in messages json array of the response
+    foreach message in sourceMsgListJsonObject.messages {
+        //Add the message map with Id and thread Id as keys to the array
+        targetMsgListPage.messages[lengthof targetMsgListPage.messages] = {"messageId" : message.id.toString(),
+                                                                            "threadId" : message.threadId.toString()};
+    }
+    return targetMsgListPage;
+}
