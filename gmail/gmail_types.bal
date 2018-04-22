@@ -14,9 +14,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/util;
-import ballerina/io;
-
 documentation{
     Represents GMail UserProfile.
 
@@ -262,12 +259,12 @@ public type MessageThreadReadFilter {
 documentation{
     Represents a page of the message list received as reponse for list messages api call
 
-    F{{messages}} - Message list in the page
+    F{{messages}} - Array of message maps with messageId and threadId as keys
     F{{resultSizeEstimate}} - Estimated size of the whole list
     F{{nextPageToken}} - Token for next page of message list
 }
 public type MessageListPage {
-    @readonly Message[] messages;
+    @readonly map[] messages;
     @readonly string resultSizeEstimate;
     @readonly string nextPageToken;
 };
@@ -275,12 +272,12 @@ public type MessageListPage {
 documentation{
     Represents a page of the mail thread list received as reponse for list threads api call
 
-    F{{threads}} - Thread list in the page
+    F{{threads}} - Array of thread maps with threadId, snippet and historyId as keys
     F{{resultSizeEstimate}} - Estimated size of the whole list
     F{{nextPageToken}} - Token for next page of mail thread list
 }
 public type ThreadListPage {
-    @readonly Thread[] threads;
+    @readonly map[] threads;
     @readonly string resultSizeEstimate;
     @readonly string nextPageToken;
 };
