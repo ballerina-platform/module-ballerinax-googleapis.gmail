@@ -172,31 +172,29 @@ public type GMailConnector object {
 public function GMailConnector::listMessages(string userId, SearchFilter filter) returns (MessageListPage|GMailError) {
     endpoint http:Client httpClient = self.client;
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
-    if (filter == ()){
-        string uriParams = EMPTY_STRING;
-        //The default value for include spam trash query parameter of the api call is false
-        uriParams = uriParams + QUESTION_MARK_SYMBOL + INCLUDE_SPAMTRASH + EQUAL_SYMBOL + filter.includeSpamTrash;
-        //Add optional query parameters
-        foreach labelId in filter.labelIds {
-            uriParams = labelId != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + LABEL_IDS + EQUAL_SYMBOL + labelId:uriParams;
-        }
-        uriParams = filter.maxResults != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + MAX_RESULTS + EQUAL_SYMBOL
-            + filter.maxResults : uriParams;
-        uriParams = filter.pageToken != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + PAGE_TOKEN + EQUAL_SYMBOL
-            + filter.pageToken : uriParams;
-        if (filter.q != EMPTY_STRING) {
-            match http:encode(filter.q, UTF_8) {
-                string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
-                error e => {
-                    GMailError gMailError;
-                    gMailError.message = "Error occured when listing messages;during encoding the query: " + filter.q;
-                    gMailError.cause = e;
-                    return gMailError;
-                }
+    string uriParams = EMPTY_STRING;
+    //The default value for include spam trash query parameter of the api call is false
+    uriParams = uriParams + QUESTION_MARK_SYMBOL + INCLUDE_SPAMTRASH + EQUAL_SYMBOL + filter.includeSpamTrash;
+    //Add optional query parameters
+    foreach labelId in filter.labelIds {
+        uriParams = labelId != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + LABEL_IDS + EQUAL_SYMBOL + labelId:uriParams;
+    }
+    uriParams = filter.maxResults != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + MAX_RESULTS + EQUAL_SYMBOL
+                                                    + filter.maxResults : uriParams;
+    uriParams = filter.pageToken != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + PAGE_TOKEN + EQUAL_SYMBOL
+                                                    + filter.pageToken : uriParams;
+    if (filter.q != EMPTY_STRING) {
+        match http:encode(filter.q, UTF_8) {
+            string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
+            error e => {
+                GMailError gMailError;
+                gMailError.message = "Error occured when listing messages;during encoding the query: " + filter.q;
+                gMailError.cause = e;
+                return gMailError;
             }
         }
-        getListMessagesPath = getListMessagesPath + uriParams;
     }
+    getListMessagesPath = getListMessagesPath + uriParams;
     var httpResponse = httpClient -> get(getListMessagesPath);
     match handleResponse(httpResponse){
         json jsonlistMsgResponse => return convertJsonMsgListToMessageListPageType(jsonlistMsgResponse);
