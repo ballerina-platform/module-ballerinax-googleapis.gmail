@@ -67,8 +67,6 @@ documentation {Constant field 'LESS_THAN_SYMBOL'. Holds the value for "<" string
 documentation {Constant field 'STAR_SYMBOL'. Holds the value for "*" string. }
 @final string STAR_SYMBOL = "*";
 
-documentation {Constant field 'READ_ACCESS'. Holds the value for file read access. }
-@final string READ_ACCESS = "r";
 documentation { Constant field 'INCLUDE_SPAMTRASH'. Holds the value for optional parameter name 'includeSpamTrash'}
 @final string INCLUDE_SPAMTRASH = "includeSpamTrash";
 documentation { Constant field 'LABEL_IDS'. Holds the value for optional parameter name 'labelIds'}
