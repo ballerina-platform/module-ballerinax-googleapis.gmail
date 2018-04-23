@@ -18,7 +18,7 @@ import ballerina/log;
 import ballerina/test;
 import ballerina/config;
 
-endpoint Client gMailEP {
+endpoint Client gmailEP {
     clientConfig:{
         auth:{
             accessToken:config:getAsString("ACCESS_TOKEN"),
@@ -65,7 +65,7 @@ function testSendTextMail() {
     AttachmentPath[] attachments = [{attachmentPath:attachmentPath,mimeType:attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
     log:printInfo("testSendTextMail");
-    var sendMessageResponse = gMailEP -> sendMessage(userId, messageRequest);
+    var sendMessageResponse = gmailEP -> sendMessage(userId, messageRequest);
     string messageId;
     string threadId;
     match sendMessageResponse {
@@ -73,9 +73,9 @@ function testSendTextMail() {
             (messageId, threadId) = sendStatus;
             sentTextMailId = messageId;
             sentTextMailThreadId = threadId;
-            test:assertTrue(messageId != () && threadId != (), msg = "Send Text Message Failed");
+            test:assertTrue(messageId != "" && threadId != "", msg = "Send Text Message Failed");
         }
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
     }
 }
 
@@ -98,16 +98,16 @@ function testSendHTMLMail() {
     messageRequest.attachmentPaths = attachments;
     log:printInfo("testSendHTMLMail");
     //----Send the mail----
-    var sendMessageResponse = gMailEP -> sendMessage(userId, messageRequest);
+    var sendMessageResponse = gmailEP -> sendMessage(userId, messageRequest);
     string messageId;
     string threadId;
     match sendMessageResponse {
         (string, string) sendStatus => {
             (messageId, threadId) = sendStatus;
             sentHtmlMailId = messageId;
-            test:assertTrue(messageId != () && threadId != (), msg = "Send HTML message failed");
+            test:assertTrue(messageId != "" && threadId != "", msg = "Send HTML message failed");
         }
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
     }
 }
 
@@ -115,13 +115,13 @@ function testSendHTMLMail() {
 function testListMails() {
     //List All Mails with Label INBOX without including Spam and Trash with subject "Test subject - html mail"
     log:printInfo("testListAllMails");
-    SearchFilter filter = {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"", pageToken:"", q:""};
-    var msgList = gMailEP -> listMessages("me");
+    SearchFilter searchFilter = {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"", pageToken:"", q:""};
+    var msgList = gmailEP -> listMessages("me", filter = searchFilter);
     match msgList {
         MessageListPage list => {
             test:assertTrue(lengthof list.messages != 0, msg = "Failed due to empty inbox");
         }
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
     }
 }
 
@@ -132,10 +132,10 @@ function testListMails() {
 function testReadTextMail() {
     //Read mail with message id which sent in testSendSimpleMail
     log:printInfo("testReadTextMail");
-    var reponse = gMailEP -> readMail(userId, sentTextMailId);
+    var reponse = gmailEP -> readMessage(userId, sentTextMailId);
     match reponse {
         Message m => test:assertEquals(m.id, sentTextMailId, msg = "Read text mail failed");
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
     }
 }
 
@@ -145,14 +145,14 @@ function testReadTextMail() {
 }
 function testReadHTMLMailWithAttachment() {
     //Read mail with message id which sent in testSendWithAttachment
-    log:printInfo("testReadMailWithAttachment");
-    var response = gMailEP -> readMail(userId, sentHtmlMailId);
+    log:printInfo("testReadMessageWithAttachment");
+    var response = gmailEP -> readMessage(userId, sentHtmlMailId);
     match response {
         Message m => {
             readAttachmentFileId = m.msgAttachments[0].attachmentFileId;
             test:assertEquals(m.id, sentHtmlMailId, msg = "Read mail with attachment failed");
         }
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
     }
 }
 
@@ -162,9 +162,9 @@ function testReadHTMLMailWithAttachment() {
 }
 function testgetAttachment() {
     log:printInfo("testgetAttachment");
-    var attachment = gMailEP -> getAttachment(userId, sentHtmlMailId, readAttachmentFileId);
+    var attachment = gmailEP -> getAttachment(userId, sentHtmlMailId, readAttachmentFileId);
     match attachment {
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
         MessageAttachment attach => {
             boolean status = (attach.attachmentFileId == "" && attach.attachmentBody == "") ? false : true;
             test:assertTrue(status, msg = "Get Attachment failed");
@@ -179,9 +179,9 @@ function testgetAttachment() {
 function testTrashMail() {
     //Trash mail with message id 1628c6e29f2fef47
     log:printInfo("testTrashMail");
-    var trash = gMailEP -> trashMail(userId, sentHtmlMailId);
+    var trash = gmailEP -> trashMail(userId, sentHtmlMailId);
     match trash {
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Trash mail failed");
     }
 }
@@ -192,9 +192,9 @@ function testTrashMail() {
 }
 function testUntrashMail() {
     log:printInfo("testUntrashMail");
-    var untrash = gMailEP -> untrashMail(userId, sentHtmlMailId);
+    var untrash = gmailEP -> untrashMail(userId, sentHtmlMailId);
     match untrash {
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Untrash mail failed");
     }
 }
@@ -205,9 +205,9 @@ function testUntrashMail() {
 }
 function testDeleteMail() {
     log:printInfo("testDeleteMail");
-    var delete = gMailEP -> deleteMail(userId, sentHtmlMailId);
+    var delete = gmailEP -> deleteMail(userId, sentHtmlMailId);
     match delete {
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Delete mail failed");
     }
 }
@@ -215,11 +215,11 @@ function testDeleteMail() {
 @test:Config
 function testListAllThreads() {
     log:printInfo("testListAllThreads");
-    var threadList = gMailEP -> listThreads(userId, {includeSpamTrash:false, labelIds:["INBOX"],
+    var threadList = gmailEP -> listThreads(userId, filter = {includeSpamTrash:false, labelIds:["INBOX"],
                                                                                     maxResults:"", pageToken:"", q:""});
     match threadList {
         ThreadListPage list => test:assertTrue(lengthof list.threads != 0, msg = "List threads in inbox failed");
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
     }
 }
 
@@ -229,11 +229,11 @@ function testListAllThreads() {
 }
 function testReadThread() {
     log:printInfo("testReadThread");
-    MessageThreadReadFilter filter = {format:FORMAT_METADATA, metadataHeaders:["Subject"]};
-    var thread = gMailEP -> readThread(userId, sentTextMailThreadId, filter);
+    var thread = gmailEP -> readThread(userId, sentTextMailThreadId,
+                                                            format = FORMAT_METADATA, metadataHeaders = ["Subject"]);
     match thread{
         Thread t => test:assertEquals(t.id, sentTextMailThreadId, msg = "Read thread failed");
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
     }
 }
 
@@ -243,9 +243,9 @@ function testReadThread() {
 }
 function testTrashThread() {
     log:printInfo("testTrashThread");
-    var trash = gMailEP -> trashThread(userId, sentTextMailThreadId);
+    var trash = gmailEP -> trashThread(userId, sentTextMailThreadId);
     match trash {
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Trash thread failed");
     }
 }
@@ -256,9 +256,9 @@ function testTrashThread() {
 }
 function testUnTrashThread() {
     log:printInfo("testUnTrashThread");
-    var untrash = gMailEP -> untrashThread(userId, sentTextMailThreadId);
+    var untrash = gmailEP -> untrashThread(userId, sentTextMailThreadId);
     match untrash {
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Untrash thread failed");
 
     }
@@ -270,9 +270,9 @@ function testUnTrashThread() {
 }
 function testDeleteThread() {
     log:printInfo("testDeleteThread");
-    var delete = gMailEP -> deleteThread(userId, sentTextMailThreadId);
+    var delete = gmailEP -> deleteThread(userId, sentTextMailThreadId);
     match delete {
-        GMailError e => test:assertFail(msg = e.message);
+        GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Delete thread failed");
     }
 }
@@ -282,9 +282,9 @@ function testDeleteThread() {
 }
 function testgetUserProfile() {
     log:printInfo("testgetUserProfile");
-    var profile = gMailEP -> getUserProfile(userId);
+    var profile = gmailEP -> getUserProfile(userId);
     match profile {
-        UserProfile p => test:assertTrue(p.emailAddress != (), msg = "Get User Profile failed");
-        GMailError e => test:assertFail(msg = e.message);
+        UserProfile p => test:assertTrue(p.emailAddress != "", msg = "Get User Profile failed");
+        GmailError e => test:assertFail(msg = e.message);
     }
 }
