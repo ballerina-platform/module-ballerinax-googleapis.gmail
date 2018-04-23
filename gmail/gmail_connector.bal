@@ -64,7 +64,7 @@ public type GmailConnector object {
         R{{}} - If successful, returns Message type of the specified mail. Else returns GmailError.
     }
     public function readMessage(string userId, string messageId, string? format = (), string[]? metadataHeaders = ())
-                                                                                        returns Message|GmailError;
+                                                                                             returns Message|GmailError;
     documentation{Gets the specified message attachment from users mailbox.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to retrieve.
@@ -125,7 +125,7 @@ public type GmailConnector object {
         R{{}} - If successful, returns Thread type of the specified mail thread. Else returns GmailError.
     }
     public function readThread(string userId, string threadId, string? format = (), string[]? metadataHeaders = ())
-                                                                                           returns Thread|GmailError;
+                                                                                              returns Thread|GmailError;
 
     documentation{Move the specified mail thread to the trash.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -156,7 +156,7 @@ public type GmailConnector object {
 };
 
 public function GmailConnector::listMessages(string userId, SearchFilter? filter = ()) returns MessageListPage|
-                                                                                                          GmailError {
+                                                                                                            GmailError {
     endpoint http:Client httpClient = self.client;
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
     SearchFilter searchFilter = filter ?: {};
@@ -168,12 +168,12 @@ public function GmailConnector::listMessages(string userId, SearchFilter? filter
         uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
     }
     uriParams = searchFilter.maxResults != EMPTY_STRING ?
-                             check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
+                           check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
     uriParams = searchFilter.pageToken != EMPTY_STRING ?
-                               check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
+                             check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
     uriParams = searchFilter.q != EMPTY_STRING ?
-                                            check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
-    getListMessagesPath = getListMessagesPath + uriParams;
+                                          check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
+    getListMessagesPath += uriParams;
     var httpResponse = httpClient->get(getListMessagesPath);
     match handleResponse(httpResponse){
         json jsonlistMsgResponse => return convertJsonMsgListToMessageListPageType(jsonlistMsgResponse);
@@ -281,7 +281,7 @@ public function GmailConnector::sendMessage(string userId, MessageRequest messag
             //Return an error if an un supported content type other than image/* is passed
             GmailError gmailError;
             gmailError.message = "Unsupported content type:" + inlineImage.mimeType + "for the image:"
-                + inlineImage.imagePath;
+                                + inlineImage.imagePath;
             return gmailError;
         }
     }
@@ -348,7 +348,7 @@ public function GmailConnector::sendMessage(string userId, MessageRequest messag
 }
 
 public function GmailConnector::readMessage(string userId, string messageId, string? format = (),
-                                         string[]? metadataHeaders = ()) returns Message|GmailError {
+                                                            string[]? metadataHeaders = ()) returns Message|GmailError {
     endpoint http:Client httpClient = self.client;
     string uriParams;
     string messageFormat = format ?: FORMAT_FULL;
@@ -360,13 +360,13 @@ public function GmailConnector::readMessage(string userId, string messageId, str
     foreach metaDataHeader in messageMetadataHeaders {
         uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
     }
-    readMessagePath = readMessagePath + uriParams;
+    readMessagePath += uriParams;
     var httpResponse = httpClient->get(readMessagePath);
     match handleResponse(httpResponse){
         json jsonreadMessageResponse => {
             //Transform the json mail response from Gmail API to Message type
             match (convertJsonMailToMessage(jsonreadMessageResponse)){
-                Message message => return message;
+                Message message => {return message;}
                 GmailError gmailError => return gmailError;
             }
         }
@@ -375,7 +375,7 @@ public function GmailConnector::readMessage(string userId, string messageId, str
 }
 
 public function GmailConnector::getAttachment(string userId, string messageId, string attachmentId)
-                                                                            returns MessageAttachment|GmailError {
+                                                                                  returns MessageAttachment|GmailError {
     endpoint http:Client httpClient = self.client;
     string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
                                + ATTACHMENT_RESOURCE + attachmentId;
@@ -439,7 +439,7 @@ public function GmailConnector::listThreads(string userId, SearchFilter? filter 
         uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
     }
     uriParams = searchFilter.maxResults != EMPTY_STRING ?
-                            check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
+                           check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
     uriParams = searchFilter.pageToken != EMPTY_STRING ?
                             check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
     uriParams = searchFilter.q != EMPTY_STRING ?
