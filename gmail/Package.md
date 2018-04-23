@@ -10,7 +10,7 @@ untrash messages, delete messages, read threads, trash threads, untrash threads,
 
 | Ballerina Language Version                   | Gmail API Version |  
 | :-------------------------------------------:|:-----------------:| 
-| 0.970.0-beta10                               | v1                | 
+| 0.970.0-beta12                               | v1                | 
 
 ## Getting started
 
