@@ -97,8 +97,8 @@ documentation{Represents message resource which will be received as a response f
     F{{historyId}} - The id of the last history record that modified the message.
     F{{internalDate}} - The internal message creation timestamp(epoch ms).
     F{{sizeEstimate}} - Estimated size of the message in bytes.
-    F{{headers}} - The headers in the top level message part representing the entire message payload in a  standard RFC
-                   2822 message.
+    F{{headers}} - The map of headers in the top level message part representing the entire message payload in a
+    standard RFC 2822 message. The key of the map is the header name and the value is the header value.
     F{{headerTo}} - Email header **To**.
     F{{headerFrom}} - Email header **From**.
     F{{headerBcc}} - Email header **Bcc**.
@@ -122,14 +122,14 @@ public type Message {
     @readonly string historyId;
     @readonly string internalDate;
     @readonly string sizeEstimate;
-    @readonly MessagePartHeader[] headers;
-    @readonly MessagePartHeader headerTo;
-    @readonly MessagePartHeader headerFrom;
-    @readonly MessagePartHeader headerBcc;
-    @readonly MessagePartHeader headerCc;
-    @readonly MessagePartHeader headerSubject;
-    @readonly MessagePartHeader headerDate;
-    @readonly MessagePartHeader headerContentType;
+    @readonly map headers;
+    @readonly string headerTo;
+    @readonly string headerFrom;
+    @readonly string headerBcc;
+    @readonly string headerCc;
+    @readonly string headerSubject;
+    @readonly string headerDate;
+    @readonly string headerContentType;
     @readonly string mimeType;
     @readonly MessageBodyPart plainTextBodyPart;
     @readonly MessageBodyPart htmlBodyPart;
@@ -151,7 +151,7 @@ documentation{Represents the email message body part of a message resource respo
 public type MessageBodyPart {
     @readonly string body;
     @readonly string mimeType;
-    @readonly MessagePartHeader[] bodyHeaders;
+    @readonly map bodyHeaders;
     @readonly string fileId;
     @readonly string fileName;
     @readonly string partId;
@@ -174,17 +174,8 @@ public type MessageAttachment {
     @readonly string size;
     @readonly string attachmentFileName;
     @readonly string mimeType;
-    @readonly MessagePartHeader[] attachmentHeaders;
+    @readonly map attachmentHeaders;
     @readonly string partId;
-};
-
-documentation{Represents a message part header of a message resource response.
-    F{{name}} - Header name
-    F{{value}} - Header value
-}
-public type MessagePartHeader {
-    @readonly string name;
-    @readonly string value;
 };
 
 documentation{Represents Gmail error.
