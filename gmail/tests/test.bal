@@ -14,24 +14,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
-import ballerina/http;
 import ballerina/log;
 import ballerina/test;
 import ballerina/config;
 
-string accessToken = config:getAsString("ACCESS_TOKEN");
-string clientId = config:getAsString("CLIENT_ID");
-string clientSecret = config:getAsString("CLIENT_SECRET");
-string refreshToken = config:getAsString("REFRESH_TOKEN");
-
 endpoint Client gMailEP {
     clientConfig:{
         auth:{
-            accessToken:accessToken,
-            clientId:clientId,
-            clientSecret:clientSecret,
-            refreshToken:refreshToken
+            accessToken:config:getAsString("ACCESS_TOKEN"),
+            clientId:config:getAsString("CLIENT_ID"),
+            clientSecret:config:getAsString("CLIENT_SECRET"),
+            refreshToken:config:getAsString("REFRESH_TOKEN")
         }
     }
 };
@@ -86,7 +79,6 @@ function testSendTextMail() {
     }
 }
 
-
 @test:Config {
     groups:["htmlMailTestGroup"]
 }
@@ -120,13 +112,15 @@ function testSendHTMLMail() {
 }
 
 @test:Config
-function testListAllMails() {
+function testListMails() {
     //List All Mails with Label INBOX without including Spam and Trash with subject "Test subject - html mail"
     log:printInfo("testListAllMails");
     SearchFilter filter = {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"", pageToken:"", q:""};
-    var msgList = gMailEP -> listAllMails("me", filter);
+    var msgList = gMailEP -> listMessages("me");
     match msgList {
-        MessageListPage list => test:assertTrue(lengthof list.messages != 0, msg = "List messages in inbox failed");
+        MessageListPage list => {
+            test:assertTrue(lengthof list.messages != 0, msg = "Failed due to empty inbox");
+        }
         GMailError e => test:assertFail(msg = e.message);
     }
 }
@@ -138,10 +132,9 @@ function testListAllMails() {
 function testReadTextMail() {
     //Read mail with message id which sent in testSendSimpleMail
     log:printInfo("testReadTextMail");
-    MessageThreadReadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
-    var reponse = gMailEP -> readMail(userId, sentHtmlMailId, filter);
+    var reponse = gMailEP -> readMail(userId, sentTextMailId);
     match reponse {
-        Message m => test:assertEquals(m.id, sentHtmlMailId, msg = "Read text mail failed");
+        Message m => test:assertEquals(m.id, sentTextMailId, msg = "Read text mail failed");
         GMailError e => test:assertFail(msg = e.message);
     }
 }
@@ -153,8 +146,7 @@ function testReadTextMail() {
 function testReadHTMLMailWithAttachment() {
     //Read mail with message id which sent in testSendWithAttachment
     log:printInfo("testReadMailWithAttachment");
-    MessageThreadReadFilter filter = {format:FORMAT_FULL, metadataHeaders:[]};
-    var response = gMailEP -> readMail(userId, sentHtmlMailId, filter);
+    var response = gMailEP -> readMail(userId, sentHtmlMailId);
     match response {
         Message m => {
             readAttachmentFileId = m.msgAttachments[0].attachmentFileId;
@@ -224,7 +216,7 @@ function testDeleteMail() {
 function testListAllThreads() {
     log:printInfo("testListAllThreads");
     var threadList = gMailEP -> listThreads(userId, {includeSpamTrash:false, labelIds:["INBOX"],
-            maxResults:"", pageToken:"", q:""});
+                                                                                    maxResults:"", pageToken:"", q:""});
     match threadList {
         ThreadListPage list => test:assertTrue(lengthof list.threads != 0, msg = "List threads in inbox failed");
         GMailError e => test:assertFail(msg = e.message);
