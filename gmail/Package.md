@@ -1,39 +1,31 @@
 # GMail Connector
 
-Allows connecting to Gmail REST API.
+Connects to Gmail from Ballerina. 
 
-GMail connector provides a Ballerina API to access Gmail REST API. It handles OAuth2.0, provides auto completion and 
-type conversions. GMail connector allows you to send messages with both text and html contents, read messages, trash messages,
-untrash messages, delete messages, read threads, trash threads, untrash threads, delete threads and get Gmail user profile.
+The Gmail connector provides an optimized way to use the Gmail REST API from your Ballerina programs. 
+It handles OAuth 2.0 and provides auto completion and type conversions.
 
 ## Compatibility
 
 | Ballerina Language Version                   | Gmail API Version |  
 | :-------------------------------------------:|:-----------------:| 
-| 0.970.0-beta12                               | v1                | 
+| 0.970.0-beta13                               | v1                | 
 
 ## Getting started
 
-1.  Refer the [Getting Started](https://ballerina.io/learn/getting-started/) guide to download and install Ballerina.
-2.  To use GMail endpoint, you need to provide the following:
+1.  To download and install Ballerina, see the [Getting Started](https://ballerina.io/learn/getting-started/) guide.
 
-       - Client Id
-       - Client Secret
-       - Access Token
-       - Refresh Token
- 
-       *Please note that, providing ClientId, Client Secret, Refresh Token are optional if you are only providing a valid Access                   
-       Token vise versa.*
-    
-       Visit [here](https://developers.google.com/identity/protocols/OAuth2) for more information on obtaining OAuth2 credentials.
+2.  Obtain your OAuth 2.0 credentials. To access a Gmail endpoint, you will need to provide the Client ID, 
+    Client Secret, and Refresh Token, or just the Access Token. For more information, see the [Gmail OAuth 2.0 
+    documentation](https://developers.google.com/identity/protocols/OAuth2).
 
 3. Create a new Ballerina project by executing the following command.
 
     ```shell
-    <PROJECT_ROOT_DIRECTORY>$ ballerina init
+    $ ballerina init
     ```     
 
-4. Import the gmail package to your Ballerina program as follows.
+4. Import the Gmail package to your Ballerina program as follows.
 
     ```ballerina
     import ballerina/io;

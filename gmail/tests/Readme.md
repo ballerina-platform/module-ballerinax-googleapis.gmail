@@ -1,8 +1,8 @@
 ## Compatibility
 
-| Ballerina Language Version | Connector Version  | Gmail API Version |  
-| :-------------------------:|:------------------:|:-----------------:| 
-| 0.970.0-beta12            | 0.8.13              | v1                | 
+| Ballerina Language Version | Gmail API Version |  
+| :-------------------------:|:-----------------:| 
+| 0.970.0-beta12            | v1                | 
 
 ### Prerequisites
 
