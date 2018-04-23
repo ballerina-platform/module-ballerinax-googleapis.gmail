@@ -456,7 +456,7 @@ documentation{Create url encoded request body with given key and value.
     P{{value}} - Value of the form value parameter.
     R{{}} - If successful returns created request with encoded string. Else returns GMailError.
 }
-function createUrlEncodedRequest(string requestBody, string key, string value) returns (string|GMailError) {
+function appendEncodedURIParameter(string requestBody, string key, string value) returns (string|GMailError) {
     var encodedVar = http:encode(value, UTF_8);
     string encodedString;
     match encodedVar {

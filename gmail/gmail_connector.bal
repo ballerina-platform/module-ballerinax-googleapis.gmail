@@ -162,17 +162,17 @@ public function GMailConnector::listMessages(string userId, SearchFilter? filter
     SearchFilter searchFilter = filter ?: {};
     string uriParams;
     //The default value for include spam trash query parameter of the api call is false
-    uriParams = check createUrlEncodedRequest(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.includeSpamTrash);
+    uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.includeSpamTrash);
     //Add optional query parameters
     foreach labelId in searchFilter.labelIds {
-        uriParams = check createUrlEncodedRequest(uriParams, LABEL_IDS, labelId);
+        uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
     }
     uriParams = searchFilter.maxResults != EMPTY_STRING ?
-                             check createUrlEncodedRequest(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
+                             check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
     uriParams = searchFilter.pageToken != EMPTY_STRING ?
-                               check createUrlEncodedRequest(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
+                               check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
     uriParams = searchFilter.q != EMPTY_STRING ?
-                                            check createUrlEncodedRequest(uriParams, QUERY, searchFilter.q) : uriParams;
+                                            check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
     getListMessagesPath = getListMessagesPath + uriParams;
     var httpResponse = httpClient->get(getListMessagesPath);
     match handleResponse(httpResponse){
@@ -355,10 +355,10 @@ public function GMailConnector::readMessage(string userId, string messageId, str
     string[] messageMetadataHeaders = metadataHeaders ?: [];
     string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
     //Add format query parameter
-    uriParams = check createUrlEncodedRequest(uriParams, FORMAT, messageFormat);
+    uriParams = check appendEncodedURIParameter(uriParams, FORMAT, messageFormat);
     //Add the optional meta data headers as query parameters
     foreach metaDataHeader in messageMetadataHeaders {
-        uriParams = check createUrlEncodedRequest(uriParams, METADATA_HEADERS, metaDataHeader);
+        uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
     }
     readMessagePath = readMessagePath + uriParams;
     var httpResponse = httpClient->get(readMessagePath);
@@ -433,17 +433,17 @@ public function GMailConnector::listThreads(string userId, SearchFilter? filter 
     string uriParams;
     SearchFilter searchFilter = filter ?: {};
     //The default value for include spam trash query parameter of the api call is false
-    uriParams = check createUrlEncodedRequest(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.includeSpamTrash);
+    uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.includeSpamTrash);
     //Add optional query parameters
     foreach labelId in searchFilter.labelIds {
-        uriParams = check createUrlEncodedRequest(uriParams, LABEL_IDS, labelId);
+        uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
     }
     uriParams = searchFilter.maxResults != EMPTY_STRING ?
-                            check createUrlEncodedRequest(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
+                            check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
     uriParams = searchFilter.pageToken != EMPTY_STRING ?
-                            check createUrlEncodedRequest(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
+                            check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
     uriParams = searchFilter.q != EMPTY_STRING ?
-                            check createUrlEncodedRequest(uriParams, QUERY, searchFilter.q) : uriParams;
+                            check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
     getListThreadPath = getListThreadPath + uriParams;
     var httpResponse = httpClient->get(getListThreadPath);
     match handleResponse(httpResponse) {
@@ -460,10 +460,10 @@ public function GMailConnector::readThread(string userId, string threadId, strin
     string[] messageMetadataHeaders = metadataHeaders ?: [];
     string readThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
     //Add format optional query parameter
-    uriParams = check createUrlEncodedRequest(uriParams, FORMAT, messageFormat);
+    uriParams = check appendEncodedURIParameter(uriParams, FORMAT, messageFormat);
     //Add the optional meta data headers as query parameters
     foreach metaDataHeader in messageMetadataHeaders {
-        uriParams = check createUrlEncodedRequest(uriParams, METADATA_HEADERS, metaDataHeader);
+        uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
     }
     readThreadPath += uriParams;
     var httpResponse = httpClient->get(readThreadPath);
