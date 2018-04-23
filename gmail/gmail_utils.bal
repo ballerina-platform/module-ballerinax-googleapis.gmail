@@ -468,3 +468,29 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
         }
     }
 }
+
+@Description {value:"Create url encoded request body with given key and value."}
+@Param {value:"requestBody: Request body to be appended values."}
+@Param {value:"key: Key of the form value parameter."}
+@Param {value:"value: Value of the form value parameter."}
+@Return {value:"Created request body with encoded string."}
+@Return {value:"GMail error occured."}
+function createUrlEncodedRequest(string requestBody, string key, string value) returns (string|GMailError) {
+    var encodedVar = http:encode(value, UTF_8);
+    string encodedString;
+    match encodedVar {
+        string encoded => encodedString = encoded;
+        error err => {
+            GMailError gMailError = {message:"Error occurred when encoding the value "  + value + " with charset "
+                                                + UTF_8, cause : err};
+            return gMailError;
+        }
+    }
+    if (requestBody != EMPTY_STRING) {
+        requestBody += AMPERSAND_SYMBOL;
+    }
+    else {
+        requestBody += QUESTION_MARK_SYMBOL;
+    }
+    return requestBody + key + EQUAL_SYMBOL + encodedString;
+}

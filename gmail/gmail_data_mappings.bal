@@ -18,12 +18,10 @@ import ballerina/log;
 
 //Includes all the transforming functions which transform required json to type object/record and vice versa
 
-documentation{
-    Transforms JSON mail object into Message.
+documentation{Transforms JSON mail object into Message.
 
     P{{sourceMailJsonObject}} - Json mail object
-    R{{}} - Message type object if the conversion is successful.
-    R{{}} - GMailError if the conversion is unsuccessful.
+    R{{}} - If successful, returns Message type. Else returns GMailError.
 }
 function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMailError {
     Message targetMessageType;
@@ -90,12 +88,10 @@ function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMa
     return targetMessageType;
 }
 
-documentation{
-    Transforms MIME Message Part Json into MessageBody.
+documentation{Transforms MIME Message Part Json into MessageBody.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
-    R{{}} - MessageBodyPart type object if the conversion successful.
-    R{{}} - GMailError if conversion unsuccesful.
+    R{{}} - If successful, returns MessageBodyPart type. Else returns GMailError.
 }
 function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GMailError {
     MessageBodyPart targetMessageBodyType;
@@ -115,8 +111,7 @@ function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) r
     return targetMessageBodyType;
 }
 
-documentation{
-    Transforms MIME Message Part JSON into MessageAttachment.
+documentation{Transforms MIME Message Part JSON into MessageAttachment.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
     R{{}}- MessageAttachment type object
@@ -130,12 +125,11 @@ function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) ret
     targetMessageAttachmentType.partId = sourceMessagePartJsonObject.partId.toString();
     targetMessageAttachmentType.attachmentFileName = sourceMessagePartJsonObject.filename.toString();
     targetMessageAttachmentType.attachmentHeaders = sourceMessagePartJsonObject.headers != () ?
-                                                    convertToMsgPartHeaders(check <json[]>sourceMessagePartJsonObject.headers) : [];
+                                       convertToMsgPartHeaders(check <json[]>sourceMessagePartJsonObject.headers) : [];
     return targetMessageAttachmentType;
 }
 
-documentation{
-    Transforms MIME Message Part Header into MessagePartHeader.
+documentation{Transforms MIME Message Part Header into MessagePartHeader.
 
     P{{sourceMessagePartHeader}} - Json message part header object
     R{{}} - MessagePartHeader type
@@ -147,11 +141,10 @@ function convertJsonToMesagePartHeader(json sourceMessagePartHeader) returns Mes
     return targetMessagePartHeader;
 }
 
-documentation{
-    Transforms single body of MIME Message part into MessageAttachment.
+documentation{Transforms single body of MIME Message part into MessageAttachment.
 
-    P{{sourceMessageBodyJsonObject}} - Json message body object
-    R{{}} - MessageAttachment type object
+    P{{sourceMessageBodyJsonObject}} - Json message body object.
+    R{{}} - Returns MessageAttachment type.
 }
 function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageAttachment {
     MessageAttachment targetMessageAttachmentType;
@@ -161,12 +154,10 @@ function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject)
     return targetMessageAttachmentType;
 }
 
-documentation{
-    Transforms mail thread Json object into Thread.
+documentation{Transforms mail thread Json object into Thread.
 
-    P{{sourceThreadJsonObject}} - Json message thread object
-    R{{}} - Thread type
-    R{{}} - GMailError if conversion is unsuccessful.
+    P{{sourceThreadJsonObject}} - Json message thread object.
+    R{{}} - If successful returns Thread type. Else returns GMailError.
 }
 function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GMailError{
     Thread targetThreadType;
@@ -182,8 +173,7 @@ function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thre
     return targetThreadType;
 }
 
-documentation{
-    Transforms user profile json object into UserProfile.
+documentation{Transforms user profile json object into UserProfile.
 
     P{{sourceUserProfileJsonObject}} - Json user profile object
     R{{}} - UserProfile type
@@ -197,8 +187,7 @@ function convertJsonProfileToUserProfileType(json sourceUserProfileJsonObject) r
     return targetUserProfile;
 }
 
-documentation{
-    Transforms message list json object into MessageListPage.
+documentation{Transforms message list json object into MessageListPage.
 
     P{{sourceMsgListJsonObject}} - Json Messsage List object
     R{{}} - MessageListPage type
