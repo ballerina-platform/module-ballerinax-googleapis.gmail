@@ -17,8 +17,7 @@
 import ballerina/io;
 import ballerina/http;
 
-documentation{
-    Converts the json message array into Message type array.
+documentation{Converts the json message array into Message type array.
 
     P{{sourceMessageArrayJsonObject}} - Json message array object
     R{{}} - Message type array
@@ -37,8 +36,7 @@ function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Mess
     return messages;
 }
 
-documentation{
-    Decodes the message body of text/* mime message parts.
+documentation{Decodes the message body of text/* mime message parts.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
     R{{}} - String base 64 decoded message body.
@@ -63,8 +61,7 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
     return decodedBody;
 }
 
-documentation{
-    Gets only the attachment MIME messageParts from the json message payload of the email.
+documentation{Gets only the attachment MIME messageParts from the json message payload of the email.
 
     P{{messagePayload}} - Json message payload which is the parent message part of the email.
     P{{msgAttachments}} - Initial array of attachment message parts.
@@ -99,8 +96,7 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
     return attachmentParts;
 }
 
-documentation{
-    Gets only the inline image MIME messageParts from the json message payload of the email.
+documentation{Gets only the inline image MIME messageParts from the json message payload of the email.
 
     P{{messagePayload}} - Json message payload which is the parent message part of the email.
     P{{inlineMailImages}} - Initial array of inline image message parts.
@@ -142,8 +138,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
     return inlineImgParts;
 }
 
-documentation{
-    Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
+documentation{Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
     from the json message payload of the email.
     *Can be used only if there is only one message part with the given mime type in the email payload,
     otherwise, it will return with first found matching message part.*
@@ -191,8 +186,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
     return msgBodyPart;
 }
 
-documentation {
-    Gets the message header Content-Disposition from the message part header array.
+documentation {Gets the message header Content-Disposition from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
     R{{}} - **Content-Disposition** header
@@ -207,8 +201,7 @@ function getMsgPartHeaderContentDisposition(MessagePartHeader[] headers) returns
     return headerContentDisposition;
 }
 
-documentation{
-    Gets the message header **To** from the message part header array.
+documentation{Gets the message header **To** from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
     R{{}} - **To** header
@@ -223,8 +216,7 @@ function getMsgPartHeaderTo(MessagePartHeader[] headers) returns MessagePartHead
     return headerTo;
 }
 
-documentation{
-    Gets the message header **From** from the message part header array.
+documentation{Gets the message header **From** from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
     R{{}} - **From** header
@@ -239,8 +231,7 @@ function getMsgPartHeaderFrom(MessagePartHeader[] headers) returns MessagePartHe
     return headerFrom;
 }
 
-documentation{
-    Gets the message header Cc from the message part header array.
+documentation{Gets the message header Cc from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
     R{{}} - **Cc** header
@@ -255,8 +246,7 @@ function getMsgPartHeaderCc(MessagePartHeader[] headers) returns MessagePartHead
     return headerCc;
 }
 
-documentation{
-    Gets the message header Bcc from the message part header array.
+documentation{Gets the message header Bcc from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
     R{{}} - **Bcc** header
@@ -271,8 +261,7 @@ function getMsgPartHeaderBcc(MessagePartHeader[] headers) returns MessagePartHea
     return headerBcc;
 }
 
-documentation{
-    Gets the message header Subject from the message part header array.
+documentation{Gets the message header Subject from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
     R{{}} - **Subject** header
@@ -287,8 +276,7 @@ function getMsgPartHeaderSubject(MessagePartHeader[] headers) returns MessagePar
     return headerSubject;
 }
 
-documentation{
-    Gets the message header Date from the message part header array.
+documentation{Gets the message header Date from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
     R{{}} - **Date** header
@@ -303,8 +291,7 @@ function getMsgPartHeaderDate(MessagePartHeader[] headers) returns MessagePartHe
     return headerDate;
 }
 
-documentation{
-    Gets the message header ContentType from the message part header array.
+documentation{Gets the message header ContentType from the message part header array.
 
     P{{headers}} - An array of MessagePart headers
     R{{}} - **ContentType** header
@@ -319,8 +306,7 @@ function getMsgPartHeaderContentType(MessagePartHeader[] headers) returns Messag
     return headerContentType;
 }
 
-documentation{
-    Converts the message part header json array to MessagePartHeader array.
+documentation{Converts the message part header json array to MessagePartHeader array.
 
     P{{jsonMsgPartHeaders}} - Json array of message part headers
     R{{}} - MessagePartHeader array
@@ -333,8 +319,7 @@ function convertToMsgPartHeaders(json[] jsonMsgPartHeaders) returns MessagePartH
     return msgPartHeaders;
 }
 
-documentation{
-    Converts json string array to string array.
+documentation{Converts json string array to string array.
 
     P{{sourceJsonObject}} - Json array
     R{{}} - String array
@@ -347,8 +332,7 @@ function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[]
     return targetStringArray;
 }
 
-documentation{
-    Checks whether mime type in the message part is same as the given the mime type. Returns true if both types
+documentation{Checks whether mime type in the message part is same as the given the mime type. Returns true if both types
     matches, returns false if not.
 
     P{{msgMimeType}} - The mime type of the message part you want check
@@ -373,12 +357,10 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
     }
 }
 
-documentation{
-    Opens a file from file path and returns the as base 64 encoded string.
+documentation{Opens a file from file path and returns the as base 64 encoded string.
 
     P{{filePath}} - File path
-    R{{encodedFile}} - Encoded file
-    R{{}} - GMailError if fails to open and encode.
+    R{{encodedFile}} - If successful returns encoded file. Else returns GMailError.
 }
 function encodeFile(string filePath) returns (string|GMailError) {
     io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
@@ -410,8 +392,7 @@ function encodeFile(string filePath) returns (string|GMailError) {
 }
 
 
-documentation{
-    Gets the file name from the given file path.
+documentation{Gets the file name from the given file path.
 
     P{{filePath}} - File path **(including the file name and extension at the end)**
     R{{pathParts}} - Returns the file name extracted from the file path.
@@ -469,12 +450,12 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
     }
 }
 
-@Description {value:"Create url encoded request body with given key and value."}
-@Param {value:"requestBody: Request body to be appended values."}
-@Param {value:"key: Key of the form value parameter."}
-@Param {value:"value: Value of the form value parameter."}
-@Return {value:"Created request body with encoded string."}
-@Return {value:"GMail error occured."}
+documentation{Create url encoded request body with given key and value.
+    P{{requestBody}} - Request body to be appended values.
+    P{{key}} - Key of the form value parameter.
+    P{{value}} - Value of the form value parameter.
+    R{{}} - If successful returns created request with encoded string. Else returns GMailError.
+}
 function createUrlEncodedRequest(string requestBody, string key, string value) returns (string|GMailError) {
     var encodedVar = http:encode(value, UTF_8);
     string encodedString;

@@ -17,7 +17,6 @@
 import ballerina/http;
 
 documentation{Represents GMail endpoint.
-
     E{{}}
     F{{gMailConfig}} - GMail endpoint configuration
     F{{gMailConnector}} - GMail connector
@@ -29,7 +28,6 @@ public type Client object {
     }
 
     documentation{Gets called when the gMail endpoint is beign initialized.
-
         P{{gMailConfig}} - GMail connector configuration
     }
     public function init(GMailConfiguration gMailConfig) {
@@ -53,7 +51,6 @@ public type Client object {
 };
 
 documentation{Represents the GMail client endpoint configuration.
-
     F{{clientConfig}} - The HTTP Client endpoint configuration.
 }
 public type GMailConfiguration {

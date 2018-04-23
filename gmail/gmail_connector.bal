@@ -19,7 +19,6 @@ import ballerina/mime;
 import ballerina/log;
 
 documentation{Represents the GMail Client Connector.
-
     F{{client}} - HTTP Client used in GMail connector.
 }
 public type GMailConnector object {
@@ -28,7 +27,6 @@ public type GMailConnector object {
     }
 
     documentation{List the messages in user's mailbox.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{filter}} - Optional. SearchFilter with optional query parameters to search emails.
         R{{}} -  If successful, returns MessageListPage. Else returns GMailError.
@@ -37,7 +35,6 @@ public type GMailConnector object {
 
     documentation{Create the raw base 64 encoded string of the whole message and send it as an email from the user's
         mailbox to its recipient.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{message}} - MessageRequest to send.
         R{{}} - If successful, returns (message id, thread id) of the successfully sent message. Else
@@ -46,7 +43,6 @@ public type GMailConnector object {
     public function sendMessage(string userId, MessageRequest message) returns (string, string)|GMailError;
 
     documentation{Read the specified mail from users mailbox.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to retrieve.
         P{{format}} - Optional. Format of the get message response.
@@ -71,7 +67,6 @@ public type GMailConnector object {
                                                           string[]? metadataHeaders = ()) returns (Message)|GMailError;
 
     documentation{Gets the specified message attachment from users mailbox.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to retrieve.
         P{{attachmentId}} - The id of the attachment to retrieve.
@@ -82,7 +77,6 @@ public type GMailConnector object {
         returns (MessageAttachment)|GMailError;
 
     documentation{Move the specified message to the trash.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to trash.
         R{{}} - If successful, returns boolean specifying the status of trashing. Else returns GMailError.
@@ -90,7 +84,6 @@ public type GMailConnector object {
     public function trashMail(string userId, string messageId) returns boolean|GMailError;
 
     documentation{Removes the specified message from the trash.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} - The message id of the specified message to untrash.
         R{{}} - If successful, returns boolean specifying the status of untrashing. Else returns GMailError.
@@ -98,7 +91,6 @@ public type GMailConnector object {
     public function untrashMail(string userId, string messageId) returns boolean|GMailError;
 
     documentation{Immediately and permanently deletes the specified message. This operation cannot be undone.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} - The message id of the specified message to delete.
         R{{}} - If successful, returns boolean status of deletion. Else returns GMailError.
@@ -106,7 +98,6 @@ public type GMailConnector object {
     public function deleteMail(string userId, string messageId) returns boolean|GMailError;
 
     documentation{List the threads in user's mailbox.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{filter}} - The SearchFilter with optional query parameters to search a thread. If the filters are not needed
                       pass an empty record.
@@ -115,7 +106,6 @@ public type GMailConnector object {
     public function listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GMailError;
 
     documentation{Read the specified mail thread from users mailbox.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} -  The thread id of the specified mail to retrieve.
         P{{filter}} - MessageThreadReadFilter with the optional parameters of response format and metadataHeaders. If
@@ -125,7 +115,6 @@ public type GMailConnector object {
     public function readThread(string userId, string threadId, MessageThreadReadFilter filter) returns (Thread)|GMailError;
 
     documentation{Move the specified mail thread to the trash.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} -  The thread id of the specified mail thread to trash.
         R{{}} - If successful, returns boolean status of trashing. Else returns GMailError.
@@ -133,7 +122,6 @@ public type GMailConnector object {
     public function trashThread(string userId, string threadId) returns boolean|GMailError;
 
     documentation{Removes the specified mail thread from the trash.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} - The thread id of the specified mail thread to untrash.
         R{{}} - If successful, returns boolean status of untrashing. Else returns GMailError.
@@ -141,7 +129,6 @@ public type GMailConnector object {
     public function untrashThread(string userId, string threadId) returns boolean|GMailError;
 
     documentation{Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} - The thread id of the specified mail thread to delete.
         R{{}} - If successful, returns boolean status of deletion. Else returns GMailError.
@@ -149,7 +136,6 @@ public type GMailConnector object {
     public function deleteThread(string userId, string threadId) returns boolean|GMailError;
 
     documentation{Get the current user's GMail Profile.
-
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         R{{}} - If successful, returns UserProfile type. Else returns GMailError.
     }
