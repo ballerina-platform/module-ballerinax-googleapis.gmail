@@ -1,6 +1,11 @@
 # GMail Connector
 
-GMail connector provides a Ballerina API to access the Gmail REST API. It handles OAuth2.0, provides auto completion and type conversions.
+Allows connecting Gmail REST API.
+
+
+GMail connector provides a Ballerina API to access Gmail REST API. It handles OAuth2.0, provides auto completion and 
+type conversions. GMail connector allows you to send messages with both text and html contents, read messages, trash messages,
+untrash messages, delete messages, read threads, trash threads, untrash threads, delete threads and get user profile.
 
 ## Compatibility
 
@@ -17,7 +22,7 @@ GMail connector provides a Ballerina API to access the Gmail REST API. It handle
        - Client Secret
        - Access Token
        - Refresh Token
-    
+ 
        *Please note that, providing ClientId, Client Secret, Refresh Token are optional if you are only providing a valid Access                   
        Token vise versa.*
     
