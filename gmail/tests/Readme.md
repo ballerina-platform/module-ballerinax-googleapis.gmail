@@ -6,7 +6,7 @@
 
 ### Prerequisites
 
-* To use GMail endpoint, you need to provide the following:
+* To use Gmail endpoint, you need to provide the following:
     * Client Id
     * Client Secret
     * Access Token
@@ -31,9 +31,9 @@ valid Access Token vise versa.*
     
 ### Working with Gmail Connector.
 
-In order to use the GMail connector, first you need to create a GMail endpoint by passing above mentioned parameters.
+In order to use the Gmail connector, first you need to create a Gmail endpoint by passing above mentioned parameters.
 
-Visit `test.bal` file to find the way of creating GMail endpoint.
+Visit `test.bal` file to find the way of creating Gmail endpoint.
 
 #### Running gmail tests
 In order to run the tests, the user will need to have a Gmail account and configure the `ballerina.conf` configuration
@@ -50,7 +50,7 @@ REFRESH_TOKEN="enter your refresh token here"
 Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal 
 in either way following,
 ```ballerina
-endpoint Client gMailEP {
+endpoint Client gmailEP {
     clientConfig:{
         auth:{
             accessToken:config:getAsString("ACCESS_TOKEN")
@@ -60,7 +60,7 @@ endpoint Client gMailEP {
 ```
 
 ```ballerina
-endpoint Client gMailEP {
+endpoint Client gmailEP {
     clientConfig:{
         auth:{
             accessToken:config:getAsString("ACCESS_TOKEN"),

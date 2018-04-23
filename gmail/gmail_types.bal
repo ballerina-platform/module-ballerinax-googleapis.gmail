@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-documentation{Represents GMail UserProfile.
+documentation{Represents Gmail UserProfile.
     F{{emailAddress}} - The user's email address.
     F{{messagesTotal}} - The total number of messages in the mailbox.
     F{{threadsTotal}} - The total number of threads in the mailbox.
@@ -187,11 +187,11 @@ public type MessagePartHeader {
     @readonly string value;
 };
 
-documentation{Represents GMail error.
-    F{{message}} - GMail error message
-    F{{cause}} - The error which caused the GMail error.
+documentation{Represents Gmail error.
+    F{{message}} - Gmail error message
+    F{{cause}} - The error which caused the Gmail error.
 }
-public type GMailError {
+public type GmailError {
     string message;
     error? cause;
 };
@@ -203,7 +203,7 @@ documentation{Represents the optional search message filter fields.
     F{{maxResults}} - Maximum number of messages/threads to return in the page for a single request.
     F{{pageToken}} - Page token to retrieve a specific page of results in the list.
     F{{q}} - Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports
-             the same query format as the GMail search box.
+             the same query format as the Gmail search box.
 }
 public type SearchFilter {
     boolean includeSpamTrash;

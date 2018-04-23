@@ -1,4 +1,4 @@
-# GMail Connector
+# Gmail Connector
 
 Connects to Gmail from Ballerina. 
 
@@ -41,7 +41,7 @@ It handles OAuth 2.0 and provides auto completion and type conversions.
 
     function main(string... args) {
 
-       endpoint gmail:Client gMailEP {
+       endpoint gmail:Client gmailEP {
            clientConfig:{
                auth:{
                    accessToken:accessToken,
@@ -62,8 +62,8 @@ It handles OAuth 2.0 and provides auto completion and type conversions.
        //Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
        messageRequest.contentType = gmail:TEXT_PLAIN;
 
-       //Call the GMail endpoint function sendMessage().
-       var sendMessageResponse = gMailEP -> sendMessage(userId, messageRequest);
+       //Call the Gmail endpoint function sendMessage().
+       var sendMessageResponse = gmailEP -> sendMessage(userId, messageRequest);
        match sendMessageResponse {
            (string, string) sendStatus => {
                //For a successful message request, returns message and thread id.
@@ -73,7 +73,7 @@ It handles OAuth 2.0 and provides auto completion and type conversions.
                io:println("Sent Message Id : " + messageId);
                io:println("Sent Thread Id : " + threadId);
            }
-           gmail:GMailError e => io:println(e); //For unsuccessful attempts, returns GMail Error.
+           gmail:GmailError e => io:println(e); //For unsuccessful attempts, returns Gmail Error.
        }
     }
     ```

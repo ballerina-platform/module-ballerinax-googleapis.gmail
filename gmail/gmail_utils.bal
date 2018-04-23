@@ -21,16 +21,16 @@ documentation{Converts the json message array into Message type array.
 
     P{{sourceMessageArrayJsonObject}} - Json message array object
     R{{}} - Message type array
-    R{{}} - GMailError if coversion is not successful.
+    R{{}} - GmailError if coversion is not successful.
 }
-function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[]|GMailError {
+function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[]|GmailError {
     Message[] messages = [];
     foreach i, jsonMessage in sourceMessageArrayJsonObject {
         match (convertJsonMailToMessage(jsonMessage)){
             Message msg => {
                 messages[i] = msg;
             }
-            GMailError gmailError => return gmailError;
+            GmailError gmailError => return gmailError;
         }
     }
     return messages;
@@ -40,9 +40,9 @@ documentation{Decodes the message body of text/* mime message parts.
 
     P{{sourceMessagePartJsonObject}} - Json message part object
     R{{}} - String base 64 decoded message body.
-    R{{}} - GMailError if error occurs in base64 encoding.
+    R{{}} - GmailError if error occurs in base64 encoding.
 }
-function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMailError {
+function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GmailError {
     string decodedBody;
     string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString();
     if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
@@ -51,10 +51,10 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GMai
         match (decodedBody.base64Decode()){
             string decodeString => decodedBody = decodeString;
             error err => {
-                GMailError gMailError;
-                gMailError.message = "Error occured while base64 decoding text/* message body: " + decodedBody;
-                gMailError.cause = err;
-                return gMailError;
+                GmailError gmailError;
+                gmailError.message = "Error occured while base64 decoding text/* message body: " + decodedBody;
+                gmailError.cause = err;
+                return gmailError;
             }
         }
     }
@@ -101,11 +101,11 @@ documentation{Gets only the inline image MIME messageParts from the json message
     P{{messagePayload}} - Json message payload which is the parent message part of the email.
     P{{inlineMailImages}} - Initial array of inline image message parts.
     R{{}} - An array of MessageBodyParts.
-    R{{}} - GMailError if unsuccessful.
+    R{{}} - GmailError if unsuccessful.
 }
 //Extract inline image MIME message parts from the email
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
-                                                                        returns @tainted MessageBodyPart[]|GMailError {
+                                                                        returns @tainted MessageBodyPart[]|GmailError {
     MessageBodyPart[] inlineImgParts = inlineMailImages;
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
@@ -119,7 +119,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
     if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
             MessageBodyPart bodyPart => inlineImgParts[lengthof inlineImgParts] = bodyPart;
-            GMailError gmailError => return gmailError;
+            GmailError gmailError => return gmailError;
         }
     } //Else if is any multipart/*
     else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
@@ -130,7 +130,7 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
                 //Recursively check each ith child mime part
                 match getInlineImgPartsFromPayloadByMimeType(part, inlineImgParts){
                     MessageBodyPart[] bodyParts => inlineImgParts = bodyParts;
-                    GMailError gmailError => return gmailError;
+                    GmailError gmailError => return gmailError;
                 }
             }
         }
@@ -146,10 +146,10 @@ documentation{Gets the body MIME messagePart with the specified content type (ex
     P{{messagePayload}} - Json message payload which is the parent message part of the email.
     P{{mimeType}} - Initial array of inline image message parts.
     R{{}} -  MessageBodyPart
-    R{{}} - GMailError if unsuccessful.
+    R{{}} - GmailError if unsuccessful.
 }
 function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
-                                                                        returns @tainted MessageBodyPart|GMailError {
+                                                                        returns @tainted MessageBodyPart|GmailError {
     MessageBodyPart msgBodyPart;
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
@@ -163,7 +163,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
             MessageBodyPart body => msgBodyPart = body;
-            GMailError gmailError => return gmailError;
+            GmailError gmailError => return gmailError;
         }
     } //Else if is any multipart/*
     else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
@@ -174,7 +174,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
                 //Recursively check each ith child mime part
                 match getMessageBodyPartFromPayloadByMimeType(part, mimeType){
                     MessageBodyPart body => msgBodyPart = body;
-                    GMailError gmailError => return gmailError;
+                    GmailError gmailError => return gmailError;
                 }
                 //If the returned msg body is a match for given mime type stop iterating over the other child parts
                 if (msgBodyPart.mimeType != EMPTY_STRING && isMimeType(msgBodyPart.mimeType, mimeType)) {
@@ -360,9 +360,9 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 documentation{Opens a file from file path and returns the as base 64 encoded string.
 
     P{{filePath}} - File path
-    R{{encodedFile}} - If successful returns encoded file. Else returns GMailError.
+    R{{encodedFile}} - If successful returns encoded file. Else returns GmailError.
 }
-function encodeFile(string filePath) returns (string|GMailError) {
+function encodeFile(string filePath) returns (string|GmailError) {
     io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
     int bytesChunk = BYTES_CHUNK;
     blob readEncodedContent;
@@ -373,18 +373,18 @@ function encodeFile(string filePath) returns (string|GMailError) {
             match encodedfileChannel.read(bytesChunk) {
                 (blob, int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
                 error err => {
-                    GMailError gMailError;
-                    gMailError.cause = err;
-                    gMailError.message = "Error occured while reading byte channel for file: " + filePath ;
-                    return gMailError;
+                    GmailError gmailError;
+                    gmailError.cause = err;
+                    gmailError.message = "Error occured while reading byte channel for file: " + filePath ;
+                    return gmailError;
                 }
             }
         }
         error err => {
-            GMailError gMailError;
-            gMailError.message = "Error occured while base64 encoding byte channel for file: " + filePath;
-            gMailError.cause = err;
-            return gMailError;
+            GmailError gmailError;
+            gmailError.message = "Error occured while base64 encoding byte channel for file: " + filePath;
+            gmailError.cause = err;
+            return gmailError;
         }
     }
     encodedFile = readEncodedContent.toString(UTF_8);
@@ -402,7 +402,7 @@ function getFileNameFromPath(string filePath) returns string {
     return pathParts[lengthof pathParts - 1];
 }
 
-function handleResponse (http:Response|http:HttpConnectorError response) returns (json|GMailError){
+function handleResponse (http:Response|http:HttpConnectorError response) returns (json|GmailError){
     match response {
         http:Response httpResponse => {
             if (httpResponse.statusCode == http:NO_CONTENT_204){
@@ -414,8 +414,8 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
                         return jsonPayload;
                     }
                     else {
-                        GMailError gMailError;
-                        gMailError.message = STATUS_CODE + COLON_SYMBOL + jsonPayload.error.code.toString()
+                        GmailError gmailError;
+                        gmailError.message = STATUS_CODE + COLON_SYMBOL + jsonPayload.error.code.toString()
                                              + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE
                                              + jsonPayload.error.message.toString();
                         foreach err in jsonPayload.error.errors {
@@ -424,7 +424,7 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
                             string location = err.location.toString();
                             string locationType = err.locationType.toString();
                             string domain = err.domain.toString();
-                            gMailError.message += NEW_LINE + ERROR + COLON_SYMBOL + WHITE_SPACE + NEW_LINE + DOMAIN
+                            gmailError.message += NEW_LINE + ERROR + COLON_SYMBOL + WHITE_SPACE + NEW_LINE + DOMAIN
                                                   + COLON_SYMBOL + WHITE_SPACE + domain + SEMICOLON_SYMBOL + WHITE_SPACE
                                                   + REASON + COLON_SYMBOL + WHITE_SPACE + reason + SEMICOLON_SYMBOL
                                                   + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE + message
@@ -432,46 +432,46 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
                                                   + WHITE_SPACE + locationType + SEMICOLON_SYMBOL + WHITE_SPACE
                                                   + LOCATION + COLON_SYMBOL + WHITE_SPACE + location;
                         }
-                        return gMailError;
+                        return gmailError;
                     }
                 }
                 http:PayloadError payloadError => {
-                    GMailError gMailError = { message:"Error occurred when parsing to json response; message: " +
+                    GmailError gmailError = { message:"Error occurred when parsing to json response; message: " +
                                              payloadError.message, cause:payloadError.cause };
-                    return gMailError;
+                    return gmailError;
                 }
             }
         }
         http:HttpConnectorError httpError => {
-            GMailError gMailError = { message:"Error occurred during HTTP Client invocation; status code:" +
+            GmailError gmailError = { message:"Error occurred during HTTP Client invocation; status code:" +
                                      httpError.statusCode + "; message: " +  httpError.message, cause:httpError.cause };
-            return gMailError;
+            return gmailError;
         }
     }
 }
 
 documentation{Create url encoded request body with given key and value.
-    P{{requestBody}} - Request body to be appended values.
+    P{{requestPath}} - Request path to be appended values.
     P{{key}} - Key of the form value parameter.
     P{{value}} - Value of the form value parameter.
-    R{{}} - If successful returns created request with encoded string. Else returns GMailError.
+    R{{}} - If successful returns created request with encoded string. Else returns GmailError.
 }
-function appendEncodedURIParameter(string url, string key, string value) returns (string|GMailError) {
+function appendEncodedURIParameter(string requestPath, string key, string value) returns (string|GmailError) {
     var encodedVar = http:encode(value, UTF_8);
     string encodedString;
     match encodedVar {
         string encoded => encodedString = encoded;
         error err => {
-            GMailError gMailError = {message:"Error occurred when encoding the value " + value + " with charset "
+            GmailError gmailError = {message:"Error occurred when encoding the value " + value + " with charset "
                                                 + UTF_8, cause:err};
-            return gMailError;
+            return gmailError;
         }
     }
-    if (url != EMPTY_STRING) {
-        url += AMPERSAND_SYMBOL;
+    if (requestPath != EMPTY_STRING) {
+        requestPath += AMPERSAND_SYMBOL;
     }
     else {
-        url += QUESTION_MARK_SYMBOL;
+        requestPath += QUESTION_MARK_SYMBOL;
     }
-    return url + key + EQUAL_SYMBOL + encodedString;
+    return requestPath + key + EQUAL_SYMBOL + encodedString;
 }

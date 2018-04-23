@@ -16,43 +16,43 @@
 
 import ballerina/http;
 
-documentation{Represents GMail endpoint.
+documentation{Represents Gmail endpoint.
     E{{}}
-    F{{gMailConfig}} - GMail endpoint configuration
-    F{{gMailConnector}} - GMail connector
+    F{{gmailConfig}} - Gmail endpoint configuration
+    F{{gmailConnector}} - Gmail connector
 }
 public type Client object {
     public {
-        GMailConfiguration gMailConfig;
-        GMailConnector gMailConnector;
+        GmailConfiguration gmailConfig;
+        GmailConnector gmailConnector;
     }
 
-    documentation{Gets called when the gMail endpoint is beign initialized.
-        P{{gMailConfig}} - GMail connector configuration
+    documentation{Gets called when the gmail endpoint is beign initialized.
+        P{{gmailConfig}} - Gmail connector configuration
     }
-    public function init(GMailConfiguration gMailConfig) {
-        gMailConfig.clientConfig.url = BASE_URL;
-        match gMailConfig.clientConfig.auth {
+    public function init(GmailConfiguration gmailConfig) {
+        gmailConfig.clientConfig.url = BASE_URL;
+        match gmailConfig.clientConfig.auth {
             () => {}
             http:AuthConfig authConfig => {
                 authConfig.refreshUrl = REFRESH_TOKEN_EP;
                 authConfig.scheme = OAUTH;
             }
         }
-        self.gMailConnector = new;
-        self.gMailConnector.client.init(gMailConfig.clientConfig);
+        self.gmailConnector = new;
+        self.gmailConnector.client.init(gmailConfig.clientConfig);
     }
 
     documentation{Returns the connector that client code uses.
     }
-    public function getCallerActions() returns GMailConnector {
-        return self.gMailConnector;
+    public function getCallerActions() returns GmailConnector {
+        return self.gmailConnector;
     }
 };
 
-documentation{Represents the GMail client endpoint configuration.
+documentation{Represents the Gmail client endpoint configuration.
     F{{clientConfig}} - The HTTP Client endpoint configuration.
 }
-public type GMailConfiguration {
+public type GmailConfiguration {
     http:ClientEndpointConfig clientConfig;
 };
