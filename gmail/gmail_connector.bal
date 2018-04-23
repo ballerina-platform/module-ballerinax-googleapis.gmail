@@ -63,7 +63,7 @@ public type GMailConnector object {
                                as *FORMAT_METADATA*.
         R{{}} - If successful, returns Message type of the specified mail. Else returns GMailError.
     }
-    public function readMail(string userId, string messageId, string? format = (), string[]? metadataHeaders = ())
+    public function readMessage(string userId, string messageId, string? format = (), string[]? metadataHeaders = ())
                                                                                         returns Message|GMailError;
     documentation{Gets the specified message attachment from users mailbox.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -347,25 +347,25 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     }
 }
 
-public function GMailConnector::readMail(string userId, string messageId, string? format = (),
+public function GMailConnector::readMessage(string userId, string messageId, string? format = (),
                                          string[]? metadataHeaders = ()) returns Message|GMailError {
     endpoint http:Client httpClient = self.client;
     string uriParams;
     string messageFormat = format ?: FORMAT_FULL;
     string[] messageMetadataHeaders = metadataHeaders ?: [];
-    string readMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
+    string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
     //Add format query parameter
     uriParams = check createUrlEncodedRequest(uriParams, FORMAT, messageFormat);
     //Add the optional meta data headers as query parameters
     foreach metaDataHeader in messageMetadataHeaders {
         uriParams = check createUrlEncodedRequest(uriParams, METADATA_HEADERS, metaDataHeader);
     }
-    readMailPath = readMailPath + uriParams;
-    var httpResponse = httpClient->get(readMailPath);
+    readMessagePath = readMessagePath + uriParams;
+    var httpResponse = httpClient->get(readMessagePath);
     match handleResponse(httpResponse){
-        json jsonReadMailResponse => {
+        json jsonreadMessageResponse => {
             //Transform the json mail response from GMail API to Message type
-            match (convertJsonMailToMessage(jsonReadMailResponse)){
+            match (convertJsonMailToMessage(jsonreadMessageResponse)){
                 Message message => return message;
                 GMailError gMailError => return gMailError;
             }
