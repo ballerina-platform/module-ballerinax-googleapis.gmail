@@ -53,7 +53,7 @@ in either way following,
 endpoint Client gMailEP {
     clientConfig:{
         auth:{
-            accessToken:accessToken
+            accessToken:config:getAsString("ACCESS_TOKEN")
         }
     }
 };
@@ -63,10 +63,10 @@ endpoint Client gMailEP {
 endpoint Client gMailEP {
     clientConfig:{
         auth:{
-            accessToken:accessToken,
-            clientId:clientId,
-            clientSecret:clientSecret,
-            refreshToken:refreshToken
+            accessToken:config:getAsString("ACCESS_TOKEN"),
+            clientId:config:getAsString("CLIENT_ID"),
+            clientSecret:config:getAsString("CLIENT_SECRET"),
+            refreshToken:config:getAsString("REFRESH_TOKEN")
         }
     }
 };
