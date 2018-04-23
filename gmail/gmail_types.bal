@@ -213,25 +213,6 @@ public type SearchFilter {
     string q;
 };
 
-documentation{Represents the optional message filter fields in get message api call.
-    F{{format}} - Optional. Format of the get message/thread response.
-                  Acceptable values for format for a get message/thread request are defined as following constants
-                  in the package:
-                    *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
-                                    field;the raw field is not used. (default)
-                    *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
-                    *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
-                                      body, or payload.
-                    *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
-                                   base64url encoded string. (the payload field is not included in the response)
-    F{{metadataHeaders}} - Optional. The meta data headers array to include in the reponse when the format is given as
-                           *FORMAT_METADATA*.
-}
-public type MessageThreadReadFilter {
-    string format;
-    string[] metadataHeaders;
-};
-
 documentation{Represents a page of the message list received as reponse for list messages api call.
     F{{messages}} - Array of message maps with messageId and threadId as keys
     F{{resultSizeEstimate}} - Estimated size of the whole list
