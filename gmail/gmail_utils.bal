@@ -456,22 +456,22 @@ documentation{Create url encoded request body with given key and value.
     P{{value}} - Value of the form value parameter.
     R{{}} - If successful returns created request with encoded string. Else returns GMailError.
 }
-function appendEncodedURIParameter(string requestBody, string key, string value) returns (string|GMailError) {
+function appendEncodedURIParameter(string url, string key, string value) returns (string|GMailError) {
     var encodedVar = http:encode(value, UTF_8);
     string encodedString;
     match encodedVar {
         string encoded => encodedString = encoded;
         error err => {
-            GMailError gMailError = {message:"Error occurred when encoding the value "  + value + " with charset "
-                                                + UTF_8, cause : err};
+            GMailError gMailError = {message:"Error occurred when encoding the value " + value + " with charset "
+                                                + UTF_8, cause:err};
             return gMailError;
         }
     }
-    if (requestBody != EMPTY_STRING) {
-        requestBody += AMPERSAND_SYMBOL;
+    if (url != EMPTY_STRING) {
+        url += AMPERSAND_SYMBOL;
     }
     else {
-        requestBody += QUESTION_MARK_SYMBOL;
+        url += QUESTION_MARK_SYMBOL;
     }
-    return requestBody + key + EQUAL_SYMBOL + encodedString;
+    return url + key + EQUAL_SYMBOL + encodedString;
 }
