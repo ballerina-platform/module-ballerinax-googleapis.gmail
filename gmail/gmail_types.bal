@@ -14,9 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-documentation{
-    Represents GMail UserProfile.
-
+documentation{Represents GMail UserProfile.
     F{{emailAddress}} - The user's email address.
     F{{messagesTotal}} - The total number of messages in the mailbox.
     F{{threadsTotal}} - The total number of threads in the mailbox.
@@ -29,9 +27,7 @@ public type UserProfile {
     @readonly string historyId;
 };
 
-documentation{
-    Represents mail thread resource.
-
+documentation{Represents mail thread resource.
     F{{id}} - The unique ID of the thread.
     F{{snippet}} - A short part of the message text.
     F{{historyId}} - The ID of the last history record that modified this thread.
@@ -44,9 +40,7 @@ public type Thread {
     @readonly Message[] messages;
 };
 
-documentation{
-    Represents message request to send a mail.
-
+documentation{Represents message request to send a mail.
     F{{recipient}} - The recipient of the mail.
     F{{subject}} - The subject of the mail.
     F{{messageBody}} - The message body of the mail. Can be either plain text or html text.
@@ -72,9 +66,7 @@ public type MessageRequest {
     AttachmentPath[] attachmentPaths;
 };
 
-documentation{
-    Represents image file path and mime type of an inline image in a message request.
-
+documentation{Represents image file path and mime type of an inline image in a message request.
     F{{imagePath}} - The file path of the image.
     F{{mimeType}} - The mime type of the image. The primary type should be **image**.
                     For ex: If you are sending a jpg image, give the mime type as **image/jpeg**.
@@ -85,9 +77,7 @@ public type InlineImagePath {
     string mimeType;
 };
 
-documentation{
-    Represents an attachment file path and mime type of an attachment in a message request.
-
+documentation{Represents an attachment file path and mime type of an attachment in a message request.
     F{{attachmentPath}} - The file path of the attachment.
     F{{mimeType}} - The mime type of the attachment.
                     For ex: If you are sending a pdf document, give the mime type as **application/pdf**.
@@ -98,9 +88,7 @@ public type AttachmentPath {
     string mimeType;
 };
 
-documentation{
-    Represents message resource which will be received as a response from the Gmail API.
-
+documentation{Represents message resource which will be received as a response from the Gmail API.
     F{{threadId}} - Thread ID which the message belongs to.
     F{{id}} - Message Id
     F{{labelIds}} - The label ids of the message.
@@ -149,9 +137,7 @@ public type Message {
     @readonly MessageAttachment[] msgAttachments;
 };
 
-documentation{
-    Represents the email message body part of a message resource response.
-
+documentation{Represents the email message body part of a message resource response.
     F{{body}} - The body data of the message part. This is a base64 encoded string.
     F{{mimeType}} - MIME type of the message part.
     F{{bodyHeaders}} - Headers of the MIME Message Part.
@@ -172,9 +158,7 @@ public type MessageBodyPart {
     @readonly string size;
 };
 
-documentation{
-        Represents the attachment message part of a message resource response.
-
+documentation{Represents the attachment message part of a message resource response.
         F{{attachmentFileId}} - The file id of the attachment in the message.
         F{{attachmentBody}} - Base 64 encoded attachment body of the Message Part. This is empty when the attachment
                               body data is sent as a seperate attachment
@@ -194,9 +178,7 @@ public type MessageAttachment {
     @readonly string partId;
 };
 
-documentation{
-    Represents a message part header of a message resource response.
-
+documentation{Represents a message part header of a message resource response.
     F{{name}} - Header name
     F{{value}} - Header value
 }
@@ -205,9 +187,7 @@ public type MessagePartHeader {
     @readonly string value;
 };
 
-documentation{
-    Represents GMail error.
-
+documentation{Represents GMail error.
     F{{message}} - GMail error message
     F{{cause}} - The error which caused the GMail error.
 }
@@ -216,9 +196,7 @@ public type GMailError {
     error? cause;
 };
 
-documentation{
-    Represents the optional search message filter fields.
-
+documentation{Represents the optional search message filter fields.
     F{{includeSpamTrash}} - Specifies whether to include messages/threads from SPAM and TRASH in the results.
     F{{labelIds}} - Array of label ids. Only return messages/threads with labels that match all of the specified
                     label Ids.
@@ -235,9 +213,7 @@ public type SearchFilter {
     string q;
 };
 
-documentation{
-    Represents the optional message filter fields in get message api call.
-
+documentation{Represents the optional message filter fields in get message api call.
     F{{format}} - Optional. Format of the get message/thread response.
                   Acceptable values for format for a get message/thread request are defined as following constants
                   in the package:
@@ -256,9 +232,7 @@ public type MessageThreadReadFilter {
     string[] metadataHeaders;
 };
 
-documentation{
-    Represents a page of the message list received as reponse for list messages api call
-
+documentation{Represents a page of the message list received as reponse for list messages api call.
     F{{messages}} - Array of message maps with messageId and threadId as keys
     F{{resultSizeEstimate}} - Estimated size of the whole list
     F{{nextPageToken}} - Token for next page of message list
@@ -269,9 +243,7 @@ public type MessageListPage {
     @readonly string nextPageToken;
 };
 
-documentation{
-    Represents a page of the mail thread list received as reponse for list threads api call
-
+documentation{Represents a page of the mail thread list received as reponse for list threads api call.
     F{{threads}} - Array of thread maps with threadId, snippet and historyId as keys
     F{{resultSizeEstimate}} - Estimated size of the whole list
     F{{nextPageToken}} - Token for next page of mail thread list
