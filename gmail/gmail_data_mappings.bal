@@ -204,3 +204,22 @@ function convertJsonMsgListToMessageListPageType(json sourceMsgListJsonObject) r
     }
     return targetMsgListPage;
 }
+
+documentation{Transforms thread list json object into ThreadListPage.
+
+    P{{sourceThreadListJsonObject}} - Json Thead List object
+    R{{}} - ThreadListPage type
+}
+function convertJsonThreadListToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
+    ThreadListPage targetThreadListPage;
+    targetThreadListPage.resultSizeEstimate = sourceThreadListJsonObject.resultSizeEstimate.toString();
+    targetThreadListPage.nextPageToken = sourceThreadListJsonObject.nextPageToken.toString();
+    //for each thread resource in threads json array of the response
+    foreach thread in sourceThreadListJsonObject.threads {
+        //Add the thread map with Id, snippet and history Id as keys to the array of thread maps
+        targetThreadListPage.threads[lengthof targetThreadListPage.threads] = {"threadId":thread.id.toString(),
+                                                                    "snippet":thread.snippet.toString(),
+                                                                    "historyId":thread.historyId.toString()};
+    }
+    return targetThreadListPage;
+}
