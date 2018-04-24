@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-documentation{Represents GMail UserProfile.
+documentation{Represents Gmail UserProfile.
     F{{emailAddress}} - The user's email address.
     F{{messagesTotal}} - The total number of messages in the mailbox.
     F{{threadsTotal}} - The total number of threads in the mailbox.
@@ -97,8 +97,8 @@ documentation{Represents message resource which will be received as a response f
     F{{historyId}} - The id of the last history record that modified the message.
     F{{internalDate}} - The internal message creation timestamp(epoch ms).
     F{{sizeEstimate}} - Estimated size of the message in bytes.
-    F{{headers}} - The headers in the top level message part representing the entire message payload in a  standard RFC
-                   2822 message.
+    F{{headers}} - The map of headers in the top level message part representing the entire message payload in a
+    standard RFC 2822 message. The key of the map is the header name and the value is the header value.
     F{{headerTo}} - Email header **To**.
     F{{headerFrom}} - Email header **From**.
     F{{headerBcc}} - Email header **Bcc**.
@@ -122,14 +122,14 @@ public type Message {
     @readonly string historyId;
     @readonly string internalDate;
     @readonly string sizeEstimate;
-    @readonly MessagePartHeader[] headers;
-    @readonly MessagePartHeader headerTo;
-    @readonly MessagePartHeader headerFrom;
-    @readonly MessagePartHeader headerBcc;
-    @readonly MessagePartHeader headerCc;
-    @readonly MessagePartHeader headerSubject;
-    @readonly MessagePartHeader headerDate;
-    @readonly MessagePartHeader headerContentType;
+    @readonly map headers;
+    @readonly string headerTo;
+    @readonly string headerFrom;
+    @readonly string headerBcc;
+    @readonly string headerCc;
+    @readonly string headerSubject;
+    @readonly string headerDate;
+    @readonly string headerContentType;
     @readonly string mimeType;
     @readonly MessageBodyPart plainTextBodyPart;
     @readonly MessageBodyPart htmlBodyPart;
@@ -151,7 +151,7 @@ documentation{Represents the email message body part of a message resource respo
 public type MessageBodyPart {
     @readonly string body;
     @readonly string mimeType;
-    @readonly MessagePartHeader[] bodyHeaders;
+    @readonly map bodyHeaders;
     @readonly string fileId;
     @readonly string fileName;
     @readonly string partId;
@@ -174,24 +174,15 @@ public type MessageAttachment {
     @readonly string size;
     @readonly string attachmentFileName;
     @readonly string mimeType;
-    @readonly MessagePartHeader[] attachmentHeaders;
+    @readonly map attachmentHeaders;
     @readonly string partId;
 };
 
-documentation{Represents a message part header of a message resource response.
-    F{{name}} - Header name
-    F{{value}} - Header value
+documentation{Represents Gmail error.
+    F{{message}} - Gmail error message
+    F{{cause}} - The error which caused the Gmail error.
 }
-public type MessagePartHeader {
-    @readonly string name;
-    @readonly string value;
-};
-
-documentation{Represents GMail error.
-    F{{message}} - GMail error message
-    F{{cause}} - The error which caused the GMail error.
-}
-public type GMailError {
+public type GmailError {
     string message;
     error? cause;
 };
@@ -203,7 +194,7 @@ documentation{Represents the optional search message filter fields.
     F{{maxResults}} - Maximum number of messages/threads to return in the page for a single request.
     F{{pageToken}} - Page token to retrieve a specific page of results in the list.
     F{{q}} - Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports
-             the same query format as the GMail search box.
+             the same query format as the Gmail search box.
 }
 public type SearchFilter {
     boolean includeSpamTrash;
@@ -211,25 +202,6 @@ public type SearchFilter {
     string maxResults;
     string pageToken;
     string q;
-};
-
-documentation{Represents the optional message filter fields in get message api call.
-    F{{format}} - Optional. Format of the get message/thread response.
-                  Acceptable values for format for a get message/thread request are defined as following constants
-                  in the package:
-                    *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
-                                    field;the raw field is not used. (default)
-                    *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
-                    *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
-                                      body, or payload.
-                    *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
-                                   base64url encoded string. (the payload field is not included in the response)
-    F{{metadataHeaders}} - Optional. The meta data headers array to include in the reponse when the format is given as
-                           *FORMAT_METADATA*.
-}
-public type MessageThreadReadFilter {
-    string format;
-    string[] metadataHeaders;
 };
 
 documentation{Represents a page of the message list received as reponse for list messages api call.

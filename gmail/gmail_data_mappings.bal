@@ -19,100 +19,86 @@ import ballerina/log;
 //Includes all the transforming functions which transform required json to type object/record and vice versa
 
 documentation{Transforms JSON mail object into Message.
-
-    P{{sourceMailJsonObject}} - Json mail object
-    R{{}} - If successful, returns Message type. Else returns GMailError.
+    P{{sourceMessageJsonObject}} - Json mail object
+    R{{}} - If successful, returns Message type. Else returns GmailError.
 }
-function convertJsonMailToMessage(json sourceMailJsonObject) returns Message|GMailError {
+function convertJsonMessageToMessage(json sourceMessageJsonObject) returns Message|GmailError {
     Message targetMessageType;
-    targetMessageType.id = sourceMailJsonObject.id.toString();
-    targetMessageType.threadId = sourceMailJsonObject.threadId.toString();
-    match <json[]>sourceMailJsonObject.labelIds {
+    targetMessageType.id = sourceMessageJsonObject.id.toString();
+    targetMessageType.threadId = sourceMessageJsonObject.threadId.toString();
+    match <json[]>sourceMessageJsonObject.labelIds {
         json[] labelIds => {
             targetMessageType.labelIds = convertJSONArrayToStringArray(labelIds);
         }
-        error err => {
-            //No key named labelIds in the response.
-            targetMessageType.labelIds = [];
-            log:printDebug("Mail response:" + sourceMailJsonObject.id.toString() + " does not contain any label Id");
-        }
+        //No key named labelIds in the response.
+        error err => log:printDebug("Message response:" + targetMessageType.id + " does not contain any label Id.");
     }
-    targetMessageType.raw = sourceMailJsonObject.raw.toString();
-    targetMessageType.snippet = sourceMailJsonObject.snippet.toString();
-    targetMessageType.historyId = sourceMailJsonObject.historyId.toString();
-    targetMessageType.internalDate = sourceMailJsonObject.internalDate.toString();
-    targetMessageType.sizeEstimate = sourceMailJsonObject.sizeEstimate.toString();
-    match <json[]>sourceMailJsonObject.payload.headers {
-        json[] headers => {
-            targetMessageType.headers = convertToMsgPartHeaders(headers);
-        }
-        error err => {
-            //No key named headers in the payload part of the response
-            targetMessageType.headers = [];
-            log:printDebug("Mail response:" + sourceMailJsonObject.id.toString()
-                                                                             + "does not contain any payload headers");
-        }
-    }
-    targetMessageType.headerTo = sourceMailJsonObject.payload.headers != () ?
-                                                                     getMsgPartHeaderTo(targetMessageType.headers) : {};
-    targetMessageType.headerFrom = sourceMailJsonObject.payload.headers != () ?
-                                                                   getMsgPartHeaderFrom(targetMessageType.headers) : {};
-    targetMessageType.headerCc = sourceMailJsonObject.payload.headers != () ?
-                                                                     getMsgPartHeaderCc(targetMessageType.headers) : {};
-    targetMessageType.headerBcc = sourceMailJsonObject.payload.headers != () ?
-                                                                    getMsgPartHeaderBcc(targetMessageType.headers) : {};
-    targetMessageType.headerSubject = sourceMailJsonObject.payload.headers != () ?
-                                                                getMsgPartHeaderSubject(targetMessageType.headers) : {};
-    targetMessageType.headerDate = sourceMailJsonObject.payload.headers != () ?
-                                                                   getMsgPartHeaderDate(targetMessageType.headers) : {};
-    targetMessageType.headerContentType = sourceMailJsonObject.payload.headers != () ?
-                                                            getMsgPartHeaderContentType(targetMessageType.headers) : {};
-    targetMessageType.mimeType = sourceMailJsonObject.payload.mimeType.toString();
-    string payloadMimeType = sourceMailJsonObject.payload.mimeType.toString();
-    if (sourceMailJsonObject.payload != ()){
-        match getMessageBodyPartFromPayloadByMimeType(sourceMailJsonObject.payload, TEXT_PLAIN){
+    targetMessageType.raw = sourceMessageJsonObject.raw.toString();
+    targetMessageType.snippet = sourceMessageJsonObject.snippet.toString();
+    targetMessageType.historyId = sourceMessageJsonObject.historyId.toString();
+    targetMessageType.internalDate = sourceMessageJsonObject.internalDate.toString();
+    targetMessageType.sizeEstimate = sourceMessageJsonObject.sizeEstimate.toString();
+    targetMessageType.headers = sourceMessageJsonObject.payload.headers != () ?
+                          convertJsonHeadersToHeaderMap(sourceMessageJsonObject.payload.headers):targetMessageType.headers;
+    targetMessageType.headerTo = targetMessageType.headers.hasKey(TO) ? <string>targetMessageType.headers[TO] :
+                                                                                                           EMPTY_STRING;
+    targetMessageType.headerFrom = targetMessageType.headers.hasKey(FROM) ? <string>targetMessageType.headers[FROM] :
+                                                                                                           EMPTY_STRING;
+    targetMessageType.headerContentType = targetMessageType.headers.hasKey(CONTENT_TYPE) ?
+                                                         <string>targetMessageType.headers[CONTENT_TYPE] : EMPTY_STRING;
+    targetMessageType.headerBcc = targetMessageType.headers.hasKey(BCC) ?
+                                                                  <string>targetMessageType.headers[BCC] : EMPTY_STRING;
+    targetMessageType.headerCc = targetMessageType.headers.hasKey(CC) ?
+                                                                   <string>targetMessageType.headers[CC] : EMPTY_STRING;
+    targetMessageType.headerSubject = targetMessageType.headers.hasKey(SUBJECT) ?
+                                                              <string>targetMessageType.headers[SUBJECT] : EMPTY_STRING;
+    targetMessageType.headerDate = targetMessageType.headers.hasKey(DATE) ?
+                                                                 <string>targetMessageType.headers[DATE] : EMPTY_STRING;
+    targetMessageType.mimeType = sourceMessageJsonObject.payload.mimeType.toString();
+    string payloadMimeType = sourceMessageJsonObject.payload.mimeType.toString();
+    if (sourceMessageJsonObject.payload != ()){
+        match getMessageBodyPartFromPayloadByMimeType(sourceMessageJsonObject.payload, TEXT_PLAIN){
             MessageBodyPart body => targetMessageType.plainTextBodyPart = body;
-            GMailError gmailError => return gmailError;
+            GmailError gmailError => return gmailError;
         }
-        match getMessageBodyPartFromPayloadByMimeType(sourceMailJsonObject.payload, TEXT_HTML){
+        match getMessageBodyPartFromPayloadByMimeType(sourceMessageJsonObject.payload, TEXT_HTML){
             MessageBodyPart body => targetMessageType.htmlBodyPart = body;
-            GMailError gmailError => return gmailError;
+            GmailError gmailError => return gmailError;
         }
-        match getInlineImgPartsFromPayloadByMimeType(sourceMailJsonObject.payload, []){
+        match getInlineImgPartsFromPayloadByMimeType(sourceMessageJsonObject.payload, []){
             MessageBodyPart[] bodyParts => targetMessageType.inlineImgParts = bodyParts;
-            GMailError gmailError => return gmailError;
+            GmailError gmailError => return gmailError;
         }
     }
-    targetMessageType.msgAttachments = sourceMailJsonObject.payload != () ?
-                                                  getAttachmentPartsFromPayload(sourceMailJsonObject.payload, []) : [];
+    targetMessageType.msgAttachments = sourceMessageJsonObject.payload != () ?
+                                                   getAttachmentPartsFromPayload(sourceMessageJsonObject.payload, []) : [];
     return targetMessageType;
 }
 
 documentation{Transforms MIME Message Part Json into MessageBody.
-
     P{{sourceMessagePartJsonObject}} - Json message part object
-    R{{}} - If successful, returns MessageBodyPart type. Else returns GMailError.
+    R{{}} - If successful, returns MessageBodyPart type. Else returns GmailError.
 }
-function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GMailError {
+function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GmailError {
     MessageBodyPart targetMessageBodyType;
     if (sourceMessagePartJsonObject != ()){
         targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId.toString();
         match decodeMsgBodyData(sourceMessagePartJsonObject){
             string decodeBody => targetMessageBodyType.body = decodeBody;
-            GMailError gMailError => return gMailError;
+            GmailError gmailError => return gmailError;
         }
         targetMessageBodyType.size = sourceMessagePartJsonObject.body.size.toString();
         targetMessageBodyType.mimeType = sourceMessagePartJsonObject.mimeType.toString();
         targetMessageBodyType.partId = sourceMessagePartJsonObject.partId.toString();
         targetMessageBodyType.fileName = sourceMessagePartJsonObject.filename.toString();
         targetMessageBodyType.bodyHeaders = sourceMessagePartJsonObject.headers != () ?
-                                                convertToMsgPartHeaders(check <json[]>sourceMessagePartJsonObject.headers) : [];
+        convertJsonHeadersToHeaderMap(sourceMessagePartJsonObject.headers) :
+        targetMessageBodyType.bodyHeaders;
     }
     return targetMessageBodyType;
 }
 
 documentation{Transforms MIME Message Part JSON into MessageAttachment.
-
     P{{sourceMessagePartJsonObject}} - Json message part object
     R{{}}- MessageAttachment type object
 }
@@ -125,24 +111,11 @@ function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) ret
     targetMessageAttachmentType.partId = sourceMessagePartJsonObject.partId.toString();
     targetMessageAttachmentType.attachmentFileName = sourceMessagePartJsonObject.filename.toString();
     targetMessageAttachmentType.attachmentHeaders = sourceMessagePartJsonObject.headers != () ?
-                                       convertToMsgPartHeaders(check <json[]>sourceMessagePartJsonObject.headers) : [];
+    convertJsonHeadersToHeaderMap(sourceMessagePartJsonObject.headers) : targetMessageAttachmentType.attachmentHeaders;
     return targetMessageAttachmentType;
 }
 
-documentation{Transforms MIME Message Part Header into MessagePartHeader.
-
-    P{{sourceMessagePartHeader}} - Json message part header object
-    R{{}} - MessagePartHeader type
-}
-function convertJsonToMesagePartHeader(json sourceMessagePartHeader) returns MessagePartHeader {
-    MessagePartHeader targetMessagePartHeader;
-    targetMessagePartHeader.name = sourceMessagePartHeader.name.toString();
-    targetMessagePartHeader.value = sourceMessagePartHeader.value.toString();
-    return targetMessagePartHeader;
-}
-
 documentation{Transforms single body of MIME Message part into MessageAttachment.
-
     P{{sourceMessageBodyJsonObject}} - Json message body object.
     R{{}} - Returns MessageAttachment type.
 }
@@ -155,26 +128,46 @@ function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject)
 }
 
 documentation{Transforms mail thread Json object into Thread.
-
     P{{sourceThreadJsonObject}} - Json message thread object.
-    R{{}} - If successful returns Thread type. Else returns GMailError.
+    R{{}} - If successful returns Thread type. Else returns GmailError.
 }
-function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GMailError{
+function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GmailError {
     Thread targetThreadType;
     targetThreadType.id = sourceThreadJsonObject.id.toString();
     targetThreadType.historyId = sourceThreadJsonObject.historyId.toString();
-    if (sourceThreadJsonObject.messages != ()){
-        json[]messages = check<json[]>sourceThreadJsonObject.messages;
-        match (convertToMessageArray(messages)){
-            Message[] msgs => targetThreadType.messages = msgs;
-            GMailError gMailError => return gMailError;
+    match <json[]>sourceThreadJsonObject.messages{
+        json[] messages => {
+            match (convertToMessageArray(messages)){
+                Message[] msgs => targetThreadType.messages = msgs;
+                GmailError gmailError => return gmailError;
+            }
         }
+        //No key named messages in the json response
+        error err => log:printDebug("Thread response:" + targetThreadType.id + " does not contain any messages");
     }
     return targetThreadType;
 }
 
-documentation{Transforms user profile json object into UserProfile.
+documentation{Converts the json message array into Message type array.
 
+    P{{sourceMessageArrayJsonObject}} - Json message array object
+    R{{}} - Message type array
+    R{{}} - GmailError if coversion is not successful.
+}
+function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[]|GmailError {
+    Message[] messages = [];
+    foreach i, jsonMessage in sourceMessageArrayJsonObject {
+        match (convertJsonMessageToMessage(jsonMessage)){
+            Message msg => {
+                messages[i] = msg;
+            }
+            GmailError gmailError => return gmailError;
+        }
+    }
+    return messages;
+}
+
+documentation{Transforms user profile json object into UserProfile.
     P{{sourceUserProfileJsonObject}} - Json user profile object
     R{{}} - UserProfile type
 }
@@ -188,7 +181,6 @@ function convertJsonProfileToUserProfileType(json sourceUserProfileJsonObject) r
 }
 
 documentation{Transforms message list json object into MessageListPage.
-
     P{{sourceMsgListJsonObject}} - Json Messsage List object
     R{{}} - MessageListPage type
 }
@@ -199,8 +191,39 @@ function convertJsonMsgListToMessageListPageType(json sourceMsgListJsonObject) r
     //for each message resource in messages json array of the response
     foreach message in sourceMsgListJsonObject.messages {
         //Add the message map with Id and thread Id as keys to the array
-        targetMsgListPage.messages[lengthof targetMsgListPage.messages] = {"messageId" : message.id.toString(),
-                                                                            "threadId" : message.threadId.toString()};
+        targetMsgListPage.messages[lengthof targetMsgListPage.messages] = {"messageId":message.id.toString(),
+            "threadId":message.threadId.toString()};
     }
     return targetMsgListPage;
+}
+
+documentation{Transforms thread list json object into ThreadListPage.
+    P{{sourceThreadListJsonObject}} - Json Thead List object
+    R{{}} - ThreadListPage type
+}
+function convertJsonThreadListToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
+    ThreadListPage targetThreadListPage;
+    targetThreadListPage.resultSizeEstimate = sourceThreadListJsonObject.resultSizeEstimate.toString();
+    targetThreadListPage.nextPageToken = sourceThreadListJsonObject.nextPageToken.toString();
+    //for each thread resource in threads json array of the response
+    foreach thread in sourceThreadListJsonObject.threads {
+        //Add the thread map with Id, snippet and history Id as keys to the array of thread maps
+        targetThreadListPage.threads[lengthof targetThreadListPage.threads] = {"threadId":thread.id.toString(),
+            "snippet":thread.snippet.toString(),
+            "historyId":thread.historyId.toString()};
+    }
+    return targetThreadListPage;
+}
+
+documentation{Converts the message part header json array to headers.
+
+    P{{jsonMsgPartHeaders}} - Json array of message part headers
+    R{{}} - map of headers
+}
+function convertJsonHeadersToHeaderMap(json jsonMsgPartHeaders) returns map {
+    map headers;
+    foreach jsonHeader in jsonMsgPartHeaders {
+        headers[jsonHeader.name.toString()] = jsonHeader.value.toString();
+    }
+    return headers;
 }

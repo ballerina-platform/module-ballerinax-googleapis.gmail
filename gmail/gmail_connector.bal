@@ -18,10 +18,10 @@ import ballerina/http;
 import ballerina/mime;
 import ballerina/log;
 
-documentation{Represents the GMail Client Connector.
-    F{{client}} - HTTP Client used in GMail connector.
+documentation{Represents the Gmail Client Connector.
+    F{{client}} - HTTP Client used in Gmail connector.
 }
-public type GMailConnector object {
+public type GmailConnector object {
     public {
         http:Client client;
     }
@@ -29,23 +29,23 @@ public type GMailConnector object {
     documentation{List the messages in user's mailbox.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{filter}} - Optional. SearchFilter with optional query parameters to search emails.
-        R{{}} -  If successful, returns MessageListPage. Else returns GMailError.
+        R{{}} -  If successful, returns MessageListPage. Else returns GmailError.
     }
-    public function listMessages(string userId, SearchFilter? filter = ()) returns (MessageListPage|GMailError);
+    public function listMessages(string userId, SearchFilter? filter = ()) returns MessageListPage|GmailError;
 
     documentation{Create the raw base 64 encoded string of the whole message and send it as an email from the user's
         mailbox to its recipient.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{message}} - MessageRequest to send.
         R{{}} - If successful, returns (message id, thread id) of the successfully sent message. Else
-                returns GMailError.
+                returns GmailError.
     }
-    public function sendMessage(string userId, MessageRequest message) returns (string, string)|GMailError;
+    public function sendMessage(string userId, MessageRequest message) returns (string, string)|GmailError;
 
     documentation{Read the specified mail from users mailbox.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to retrieve.
-        P{{format}} - Optional. Format of the get message response.
+        P{{format}} - Optional. The format to return the messages in.
                   Acceptable values for format for a get message request are defined as following constants
                   in the package:
 
@@ -61,125 +61,139 @@ public type GMailConnector object {
                                    base64url encoded string. (the payload field is not included in the response)
         P{{metadataHeaders}} - Optional. The meta data headers array to include in the reponse when the format is given
                                as *FORMAT_METADATA*.
-        R{{}} - If successful, returns Message type of the specified mail. Else returns GMailError.
+        R{{}} - If successful, returns Message type of the specified mail. Else returns GmailError.
     }
-    public function readMail(string userId, string messageId, string? format = (),
-                                                          string[]? metadataHeaders = ()) returns (Message)|GMailError;
-
+    public function readMessage(string userId, string messageId, string? format = (), string[]? metadataHeaders = ())
+                                                                                             returns Message|GmailError;
     documentation{Gets the specified message attachment from users mailbox.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to retrieve.
         P{{attachmentId}} - The id of the attachment to retrieve.
         R{{}} - If successful, returns MessageAttachment type object of the specified attachment. Else returns
-                GMailError.
+                GmailError.
     }
     public function getAttachment(string userId, string messageId, string attachmentId)
-        returns (MessageAttachment)|GMailError;
+                                                                                returns MessageAttachment|GmailError;
 
     documentation{Move the specified message to the trash.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} -  The message id of the specified mail to trash.
-        R{{}} - If successful, returns boolean specifying the status of trashing. Else returns GMailError.
+        R{{}} - If successful, returns boolean specifying the status of trashing. Else returns GmailError.
     }
-    public function trashMail(string userId, string messageId) returns boolean|GMailError;
+    public function trashMessage(string userId, string messageId) returns boolean|GmailError;
 
     documentation{Removes the specified message from the trash.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} - The message id of the specified message to untrash.
-        R{{}} - If successful, returns boolean specifying the status of untrashing. Else returns GMailError.
+        R{{}} - If successful, returns boolean specifying the status of untrashing. Else returns GmailError.
     }
-    public function untrashMail(string userId, string messageId) returns boolean|GMailError;
+    public function untrashMessage(string userId, string messageId) returns boolean|GmailError;
 
     documentation{Immediately and permanently deletes the specified message. This operation cannot be undone.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} - The message id of the specified message to delete.
-        R{{}} - If successful, returns boolean status of deletion. Else returns GMailError.
+        R{{}} - If successful, returns boolean status of deletion. Else returns GmailError.
     }
-    public function deleteMail(string userId, string messageId) returns boolean|GMailError;
+    public function deleteMessage(string userId, string messageId) returns boolean|GmailError;
 
     documentation{List the threads in user's mailbox.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} - The SearchFilter with optional query parameters to search a thread. If the filters are not needed
-                      pass an empty record.
-        R{{}} - If successful, returns ThreadListPage type. Else returns GMailError.
+        P{{filter}} - Optional. The SearchFilter with optional query parameters to search a thread.
+        R{{}} - If successful, returns ThreadListPage type. Else returns GmailError.
     }
-    public function listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GMailError;
+    public function listThreads(string userId, SearchFilter? filter = ()) returns ThreadListPage|GmailError;
 
     documentation{Read the specified mail thread from users mailbox.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} -  The thread id of the specified mail to retrieve.
-        P{{filter}} - MessageThreadReadFilter with the optional parameters of response format and metadataHeaders. If
-                      the filters are not needed, pass an empty record.
-        R{{}} - If successful, returns Thread type of the specified mail thread. Else returns GMailError.
+        P{{format}} - Optional. The format to return the messages in.
+                  Acceptable values for format for a get thread request are defined as following constants
+                  in the package:
+
+                    *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
+                                    field;the raw field is not used. (default)
+
+                    *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
+
+                    *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
+                                      body, or payload.
+
+                    *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
+                                   base64url encoded string. (the payload field is not included in the response)
+        P{{metadataHeaders}} - Optional. The meta data headers array to include in the reponse when the format is given
+                               as *FORMAT_METADATA*.
+        R{{}} - If successful, returns Thread type of the specified mail thread. Else returns GmailError.
     }
-    public function readThread(string userId, string threadId, MessageThreadReadFilter filter) returns (Thread)|GMailError;
+    public function readThread(string userId, string threadId, string? format = (), string[]? metadataHeaders = ())
+                                                                                              returns Thread|GmailError;
 
     documentation{Move the specified mail thread to the trash.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} -  The thread id of the specified mail thread to trash.
-        R{{}} - If successful, returns boolean status of trashing. Else returns GMailError.
+        R{{}} - If successful, returns boolean status of trashing. Else returns GmailError.
     }
-    public function trashThread(string userId, string threadId) returns boolean|GMailError;
+    public function trashThread(string userId, string threadId) returns boolean|GmailError;
 
     documentation{Removes the specified mail thread from the trash.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} - The thread id of the specified mail thread to untrash.
-        R{{}} - If successful, returns boolean status of untrashing. Else returns GMailError.
+        R{{}} - If successful, returns boolean status of untrashing. Else returns GmailError.
     }
-    public function untrashThread(string userId, string threadId) returns boolean|GMailError;
+    public function untrashThread(string userId, string threadId) returns boolean|GmailError;
 
     documentation{Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{threadId}} - The thread id of the specified mail thread to delete.
-        R{{}} - If successful, returns boolean status of deletion. Else returns GMailError.
+        R{{}} - If successful, returns boolean status of deletion. Else returns GmailError.
     }
-    public function deleteThread(string userId, string threadId) returns boolean|GMailError;
+    public function deleteThread(string userId, string threadId) returns boolean|GmailError;
 
-    documentation{Get the current user's GMail Profile.
+    documentation{Get the current user's Gmail Profile.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        R{{}} - If successful, returns UserProfile type. Else returns GMailError.
+        R{{}} - If successful, returns UserProfile type. Else returns GmailError.
     }
-    public function getUserProfile(string userId) returns UserProfile|GMailError;
+    public function getUserProfile(string userId) returns UserProfile|GmailError;
 };
 
-public function GMailConnector::listMessages(string userId, SearchFilter? filter = ()) returns (MessageListPage|GMailError) {
+public function GmailConnector::listMessages(string userId, SearchFilter? filter = ()) returns MessageListPage|
+                                                                                                            GmailError {
     endpoint http:Client httpClient = self.client;
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
     SearchFilter searchFilter = filter ?: {};
     string uriParams;
     //The default value for include spam trash query parameter of the api call is false
-    uriParams = check createUrlEncodedRequest(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.includeSpamTrash);
+    uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.includeSpamTrash);
     //Add optional query parameters
     foreach labelId in searchFilter.labelIds {
-        uriParams = check createUrlEncodedRequest(uriParams, LABEL_IDS, labelId);
+        uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
     }
     uriParams = searchFilter.maxResults != EMPTY_STRING ?
-                             check createUrlEncodedRequest(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
+                           check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
     uriParams = searchFilter.pageToken != EMPTY_STRING ?
-                               check createUrlEncodedRequest(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
+                             check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
     uriParams = searchFilter.q != EMPTY_STRING ?
-                                            check createUrlEncodedRequest(uriParams, QUERY, searchFilter.q) : uriParams;
-    getListMessagesPath = getListMessagesPath + uriParams;
+                                          check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
+    getListMessagesPath += uriParams;
     var httpResponse = httpClient->get(getListMessagesPath);
     match handleResponse(httpResponse){
         json jsonlistMsgResponse => return convertJsonMsgListToMessageListPageType(jsonlistMsgResponse);
-        GMailError gmailError => return gmailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::sendMessage(string userId, MessageRequest message) returns (string, string)|GMailError {
+public function GmailConnector::sendMessage(string userId, MessageRequest message) returns (string, string)|GmailError {
     endpoint http:Client httpClient = self.client;
     if (message.contentType != TEXT_PLAIN && message.contentType != TEXT_HTML) {
-        GMailError gMailError;
-        gMailError.message = "Does not support the given content type: " + message.contentType
-                             + " for the message with subject: " + message.subject;
-        return gMailError;
+        GmailError gmailError;
+        gmailError.message = "Does not support the given content type: " + message.contentType
+                                + " for the message with subject: " + message.subject;
+        return gmailError;
     }
     if (message.contentType == TEXT_PLAIN && (lengthof message.inlineImagePaths != 0)){
-        GMailError gMailError;
-        gMailError.message = "Does not support adding inline images to text/plain body of the message with subject: "
-                             + message.subject;
-        return gMailError;
+        GmailError gmailError;
+        gmailError.message = "Does not support adding inline images to text/plain body of the message with subject: "
+                            + message.subject;
+        return gmailError;
     }
     string concatRequest = EMPTY_STRING;
 
@@ -199,25 +213,25 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
 
     //Set the content type header of top level MIME message part
     concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_MIXED + SEMICOLON_SYMBOL + BOUNDARY + EQUAL_SYMBOL
-                        + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
+                    + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
 
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
 
     //------Start of multipart/related mime part------
     concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_RELATED + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
-                     + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
+                    + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
 
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
 
     //------Start of multipart/alternative mime part------
-    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
-                     + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE +
+                     BOUNDARY + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
 
     //Set the body part : text/plain
     if (message.contentType == TEXT_PLAIN){
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
         concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_PLAIN + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
-                         + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+                        + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
         concatRequest += NEW_LINE + message.messageBody + NEW_LINE;
     }
 
@@ -225,7 +239,7 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     if (message.contentType == TEXT_HTML) {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
         concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_HTML + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
-                            + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+                        + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
         concatRequest += NEW_LINE + message.messageBody + NEW_LINE + NEW_LINE;
     }
 
@@ -236,39 +250,39 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     foreach inlineImage in message.inlineImagePaths {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
         if (inlineImage.mimeType == EMPTY_STRING){
-            GMailError gMailError;
-            gMailError.message = "Image content type cannot be empty for image: " + inlineImage.imagePath;
-            return gMailError;
+            GmailError gmailError;
+            gmailError.message = "Image content type cannot be empty for image: " + inlineImage.imagePath;
+            return gmailError;
         } else if (inlineImage.imagePath == EMPTY_STRING){
-            GMailError gMailError;
-            gMailError.message = "File path of inline image in message with subject: " + message.subject
-                                    + "cannot be empty";
-            return gMailError;
+            GmailError gmailError;
+            gmailError.message = "File path of inline image in message with subject: " + message.subject
+                                                                                                    + "cannot be empty";
+            return gmailError;
         }
         if (isMimeType(inlineImage.mimeType, IMAGE_ANY)) {
             string encodedFile;
-            //Open and encode the image file into base64. Return a GMailError if fails.
+            //Open and encode the image file into base64. Return a GmailError if fails.
             match encodeFile(inlineImage.imagePath) {
                 string eFile => encodedFile = eFile;
-                GMailError gMailError => return gMailError;
+                GmailError gmailError => return gmailError;
             }
             //Set the inline image headers of the message
             concatRequest += CONTENT_TYPE + COLON_SYMBOL + inlineImage.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE
-                             + NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(inlineImage.imagePath)
-                             + APOSTROPHE_SYMBOL + NEW_LINE;
+                            + NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(inlineImage.imagePath)
+                            + APOSTROPHE_SYMBOL + NEW_LINE;
             concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + INLINE + SEMICOLON_SYMBOL + WHITE_SPACE
-                             + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(inlineImage.imagePath)
-                             + APOSTROPHE_SYMBOL + NEW_LINE;
+                            + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(inlineImage.imagePath)
+                            + APOSTROPHE_SYMBOL + NEW_LINE;
             concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
             concatRequest += CONTENT_ID + COLON_SYMBOL + LESS_THAN_SYMBOL + INLINE_IMAGE_CONTENT_ID_PREFIX
-                             + getFileNameFromPath(inlineImage.imagePath) + GREATER_THAN_SYMBOL + NEW_LINE;
+                            + getFileNameFromPath(inlineImage.imagePath) + GREATER_THAN_SYMBOL + NEW_LINE;
             concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
         } else {
             //Return an error if an un supported content type other than image/* is passed
-            GMailError gMailError;
-            gMailError.message = "Unsupported content type:" + inlineImage.mimeType + "for the image:"
-                                  + inlineImage.imagePath;
-            return gMailError;
+            GmailError gmailError;
+            gmailError.message = "Unsupported content type:" + inlineImage.mimeType + "for the image:"
+                                + inlineImage.imagePath;
+            return gmailError;
         }
     }
     if (lengthof (message.inlineImagePaths) != 0) {
@@ -280,31 +294,31 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     foreach attachment in message.attachmentPaths {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
         if (attachment.mimeType == EMPTY_STRING){
-            GMailError gMailError;
-            gMailError.message = "Content type of attachment:" + attachment.attachmentPath + "cannot be empty";
-            return gMailError;
+            GmailError gmailError;
+            gmailError.message = "Content type of attachment:" + attachment.attachmentPath + "cannot be empty";
+            return gmailError;
         } else if (attachment.attachmentPath == EMPTY_STRING){
-            GMailError gMailError;
-            gMailError.message = "File path of attachment in message with subject: " + message.subject
-                                    + "cannot be empty";
-            return gMailError;
+            GmailError gmailError;
+            gmailError.message = "File path of attachment in message with subject: " + message.subject
+                + "cannot be empty";
+            return gmailError;
         }
         string encodedFile;
-        //Open and encode the file into base64. Return a GMailError if fails.
+        //Open and encode the file into base64. Return a GmailError if fails.
         match encodeFile(attachment.attachmentPath) {
             string eFile => encodedFile = eFile;
-            GMailError gMailError => return gMailError;
+            GmailError gmailError => return gmailError;
         }
         concatRequest += CONTENT_TYPE + COLON_SYMBOL + attachment.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE + NAME
-                         + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(attachment.attachmentPath)
-                         + APOSTROPHE_SYMBOL + NEW_LINE;
+                        + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(attachment.attachmentPath)
+                        + APOSTROPHE_SYMBOL + NEW_LINE;
         concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + ATTACHMENT + SEMICOLON_SYMBOL + WHITE_SPACE + FILE_NAME
-                         + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(attachment.attachmentPath)
-                         + APOSTROPHE_SYMBOL + NEW_LINE;
+                        + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(attachment.attachmentPath)
+                        + APOSTROPHE_SYMBOL + NEW_LINE;
         concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
         concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
     }
-    if (lengthof (message.attachmentPaths) != 0 )   {
+    if (lengthof (message.attachmentPaths) != 0)   {
         concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + DASH_SYMBOL + DASH_SYMBOL;
     }
     //------End of multipart/mixed mime part------
@@ -313,10 +327,10 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
     match (concatRequest.base64Encode()){
         string encodeString => encodedRequest = encodeString;
         error encodeError => {
-            GMailError gMailError;
-            gMailError.message = "Error occurred during base64 encoding of the mime message request : " + concatRequest;
-            gMailError.cause = encodeError;
-            return gMailError;
+            GmailError gmailError;
+            gmailError.message = "Error occurred during base64 encoding of the mime message request : " + concatRequest;
+            gmailError.cause = encodeError;
+            return gmailError;
         }
     }
     encodedRequest = encodedRequest.replace(PLUS_SYMBOL, DASH_SYMBOL).replace(FORWARD_SLASH_SYMBOL, UNDERSCORE_SYMBOL);
@@ -329,205 +343,183 @@ public function GMailConnector::sendMessage(string userId, MessageRequest messag
         json jsonSendMessageResponse => {
             return (jsonSendMessageResponse.id.toString(), jsonSendMessageResponse.threadId.toString());
         }
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::readMail(string userId, string messageId, string? format = (),
-                                                          string[]? metadataHeaders = ()) returns (Message)|GMailError {
+public function GmailConnector::readMessage(string userId, string messageId, string? format = (),
+                                                            string[]? metadataHeaders = ()) returns Message|GmailError {
     endpoint http:Client httpClient = self.client;
     string uriParams;
-    string mailFormat = format ?: FORMAT_FULL;
-    string[] mailMetadataHeaders = metadataHeaders ?: [];
-    string readMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
+    string messageFormat = format ?: FORMAT_FULL;
+    string[] messageMetadataHeaders = metadataHeaders ?: [];
+    string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
     //Add format query parameter
-    uriParams = check createUrlEncodedRequest(uriParams, FORMAT, mailFormat);
+    uriParams = check appendEncodedURIParameter(uriParams, FORMAT, messageFormat);
     //Add the optional meta data headers as query parameters
-    foreach metaDataHeader in mailMetadataHeaders {
-        uriParams = check createUrlEncodedRequest(uriParams, METADATA_HEADERS, metaDataHeader);
+    foreach metaDataHeader in messageMetadataHeaders {
+        uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
     }
-    readMailPath = readMailPath + uriParams;
-    var httpResponse = httpClient->get(readMailPath);
+    readMessagePath += uriParams;
+    var httpResponse = httpClient->get(readMessagePath);
     match handleResponse(httpResponse){
-        json jsonReadMailResponse => {
-            //Transform the json mail response from GMail API to Message type
-            match (convertJsonMailToMessage(jsonReadMailResponse)){
-                Message message =>  return message;
-                GMailError gMailError => return gMailError;
+        json jsonreadMessageResponse => {
+            //Transform the json mail response from Gmail API to Message type
+            match (convertJsonMessageToMessage(jsonreadMessageResponse)){
+                Message message => {return message;}
+                GmailError gmailError => return gmailError;
             }
         }
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::getAttachment(string userId, string messageId, string attachmentId)
-                                                                            returns (MessageAttachment)|GMailError {
+public function GmailConnector::getAttachment(string userId, string messageId, string attachmentId)
+                                                                                  returns MessageAttachment|GmailError {
     endpoint http:Client httpClient = self.client;
-    string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId +
-                                                                                    ATTACHMENT_RESOURCE + attachmentId;
+    string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
+                               + ATTACHMENT_RESOURCE + attachmentId;
     var httpResponse = httpClient->get(getAttachmentPath);
     match handleResponse(httpResponse){
         json jsonAttachment => {
-            //Transform the json mail response from GMail API to MessageAttachment type
+            //Transform the json mail response from Gmail API to MessageAttachment type
             return convertJsonMessageBodyToMsgAttachment(jsonAttachment);
         }
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::trashMail(string userId, string messageId) returns boolean|GMailError {
+public function GmailConnector::trashMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
-    string trashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
-                            + FORWARD_SLASH_SYMBOL + TRASH;
-    var httpResponse = httpClient->post(trashMailPath);
+    string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
+                           + FORWARD_SLASH_SYMBOL + TRASH;
+    var httpResponse = httpClient->post(trashMessagePath);
     match handleResponse(httpResponse){
-        json jsonTrashMailResponse => {
+        json jsonTrashMessageResponse => {
             return true;
         }
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::untrashMail(string userId, string messageId) returns boolean|GMailError {
+public function GmailConnector::untrashMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
-    string untrashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
-                             + FORWARD_SLASH_SYMBOL + UNTRASH;
-    var httpResponse = httpClient->post(untrashMailPath);
+    string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
+                            + FORWARD_SLASH_SYMBOL + UNTRASH;
+    var httpResponse = httpClient->post(untrashMessagePath);
     match handleResponse(httpResponse){
-        json jsonUntrashMailReponse => {
+        json jsonUntrashMessageReponse => {
             return true;
         }
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::deleteMail(string userId, string messageId) returns boolean|GMailError {
+public function GmailConnector::deleteMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
-    string deleteMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
-    var httpResponse = httpClient->delete(deleteMailPath);
+    string deleteMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
+    var httpResponse = httpClient->delete(deleteMessagePath);
     match handleResponse(httpResponse){
-        json jsonDeleteMailResponse => {
+        json jsonDeleteMessageResponse => {
             return true;
         }
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::listThreads(string userId, SearchFilter filter) returns (ThreadListPage)|GMailError {
+public function GmailConnector::listThreads(string userId, SearchFilter? filter = ()) returns ThreadListPage|GmailError {
     endpoint http:Client httpClient = self.client;
     string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
-    string uriParams = EMPTY_STRING;
+    string uriParams;
+    SearchFilter searchFilter = filter ?: {};
+    //The default value for include spam trash query parameter of the api call is false
+    uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.includeSpamTrash);
     //Add optional query parameters
-    uriParams = uriParams + QUESTION_MARK_SYMBOL + INCLUDE_SPAMTRASH + EQUAL_SYMBOL + filter.includeSpamTrash;
-    foreach labelId in filter.labelIds {
-        uriParams = labelId != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + LABEL_IDS + EQUAL_SYMBOL + labelId:uriParams;
+    foreach labelId in searchFilter.labelIds {
+        uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
     }
-    uriParams = filter.maxResults != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + MAX_RESULTS + EQUAL_SYMBOL
-                                                        + filter.maxResults : uriParams;
-    uriParams = filter.pageToken != EMPTY_STRING ? uriParams +  AMPERSAND_SYMBOL + PAGE_TOKEN + EQUAL_SYMBOL
-                                                        + filter.pageToken : uriParams;
-    if (filter.q != EMPTY_STRING) {
-        match http:encode(filter.q, UTF_8) {
-            string encodedQuery => uriParams += AMPERSAND_SYMBOL + QUERY + EQUAL_SYMBOL + encodedQuery;
-            error e => {
-                GMailError gMailError;
-                gMailError.message = "Error occured during encoding the query: " + filter.q + "; message:" + e.message;
-                gMailError.cause = e.cause;
-                return gMailError;
-            }
-        }
-    }
+    uriParams = searchFilter.maxResults != EMPTY_STRING ?
+                           check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
+    uriParams = searchFilter.pageToken != EMPTY_STRING ?
+                            check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
+    uriParams = searchFilter.q != EMPTY_STRING ?
+                            check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
     getListThreadPath = getListThreadPath + uriParams;
     var httpResponse = httpClient->get(getListThreadPath);
     match handleResponse(httpResponse) {
-        json jsonListThreadResponse => {
-            ThreadListPage threadListPage;
-            if (jsonListThreadResponse.threads != ()) {
-                threadListPage.resultSizeEstimate = jsonListThreadResponse.resultSizeEstimate.toString();
-                threadListPage.nextPageToken = jsonListThreadResponse.nextPageToken.toString();
-                //for each thread resource in threads json array of the response
-                foreach thread in jsonListThreadResponse.threads {
-                    //Add the thread map with Id, snippet and history Id as keys to the array of thread maps
-                    threadListPage.threads[lengthof threadListPage.threads] =
-                        { "threadId" : thread.id.toString(), "snippet" : thread.snippet.toString(),
-                                                                    "historyId" : thread.historyId.toString()};
-                }
-            }
-            return threadListPage;
-        }
-        GMailError gMailError => return gMailError;
+        json jsonListThreadResponse => return convertJsonThreadListToThreadListPageType(jsonListThreadResponse);
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::readThread(string userId, string threadId, MessageThreadReadFilter filter)
-                                                                                        returns (Thread)|GMailError {
+public function GmailConnector::readThread(string userId, string threadId, string? format = (),
+                                           string[]? metadataHeaders = ()) returns Thread|GmailError {
     endpoint http:Client httpClient = self.client;
-    string uriParams = EMPTY_STRING;
+    string uriParams;
+    string messageFormat = format ?: FORMAT_FULL;
+    string[] messageMetadataHeaders = metadataHeaders ?: [];
     string readThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
     //Add format optional query parameter
-    uriParams = filter.format != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + FORMAT + EQUAL_SYMBOL
-                                                          + filter.format : uriParams;
+    uriParams = check appendEncodedURIParameter(uriParams, FORMAT, messageFormat);
     //Add the optional meta data headers as query parameters
-    foreach metaDataHeader in filter.metadataHeaders {
-        uriParams = metaDataHeader != EMPTY_STRING ? uriParams + AMPERSAND_SYMBOL + METADATA_HEADERS + EQUAL_SYMBOL
-                                                                                            + metaDataHeader:uriParams;
+    foreach metaDataHeader in messageMetadataHeaders {
+        uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
     }
-    readThreadPath = uriParams != EMPTY_STRING ? readThreadPath + QUESTION_MARK_SYMBOL +
-                                                            uriParams.substring(1, uriParams.length()) : readThreadPath;
+    readThreadPath += uriParams;
     var httpResponse = httpClient->get(readThreadPath);
     match handleResponse(httpResponse) {
         json jsonReadThreadResponse => {
-            //Transform the json mail response from GMail API to Thread type
+            //Transform the json mail response from Gmail API to Thread type
             match convertJsonThreadToThreadType(jsonReadThreadResponse){
                 Thread thread => return thread;
-                GMailError gMailError => return gMailError;
+                GmailError gmailError => return gmailError;
             }
         }
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::trashThread(string userId, string threadId) returns boolean|GMailError {
+public function GmailConnector::trashThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
-                                + FORWARD_SLASH_SYMBOL + TRASH;
+                            + FORWARD_SLASH_SYMBOL + TRASH;
     var httpResponse = httpClient->post(trashThreadPath);
     match handleResponse(httpResponse){
         json jsonTrashThreadResponse => return true;
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::untrashThread(string userId, string threadId) returns boolean|GMailError {
+public function GmailConnector::untrashThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
                                 + FORWARD_SLASH_SYMBOL + UNTRASH;
     var httpResponse = httpClient->post(untrashThreadPath);
     match handleResponse(httpResponse) {
         json jsonUntrashThreadResponse => return true;
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::deleteThread(string userId, string threadId) returns boolean|GMailError {
+public function GmailConnector::deleteThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
     string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
     var httpResponse = httpClient->delete(deleteThreadPath);
     match handleResponse(httpResponse){
         json jsonDeleteThreadResponse => return true;
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
 
-public function GMailConnector::getUserProfile(string userId) returns UserProfile|GMailError {
+public function GmailConnector::getUserProfile(string userId) returns UserProfile|GmailError {
     endpoint http:Client httpClient = self.client;
     string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
     var httpResponse = httpClient->get(getProfilePath);
     match handleResponse(httpResponse){
         json jsonProfileResponse => {
-            //Transform the json profile response from GMail API to User Profile type
+            //Transform the json profile response from Gmail API to User Profile type
             return convertJsonProfileToUserProfileType(jsonProfileResponse);
         }
-        GMailError gMailError => return gMailError;
+        GmailError gmailError => return gmailError;
     }
 }
