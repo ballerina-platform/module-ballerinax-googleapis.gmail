@@ -23,7 +23,7 @@ The wso2/gmail package contains operations to get Gmail user profile details.
 
 |                    |    Version     |  
 | :-----------------:|:--------------:| 
-| Ballerina Language | 0.970.0-beta14 |
+| Ballerina Language | 0.970.0-beta15 |
 |  Gmail Basic API   |    v1         |  
 
 ## Sample
@@ -42,12 +42,13 @@ and refresh token.
 
 **Obtaining Tokens to Run the Sample**
 
-1. Visit Google API Console. Continue through the wizard, configure the OAuth consent screen under **Credentials**, and 
+1. Visit [Google API Console](https://console.developers.google.com). Continue through the wizard, configure the OAuth consent screen under **Credentials**, and 
 give a product name to be shown to users.
 2. Create OAuth client ID credentials by selecting an application type and giving a name and a redirect URI. *Give the 
-redirect URI as (https://developers.google.com/oauthplayground) if you are using OAuth 2.0 playground to receive the 
-authorization code and obtain the access token and refresh token.*
-3. Visit OAuth 2.0 playground and select the required Gmail API scopes.
+redirect URI as (https://developers.google.com/oauthplayground) if you are using 
+[OAuth 2.0 playground](https://developers.google.com/oauthplayground) to receive the authorization code and obtain the 
+access token and refresh token.*
+3. Visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground) and select the required Gmail API scopes.
 4. Provide the client ID and client secret to obtain the refresh token and access token. 
 
 You can now enter the credentials in the HTTP client config. 
