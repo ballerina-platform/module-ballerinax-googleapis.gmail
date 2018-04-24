@@ -40,19 +40,19 @@ string inlineImageName = ""; //Example: "Picture2.jpg"
 string imageContentType = ""; //Example: "image/jpeg"
 
 string userId = "me";
-//Message id of text mail which will be sent from testSendSimpleMail()
-string sentTextMailId;
-//Thread id of text mail which will be sent from testSendSimpleMail()
-string sentTextMailThreadId;
-//Mail id of the html mail which will be sent from testSendHtml()
-string sentHtmlMailId;
+//Message id of text mail which will be sent from testSendSimpleMessage()
+string sentTextMessageId;
+//Thread id of text mail which will be sent from testSendSimpleMessage()
+string sentTextMessageThreadId;
+//Message id of the html mail which will be sent from testSendHtml()
+string sentHtmlMessageId;
 //Attachment id of attachment which will be sent from testSendWithAttachment()
 string readAttachmentFileId;
 
 @test:Config {
-    groups:["TextMailTestGroup"]
+    groups:["TextMessageTestGroup"]
 }
-function testSendTextMail() {
+function testSendTextMessage() {
     string subject = "Text-Email-Subject";
     string messageBody = "Text Message Body";
     MessageRequest messageRequest;
@@ -64,15 +64,15 @@ function testSendTextMail() {
     messageRequest.contentType = TEXT_PLAIN;
     AttachmentPath[] attachments = [{attachmentPath:attachmentPath,mimeType:attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
-    log:printInfo("testSendTextMail");
+    log:printInfo("testSendTextMessage");
     var sendMessageResponse = gmailEP -> sendMessage(userId, messageRequest);
     string messageId;
     string threadId;
     match sendMessageResponse {
         (string, string)sendStatus => {
             (messageId, threadId) = sendStatus;
-            sentTextMailId = messageId;
-            sentTextMailThreadId = threadId;
+            sentTextMessageId = messageId;
+            sentTextMessageThreadId = threadId;
             test:assertTrue(messageId != "" && threadId != "", msg = "Send Text Message Failed");
         }
         GmailError e => test:assertFail(msg = e.message);
@@ -80,9 +80,9 @@ function testSendTextMail() {
 }
 
 @test:Config {
-    groups:["htmlMailTestGroup"]
+    groups:["htmlMessageTestGroup"]
 }
-function testSendHTMLMail() {
+function testSendHTMLMessage() {
     string subject = "HTML-Email-Subject";
     string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
     MessageRequest messageRequest;
@@ -96,7 +96,7 @@ function testSendHTMLMail() {
     messageRequest.inlineImagePaths = inlineImages;
     AttachmentPath[] attachments = [{attachmentPath:attachmentPath, mimeType:attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
-    log:printInfo("testSendHTMLMail");
+    log:printInfo("testSendHTMLMessage");
     //----Send the mail----
     var sendMessageResponse = gmailEP -> sendMessage(userId, messageRequest);
     string messageId;
@@ -104,7 +104,7 @@ function testSendHTMLMail() {
     match sendMessageResponse {
         (string, string) sendStatus => {
             (messageId, threadId) = sendStatus;
-            sentHtmlMailId = messageId;
+            sentHtmlMessageId = messageId;
             test:assertTrue(messageId != "" && threadId != "", msg = "Send HTML message failed");
         }
         GmailError e => test:assertFail(msg = e.message);
@@ -112,9 +112,9 @@ function testSendHTMLMail() {
 }
 
 @test:Config
-function testListMails() {
-    //List All Mails with Label INBOX without including Spam and Trash with subject "Test subject - html mail"
-    log:printInfo("testListAllMails");
+function testListMessages() {
+    //List All Messages with Label INBOX without including Spam and Trash with subject "Test subject - html mail"
+    log:printInfo("testListAllMessages");
     SearchFilter searchFilter = {includeSpamTrash:false, labelIds:["INBOX"], maxResults:"", pageToken:"", q:""};
     var msgList = gmailEP -> listMessages("me", filter = searchFilter);
     match msgList {
@@ -126,43 +126,43 @@ function testListMails() {
 }
 
 @test:Config {
-    dependsOn:["testSendTextMail"],
-    groups:["TextMailTestGroup"]
+    dependsOn:["testSendTextMessage"],
+    groups:["TextMessageTestGroup"]
 }
-function testReadTextMail() {
-    //Read mail with message id which sent in testSendSimpleMail
-    log:printInfo("testReadTextMail");
-    var reponse = gmailEP -> readMessage(userId, sentTextMailId);
+function testReadTextMessage() {
+    //Read mail with message id which sent in testSendSimpleMessage
+    log:printInfo("testReadTextMessage");
+    var reponse = gmailEP -> readMessage(userId, sentTextMessageId);
     match reponse {
-        Message m => test:assertEquals(m.id, sentTextMailId, msg = "Read text mail failed");
+        Message m => test:assertEquals(m.id, sentTextMessageId, msg = "Read text mail failed");
         GmailError e => test:assertFail(msg = e.message);
     }
 }
 
 @test:Config {
-    dependsOn:["testSendHTMLMail"],
-    groups:["htmlMailTestGroup"]
+    dependsOn:["testSendHTMLMessage"],
+    groups:["htmlMessageTestGroup"]
 }
-function testReadHTMLMailWithAttachment() {
+function testReadHTMLMessageWithAttachment() {
     //Read mail with message id which sent in testSendWithAttachment
     log:printInfo("testReadMessageWithAttachment");
-    var response = gmailEP -> readMessage(userId, sentHtmlMailId);
+    var response = gmailEP -> readMessage(userId, sentHtmlMessageId);
     match response {
         Message m => {
             readAttachmentFileId = m.msgAttachments[0].attachmentFileId;
-            test:assertEquals(m.id, sentHtmlMailId, msg = "Read mail with attachment failed");
+            test:assertEquals(m.id, sentHtmlMessageId, msg = "Read mail with attachment failed");
         }
         GmailError e => test:assertFail(msg = e.message);
     }
 }
 
 @test:Config {
-    dependsOn:["testReadHTMLMailWithAttachment"],
-    groups:["htmlMailTestGroup"]
+    dependsOn:["testReadHTMLMessageWithAttachment"],
+    groups:["htmlMessageTestGroup"]
 }
 function testgetAttachment() {
     log:printInfo("testgetAttachment");
-    var attachment = gmailEP -> getAttachment(userId, sentHtmlMailId, readAttachmentFileId);
+    var attachment = gmailEP -> getAttachment(userId, sentHtmlMessageId, readAttachmentFileId);
     match attachment {
         GmailError e => test:assertFail(msg = e.message);
         MessageAttachment attach => {
@@ -174,12 +174,12 @@ function testgetAttachment() {
 
 @test:Config {
     dependsOn:["testgetAttachment"],
-    groups:["htmlMailTestGroup"]
+    groups:["htmlMessageTestGroup"]
 }
-function testTrashMail() {
+function testTrashMessage() {
     //Trash mail with message id 1628c6e29f2fef47
-    log:printInfo("testTrashMail");
-    var trash = gmailEP -> trashMail(userId, sentHtmlMailId);
+    log:printInfo("testTrashMessage");
+    var trash = gmailEP -> trashMessage(userId, sentHtmlMessageId);
     match trash {
         GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Trash mail failed");
@@ -187,12 +187,12 @@ function testTrashMail() {
 }
 
 @test:Config {
-    dependsOn:["testTrashMail"],
-    groups:["htmlMailTestGroup"]
+    dependsOn:["testTrashMessage"],
+    groups:["htmlMessageTestGroup"]
 }
-function testUntrashMail() {
-    log:printInfo("testUntrashMail");
-    var untrash = gmailEP -> untrashMail(userId, sentHtmlMailId);
+function testUntrashMessage() {
+    log:printInfo("testUntrashMessage");
+    var untrash = gmailEP -> untrashMessage(userId, sentHtmlMessageId);
     match untrash {
         GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Untrash mail failed");
@@ -200,12 +200,12 @@ function testUntrashMail() {
 }
 
 @test:Config {
-    dependsOn:["testUntrashMail"],
-    groups:["htmlMailTestGroup"]
+    dependsOn:["testUntrashMessage"],
+    groups:["htmlMessageTestGroup"]
 }
-function testDeleteMail() {
-    log:printInfo("testDeleteMail");
-    var delete = gmailEP -> deleteMail(userId, sentHtmlMailId);
+function testDeleteMessage() {
+    log:printInfo("testDeleteMessage");
+    var delete = gmailEP -> deleteMessage(userId, sentHtmlMessageId);
     match delete {
         GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Delete mail failed");
@@ -224,26 +224,26 @@ function testListAllThreads() {
 }
 
 @test:Config {
-    dependsOn:["testReadTextMail"],
-    groups:["TextMailTestGroup"]
+    dependsOn:["testReadTextMessage"],
+    groups:["TextMessageTestGroup"]
 }
 function testReadThread() {
     log:printInfo("testReadThread");
-    var thread = gmailEP -> readThread(userId, sentTextMailThreadId,
+    var thread = gmailEP -> readThread(userId, sentTextMessageThreadId,
                                                             format = FORMAT_METADATA, metadataHeaders = ["Subject"]);
     match thread{
-        Thread t => test:assertEquals(t.id, sentTextMailThreadId, msg = "Read thread failed");
+        Thread t => test:assertEquals(t.id, sentTextMessageThreadId, msg = "Read thread failed");
         GmailError e => test:assertFail(msg = e.message);
     }
 }
 
 @test:Config {
     dependsOn:["testReadThread"],
-    groups:["TextMailTestGroup"]
+    groups:["TextMessageTestGroup"]
 }
 function testTrashThread() {
     log:printInfo("testTrashThread");
-    var trash = gmailEP -> trashThread(userId, sentTextMailThreadId);
+    var trash = gmailEP -> trashThread(userId, sentTextMessageThreadId);
     match trash {
         GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Trash thread failed");
@@ -252,11 +252,11 @@ function testTrashThread() {
 
 @test:Config {
     dependsOn:["testTrashThread"],
-    groups:["TextMailTestGroup"]
+    groups:["TextMessageTestGroup"]
 }
 function testUnTrashThread() {
     log:printInfo("testUnTrashThread");
-    var untrash = gmailEP -> untrashThread(userId, sentTextMailThreadId);
+    var untrash = gmailEP -> untrashThread(userId, sentTextMessageThreadId);
     match untrash {
         GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Untrash thread failed");
@@ -266,11 +266,11 @@ function testUnTrashThread() {
 
 @test:Config {
     dependsOn:["testUnTrashThread"],
-    groups:["TextMailTestGroup"]
+    groups:["TextMessageTestGroup"]
 }
 function testDeleteThread() {
     log:printInfo("testDeleteThread");
-    var delete = gmailEP -> deleteThread(userId, sentTextMailThreadId);
+    var delete = gmailEP -> deleteThread(userId, sentTextMessageThreadId);
     match delete {
         GmailError e => test:assertFail(msg = e.message);
         boolean success => test:assertTrue(success, msg = "Delete thread failed");

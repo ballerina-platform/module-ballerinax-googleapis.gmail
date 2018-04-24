@@ -80,21 +80,21 @@ public type GmailConnector object {
         P{{messageId}} -  The message id of the specified mail to trash.
         R{{}} - If successful, returns boolean specifying the status of trashing. Else returns GmailError.
     }
-    public function trashMail(string userId, string messageId) returns boolean|GmailError;
+    public function trashMessage(string userId, string messageId) returns boolean|GmailError;
 
     documentation{Removes the specified message from the trash.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} - The message id of the specified message to untrash.
         R{{}} - If successful, returns boolean specifying the status of untrashing. Else returns GmailError.
     }
-    public function untrashMail(string userId, string messageId) returns boolean|GmailError;
+    public function untrashMessage(string userId, string messageId) returns boolean|GmailError;
 
     documentation{Immediately and permanently deletes the specified message. This operation cannot be undone.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} - The message id of the specified message to delete.
         R{{}} - If successful, returns boolean status of deletion. Else returns GmailError.
     }
-    public function deleteMail(string userId, string messageId) returns boolean|GmailError;
+    public function deleteMessage(string userId, string messageId) returns boolean|GmailError;
 
     documentation{List the threads in user's mailbox.
         P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -365,7 +365,7 @@ public function GmailConnector::readMessage(string userId, string messageId, str
     match handleResponse(httpResponse){
         json jsonreadMessageResponse => {
             //Transform the json mail response from Gmail API to Message type
-            match (convertJsonMailToMessage(jsonreadMessageResponse)){
+            match (convertJsonMessageToMessage(jsonreadMessageResponse)){
                 Message message => {return message;}
                 GmailError gmailError => return gmailError;
             }
@@ -389,38 +389,38 @@ public function GmailConnector::getAttachment(string userId, string messageId, s
     }
 }
 
-public function GmailConnector::trashMail(string userId, string messageId) returns boolean|GmailError {
+public function GmailConnector::trashMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
-    string trashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
+    string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
                            + FORWARD_SLASH_SYMBOL + TRASH;
-    var httpResponse = httpClient->post(trashMailPath);
+    var httpResponse = httpClient->post(trashMessagePath);
     match handleResponse(httpResponse){
-        json jsonTrashMailResponse => {
+        json jsonTrashMessageResponse => {
             return true;
         }
         GmailError gmailError => return gmailError;
     }
 }
 
-public function GmailConnector::untrashMail(string userId, string messageId) returns boolean|GmailError {
+public function GmailConnector::untrashMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
-    string untrashMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
+    string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
                             + FORWARD_SLASH_SYMBOL + UNTRASH;
-    var httpResponse = httpClient->post(untrashMailPath);
+    var httpResponse = httpClient->post(untrashMessagePath);
     match handleResponse(httpResponse){
-        json jsonUntrashMailReponse => {
+        json jsonUntrashMessageReponse => {
             return true;
         }
         GmailError gmailError => return gmailError;
     }
 }
 
-public function GmailConnector::deleteMail(string userId, string messageId) returns boolean|GmailError {
+public function GmailConnector::deleteMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
-    string deleteMailPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
-    var httpResponse = httpClient->delete(deleteMailPath);
+    string deleteMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
+    var httpResponse = httpClient->delete(deleteMessagePath);
     match handleResponse(httpResponse){
-        json jsonDeleteMailResponse => {
+        json jsonDeleteMessageResponse => {
             return true;
         }
         GmailError gmailError => return gmailError;

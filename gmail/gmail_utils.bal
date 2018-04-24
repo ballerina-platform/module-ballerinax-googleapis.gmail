@@ -77,13 +77,13 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
 
 documentation{Gets only the inline image MIME messageParts from the json message payload of the email.
     P{{messagePayload}} - Json message payload which is the parent message part of the email.
-    P{{inlineMailImages}} - Initial array of inline image message parts.
+    P{{inlineMessageImages}} - Initial array of inline image message parts.
     R{{}} - If successful, returns an array of MessageBodyParts. Else returns GmailError.
 }
 //Extract inline image MIME message parts from the email
-function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMailImages)
+function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMessageImages)
                                                                         returns @tainted MessageBodyPart[]|GmailError {
-    MessageBodyPart[] inlineImgParts = inlineMailImages;
+    MessageBodyPart[] inlineImgParts = inlineMessageImages;
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         map headers = convertJsonHeadersToHeaderMap(messagePayload.headers);
