@@ -280,7 +280,7 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
                         return gmailError;
                     }
                 }
-                http:PayloadError payloadError => {
+                error payloadError => {
                     GmailError gmailError = { message:"Error occurred when parsing to json response; message: " +
                                              payloadError.message, cause:payloadError.cause };
                     return gmailError;
