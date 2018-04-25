@@ -1,4 +1,4 @@
-# Package Overview
+# Gmail Connector
 Connects to Gmail from Ballerina. 
 
 This package provides a Ballerina API for the Gmail REST API. It provides the ability to send emails, read emails, 
@@ -103,7 +103,7 @@ match response {
 } 
 ```
 The `deleteMessage` function deletes messages. It returns a `GmailError` when unsuccessful. 
-```ballerina
+```ballerina    
 var delete = gmailEP -> deleteMessage(userId, messageIdToDelete);
 match delete {
     boolean success => io:println("Message deletion success!");
