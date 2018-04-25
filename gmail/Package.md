@@ -20,21 +20,17 @@ The wso2/gmail package contains operations to read, search, trash, untrash, and 
 The wso2/gmail package contains operations to get Gmail user profile details.
 
 ## Compatibility
-
 |                    |    Version     |  
 | :-----------------:|:--------------:| 
 | Ballerina Language | 0.970.0-beta15 |
 |  Gmail Basic API   |    v1         |  
 
 ## Sample
-
 The Gmail connector can be used to send, read, and delete email. First, import the `wso2/gmail` package into the 
 Ballerina project.
-
 ```ballerina
 import wso2/gmail;
 ```
-
 Instantiate the connector by giving authentication details in the HTTP client config, which has inbuilt support for 
 BasicAuth and OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be 
 minimally instantiated in the HTTP client config using the access token or using the client ID, client secret, 
@@ -52,7 +48,6 @@ access token and refresh token.*
 4. Provide the client ID and client secret to obtain the refresh token and access token. 
 
 You can now enter the credentials in the HTTP client config. 
-
 ```ballerina
 endpoint gmail:Client gmailEP {
     clientConfig:{
@@ -65,11 +60,9 @@ endpoint gmail:Client gmailEP {
     }
 };
 ```
-
 The `sendMessage` function sends an email. `MessageRequest` is a structure that contains all the data that is required 
 to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 
 (the currently authenticated user).
-
 ```ballerina
 gmail:MessageRequest messageRequest;
 messageRequest.recipient = "recipient@mail.com";
@@ -79,14 +72,12 @@ messageRequest.subject = "Email-Subject";
 messageRequest.messageBody = "Email Message Body Text";
 //Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
 messageRequest.contentType = gmail:TEXT_PLAIN;
-
 //Send the message.
 var sendMessageResponse = gmailEP -> sendMessage(userId, messageRequest);
 ```
 The response from `sendMessage` is either a string tuple with the message ID and thread ID 
 (if the message was sent successfully) or a `GmailError` (if the message was unsuccessful). The `match` operation can be 
 used to handle the response if an error occurs.
-
 ```ballerina
 match sendMessageResponse {
     (string, string) sendStatus => {
@@ -102,10 +93,8 @@ match sendMessageResponse {
     gmail:GmailError e => io:println(e); 
 }
 ```
-
 The `readMessage` function reads messages via the Gmail API. It returns the `Message` struct when successful and 
 `GmailError` when unsuccessful. 
-
 ```ballerina
 var response = gmailEP -> readMessage(userId, messageIdToRead);
 match response {
@@ -114,7 +103,6 @@ match response {
 } 
 ```
 The `deleteMessage` function deletes messages via the Gmail API. It returns a `GmailError` when unsuccessful. 
-
 ```ballerina
 var delete = gmailEP -> deleteMessage(userId, messageIdToDelete);
 match delete {
