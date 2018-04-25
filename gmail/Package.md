@@ -1,6 +1,5 @@
-# Gmail Connector
 Connects to Gmail from Ballerina. 
-
+#Package Overview
 This package provides a Ballerina API for the Gmail REST API. It provides the ability to send emails, read emails, 
 delete emails, read threads, get the Gmail profile, etc. It handles OAuth 2.0 and provides auto completion and 
 type conversions.
