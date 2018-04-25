@@ -7,17 +7,17 @@ type conversions.
 
 **Message Operations**
 
-The wso2/gmail package contains operations to send emails in Text and HTML formats with attachments and inline images. 
+The `wso2/gmail` package contains operations to send emails in Text and HTML formats with attachments and inline images. 
 It supports searching and reading messages in Gmail using Gmail filters. The package also supports trashing, untrashing, 
 and deleting messages as well.
 
 **Thread Operations**
 
-The wso2/gmail package contains operations to read, search, trash, untrash, and delete mail threads in Gmail.
+The `wso2/gmail` package contains operations to read, search, trash, untrash, and delete mail threads in Gmail.
 
 **UserProfile Operations**
 
-The wso2/gmail package contains operations to get Gmail user profile details.
+The `wso2/gmail` package contains operations to get Gmail user profile details.
 
 ## Compatibility
 |                    |    Version     |  
@@ -31,7 +31,7 @@ Ballerina project.
 ```ballerina
 import wso2/gmail;
 ```
-Instantiate the connector by giving authentication details in the HTTP client config, which has inbuilt support for 
+Instantiate the connector by giving authentication details in the HTTP client config, which has built-in support for 
 BasicAuth and OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be 
 minimally instantiated in the HTTP client config using the access token or using the client ID, client secret, 
 and refresh token.
@@ -93,7 +93,7 @@ match sendMessageResponse {
     gmail:GmailError e => io:println(e); 
 }
 ```
-The `readMessage` function reads messages via the Gmail API. It returns the `Message` struct when successful and 
+The `readMessage` function reads messages. It returns the `Message` struct when successful and 
 `GmailError` when unsuccessful. 
 ```ballerina
 var response = gmailEP -> readMessage(userId, messageIdToRead);
@@ -102,7 +102,7 @@ match response {
     gmail:GmailError e => io:println(e);
 } 
 ```
-The `deleteMessage` function deletes messages via the Gmail API. It returns a `GmailError` when unsuccessful. 
+The `deleteMessage` function deletes messages. It returns a `GmailError` when unsuccessful. 
 ```ballerina
 var delete = gmailEP -> deleteMessage(userId, messageIdToDelete);
 match delete {
