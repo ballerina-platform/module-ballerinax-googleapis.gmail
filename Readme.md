@@ -9,7 +9,7 @@ It handles OAuth 2.0 and provides auto completion and type conversions.
 
 | Ballerina Language Version                   | Gmail API Version |  
 | :-------------------------------------------:|:-----------------:| 
-| 0.970.0-beta13                               | v1                | 
+| 0.970.0-beta15                               | v1                | 
 
 ## Getting started
 

@@ -247,7 +247,7 @@ documentation{Handles the http response.
     P{{response}} - Http response or HttpConnectorEror
     R{{}} - If successful returns json reponse. Else returns GmailError.
 }
-function handleResponse (http:Response|http:HttpConnectorError response) returns (json|GmailError){
+function handleResponse (http:Response|error response) returns (json|GmailError){
     match response {
         http:Response httpResponse => {
             if (httpResponse.statusCode == http:NO_CONTENT_204){
@@ -287,9 +287,9 @@ function handleResponse (http:Response|http:HttpConnectorError response) returns
                 }
             }
         }
-        http:HttpConnectorError httpError => {
-            GmailError gmailError = { message:"Error occurred during HTTP Client invocation; status code:" +
-                                     httpError.statusCode + "; message: " +  httpError.message, cause:httpError.cause };
+        error err => {
+            GmailError gmailError = { message:"Error occurred during HTTP Client invocation; message: "
+                +  err.message, cause:err.cause };
             return gmailError;
         }
     }
