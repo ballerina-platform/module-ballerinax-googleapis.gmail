@@ -27,8 +27,7 @@ The `wso2/gmail` package contains operations to get Gmail user profile details.
 |     Gmail API      |    v1         |  
 
 ## Sample
-The Gmail connector can be used to send, read, and delete email. First, import the `wso2/gmail` package into the 
-Ballerina project.
+First, import the `wso2/gmail` package into the Ballerina project.
 ```ballerina
 import wso2/gmail;
 ```
