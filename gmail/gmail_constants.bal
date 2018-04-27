@@ -155,16 +155,16 @@ documentation {Holds name for header Subject'}
 documentation {Holds name for header Date'}
 @final string DATE = "Date";
 
-documentation {Holds string for Gmail message/thread response format **full**. }
+documentation {Holds string for Gmail message/thread response format **full**}
 @final public string FORMAT_FULL = "full";
-documentation {Holds string for Gmail message/thread response format **metadata**. }
+documentation {Holds string for Gmail message/thread response format **metadata**}
 @final public string FORMAT_METADATA = "metadata";
-documentation {Holds string for Gmail message/thread response format **minimal**. }
+documentation {Holds string for Gmail message/thread response format **minimal**}
 @final public string FORMAT_MINIMAL = "minimal";
-documentation {Holds string for Gmail message/thread response format **raw**. }
+documentation {Holds string for Gmail message/thread response format **raw**}
 @final public string FORMAT_RAW = "raw";
 
-documentation {Holds value for message type **text/plain**.}
+documentation {Holds value for message type **text/plain**}
 @final public string TEXT_PLAIN = "text/plain";
-documentation {Holds value for message type **text/html**.}
+documentation {Holds value for message type **text/html**}
 @final public string TEXT_HTML = "text/html";

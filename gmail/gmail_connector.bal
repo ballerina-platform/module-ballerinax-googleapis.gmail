@@ -18,34 +18,42 @@ import ballerina/http;
 import ballerina/mime;
 import ballerina/log;
 
-documentation{Represents the Gmail Client Connector.
-    F{{client}} - HTTP Client used in Gmail connector.
+documentation{
+    Represents the Gmail Client Connector.
+
+    F{{client}} HTTP Client used in Gmail connector
 }
 public type GmailConnector object {
     public {
         http:Client client;
     }
 
-    documentation{List the messages in user's mailbox.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} - Optional. SearchFilter with optional query parameters to search emails.
-        R{{}} -  If successful, returns MessageListPage. Else returns GmailError.
+    documentation{
+        List the messages in user's mailbox.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{filter}} Optional. SearchFilter with optional query parameters to search emails.
+        R{{}} If successful, returns MessageListPage. Else returns GmailError.
     }
     public function listMessages(string userId, SearchFilter? filter = ()) returns MessageListPage|GmailError;
 
-    documentation{Create the raw base 64 encoded string of the whole message and send it as an email from the user's
+    documentation{
+        Create the raw base 64 encoded string of the whole message and send it as an email from the user's
         mailbox to its recipient.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{message}} - MessageRequest to send.
-        R{{}} - If successful, returns (message id, thread id) of the successfully sent message. Else
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{message}} MessageRequest to send
+        R{{}} If successful, returns (message id, thread id) of the successfully sent message. Else
                 returns GmailError.
     }
     public function sendMessage(string userId, MessageRequest message) returns (string, string)|GmailError;
 
-    documentation{Read the specified mail from users mailbox.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} -  The message id of the specified mail to retrieve.
-        P{{format}} - Optional. The format to return the messages in.
+    documentation{
+        Read the specified mail from users mailbox.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} The message id of the specified mail to retrieve
+        P{{format}} Optional. The format to return the messages in.
                   Acceptable values for format for a get message request are defined as following constants
                   in the package:
 
@@ -59,54 +67,66 @@ public type GmailConnector object {
 
                     *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
                                    base64url encoded string. (the payload field is not included in the response)
-        P{{metadataHeaders}} - Optional. The meta data headers array to include in the reponse when the format is given
+        P{{metadataHeaders}} The meta data headers array to include in the reponse when the format is given
                                as *FORMAT_METADATA*.
-        R{{}} - If successful, returns Message type of the specified mail. Else returns GmailError.
+        R{{}} If successful, returns Message type of the specified mail. Else returns GmailError.
     }
     public function readMessage(string userId, string messageId, string? format = (), string[]? metadataHeaders = ())
                                                                                              returns Message|GmailError;
-    documentation{Gets the specified message attachment from users mailbox.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} -  The message id of the specified mail to retrieve.
-        P{{attachmentId}} - The id of the attachment to retrieve.
-        R{{}} - If successful, returns MessageAttachment type object of the specified attachment. Else returns
+    documentation{
+        Gets the specified message attachment from users mailbox.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} The message id of the specified mail to retrieve
+        P{{attachmentId}} The id of the attachment to retrieve
+        R{{}} If successful, returns MessageAttachment type object of the specified attachment. Else returns
                 GmailError.
     }
     public function getAttachment(string userId, string messageId, string attachmentId)
                                                                                 returns MessageAttachment|GmailError;
 
-    documentation{Move the specified message to the trash.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} -  The message id of the specified mail to trash.
-        R{{}} - If successful, returns boolean specifying the status of trashing. Else returns GmailError.
+    documentation{
+        Move the specified message to the trash.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} The message id of the specified mail to trash
+        R{{}} If successful, returns boolean specifying the status of trashing. Else returns GmailError.
     }
     public function trashMessage(string userId, string messageId) returns boolean|GmailError;
 
-    documentation{Removes the specified message from the trash.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} - The message id of the specified message to untrash.
-        R{{}} - If successful, returns boolean specifying the status of untrashing. Else returns GmailError.
+    documentation{
+        Removes the specified message from the trash.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} The message id of the specified message to untrash
+        R{{}} If successful, returns boolean specifying the status of untrashing. Else returns GmailError.
     }
     public function untrashMessage(string userId, string messageId) returns boolean|GmailError;
 
-    documentation{Immediately and permanently deletes the specified message. This operation cannot be undone.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} - The message id of the specified message to delete.
-        R{{}} - If successful, returns boolean status of deletion. Else returns GmailError.
+    documentation{
+        Immediately and permanently deletes the specified message. This operation cannot be undone.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{messageId}} The message id of the specified message to delete.
+        R{{}} If successful, returns boolean status of deletion. Else returns GmailError.
     }
     public function deleteMessage(string userId, string messageId) returns boolean|GmailError;
 
-    documentation{List the threads in user's mailbox.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} - Optional. The SearchFilter with optional query parameters to search a thread.
-        R{{}} - If successful, returns ThreadListPage type. Else returns GmailError.
+    documentation{
+        List the threads in user's mailbox.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{filter}} Optional. The SearchFilter with optional query parameters to search a thread.
+        R{{}} If successful, returns ThreadListPage type. Else returns GmailError.
     }
     public function listThreads(string userId, SearchFilter? filter = ()) returns ThreadListPage|GmailError;
 
-    documentation{Read the specified mail thread from users mailbox.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} -  The thread id of the specified mail to retrieve.
-        P{{format}} - Optional. The format to return the messages in.
+    documentation{
+        Read the specified mail thread from users mailbox.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{threadId}} The thread id of the specified mail to retrieve.
+        P{{format}} Optional. The format to return the messages in.
                   Acceptable values for format for a get thread request are defined as following constants
                   in the package:
 
@@ -120,37 +140,45 @@ public type GmailConnector object {
 
                     *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
                                    base64url encoded string. (the payload field is not included in the response)
-        P{{metadataHeaders}} - Optional. The meta data headers array to include in the reponse when the format is given
+        P{{metadataHeaders}} Optional. The meta data headers array to include in the reponse when the format is given
                                as *FORMAT_METADATA*.
-        R{{}} - If successful, returns Thread type of the specified mail thread. Else returns GmailError.
+        R{{}} If successful, returns Thread type of the specified mail thread. Else returns GmailError.
     }
     public function readThread(string userId, string threadId, string? format = (), string[]? metadataHeaders = ())
                                                                                               returns Thread|GmailError;
 
-    documentation{Move the specified mail thread to the trash.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} -  The thread id of the specified mail thread to trash.
-        R{{}} - If successful, returns boolean status of trashing. Else returns GmailError.
+    documentation{
+        Move the specified mail thread to the trash.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{threadId}} The thread id of the specified mail thread to trash
+        R{{}} If successful, returns boolean status of trashing. Else returns GmailError.
     }
     public function trashThread(string userId, string threadId) returns boolean|GmailError;
 
-    documentation{Removes the specified mail thread from the trash.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} - The thread id of the specified mail thread to untrash.
-        R{{}} - If successful, returns boolean status of untrashing. Else returns GmailError.
+    documentation{
+        Removes the specified mail thread from the trash.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{threadId}} The thread id of the specified mail thread to untrash
+        R{{}} If successful, returns boolean status of untrashing. Else returns GmailError.
     }
     public function untrashThread(string userId, string threadId) returns boolean|GmailError;
 
-    documentation{Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} - The thread id of the specified mail thread to delete.
-        R{{}} - If successful, returns boolean status of deletion. Else returns GmailError.
+    documentation{
+        Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        P{{threadId}} The thread id of the specified mail thread to delete
+        R{{}} If successful, returns boolean status of deletion. Else returns GmailError.
     }
     public function deleteThread(string userId, string threadId) returns boolean|GmailError;
 
-    documentation{Get the current user's Gmail Profile.
-        P{{userId}} - The user's email address. The special value **me** can be used to indicate the authenticated user.
-        R{{}} - If successful, returns UserProfile type. Else returns GmailError.
+    documentation{
+        Get the current user's Gmail Profile.
+
+        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
+        R{{}} If successful, returns UserProfile type. Else returns GmailError.
     }
     public function getUserProfile(string userId) returns UserProfile|GmailError;
 };

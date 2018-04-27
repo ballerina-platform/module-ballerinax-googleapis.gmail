@@ -2,9 +2,8 @@ Connects to Gmail from Ballerina.
 
 # Package Overview
 
-This package provides a Ballerina API for the Gmail REST API. It provides the ability to send emails, read emails, 
-delete emails, read threads, get the Gmail profile, etc. It handles OAuth 2.0 and provides auto completion and 
-type conversions.
+The Gmail connector allows you to send, read, and delete emails through the Gmail REST API. It handles OAuth 2.0 
+authentication. It also provides the ability to read, trash, untrash, delete threads, get the Gmail profile, etc.
 
 **Message Operations**
 
@@ -23,7 +22,7 @@ The `wso2/gmail` package contains operations to get Gmail user profile details.
 ## Compatibility
 |                    |    Version     |  
 | :-----------------:|:--------------:| 
-| Ballerina Language | 0.970.0-beta15 |
+| Ballerina Language | 0.970.0-rc1    |
 |     Gmail API      |    v1         |  
 
 ## Sample
