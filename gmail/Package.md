@@ -22,7 +22,7 @@ The `wso2/gmail` package contains operations to get Gmail user profile details.
 ## Compatibility
 |                    |    Version     |  
 | :-----------------:|:--------------:| 
-| Ballerina Language | 0.970.0-rc1    |
+| Ballerina Language |    0.970.0    |
 |     Gmail API      |    v1         |  
 
 ## Sample
