@@ -17,15 +17,19 @@
 import ballerina/io;
 import ballerina/http;
 
-documentation{Decodes the message body of text/* mime message parts.
-    P{{sourceMessagePartJsonObject}} - Json message part object
-    R{{}} - If successful, returns string base64 decoded message body. Else returns GmailError.
+documentation{
+    Decodes the message body of text/* mime message parts.
+
+    P{{sourceMessagePartJsonObject}} Json message part object
+    R{{}} If successful, returns string base64 decoded message body. Else returns GmailError.
 }
 function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GmailError {
     string decodedBody;
-    string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString();
+    string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType != () ?
+                                                         sourceMessagePartJsonObject.mimeType.toString() : EMPTY_STRING;
     if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
-        string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString();
+        string sourceMessagePartBody = sourceMessagePartJsonObject.body.data != () ?
+                                                        sourceMessagePartJsonObject.body.data.toString() : EMPTY_STRING;
         decodedBody = sourceMessagePartBody.replace(DASH_SYMBOL, PLUS_SYMBOL)
                                             .replace(UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL)
                                             .replace(STAR_SYMBOL, EQUAL_SYMBOL);
@@ -42,10 +46,12 @@ function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|Gmai
     return decodedBody;
 }
 
-documentation{Gets only the attachment MIME messageParts from the json message payload of the email.
-    P{{messagePayload}} - Json message payload which is the parent message part of the email.
-    P{{msgAttachments}} - Initial array of attachment message parts.
-    R{{}} -  An array of MessageAttachments.
+documentation{
+    Gets only the attachment MIME messageParts from the json message payload of the email.
+
+    P{{messagePayload}} Json message payload which is the parent message part of the email
+    P{{msgAttachments}} Initial array of attachment message parts
+    R{{}} An array of MessageAttachments
 }
 function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
                                                                                 returns @tainted MessageAttachment[] {
@@ -53,11 +59,11 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         map headers = convertJsonHeadersToHeaderMap(messagePayload.headers);
-        string contentDispositionHeader = headers.hasKey(CONTENT_DISPOSITION) ? <string>headers[CONTENT_DISPOSITION] : EMPTY_STRING;
+        string contentDispositionHeader = getKeyValueFromMap(headers, CONTENT_DISPOSITION);
         string[] headerParts = contentDispositionHeader.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
-    string messagePayloadMimeType = messagePayload.mimeType.toString();
+    string messagePayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString() : EMPTY_STRING;
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
         attachmentParts[lengthof attachmentParts] = convertJsonMsgPartToMsgAttachment(messagePayload);
@@ -75,10 +81,12 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
     return attachmentParts;
 }
 
-documentation{Gets only the inline image MIME messageParts from the json message payload of the email.
-    P{{messagePayload}} - Json message payload which is the parent message part of the email.
-    P{{inlineMessageImages}} - Initial array of inline image message parts.
-    R{{}} - If successful, returns an array of MessageBodyParts. Else returns GmailError.
+documentation{
+    Gets only the inline image MIME messageParts from the json message payload of the email.
+
+    P{{messagePayload}} Json message payload which is the parent message part of the email
+    P{{inlineMessageImages}} Initial array of inline image message parts
+    R{{}} If successful, returns an array of MessageBodyParts. Else returns GmailError.
 }
 //Extract inline image MIME message parts from the email
 function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMessageImages)
@@ -87,12 +95,11 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         map headers = convertJsonHeadersToHeaderMap(messagePayload.headers);
-        string contentDispositionHeader = headers.hasKey(CONTENT_DISPOSITION) ?
-                                                                    <string>headers[CONTENT_DISPOSITION] : EMPTY_STRING;
+        string contentDispositionHeader = getKeyValueFromMap(headers, CONTENT_DISPOSITION);
         string[] headerParts = contentDispositionHeader.split(";");
         disposition = headerParts[0];
     }
-    string messagePayloadMimeType = messagePayload.mimeType.toString();
+    string messagePayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString() : EMPTY_STRING;
     //If parent mime part is image/* and it is inline
     if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
@@ -116,13 +123,15 @@ function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBody
     return inlineImgParts;
 }
 
-documentation{Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
+documentation{
+    Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
     from the json message payload of the email.
-    *Can be used only if there is only one message part with the given mime type in the email payload,
-    otherwise, it will return with first found matching message part.*
-    P{{messagePayload}} - Json message payload which is the parent message part of the email.
-    P{{mimeType}} - Initial array of inline image message parts.
-    R{{}} -  If successful returns MessageBodyPart. Else returns GmailError.
+    Can be used only if there is only one message part with the given mime type in the email payload,
+    otherwise, it will return with first found matching message part.
+
+    P{{messagePayload}} Json message payload which is the parent message part of the email
+    P{{mimeType}} Initial array of inline image message parts
+    R{{}} If successful returns MessageBodyPart. Else returns GmailError
 }
 function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
                                                                         returns @tainted MessageBodyPart|GmailError {
@@ -130,12 +139,12 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
     string disposition = EMPTY_STRING;
     if (messagePayload.headers != ()){
         map headers = convertJsonHeadersToHeaderMap(messagePayload.headers);
-        string contentDispositionHeader = headers.hasKey(CONTENT_DISPOSITION) ?
-                                                                    <string>headers[CONTENT_DISPOSITION] : EMPTY_STRING;
+        string contentDispositionHeader = getKeyValueFromMap(headers,CONTENT_DISPOSITION);
         string[] headerParts = contentDispositionHeader.split(SEMICOLON_SYMBOL);
         disposition = headerParts[0];
     }
-    string messageBodyPayloadMimeType = messagePayload.mimeType.toString();
+    string messageBodyPayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString()
+                                                                                                        : EMPTY_STRING;
     //If parent mime part is given mime type and not an attachment or an inline part
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
         match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
@@ -163,10 +172,11 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
     return msgBodyPart;
 }
 
-documentation{Converts json string array to string array.
+documentation{
+    Converts json string array to string array.
 
-    P{{sourceJsonObject}} - Json array
-    R{{}} - String array
+    P{{sourceJsonObject}} Json array
+    R{{}} String array
 }
 function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[] {
     string[] targetStringArray = [];
@@ -176,11 +186,13 @@ function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[]
     return targetStringArray;
 }
 
-documentation{Checks whether mime type in the message part is same as the given the mime type. Returns true if both types
+documentation{
+    Checks whether mime type in the message part is same as the given the mime type. Returns true if both types
     matches, returns false if not.
-    P{{msgMimeType}} - The mime type of the message part you want check
-    P{{mType}} - The given mime type which you wants check against with
-    R{{}} - Boolean status of mime type match
+
+    P{{msgMimeType}} The mime type of the message part you want check
+    P{{mType}} The given mime type which you wants check against with
+    R{{}} Boolean status of mime type match
 }
 function isMimeType(string msgMimeType, string mType) returns boolean {
     string[] msgTypes = msgMimeType.split(FORWARD_SLASH_SYMBOL);
@@ -200,9 +212,11 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
     }
 }
 
-documentation{Opens a file from file path and returns the as base 64 encoded string.
-    P{{filePath}} - File path
-    R{{encodedFile}} - If successful returns encoded file. Else returns GmailError.
+documentation{
+    Opens a file from file path and returns the as base 64 encoded string.
+
+    P{{filePath}} File path
+    R{{encodedFile}} If successful returns encoded file. Else returns GmailError
 }
 function encodeFile(string filePath) returns (string|GmailError) {
     io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
@@ -234,18 +248,22 @@ function encodeFile(string filePath) returns (string|GmailError) {
 }
 
 
-documentation{Gets the file name from the given file path.
-    P{{filePath}} - File path **(including the file name and extension at the end)**
-    R{{pathParts}} - Returns the file name extracted from the file path.
+documentation{
+    Gets the file name from the given file path.
+
+    P{{filePath}} File path (including the file name and extension at the end)
+    R{{pathParts}} Returns the file name extracted from the file path
 }
 function getFileNameFromPath(string filePath) returns string {
     string[] pathParts = filePath.split("/");
     return pathParts[lengthof pathParts - 1];
 }
 
-documentation{Handles the http response.
-    P{{response}} - Http response or HttpConnectorEror
-    R{{}} - If successful returns json reponse. Else returns GmailError.
+documentation{
+    Handles the http response.
+
+    P{{response}} Http response or HttpConnectorEror
+    R{{}} If successful returns json reponse. Else returns GmailError
 }
 function handleResponse (http:Response|error response) returns (json|GmailError){
     match response {
@@ -295,11 +313,13 @@ function handleResponse (http:Response|error response) returns (json|GmailError)
     }
 }
 
-documentation{Create url encoded request body with given key and value.
-    P{{requestPath}} - Request path to be appended values.
-    P{{key}} - Key of the form value parameter.
-    P{{value}} - Value of the form value parameter.
-    R{{}} - If successful returns created request with encoded string. Else returns GmailError.
+documentation{
+    Create url encoded request body with given key and value.
+
+    P{{requestPath}} Request path to be appended values
+    P{{key}} Key of the form value parameter
+    P{{value}} Value of the form value parameter
+    R{{}} If successful returns created request with encoded string. Else returns GmailError
 }
 function appendEncodedURIParameter(string requestPath, string key, string value) returns (string|GmailError) {
     var encodedVar = http:encode(value, UTF_8);
@@ -319,4 +339,15 @@ function appendEncodedURIParameter(string requestPath, string key, string value)
         requestPath += QUESTION_MARK_SYMBOL;
     }
     return requestPath + key + EQUAL_SYMBOL + encodedString;
+}
+
+documentation{
+    Get the value of the given key of the map.
+
+    P{{targetMap}} Target map
+    P{{key}} Key to get value of
+    R{{}} Returns the string value if key is present, if not returns an empty string
+}
+function getKeyValueFromMap(map targetMap, string key) returns string {
+   return targetMap.hasKey(key) ? <string>targetMap[key] : EMPTY_STRING;
 }

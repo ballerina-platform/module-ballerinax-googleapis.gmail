@@ -249,3 +249,45 @@ public type ThreadListPage {
     @readonly string resultSizeEstimate;
     @readonly string nextPageToken;
 };
+
+documentation{
+    Represents a Label which is used to categorize messaages and threads within the user's mailbox.
+
+    F{{id}} The immutable ID of the label
+    F{{name}} The display name of the label
+    F{{messageListVisibility}} The visibility of messages with this label in the message list in the Gmail web interface.
+                               Acceptable values are:
+
+                                *hide*: Do not show the label in the message list.
+                                *show*: Show the label in the message list (Default)
+    F{{labelListVisibility}} The visibility of the label in the label list in the Gmail web interface.
+                             Acceptable values are:
+
+                                *labelHide*: Do not show the label in the label list
+                                *labelShow*: Show the label in the label list (Default)
+                                *labelShowIfUnread*: Show the label if there are any unread messages with that label
+    F{{ownerType}} The owner type for the label.
+                   Acceptable values are:
+                        *system*: Labels created by Gmail
+                        *user*: Custom labels created by the user or application
+
+    F{{messagesTotal}} The total number of messages with the label
+    F{{messagesUnread}} The number of unread messages with the label
+    F{{threadsTotal}} The total number of threads with the label
+    F{{threadsUnread}} The number of unread threads with the label
+    F{{textColor}} 	The text color of the label, represented as hex string
+    F{{backgroundColor}} The background color represented as hex string
+}
+public type Label{
+   string id;
+   string name;
+   string messageListVisibility;
+   string labelListVisibility;
+   string ownerType;
+   int messagesTotal;
+   int messagesUnread;
+   int threadsTotal;
+   int threadsUnread;
+   string textColor;
+   string backgroundColor;
+};

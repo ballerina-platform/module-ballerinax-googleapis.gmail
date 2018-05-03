@@ -33,6 +33,8 @@ documentation {Holds the value for threads resoure path}
 @final string THREAD_RESOURCE = "/threads";
 documentation {Holds the value for profile resource path}
 @final string PROFILE_RESOURCE = "/profile";
+documentation {Holds the value for label resource path}
+@final string LABEL_RESOURCE = "/labels";
 
 documentation {Holds the value for empty string}
 @final string EMPTY_STRING = "";
