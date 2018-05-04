@@ -19,16 +19,17 @@ import ballerina/log;
 //Includes all the transforming functions which transform required json to type object/record and vice versa
 
 documentation{
-    Transforms JSON mail object into Message.
+    Transforms JSON message object into Message Type Object.
 
-    P{{sourceMessageJsonObject}} Json mail object
-    R{{}} If successful, returns Message type. Else returns GmailError.
+    P{{sourceMessageJsonObject}} Json message object
+    R{{}} If successful, returns Message type object. Else returns GmailError.
 }
-function convertJsonMessageToMessage(json sourceMessageJsonObject) returns Message|GmailError {
+function convertJSONToMessageType(json sourceMessageJsonObject) returns Message|GmailError {
     Message targetMessageType;
+    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMessageType.id = sourceMessageJsonObject.id != () ? sourceMessageJsonObject.id.toString() : EMPTY_STRING;
-    targetMessageType.threadId = sourceMessageJsonObject.threadId != () ? sourceMessageJsonObject.threadId.toString() :
-                                                                                                          EMPTY_STRING;
+    targetMessageType.threadId = sourceMessageJsonObject.threadId != () ? sourceMessageJsonObject.threadId.toString()
+                                                                                                         : EMPTY_STRING;
     match <json[]>sourceMessageJsonObject.labelIds {
         json[] labelIds => {
             targetMessageType.labelIds = convertJSONArrayToStringArray(labelIds);
@@ -46,34 +47,27 @@ function convertJsonMessageToMessage(json sourceMessageJsonObject) returns Messa
     targetMessageType.sizeEstimate = sourceMessageJsonObject.sizeEstimate != () ?
                                                         sourceMessageJsonObject.sizeEstimate.toString() : EMPTY_STRING;
     targetMessageType.headers = sourceMessageJsonObject.payload.headers != () ?
-                       convertJsonHeadersToHeaderMap(sourceMessageJsonObject.payload.headers):targetMessageType.headers;
-    targetMessageType.headerDate = getKeyValueFromMap(targetMessageType.headers, DATE);
-    targetMessageType.headerSubject = getKeyValueFromMap(targetMessageType.headers, SUBJECT);
-    targetMessageType.headerTo = getKeyValueFromMap(targetMessageType.headers, TO);
-    targetMessageType.headerFrom = getKeyValueFromMap(targetMessageType.headers, FROM);
-    targetMessageType.headerContentType = getKeyValueFromMap(targetMessageType.headers, CONTENT_TYPE);
-    targetMessageType.headerCc = getKeyValueFromMap(targetMessageType.headers, CC);
-    targetMessageType.headerBcc = getKeyValueFromMap(targetMessageType.headers, BCC);
+                              convertJSONToHeaderMap(sourceMessageJsonObject.payload.headers):targetMessageType.headers;
+    targetMessageType.headerDate = getValueForMapKey(targetMessageType.headers, DATE);
+    targetMessageType.headerSubject = getValueForMapKey(targetMessageType.headers, SUBJECT);
+    targetMessageType.headerTo = getValueForMapKey(targetMessageType.headers, TO);
+    targetMessageType.headerFrom = getValueForMapKey(targetMessageType.headers, FROM);
+    targetMessageType.headerContentType = getValueForMapKey(targetMessageType.headers, CONTENT_TYPE);
+    targetMessageType.headerCc = getValueForMapKey(targetMessageType.headers, CC);
+    targetMessageType.headerBcc = getValueForMapKey(targetMessageType.headers, BCC);
     targetMessageType.mimeType = sourceMessageJsonObject.payload.mimeType != () ?
                                                      sourceMessageJsonObject.payload.mimeType.toString() : EMPTY_STRING;
     string payloadMimeType = sourceMessageJsonObject.payload.mimeType != () ?
                                                      sourceMessageJsonObject.payload.mimeType.toString() : EMPTY_STRING;
     if (sourceMessageJsonObject.payload != ()){
-        match getMessageBodyPartFromPayloadByMimeType(sourceMessageJsonObject.payload, TEXT_PLAIN){
-            MessageBodyPart body => targetMessageType.plainTextBodyPart = body;
-            GmailError gmailError => return gmailError;
-        }
-        match getMessageBodyPartFromPayloadByMimeType(sourceMessageJsonObject.payload, TEXT_HTML){
-            MessageBodyPart body => targetMessageType.htmlBodyPart = body;
-            GmailError gmailError => return gmailError;
-        }
-        match getInlineImgPartsFromPayloadByMimeType(sourceMessageJsonObject.payload, []){
-            MessageBodyPart[] bodyParts => targetMessageType.inlineImgParts = bodyParts;
-            GmailError gmailError => return gmailError;
-        }
+        //Recursively go through the payload and get relevant message body part from content type
+        targetMessageType.plainTextBodyPart =
+                                   getMessageBodyPartFromPayloadByMimeType(sourceMessageJsonObject.payload, TEXT_PLAIN);
+        targetMessageType.htmlBodyPart =
+                                    getMessageBodyPartFromPayloadByMimeType(sourceMessageJsonObject.payload, TEXT_HTML);
+        (MessageBodyPart[], MessageBodyPart[]) parts = getFilePartsFromPayload(sourceMessageJsonObject.payload, [], []);
+        (targetMessageType.inlineImgParts, targetMessageType.msgAttachments)  = parts;
     }
-    targetMessageType.msgAttachments = sourceMessageJsonObject.payload != () ?
-                                                getAttachmentPartsFromPayload(sourceMessageJsonObject.payload, []) : [];
     return targetMessageType;
 }
 
@@ -83,15 +77,13 @@ documentation{
     P{{sourceMessagePartJsonObject}} Json message part object
     R{{}} If successful, returns MessageBodyPart type. Else returns GmailError.
 }
-function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart|GmailError {
+function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageBodyType;
     if (sourceMessagePartJsonObject != ()){
         targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId != () ?
                                                 sourceMessagePartJsonObject.body.attachmentId.toString() : EMPTY_STRING;
-        match decodeMsgBodyData(sourceMessagePartJsonObject){
-            string decodeBody => targetMessageBodyType.body = decodeBody;
-            GmailError gmailError => return gmailError;
-        }
+        targetMessageBodyType.body = sourceMessagePartJsonObject.body.data != () ?
+                                                        sourceMessagePartJsonObject.body.data.toString() : EMPTY_STRING;
         targetMessageBodyType.size = sourceMessagePartJsonObject.body.size != () ?
                                                         sourceMessagePartJsonObject.body.size.toString() : EMPTY_STRING;
         targetMessageBodyType.mimeType = sourceMessagePartJsonObject.mimeType != () ?
@@ -101,51 +93,26 @@ function convertJsonMsgBodyPartToMsgBodyType(json sourceMessagePartJsonObject) r
         targetMessageBodyType.fileName = sourceMessagePartJsonObject.filename != () ?
                                                          sourceMessagePartJsonObject.filename.toString() : EMPTY_STRING;
         targetMessageBodyType.bodyHeaders = sourceMessagePartJsonObject.headers != () ?
-                 convertJsonHeadersToHeaderMap(sourceMessagePartJsonObject.headers) : targetMessageBodyType.bodyHeaders;
+                        convertJSONToHeaderMap(sourceMessagePartJsonObject.headers) : targetMessageBodyType.bodyHeaders;
     }
     return targetMessageBodyType;
 }
 
 documentation{
-    Transforms MIME Message Part JSON into MessageAttachment.
-
-    P{{sourceMessagePartJsonObject}} Json message part object
-    R{{}} MessageAttachment type object
-}
-function convertJsonMsgPartToMsgAttachment(json sourceMessagePartJsonObject) returns MessageAttachment {
-    MessageAttachment targetMessageAttachmentType;
-    targetMessageAttachmentType.attachmentFileId = sourceMessagePartJsonObject.body.attachmentId != () ?
-                                                sourceMessagePartJsonObject.body.attachmentId.toString() : EMPTY_STRING;
-    targetMessageAttachmentType.attachmentBody = sourceMessagePartJsonObject.body.data != () ?
-                                                        sourceMessagePartJsonObject.body.data.toString() : EMPTY_STRING;
-    targetMessageAttachmentType.size = sourceMessagePartJsonObject.body.size != () ?
-                                                        sourceMessagePartJsonObject.body.size.toString() : EMPTY_STRING;
-    targetMessageAttachmentType.mimeType = sourceMessagePartJsonObject.mimeType != () ?
-                                                         sourceMessagePartJsonObject.mimeType.toString() : EMPTY_STRING;
-    targetMessageAttachmentType.partId = sourceMessagePartJsonObject.partId != () ?
-                                                           sourceMessagePartJsonObject.partId.toString() : EMPTY_STRING;
-    targetMessageAttachmentType.attachmentFileName = sourceMessagePartJsonObject.filename != () ?
-                                                         sourceMessagePartJsonObject.filename.toString() : EMPTY_STRING;
-    targetMessageAttachmentType.attachmentHeaders = sourceMessagePartJsonObject.headers != () ?
-     convertJsonHeadersToHeaderMap(sourceMessagePartJsonObject.headers) : targetMessageAttachmentType.attachmentHeaders;
-    return targetMessageAttachmentType;
-}
-
-documentation{
-    Transforms single body of MIME Message part into MessageAttachment.
+    Transforms single body of MIME Message part into MessageBodyPart Attachment.
 
     P{{sourceMessageBodyJsonObject}} Json message body object.
-    R{{}} Returns MessageAttachment type.
+    R{{}} Returns MessageBodyPart type.
 }
-function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageAttachment {
-    MessageAttachment targetMessageAttachmentType;
-    targetMessageAttachmentType.attachmentFileId = sourceMessageBodyJsonObject.attachmentId != () ?
+function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
+    MessageBodyPart targetMessageAttachment;
+    targetMessageAttachment.fileId = sourceMessageBodyJsonObject.attachmentId != () ?
                                                      sourceMessageBodyJsonObject.attachmentId.toString() : EMPTY_STRING;
-    targetMessageAttachmentType.attachmentBody = sourceMessageBodyJsonObject.data != () ?
+    targetMessageAttachment.body = sourceMessageBodyJsonObject.data != () ?
                                                              sourceMessageBodyJsonObject.data.toString() : EMPTY_STRING;
-    targetMessageAttachmentType.size = sourceMessageBodyJsonObject.size != () ?
+    targetMessageAttachment.size = sourceMessageBodyJsonObject.size != () ?
                                                              sourceMessageBodyJsonObject.size.toString() : EMPTY_STRING;
-    return targetMessageAttachmentType;
+    return targetMessageAttachment;
 }
 
 documentation{
@@ -182,7 +149,7 @@ documentation{
 function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[]|GmailError {
     Message[] messages = [];
     foreach i, jsonMessage in sourceMessageArrayJsonObject {
-        match (convertJsonMessageToMessage(jsonMessage)){
+        match (convertJSONToMessageType(jsonMessage)){
             Message msg => {
                 messages[i] = msg;
             }
@@ -217,21 +184,24 @@ documentation{
     P{{sourceMsgListJsonObject}} Json Messsage List object
     R{{}} MessageListPage type
 }
-function convertJsonMsgListToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
+function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
     MessageListPage targetMsgListPage;
+    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMsgListPage.resultSizeEstimate = sourceMsgListJsonObject.resultSizeEstimate != () ?
                                                    sourceMsgListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
     targetMsgListPage.nextPageToken = sourceMsgListJsonObject.nextPageToken != () ?
                                                         sourceMsgListJsonObject.nextPageToken.toString() : EMPTY_STRING;
+    //Convert json object to json array object
     match <json[]> sourceMsgListJsonObject.messages {
         json[] messages => {
             //for each message resource in messages json array of the response
             foreach i, message in messages {
-                //Add the message map with Id and thread Id as keys to the array
+                //Create a map with message Id and thread Id as keys and add it to the array of messages
+                //Assume message json field always has id and threadId as its subfields
                 targetMsgListPage.messages[i] = { messageId: message.id.toString(),
                                                   threadId: message.threadId.toString() };
             }
-        }
+        } //If the key messages is not in response, fails and throws an error in conversion
         error err => log:printDebug("List messages reponse does not have an array of messages");
     }
     return targetMsgListPage;
@@ -269,7 +239,7 @@ documentation{
     P{{jsonMsgPartHeaders}} Json array of message part headers
     R{{}} Map of headers
 }
-function convertJsonHeadersToHeaderMap(json jsonMsgPartHeaders) returns map {
+function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map {
     map headers;
     foreach jsonHeader in jsonMsgPartHeaders {
         headers[jsonHeader.name.toString()] = jsonHeader.value.toString();
@@ -362,7 +332,7 @@ function convertJsonToMailboxHistoryPage (json sourceJsonMailboxHistory) returns
 
 function convertJsonMsgListToMsgTypeList (json[] messages, Message[] targetList) returns Message[]|GmailError {
     foreach i, msg in messages {
-        match convertJsonMessageToMessage(msg) {
+        match convertJSONToMessageType(msg) {
             Message m => targetList[i] = m;
             GmailError gmailError => return gmailError;
         }
@@ -391,7 +361,7 @@ function converJsonHistoryToHistoryType (json sourceJsonHistory) returns History
     match <json[]>sourceJsonHistory.labelsAdded {
         json[] lbls => {
             foreach i, record in lbls {
-                targetHistory.labelsAdded[i] = { message: convertJsonMessageToMessage(record.message) };
+                targetHistory.labelsAdded[i] = { message: convertJSONToMessageType(record.message) };
                 match <json[]>record.labelIds{
                     json[] labelIds => targetHistory.labelsAdded[i] =
                                                                   { labelIds: convertJSONArrayToStringArray(labelIds) };
@@ -405,7 +375,7 @@ function converJsonHistoryToHistoryType (json sourceJsonHistory) returns History
     match <json[]>sourceJsonHistory.labelsRemoved {
         json[] lbls => {
             foreach i, record in lbls {
-                targetHistory.labelsRemoved[i] = { message: convertJsonMessageToMessage(record.message) };
+                targetHistory.labelsRemoved[i] = { message: convertJSONToMessageType(record.message) };
                 match <json[]>record.labelIds{
                     json[] labelIds => targetHistory.labelsRemoved[i] =
                                                                  { labelIds: convertJSONArrayToStringArray(labelIds) };
@@ -456,6 +426,6 @@ function convertJsonDraftToDraftType(json sourceDraftJsonObject) returns Draft|G
     Draft targetDraft;
     targetDraft.id = sourceDraftJsonObject.id != () ? sourceDraftJsonObject.id.toString() : EMPTY_STRING;
     targetDraft.message = sourceDraftJsonObject.message != () ?
-                                                check convertJsonMessageToMessage(sourceDraftJsonObject.message) : {};
+                                                check convertJSONToMessageType(sourceDraftJsonObject.message) : {};
     return targetDraft;
 }

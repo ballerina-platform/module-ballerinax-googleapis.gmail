@@ -15,8 +15,6 @@
 // under the License.
 
 import ballerina/http;
-import ballerina/mime;
-import ballerina/log;
 
 documentation{
     Represents the Gmail Client Connector.
@@ -32,7 +30,7 @@ public type GmailConnector object {
         List the messages in user's mailbox.
 
         P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} Optional. MsgSearchFilter with optional query parameters to search emails.
+        P{{filter}} Optional. MsgSearchFilter with optional query parameters to search messages.
         R{{}} If successful, returns MessageListPage. Else returns GmailError.
     }
     public function listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|GmailError;
@@ -53,7 +51,7 @@ public type GmailConnector object {
 
         P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} The id of the message to retrieve
-        P{{format}} Optional. The format to return the messages in.
+        P{{format}} Optional. The format to return the message in.
                   Acceptable values for format for a get message request are defined as following constants
                   in the package:
 
@@ -67,12 +65,12 @@ public type GmailConnector object {
 
                     *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
                                    base64url encoded string. (the payload field is not included in the response)
-        P{{metadataHeaders}} The meta data headers array to include in the reponse when the format is given
+        P{{metadataHeaders}} Optional. The meta data headers array to include in the response when the format is given
                                as *FORMAT_METADATA*.
-        R{{}} If successful, returns Message type of the specified mail. Else returns GmailError.
+        R{{}} If successful, returns Message type object of the specified mail. Else returns GmailError.
     }
     public function readMessage(string userId, string messageId, string? format = (), string[]? metadataHeaders = ())
-                        returns Message|GmailError;
+                                                                                            returns Message|GmailError;
 
     documentation{
         Gets the specified message attachment from users mailbox.
@@ -80,11 +78,11 @@ public type GmailConnector object {
         P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{messageId}} The id of  the message to retrieve
         P{{attachmentId}} The id of the attachment to retrieve
-        R{{}} If successful, returns MessageAttachment type object of the specified attachment. Else returns
+        R{{}} If successful, returns MessageBodyPart type object of the specified attachment. Else returns
                 GmailError.
     }
     public function getAttachment(string userId, string messageId, string attachmentId)
-                        returns MessageAttachment|GmailError;
+                        returns MessageBodyPart|GmailError;
 
     documentation{
         Move the specified message to the trash.
@@ -338,60 +336,61 @@ public type GmailConnector object {
     public function sendDraft(string userId, string draftId) returns (string, string)|GmailError;
 };
 
-public function GmailConnector::listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|
-            GmailError {
+public function GmailConnector::listMessages(string userId, MsgSearchFilter? filter = ())
+                                                                                    returns MessageListPage|GmailError {
     endpoint http:Client httpClient = self.client;
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
     match filter {
         MsgSearchFilter searchFilter => {
             string uriParams;
             //The default value for include spam trash query parameter of the api call is false
+            //If append unsuccessful throws and returns GmailError
             uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.
                 includeSpamTrash);
-            //Add optional query parameters
+            //---Append other optional URI query parameters---
             foreach labelId in searchFilter.labelIds {
                 uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
             }
-            uriParams = searchFilter.maxResults != EMPTY_STRING                              ?
-            check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
-            uriParams = searchFilter.pageToken != EMPTY_STRING                             ?
-            check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
-            uriParams = searchFilter.q != EMPTY_STRING                        ?
-            check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
+            //Empty check is done since these parameters are optional to be filled in MsgSearchFilter Type object
+            uriParams = searchFilter.maxResults != EMPTY_STRING ?
+                           check appendEncodedURIParameter(uriParams, MAX_RESULTS, searchFilter.maxResults) : uriParams;
+            uriParams = searchFilter.pageToken != EMPTY_STRING ?
+                             check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
+            uriParams = searchFilter.q != EMPTY_STRING ?
+                                          check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
             getListMessagesPath += uriParams;
         }
-        () => {}
+        () => {} //If filter is nill(not defined by the caller), do nothing.
     }
     var httpResponse = httpClient->get(getListMessagesPath);
-    match handleResponse(httpResponse) {
-        json jsonlistMsgResponse => return convertJsonMsgListToMessageListPageType(jsonlistMsgResponse);
-        GmailError gmailError => return gmailError;
-    }
+    //Get json msg list reponse. If unsuccessful throws and returns GmailError.
+    json jsonlistMsgResponse = check handleResponse(httpResponse);
+    return convertJSONToMessageListPageType(jsonlistMsgResponse);
 }
 
 public function GmailConnector::sendMessage(string userId, MessageRequest message) returns (string, string)|GmailError {
     endpoint http:Client httpClient = self.client;
+    //Create the whole message as an encoded raw string. If unsuccessful throws and returns GmailError.
     string encodedRequest = check createEncodedRawMessage(message);
     http:Request request = new;
     json jsonPayload = { raw: encodedRequest };
     string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
     request.setJsonPayload(jsonPayload);
     var httpResponse = httpClient->post(sendMessagePath, request = request);
-    match handleResponse(httpResponse) {
-        json jsonSendMessageResponse => return (jsonSendMessageResponse.id.toString(),
-        jsonSendMessageResponse.threadId.toString());
-        GmailError gmailError => return gmailError;
-    }
+    //Get json sent msg response. If unsuccessful throws and returns GmailError.
+    json jsonSendMessageResponse = check handleResponse(httpResponse);
+    //Return the (messageId, threadId) of the sent message
+    return (jsonSendMessageResponse.id.toString(), jsonSendMessageResponse.threadId.toString());
 }
 
 public function GmailConnector::readMessage(string userId, string messageId, string? format = (),
                                             string[]? metadataHeaders = ()) returns Message|GmailError {
     endpoint http:Client httpClient = self.client;
     string uriParams;
-    //Add format query parameter
+    //Append format query parameter
     match format {
         string messageFormat => uriParams = check appendEncodedURIParameter(uriParams, FORMAT, messageFormat);
-        () => {}
+        () => {} //If not given, do nothing
     }
     match metadataHeaders {
         string[] messageMetadataHeaders => {
@@ -400,32 +399,25 @@ public function GmailConnector::readMessage(string userId, string messageId, str
                 uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
             }
         }
-        () => {}
+        () => {} //If not given, do nothing
     }
-    string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
-    readMessagePath += uriParams;
+    string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId + uriParams;
     var httpResponse = httpClient->get(readMessagePath);
-    match handleResponse(httpResponse) {
-        json jsonreadMessageResponse => {
-            //Transform the json mail response from Gmail API to Message type
-            match (convertJsonMessageToMessage(jsonreadMessageResponse)){
-                Message message => return message;
-                GmailError gmailError => return gmailError;
-            }
-        }
-        GmailError gmailError => return gmailError;
-    }
+    //Get json message response. If unsuccessful, throws and returns GmailError
+    json jsonreadMessageResponse = check handleResponse(httpResponse);
+    //Transform the json mail response from Gmail API to Message type. If unsuccessful, throws and returns GmailError.
+    return convertJSONToMessageType(jsonreadMessageResponse);
 }
 
 public function GmailConnector::getAttachment(string userId, string messageId, string attachmentId)
-                                    returns MessageAttachment|GmailError {
+                                    returns MessageBodyPart|GmailError {
     endpoint http:Client httpClient = self.client;
     string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
         + ATTACHMENT_RESOURCE + attachmentId;
     var httpResponse = httpClient->get(getAttachmentPath);
     match handleResponse(httpResponse) {
         json jsonAttachment => {
-            //Transform the json mail response from Gmail API to MessageAttachment type
+            //Transform the json mail response from Gmail API to MessageBodyPart type
             return convertJsonMessageBodyToMsgAttachment(jsonAttachment);
         }
         GmailError gmailError => return gmailError;
@@ -677,7 +669,7 @@ public function GmailConnector::modifyMessage(string userId, string messageId, s
     match handleResponse(httpResponse) {
         json jsonMessageResponse => {
             //Transform the json mail response from Gmail API to Message type in minimal format
-            match (convertJsonMessageToMessage(jsonMessageResponse)){
+            match (convertJSONToMessageType(jsonMessageResponse)){
                 Message message => return message;
                 GmailError gmailError => return gmailError;
             }

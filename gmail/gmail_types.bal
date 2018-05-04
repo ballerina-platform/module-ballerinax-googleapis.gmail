@@ -146,7 +146,7 @@ public type Message {
     @readonly MessageBodyPart plainTextBodyPart;
     @readonly MessageBodyPart htmlBodyPart;
     @readonly MessageBodyPart[] inlineImgParts;
-    @readonly MessageAttachment[] msgAttachments;
+    @readonly MessageBodyPart[] msgAttachments;
 };
 
 documentation{
@@ -155,10 +155,10 @@ documentation{
     F{{body}} The body data of the message part. This is a base64 encoded string
     F{{mimeType}} MIME type of the message part
     F{{bodyHeaders}} Headers of the MIME Message Part
-    F{{fileId}} The file id of the attachment in message part *(This is empty unless the message part represent an
-                  inline image)*
-    F{{fileName}} The file name of the attachment in message part *(This is empty unless the message part represent an
-                    inline image)*
+    F{{fileId}} The file id of the attachment/inline image in message part *(This is empty unless the message part
+                represent an inline image/attachment)*
+    F{{fileName}} The file name of the attachment/inline image in message part *(This is empty unless the message part
+                represent an inline image/attachment)*
     F{{partId}} The part id of the message part
     F{{size}} Number of bytes of message part data
 }
@@ -170,28 +170,6 @@ public type MessageBodyPart {
     @readonly string fileName;
     @readonly string partId;
     @readonly string size;
-};
-
-documentation{
-    Represents the attachment message part of a message resource response.
-
-    F{{attachmentFileId}} The file id of the attachment in the message
-    F{{attachmentBody}} Base 64 encoded attachment body of the Message Part. This is empty when the attachment
-                        body data is sent as a seperate attachment.
-    F{{size}} Size of the attachment message part
-    F{{attachmentFileName}} File name of the attachment in the message
-    F{{mimeType}} Mime Type of the message part
-    F{{attachmentHeaders}} Headers of message part
-    F{{partId}} Part Id of the message part
-}
-public type MessageAttachment {
-    @readonly string attachmentFileId;
-    @readonly string attachmentBody;
-    @readonly string size;
-    @readonly string attachmentFileName;
-    @readonly string mimeType;
-    @readonly map attachmentHeaders;
-    @readonly string partId;
 };
 
 documentation{
@@ -210,7 +188,7 @@ documentation{
 
     F{{includeSpamTrash}} Specifies whether to include messages/threads from SPAM and TRASH in the results
     F{{labelIds}} Array of label ids. Only return messages/threads with labels that match all of the specified
-                    label Ids.
+                  label Ids.
     F{{maxResults}} Maximum number of messages/threads to return in the page for a single request
     F{{pageToken}} Page token to retrieve a specific page of results in the list
     F{{q}} Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports

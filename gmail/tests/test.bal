@@ -201,9 +201,9 @@ function testgetAttachment() {
     var attachment = gmailEP->getAttachment(userId, sentHtmlMessageId, readAttachmentFileId);
     match attachment {
         GmailError e => test:assertFail(msg = e.message);
-        MessageAttachment attach => {
-            boolean status = (attach.attachmentFileId == EMPTY_STRING && attach.attachmentBody == EMPTY_STRING)
-                             ? false : true;
+        MessageBodyPart attachment => {
+            boolean status = (attachment.attachmentFileId == EMPTY_STRING && attachment.attachmentBody == EMPTY_STRING)
+                              ? false : true;
             test:assertTrue(status, msg = "Get Attachment failed");
         }
     }
