@@ -1,26 +1,41 @@
-# Gmail Connector
+Connects to Gmail from Ballerina. 
+
+# Package Overview
 
 The Gmail connector allows you to send, read, and delete emails through the Gmail REST API. It handles OAuth 2.0 
-authentication. It also provides the ability to read, trash, untrash, delete threads, get the Gmail profile, etc.
+authentication. It also provides the ability to read, trash, untrash, delete threads, get the Gmail profile, mailbox 
+history, etc.
 
-**Message Operations**
+**Working with Messages**
 
 The `wso2/gmail` package contains operations to send emails in Text and HTML formats with attachments and inline images. 
 It supports searching and reading messages in Gmail using Gmail filters. The package also supports trashing, untrashing, 
-and deleting messages as well.
+deleting, and modifying messages as well.
 
-**Thread Operations**
+**Working with Threads**
 
-The `wso2/gmail` package contains operations to read, search, trash, untrash, and delete mail threads in Gmail.
+The `wso2/gmail` package contains operations to read, search, trash, untrash, modify, and delete mail threads in Gmail.
 
-**UserProfile Operations**
+**Working with Drafts**
+
+The `wso2/gmail` package contains operations to search, read, delete, create, update, and send drafts in Gmail.   
+
+**Working with Labels**
+
+The `wso2/gmail` package containes operations to list, read, create, update, and delete labels in Gmail.
+
+**Working with User Profiles**
 
 The `wso2/gmail` package contains operations to get Gmail user profile details.
+
+**Working with User History**
+
+The `wso2/gmail` package contains operations to lists the history of changes to the user's mailbox.
 
 ## Compatibility
 |                    |    Version     |  
 | :-----------------:|:--------------:| 
-| Ballerina Language | 0.970.0        |
+| Ballerina Language |    0.970.0    |
 |     Gmail API      |    v1         |  
 
 ## Sample
