@@ -49,6 +49,8 @@ public type Client object {
 
     documentation{
         Returns the connector that client code uses.
+
+        R{{}} Returns GmailConnector
     }
     public function getCallerActions() returns GmailConnector {
         return self.gmailConnector;
