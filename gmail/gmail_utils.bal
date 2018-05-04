@@ -24,7 +24,7 @@ documentation{
     P{{messagePayload}} Json message payload which is the parent message part of the email
     P{{msgAttachments}} Initial array of attachment message parts
     P{{inlineMessageImages}} Initial array of inline image message parts
-    R{{}} Retunrs a tuple of two arrays of attachement parts and inline image parts
+    R{{}} Returns a tuple of two arrays of attachement parts and inline image parts
 }
 function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttachments,
                         MessageBodyPart[] inlineMessageImages) returns @tainted (MessageBodyPart[], MessageBodyPart[]) {
@@ -63,10 +63,9 @@ documentation{
 
     P{{messagePayload}} Json message payload which is the parent message part of the email
     P{{mimeType}} Mime type of the message body part to retrieve
-    R{{}} If successful returns MessageBodyPart. Else returns GmailError.
+    R{{}} Returns MessageBodyPart
 }
-function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
-                                                                        returns @tainted MessageBodyPart {
+function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType) returns @tainted MessageBodyPart {
     MessageBodyPart msgBodyPart;
     string disposition = getDispostionFromPayload(messagePayload);
     string messageBodyPayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString()
@@ -263,8 +262,8 @@ function handleResponse (http:Response|error response) returns (json|GmailError)
         }
         error err => {
             //Error occurred in http connector. Eg: Timeout
-            GmailError gmailError = { message:"Error occurred during HTTP Client invocation; message: "
-                +  err.message, cause:err.cause };
+            GmailError gmailError = { message:"Error occurred during HTTP Client invocation; message: " +  err.message,
+                                      cause:err.cause };
             return gmailError;
         }
     }

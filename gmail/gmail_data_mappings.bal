@@ -22,9 +22,9 @@ documentation{
     Transforms JSON message object into Message Type Object.
 
     P{{sourceMessageJsonObject}} Json message object
-    R{{}} If successful, returns Message type object. Else returns GmailError.
+    R{{}} Returns Message type object
 }
-function convertJSONToMessageType(json sourceMessageJsonObject) returns Message|GmailError {
+function convertJSONToMessageType(json sourceMessageJsonObject) returns Message {
     Message targetMessageType;
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMessageType.id = sourceMessageJsonObject.id != () ? sourceMessageJsonObject.id.toString() : EMPTY_STRING;
@@ -65,6 +65,7 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns Message|
                                    getMessageBodyPartFromPayloadByMimeType(sourceMessageJsonObject.payload, TEXT_PLAIN);
         targetMessageType.htmlBodyPart =
                                     getMessageBodyPartFromPayloadByMimeType(sourceMessageJsonObject.payload, TEXT_HTML);
+        //Recursively go through the payload and get message attachment and inline image parts
         (MessageBodyPart[], MessageBodyPart[]) parts = getFilePartsFromPayload(sourceMessageJsonObject.payload, [], []);
         (targetMessageType.msgAttachments, targetMessageType.inlineImgParts) = parts;
     }
@@ -75,11 +76,12 @@ documentation{
     Transforms MIME Message Part Json into MessageBody.
 
     P{{sourceMessagePartJsonObject}} Json message part object
-    R{{}} If successful, returns MessageBodyPart type. Else returns GmailError.
+    R{{}} Returns MessageBodyPart type
 }
 function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageBodyType;
     if (sourceMessagePartJsonObject != ()){
+        //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
         targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId != () ?
                                                 sourceMessagePartJsonObject.body.attachmentId.toString() : EMPTY_STRING;
         targetMessageBodyType.body = sourceMessagePartJsonObject.body.data != () ?
@@ -101,11 +103,12 @@ function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns Mess
 documentation{
     Transforms single body of MIME Message part into MessageBodyPart Attachment.
 
-    P{{sourceMessageBodyJsonObject}} Json message body object.
-    R{{}} Returns MessageBodyPart type.
+    P{{sourceMessageBodyJsonObject}} Json message body object
+    R{{}} Returns MessageBodyPart type object
 }
-function convertJsonMessageBodyToMsgAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
+function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageAttachment;
+    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMessageAttachment.fileId = sourceMessageBodyJsonObject.attachmentId != () ?
                                                      sourceMessageBodyJsonObject.attachmentId.toString() : EMPTY_STRING;
     targetMessageAttachment.body = sourceMessageBodyJsonObject.data != () ?
@@ -119,20 +122,16 @@ documentation{
     Transforms mail thread Json object into Thread.
 
     P{{sourceThreadJsonObject}} Json message thread object.
-    R{{}} If successful returns Thread type. Else returns GmailError.
+    R{{}} Returns Thread type.
 }
-function convertJsonThreadToThreadType(json sourceThreadJsonObject) returns Thread|GmailError {
+function convertJSONToThreadType(json sourceThreadJsonObject) returns Thread {
     Thread targetThreadType;
+    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetThreadType.id = sourceThreadJsonObject.id != () ? sourceThreadJsonObject.id.toString() : EMPTY_STRING;
     targetThreadType.historyId = sourceThreadJsonObject.historyId != () ?
                                                              sourceThreadJsonObject.historyId.toString() : EMPTY_STRING;
     match <json[]>sourceThreadJsonObject.messages{
-        json[] messages => {
-            match (convertToMessageArray(messages)){
-                Message[] msgs => targetThreadType.messages = msgs;
-                GmailError gmailError => return gmailError;
-            }
-        }
+        json[] messages => targetThreadType.messages = convertToMessageArray(messages);
         //No key named messages in the json response
         error err => log:printDebug("Thread response:" + targetThreadType.id + " does not contain any messages");
     }
@@ -144,17 +143,11 @@ documentation{
 
     P{{sourceMessageArrayJsonObject}} Json message array object
     R{{}} Message type array
-    R{{}} GmailError if coversion is not successful.
 }
-function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[]|GmailError {
+function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[] {
     Message[] messages = [];
     foreach i, jsonMessage in sourceMessageArrayJsonObject {
-        match (convertJSONToMessageType(jsonMessage)){
-            Message msg => {
-                messages[i] = msg;
-            }
-            GmailError gmailError => return gmailError;
-        }
+        messages[i] = convertJSONToMessageType(jsonMessage);
     }
     return messages;
 }
@@ -165,8 +158,9 @@ documentation{
     P{{sourceUserProfileJsonObject}} Json user profile object
     R{{}} UserProfile type
 }
-function convertJsonProfileToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
+function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
     UserProfile targetUserProfile;
+    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress != () ?
                                                      sourceUserProfileJsonObject.emailAddress.toString() : EMPTY_STRING;
     targetUserProfile.threadsTotal = sourceUserProfileJsonObject.threadsTotal != () ?
@@ -213,8 +207,9 @@ documentation{
     P{{sourceThreadListJsonObject}} Json Thead List object
     R{{}} ThreadListPage type
 }
-function convertJsonThreadListToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
+function convertJSONToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
     ThreadListPage targetThreadListPage;
+    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetThreadListPage.resultSizeEstimate = sourceThreadListJsonObject.resultSizeEstimate != () ?
                                                 sourceThreadListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
     targetThreadListPage.nextPageToken = sourceThreadListJsonObject.nextPageToken != () ?
@@ -223,11 +218,12 @@ function convertJsonThreadListToThreadListPageType(json sourceThreadListJsonObje
         json[] threads => {
             //for each thread resource in threads json array of the response
             foreach i, thread in threads {
-                //Add the thread map with Id, snippet and history Id as keys to the array of thread maps
+                //Create a map with thread Id, snippet and history Id as keys and add it to the array of threads
+                //Assume thread json field always has thread.id and thread.snippet and thread.historyId as its subfields
                 targetThreadListPage.threads[i] = { threadId: thread.id.toString(), snippet: thread.snippet.toString(),
                                                     historyId: thread.historyId.toString() };
             }
-        }
+        } //If the key threads is not in response, fails and throws an error in conversion
         error err => log:printDebug("List threads response does not have an array of threads");
     }
     return targetThreadListPage;
@@ -253,8 +249,9 @@ documentation{
     P{{sourceLabelJsonObject}} Json label
     R{{}} Label type object
 }
-function convertJsonLabelToLabelType(json sourceLabelJsonObject) returns Label {
+function convertJSONToLabelType(json sourceLabelJsonObject) returns Label {
     Label targetLabel;
+    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetLabel.id = sourceLabelJsonObject.id != () ? sourceLabelJsonObject.id.toString() : EMPTY_STRING;
     targetLabel.name = sourceLabelJsonObject.name != () ? sourceLabelJsonObject.name.toString() : EMPTY_STRING;
     targetLabel.messageListVisibility = sourceLabelJsonObject.messageListVisibility != () ?
@@ -296,12 +293,13 @@ documentation {
     P{{sourceJsonLabelList}} Source json object
     R{{}} Returns an array of Label type objects
 }
-function convertJsonLabelListToLabelTypeList(json sourceJsonLabelList) returns Label[] {
+function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[] {
     Label[] targetLabelList;
+    //Convert json object to json array object
     match <json[]>sourceJsonLabelList.labels {
         json[] jsonLabelList => {
             foreach i, label in jsonLabelList {
-                targetLabelList[i] = convertJsonLabelToLabelType(label);
+                targetLabelList[i] = convertJSONToLabelType(label);
             }
         }
         //No key named labels in the response
@@ -310,19 +308,22 @@ function convertJsonLabelListToLabelTypeList(json sourceJsonLabelList) returns L
     return targetLabelList;
 }
 
-function convertJsonToMailboxHistoryPage (json sourceJsonMailboxHistory) returns MailboxHistoryPage|GmailError {
+documentation{
+    Converts json mailbox history to MailboxHistoryPage Type.
+
+    P{{sourceJsonMailboxHistory}} Json mailbox history
+    R{{}} Returns MailboxHistoryPage Type object
+}
+function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns MailboxHistoryPage {
     MailboxHistoryPage targetMailboxHistoryPage;
     targetMailboxHistoryPage.nextPageToken = sourceJsonMailboxHistory.nextPageToken != () ?
-                                                sourceJsonMailboxHistory.nextPageToken.toString() : EMPTY_STRING;
+                                                       sourceJsonMailboxHistory.nextPageToken.toString() : EMPTY_STRING;
     targetMailboxHistoryPage.historyId = sourceJsonMailboxHistory.historyId != () ?
-                                                sourceJsonMailboxHistory.historyId.toString() : EMPTY_STRING;
+                                                           sourceJsonMailboxHistory.historyId.toString() : EMPTY_STRING;
     match <json[]>sourceJsonMailboxHistory.history {
         json[] historyList => {
             foreach i, history in historyList {
-                match converJsonHistoryToHistoryType(history) {
-                    History hist => targetMailboxHistoryPage.historyRecords[i] = hist;
-                    GmailError gmailError => return gmailError;
-                }
+                targetMailboxHistoryPage.historyRecords[i] = convertJSONToHistoryType(history);
             }
         }
         error err => log:printDebug("History response does not have any history records");
@@ -330,32 +331,40 @@ function convertJsonToMailboxHistoryPage (json sourceJsonMailboxHistory) returns
     return targetMailboxHistoryPage;
 }
 
-function convertJsonMsgListToMsgTypeList (json[] messages, Message[] targetList) returns Message[]|GmailError {
+documentation{
+    Converts json list of messages to Message Type list.
+
+    P{{messages}} Json list of messages
+    P{{targetList}} Message Type list to be returned
+    R{{}} Returns Message Type list
+}
+function convertJSONToMsgTypeList(json[] messages, Message[] targetList) returns Message[] {
     foreach i, msg in messages {
-        match convertJSONToMessageType(msg) {
-            Message m => targetList[i] = m;
-            GmailError gmailError => return gmailError;
-        }
+        targetList[i] = convertJSONToMessageType(msg);
     }
     return targetList;
 }
 
-function converJsonHistoryToHistoryType (json sourceJsonHistory) returns History|GmailError {
+documentation{
+    Converts json history to History Type object.
+
+    P{{sourceJsonHistory}} Source json History
+    R{{}} Returns History Type object
+}
+function convertJSONToHistoryType(json sourceJsonHistory) returns History {
     History targetHistory;
     targetHistory.id = sourceJsonHistory.id != () ? sourceJsonHistory.id.toString() : EMPTY_STRING;
     match <json[]>sourceJsonHistory.messages {
-        json[] messages => targetHistory.messages =
-                                                check convertJsonMsgListToMsgTypeList(messages, targetHistory.messages);
+        json[] messages => targetHistory.messages = convertJSONToMsgTypeList(messages, targetHistory.messages);
         error err => log:printDebug("History record: " + targetHistory.id + "does not have a messages field");
     }
     match <json[]>sourceJsonHistory.messagesAdded {
-        json[] messages => targetHistory.messagesAdded =
-                                           check convertJsonMsgListToMsgTypeList(messages, targetHistory.messagesAdded);
+        json[] messages => targetHistory.messagesAdded = convertJSONToMsgTypeList(messages, targetHistory.messagesAdded);
         error err => log:printDebug("History record: " + targetHistory.id + "does not have a messagesAdded field");
     }
     match <json[]>sourceJsonHistory.messagesDeleted {
         json[] messages => targetHistory.messagesDeleted =
-                                         check convertJsonMsgListToMsgTypeList(messages, targetHistory.messagesDeleted);
+                                                      convertJSONToMsgTypeList(messages, targetHistory.messagesDeleted);
         error err => log:printDebug("History record: " + targetHistory.id + "does not have a messagesDeleted field");
     }
     match <json[]>sourceJsonHistory.labelsAdded {
@@ -395,7 +404,7 @@ documentation{
     P{{sourceDraftListJsonObject}} Json Draft List object
     R{{}} DraftListPage type
 }
-function convertJsonDraftListToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
+function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
     DraftListPage targetDraftListPage;
     targetDraftListPage.resultSizeEstimate = sourceDraftListJsonObject.resultSizeEstimate != () ?
                                                  sourceDraftListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
@@ -422,10 +431,10 @@ documentation{
     P{{sourceDraftJsonObject}} Json Draft Object
     R{{}} If successful, returns Draft. Else returns GmailError.
 }
-function convertJsonDraftToDraftType(json sourceDraftJsonObject) returns Draft|GmailError {
+function convertJSONToDraftType(json sourceDraftJsonObject) returns Draft {
     Draft targetDraft;
     targetDraft.id = sourceDraftJsonObject.id != () ? sourceDraftJsonObject.id.toString() : EMPTY_STRING;
     targetDraft.message = sourceDraftJsonObject.message != () ?
-                                                check convertJSONToMessageType(sourceDraftJsonObject.message) : {};
+                                                           convertJSONToMessageType(sourceDraftJsonObject.message) : {};
     return targetDraft;
 }

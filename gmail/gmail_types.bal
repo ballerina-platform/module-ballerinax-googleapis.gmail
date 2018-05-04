@@ -219,7 +219,7 @@ public type DraftSearchFilter {
 };
 
 documentation{
-    Represents a page of the message list received as reponse for list messages api call.
+    Represents a page of the message list received as response for list messages api call.
 
     F{{messages}} Array of message maps with messageId and threadId as keys
     F{{resultSizeEstimate}} Estimated size of the whole list
@@ -282,7 +282,7 @@ documentation{
     F{{messagesUnread}} The number of unread messages with the label
     F{{threadsTotal}} The total number of threads with the label
     F{{threadsUnread}} The number of unread threads with the label
-    F{{textColor}} 	The text color of the label, represented as hex string
+    F{{textColor}} The text color of the label, represented as hex string
     F{{backgroundColor}} The background color represented as hex string
 }
 public type Label {
@@ -299,12 +299,30 @@ public type Label {
     @readonly string backgroundColor;
 };
 
+documentation{
+    Represents a page of the history list received as response for list history api call.
+
+    F{{historyRecords}} List of history records. Any messages contained in the response will typically only have id and
+                        threadId fields populated.
+    F{{nextPageToken}} Page token to retrieve the next page of results in the list
+    F{{historyId}} The ID of the mailbox's current history record
+}
 public type MailboxHistoryPage {
     @readonly History[] historyRecords;
     @readonly string nextPageToken;
     @readonly string historyId;
 };
 
+documentation{
+    Represents a history reoced in MailboxHistoryPage.
+
+    F{{id}} The mailbox sequence ID
+    F{{messages}} List of messages changed in this history record
+    F{{messagesAdded}} 	Messages added to the mailbox in this history record
+    F{{messagesDeleted}} Messages deleted (not Trashed) from the mailbox in this history record
+    F{{labelsAdded}} Array of maps of Labels added to messages in this history record
+    F{{labelsRemoved}} Array of maps of Labels removed from messages in this history record
+}
 public type History {
     @readonly string id;
     @readonly Message[] messages;
@@ -314,6 +332,12 @@ public type History {
     @readonly map[] labelsRemoved;
 };
 
+documentation{
+    Represents a draft email in user's mailbox.
+
+    F{{id}} The immutable id of the draft
+    F{{message}} The message content of the draft
+}
 public type Draft {
    @readonly string id;
    @readonly Message message;
