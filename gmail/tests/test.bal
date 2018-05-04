@@ -185,7 +185,7 @@ function testReadHTMLMessageWithAttachment() {
     var response = gmailEP->readMessage(userId, sentHtmlMessageId);
     match response {
         Message m => {
-            readAttachmentFileId = m.msgAttachments[0].attachmentFileId;
+            readAttachmentFileId = m.msgAttachments[0].fileId;
             test:assertEquals(m.id, sentHtmlMessageId, msg = "Read mail with attachment failed");
         }
         GmailError e => test:assertFail(msg = e.message);
@@ -202,7 +202,7 @@ function testgetAttachment() {
     match attachment {
         GmailError e => test:assertFail(msg = e.message);
         MessageBodyPart attachment => {
-            boolean status = (attachment.attachmentFileId == EMPTY_STRING && attachment.attachmentBody == EMPTY_STRING)
+            boolean status = (attachment.fileId == EMPTY_STRING && attachment.body == EMPTY_STRING)
                               ? false : true;
             test:assertTrue(status, msg = "Get Attachment failed");
         }
