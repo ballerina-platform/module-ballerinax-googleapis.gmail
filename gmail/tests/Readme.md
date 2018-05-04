@@ -86,5 +86,5 @@ Run tests :
 
 ```
 ballerina init
-ballerina test gmail --config ballerina.conf
+ballerina test gmail --c ballerina.conf
 ```
