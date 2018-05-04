@@ -91,9 +91,11 @@ documentation {Holds the value for optional parameter name 'format'}
 @final string FORMAT = "format";
 documentation {Holds the value for optional parameter name 'metadataHeaders'}
 @final string METADATA_HEADERS = "metadataHeaders";
-
+documentation {Holds the value for 'historyTypes'}
 @final string HISTORY_TYPES = "historyTypes";
+documentation {Holds the value for 'labelId'}
 @final string LABEL_ID = "labelId";
+documentation {Holds the value for 'startHistoryId'}
 @final string START_HISTORY_ID = "startHistoryId";
 
 documentation {Holds value for Content-Type}
