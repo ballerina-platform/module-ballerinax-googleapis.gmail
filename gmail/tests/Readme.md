@@ -88,5 +88,3 @@ Run tests :
 ballerina init
 ballerina test gmail --config ballerina.conf
 ```
-After a successful test run, you will receive two emails to the recipient inbox, one in text/plain with an attachment 
-and other one in text/html with the same attachment. The two mails will be deleted from your sender's sent mail box as well.  

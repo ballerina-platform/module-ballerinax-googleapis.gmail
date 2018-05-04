@@ -216,9 +216,25 @@ documentation{
     F{{q}} Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports
            the same query format as the Gmail search box.
 }
-public type SearchFilter {
+public type MsgSearchFilter {
     boolean includeSpamTrash;
     string[] labelIds;
+    string maxResults;
+    string pageToken;
+    string q;
+};
+
+documentation{
+    Represents the optional search drafts filter fields.
+
+    F{{includeSpamTrash}} Specifies whether to include drafts from SPAM and TRASH in the results
+    F{{maxResults}} Maximum number of drafts to return in the page for a single request
+    F{{pageToken}} Page token to retrieve a specific page of results in the list
+    F{{q}} Query for searching . Only returns drafts matching the specified query. Supports
+           the same query format as the Gmail search box.
+}
+public type DraftSearchFilter {
+    boolean includeSpamTrash;
     string maxResults;
     string pageToken;
     string q;
@@ -238,7 +254,7 @@ public type MessageListPage {
 };
 
 documentation{
-    Represents a page of the mail thread list received as reponse for list threads api call.
+    Represents a page of the mail thread list received as response for list threads api call.
 
     F{{threads}} Array of thread maps with threadId, snippet and historyId as keys
     F{{resultSizeEstimate}} Estimated size of the whole list
@@ -246,6 +262,19 @@ documentation{
 }
 public type ThreadListPage {
     @readonly map[] threads;
+    @readonly string resultSizeEstimate;
+    @readonly string nextPageToken;
+};
+
+documentation{
+    Represents a page of the drafts list received as response for list drafts api call.
+
+    F{{drafts}} Array of draft maps with draftId, messageId and threadId as keys
+    F{{resultSizeEstimate}} Estimated size of the whole list
+    F{{nextPageToken}} Token for next page of mail drafts list
+}
+public type DraftListPage {
+    @readonly map[] drafts;
     @readonly string resultSizeEstimate;
     @readonly string nextPageToken;
 };
@@ -278,16 +307,36 @@ documentation{
     F{{textColor}} 	The text color of the label, represented as hex string
     F{{backgroundColor}} The background color represented as hex string
 }
-public type Label{
-   string id;
-   string name;
-   string messageListVisibility;
-   string labelListVisibility;
-   string ownerType;
-   int messagesTotal;
-   int messagesUnread;
-   int threadsTotal;
-   int threadsUnread;
-   string textColor;
-   string backgroundColor;
+public type Label {
+    @readonly string id;
+    @readonly string name;
+    @readonly string messageListVisibility;
+    @readonly string labelListVisibility;
+    @readonly string ownerType;
+    @readonly int messagesTotal;
+    @readonly int messagesUnread;
+    @readonly int threadsTotal;
+    @readonly int threadsUnread;
+    @readonly string textColor;
+    @readonly string backgroundColor;
+};
+
+public type MailboxHistoryPage {
+    @readonly History[] historyRecords;
+    @readonly string nextPageToken;
+    @readonly string historyId;
+};
+
+public type History {
+    @readonly string id;
+    @readonly Message[] messages;
+    @readonly Message[] messagesAdded;
+    @readonly Message[] messagesDeleted;
+    @readonly map[] labelsAdded;
+    @readonly map[] labelsRemoved;
+};
+
+public type Draft {
+   @readonly string id;
+   @readonly Message message;
 };

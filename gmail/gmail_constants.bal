@@ -35,6 +35,14 @@ documentation {Holds the value for profile resource path}
 @final string PROFILE_RESOURCE = "/profile";
 documentation {Holds the value for label resource path}
 @final string LABEL_RESOURCE = "/labels";
+documentation {Holds the value for modify resource action}
+@final string MODIFY_RESOURCE = "/modify";
+documentation {Holds the value for history resource path}
+@final string HISTORY_RESOURCE = "/history";
+documentation {Holds the value for drafts resource path}
+@final string DRAFT_RESOURCE = "/drafts";
+documentation {Holds the value for send draft resource}
+@final string DRAFT_SEND_RESOURCE = "/drafts/send";
 
 documentation {Holds the value for empty string}
 @final string EMPTY_STRING = "";
@@ -83,6 +91,10 @@ documentation {Holds the value for optional parameter name 'format'}
 @final string FORMAT = "format";
 documentation {Holds the value for optional parameter name 'metadataHeaders'}
 @final string METADATA_HEADERS = "metadataHeaders";
+
+@final string HISTORY_TYPES = "historyTypes";
+@final string LABEL_ID = "labelId";
+@final string START_HISTORY_ID = "startHistoryId";
 
 documentation {Holds value for Content-Type}
 @final string CONTENT_TYPE = "Content-Type";
@@ -156,6 +168,10 @@ documentation {Holds name for header Subject}
 @final string SUBJECT = "Subject";
 documentation {Holds name for header Date}
 @final string DATE = "Date";
+documentation {Holds name for id}
+@final string ID = "id";
+documentation {Holds name for threadId}
+@final string THREAD_ID = "threadId";
 
 documentation {Holds string for Gmail message/thread response format **full**}
 @final public string FORMAT_FULL = "full";

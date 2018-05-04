@@ -223,11 +223,16 @@ function convertJsonMsgListToMessageListPageType(json sourceMsgListJsonObject) r
                                                    sourceMsgListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
     targetMsgListPage.nextPageToken = sourceMsgListJsonObject.nextPageToken != () ?
                                                         sourceMsgListJsonObject.nextPageToken.toString() : EMPTY_STRING;
-    //for each message resource in messages json array of the response
-    foreach message in sourceMsgListJsonObject.messages {
-        //Add the message map with Id and thread Id as keys to the array
-        targetMsgListPage.messages[lengthof targetMsgListPage.messages] = { messageId: message.id.toString(),
-            threadId: message.threadId.toString() };
+    match <json[]> sourceMsgListJsonObject.messages {
+        json[] messages => {
+            //for each message resource in messages json array of the response
+            foreach i, message in messages {
+                //Add the message map with Id and thread Id as keys to the array
+                targetMsgListPage.messages[i] = { messageId: message.id.toString(),
+                                                  threadId: message.threadId.toString() };
+            }
+        }
+        error err => log:printDebug("List messages reponse does not have an array of messages");
     }
     return targetMsgListPage;
 }
@@ -244,11 +249,16 @@ function convertJsonThreadListToThreadListPageType(json sourceThreadListJsonObje
                                                 sourceThreadListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
     targetThreadListPage.nextPageToken = sourceThreadListJsonObject.nextPageToken != () ?
                                                      sourceThreadListJsonObject.nextPageToken.toString() : EMPTY_STRING;
-    //for each thread resource in threads json array of the response
-    foreach thread in sourceThreadListJsonObject.threads {
-        //Add the thread map with Id, snippet and history Id as keys to the array of thread maps
-        targetThreadListPage.threads[lengthof targetThreadListPage.threads] = { threadId: thread.id.toString(),
-            snippet: thread.snippet.toString(), historyId: thread.historyId.toString() };
+    match <json[]>sourceThreadListJsonObject.threads {
+        json[] threads => {
+            //for each thread resource in threads json array of the response
+            foreach i, thread in threads {
+                //Add the thread map with Id, snippet and history Id as keys to the array of thread maps
+                targetThreadListPage.threads[i] = { threadId: thread.id.toString(), snippet: thread.snippet.toString(),
+                                                    historyId: thread.historyId.toString() };
+            }
+        }
+        error err => log:printDebug("List threads response does not have an array of threads");
     }
     return targetThreadListPage;
 }
@@ -328,4 +338,124 @@ function convertJsonLabelListToLabelTypeList(json sourceJsonLabelList) returns L
         error err => log:printDebug("Label list response does not contain a label array");
     }
     return targetLabelList;
+}
+
+function convertJsonToMailboxHistoryPage (json sourceJsonMailboxHistory) returns MailboxHistoryPage|GmailError {
+    MailboxHistoryPage targetMailboxHistoryPage;
+    targetMailboxHistoryPage.nextPageToken = sourceJsonMailboxHistory.nextPageToken != () ?
+                                                sourceJsonMailboxHistory.nextPageToken.toString() : EMPTY_STRING;
+    targetMailboxHistoryPage.historyId = sourceJsonMailboxHistory.historyId != () ?
+                                                sourceJsonMailboxHistory.historyId.toString() : EMPTY_STRING;
+    match <json[]>sourceJsonMailboxHistory.history {
+        json[] historyList => {
+            foreach i, history in historyList {
+                match converJsonHistoryToHistoryType(history) {
+                    History hist => targetMailboxHistoryPage.historyRecords[i] = hist;
+                    GmailError gmailError => return gmailError;
+                }
+            }
+        }
+        error err => log:printDebug("History response does not have any history records");
+    }
+    return targetMailboxHistoryPage;
+}
+
+function convertJsonMsgListToMsgTypeList (json[] messages, Message[] targetList) returns Message[]|GmailError {
+    foreach i, msg in messages {
+        match convertJsonMessageToMessage(msg) {
+            Message m => targetList[i] = m;
+            GmailError gmailError => return gmailError;
+        }
+    }
+    return targetList;
+}
+
+function converJsonHistoryToHistoryType (json sourceJsonHistory) returns History|GmailError {
+    History targetHistory;
+    targetHistory.id = sourceJsonHistory.id != () ? sourceJsonHistory.id.toString() : EMPTY_STRING;
+    match <json[]>sourceJsonHistory.messages {
+        json[] messages => targetHistory.messages =
+                                                check convertJsonMsgListToMsgTypeList(messages, targetHistory.messages);
+        error err => log:printDebug("History record: " + targetHistory.id + "does not have a messages field");
+    }
+    match <json[]>sourceJsonHistory.messagesAdded {
+        json[] messages => targetHistory.messagesAdded =
+                                           check convertJsonMsgListToMsgTypeList(messages, targetHistory.messagesAdded);
+        error err => log:printDebug("History record: " + targetHistory.id + "does not have a messagesAdded field");
+    }
+    match <json[]>sourceJsonHistory.messagesDeleted {
+        json[] messages => targetHistory.messagesDeleted =
+                                         check convertJsonMsgListToMsgTypeList(messages, targetHistory.messagesDeleted);
+        error err => log:printDebug("History record: " + targetHistory.id + "does not have a messagesDeleted field");
+    }
+    match <json[]>sourceJsonHistory.labelsAdded {
+        json[] lbls => {
+            foreach i, record in lbls {
+                targetHistory.labelsAdded[i] = { message: convertJsonMessageToMessage(record.message) };
+                match <json[]>record.labelIds{
+                    json[] labelIds => targetHistory.labelsAdded[i] =
+                                                                  { labelIds: convertJSONArrayToStringArray(labelIds) };
+                    error err => log:printDebug("History record: " + targetHistory.id
+                                                                        + "does not have a labelsAdded.labelIds field");
+                }
+            }
+        }
+        error err => log:printDebug("History record: " + targetHistory.id + "does not have a labelsAdded field");
+    }
+    match <json[]>sourceJsonHistory.labelsRemoved {
+        json[] lbls => {
+            foreach i, record in lbls {
+                targetHistory.labelsRemoved[i] = { message: convertJsonMessageToMessage(record.message) };
+                match <json[]>record.labelIds{
+                    json[] labelIds => targetHistory.labelsRemoved[i] =
+                                                                 { labelIds: convertJSONArrayToStringArray(labelIds) };
+                    error err => log:printDebug("History record: " + targetHistory.id
+                                                                        + "does not have a labelsAdded.labelIds field");
+                }
+            }
+        }
+        error err => log:printDebug("History record: " + targetHistory.id + "does not have a labelsRemoved field");
+    }
+    return targetHistory;
+}
+
+documentation{
+    Transforms drafts list json object into DraftListPage.
+
+    P{{sourceDraftListJsonObject}} Json Draft List object
+    R{{}} DraftListPage type
+}
+function convertJsonDraftListToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
+    DraftListPage targetDraftListPage;
+    targetDraftListPage.resultSizeEstimate = sourceDraftListJsonObject.resultSizeEstimate != () ?
+                                                 sourceDraftListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
+    targetDraftListPage.nextPageToken = sourceDraftListJsonObject.nextPageToken != () ?
+                                                      sourceDraftListJsonObject.nextPageToken.toString() : EMPTY_STRING;
+    match <json[]>sourceDraftListJsonObject.drafts {
+        json[] drafts => {
+            //for each draft resource in drafts json array of the response
+            foreach i, draft in drafts {
+                //Add the draft map with the Id and the message map with message Id and thread Id as keys, to the array
+                targetDraftListPage.drafts[i] = { draftId: draft.id.toString(),
+                                                  messageId: draft.message.messageId.toString(),
+                                                  threadId: draft.message.threadId.toString() };
+            }
+        }
+        error err => log:printDebug("List drafts response does not contain an array of drafts");
+    }
+    return targetDraftListPage;
+}
+
+documentation{
+    Transform draft json object into Draft Type Object.
+
+    P{{sourceDraftJsonObject}} Json Draft Object
+    R{{}} If successful, returns Draft. Else returns GmailError.
+}
+function convertJsonDraftToDraftType(json sourceDraftJsonObject) returns Draft|GmailError {
+    Draft targetDraft;
+    targetDraft.id = sourceDraftJsonObject.id != () ? sourceDraftJsonObject.id.toString() : EMPTY_STRING;
+    targetDraft.message = sourceDraftJsonObject.message != () ?
+                                                check convertJsonMessageToMessage(sourceDraftJsonObject.message) : {};
+    return targetDraft;
 }
