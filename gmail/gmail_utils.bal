@@ -16,51 +16,29 @@
 
 import ballerina/io;
 import ballerina/http;
+import ballerina/mime;
 
-documentation{Decodes the message body of text/* mime message parts.
-    P{{sourceMessagePartJsonObject}} - Json message part object
-    R{{}} - If successful, returns string base64 decoded message body. Else returns GmailError.
-}
-function decodeMsgBodyData(json sourceMessagePartJsonObject) returns string|GmailError {
-    string decodedBody;
-    string jsonMessagePartMimeType = sourceMessagePartJsonObject.mimeType.toString();
-    if (isMimeType(jsonMessagePartMimeType, TEXT_ANY)) {
-        string sourceMessagePartBody = sourceMessagePartJsonObject.body.data.toString();
-        decodedBody = sourceMessagePartBody.replace(DASH_SYMBOL, PLUS_SYMBOL)
-                                            .replace(UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL)
-                                            .replace(STAR_SYMBOL, EQUAL_SYMBOL);
-        match (decodedBody.base64Decode()){
-            string decodeString => decodedBody = decodeString;
-            error err => {
-                GmailError gmailError = {message : "Error occured while base64 decoding text/* message body: "
-                                                    + decodedBody};
-                gmailError.cause = err;
-                return gmailError;
-            }
-        }
-    }
-    return decodedBody;
-}
+documentation{
+    Gets only the attachment and inline image MIME messageParts from the json message payload of the email.
 
-documentation{Gets only the attachment MIME messageParts from the json message payload of the email.
-    P{{messagePayload}} - Json message payload which is the parent message part of the email.
-    P{{msgAttachments}} - Initial array of attachment message parts.
-    R{{}} -  An array of MessageAttachments.
+    P{{messagePayload}} Json message payload which is the parent message part of the email
+    P{{msgAttachments}} Initial array of attachment message parts
+    P{{inlineMessageImages}} Initial array of inline image message parts
+    R{{}} Returns a tuple of two arrays of attachement parts and inline image parts
 }
-function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] msgAttachments)
-                                                                                returns @tainted MessageAttachment[] {
-    MessageAttachment[] attachmentParts = msgAttachments;
-    string disposition = EMPTY_STRING;
-    if (messagePayload.headers != ()){
-        map headers = convertJsonHeadersToHeaderMap(messagePayload.headers);
-        string contentDispositionHeader = headers.hasKey(CONTENT_DISPOSITION) ? <string>headers[CONTENT_DISPOSITION] : EMPTY_STRING;
-        string[] headerParts = contentDispositionHeader.split(SEMICOLON_SYMBOL);
-        disposition = headerParts[0];
-    }
-    string messagePayloadMimeType = messagePayload.mimeType.toString();
+function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttachments,
+                        MessageBodyPart[] inlineMessageImages) returns @tainted (MessageBodyPart[], MessageBodyPart[]) {
+    MessageBodyPart[] attachmentParts = msgAttachments;
+    MessageBodyPart[] inlineImgParts = inlineMessageImages;
+    string disposition = getDispostionFromPayload(messagePayload);
+    string messagePayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString() : EMPTY_STRING;
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
-        attachmentParts[lengthof attachmentParts] = convertJsonMsgPartToMsgAttachment(messagePayload);
+        //Get the attachment message body part
+        attachmentParts[lengthof attachmentParts] = convertJSONToMsgBodyType(messagePayload);
+    } else if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
+        //Get the inline message body part
+        inlineImgParts[lengthof inlineImgParts] = convertJSONToMsgBodyType(messagePayload);
     } //Else if is any multipart/*
     else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
         json messageParts = messagePayload.parts;
@@ -68,92 +46,43 @@ function getAttachmentPartsFromPayload(json messagePayload, MessageAttachment[] 
             //Iterate each child parts of the parent mime part
             foreach part in messageParts {
                 //Recursively check each ith child mime part
-                attachmentParts = getAttachmentPartsFromPayload(part, attachmentParts);
+                (MessageBodyPart[], MessageBodyPart[]) parts =
+                                                         getFilePartsFromPayload(part, attachmentParts, inlineImgParts);
+                (attachmentParts, inlineImgParts) = parts;
             }
         }
     }
-    return attachmentParts;
+    return (attachmentParts, inlineImgParts);
 }
 
-documentation{Gets only the inline image MIME messageParts from the json message payload of the email.
-    P{{messagePayload}} - Json message payload which is the parent message part of the email.
-    P{{inlineMessageImages}} - Initial array of inline image message parts.
-    R{{}} - If successful, returns an array of MessageBodyParts. Else returns GmailError.
-}
-//Extract inline image MIME message parts from the email
-function getInlineImgPartsFromPayloadByMimeType(json messagePayload, MessageBodyPart[] inlineMessageImages)
-                                                                        returns @tainted MessageBodyPart[]|GmailError {
-    MessageBodyPart[] inlineImgParts = inlineMessageImages;
-    string disposition = EMPTY_STRING;
-    if (messagePayload.headers != ()){
-        map headers = convertJsonHeadersToHeaderMap(messagePayload.headers);
-        string contentDispositionHeader = headers.hasKey(CONTENT_DISPOSITION) ?
-                                                                    <string>headers[CONTENT_DISPOSITION] : EMPTY_STRING;
-        string[] headerParts = contentDispositionHeader.split(";");
-        disposition = headerParts[0];
-    }
-    string messagePayloadMimeType = messagePayload.mimeType.toString();
-    //If parent mime part is image/* and it is inline
-    if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
-        match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
-            MessageBodyPart bodyPart => inlineImgParts[lengthof inlineImgParts] = bodyPart;
-            GmailError gmailError => return gmailError;
-        }
-    } //Else if is any multipart/*
-    else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
-        json messageParts = messagePayload.parts;
-        if (lengthof messageParts != 0) {
-            //Iterate each child parts of the parent mime part
-            foreach part in messageParts {
-                //Recursively check each ith child mime part
-                match getInlineImgPartsFromPayloadByMimeType(part, inlineImgParts){
-                    MessageBodyPart[] bodyParts => inlineImgParts = bodyParts;
-                    GmailError gmailError => return gmailError;
-                }
-            }
-        }
-    }
-    return inlineImgParts;
-}
-
-documentation{Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
+documentation{
+    Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
     from the json message payload of the email.
-    *Can be used only if there is only one message part with the given mime type in the email payload,
-    otherwise, it will return with first found matching message part.*
-    P{{messagePayload}} - Json message payload which is the parent message part of the email.
-    P{{mimeType}} - Initial array of inline image message parts.
-    R{{}} -  If successful returns MessageBodyPart. Else returns GmailError.
+    Can be used only if there is only one message part with the given mime type in the email payload,
+    otherwise, it will return with first found matching message part.
+
+    P{{messagePayload}} Json message payload which is the parent message part of the email
+    P{{mimeType}} Mime type of the message body part to retrieve
+    R{{}} Returns MessageBodyPart
 }
-function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType)
-                                                                        returns @tainted MessageBodyPart|GmailError {
+function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType) returns @tainted MessageBodyPart {
     MessageBodyPart msgBodyPart;
-    string disposition = EMPTY_STRING;
-    if (messagePayload.headers != ()){
-        map headers = convertJsonHeadersToHeaderMap(messagePayload.headers);
-        string contentDispositionHeader = headers.hasKey(CONTENT_DISPOSITION) ?
-                                                                    <string>headers[CONTENT_DISPOSITION] : EMPTY_STRING;
-        string[] headerParts = contentDispositionHeader.split(SEMICOLON_SYMBOL);
-        disposition = headerParts[0];
-    }
-    string messageBodyPayloadMimeType = messagePayload.mimeType.toString();
+    string disposition = getDispostionFromPayload(messagePayload);
+    string messageBodyPayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString()
+                                                                                                        : EMPTY_STRING;
     //If parent mime part is given mime type and not an attachment or an inline part
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
-        match convertJsonMsgBodyPartToMsgBodyType(messagePayload){
-            MessageBodyPart body => msgBodyPart = body;
-            GmailError gmailError => return gmailError;
-        }
+        //Get the message body part.
+        msgBodyPart = convertJSONToMsgBodyType(messagePayload);
     } //Else if is any multipart/*
     else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
         json messageParts = messagePayload.parts;
         if (lengthof messageParts != 0) {
             //Iterate each child parts of the parent mime part
             foreach part in messageParts {
-                //Recursively check each ith child mime part
-                match getMessageBodyPartFromPayloadByMimeType(part, mimeType){
-                    MessageBodyPart body => msgBodyPart = body;
-                    GmailError gmailError => return gmailError;
-                }
-                //If the returned msg body is a match for given mime type stop iterating over the other child parts
+                //Recursively check each ith child mime part.
+                msgBodyPart = getMessageBodyPartFromPayloadByMimeType(part, mimeType);
+                //If the returned msg body is a match for given mime type, stop iterating over the other child parts
                 if (msgBodyPart.mimeType != EMPTY_STRING && isMimeType(msgBodyPart.mimeType, mimeType)) {
                     break;
                 }
@@ -163,24 +92,59 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
     return msgBodyPart;
 }
 
-documentation{Converts json string array to string array.
+documentation{
+    Get the disposition of the message body part from the message body part headers.
 
-    P{{sourceJsonObject}} - Json array
-    R{{}} - String array
+    P{{messagePayload}} Payload to get the disposition from
+    R{{}} Returns disposition of the message body part
+}
+function getDispostionFromPayload(json messagePayload) returns string {
+    string disposition;
+    if (messagePayload.headers != ()){
+        //If no key name CONTENT_DISPOSITION in the payload, disposition is an empty string.
+        map headers = convertJSONToHeaderMap(messagePayload.headers);
+        string contentDispositionHeader = getValueForMapKey(headers, CONTENT_DISPOSITION);
+        string[] headerParts = contentDispositionHeader.split(SEMICOLON_SYMBOL);
+        disposition = headerParts[0];
+    }
+    return disposition;
+}
+
+documentation{
+    Converts json string array to string array.
+
+    P{{sourceJsonObject}} Json array
+    R{{}} String array
 }
 function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[] {
-    string[] targetStringArray = [];
+    string[] targetStringArray;
     foreach i, element in sourceJsonObject {
         targetStringArray[i] = element.toString();
     }
     return targetStringArray;
 }
 
-documentation{Checks whether mime type in the message part is same as the given the mime type. Returns true if both types
+documentation{
+    Converts string array to json string array.
+
+    P{{sourceStringObject}} String array
+    R{{}} Json array
+}
+function convertStringArrayToJSONArray(string[] sourceStringObject) returns json[] {
+    json[] targetJSONArray;
+    foreach i, element in sourceStringObject {
+        targetJSONArray[i] = element;
+    }
+    return targetJSONArray;
+}
+
+documentation{
+    Checks whether mime type in the message part is same as the given the mime type. Returns true if both types
     matches, returns false if not.
-    P{{msgMimeType}} - The mime type of the message part you want check
-    P{{mType}} - The given mime type which you wants check against with
-    R{{}} - Boolean status of mime type match
+
+    P{{msgMimeType}} The mime type of the message part you want check
+    P{{mType}} The given mime type which you wants check against with
+    R{{}} Boolean status of mime type match
 }
 function isMimeType(string msgMimeType, string mType) returns boolean {
     string[] msgTypes = msgMimeType.split(FORWARD_SLASH_SYMBOL);
@@ -200,24 +164,25 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
     }
 }
 
-documentation{Opens a file from file path and returns the as base 64 encoded string.
-    P{{filePath}} - File path
-    R{{encodedFile}} - If successful returns encoded file. Else returns GmailError.
+documentation{
+    Opens a file from file path and returns the as base 64 encoded string.
+
+    P{{filePath}} File path
+    R{{encodedFile}} If successful returns encoded file. Else returns GmailError.
 }
 function encodeFile(string filePath) returns (string|GmailError) {
     io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
     int bytesChunk = BYTES_CHUNK;
     blob readEncodedContent;
     int readEncodedCount;
-    string encodedFile;
-    match fileChannel.base64Encode(){
+    match fileChannel.base64Encode() {
         io:ByteChannel encodedfileChannel => {
             match encodedfileChannel.read(bytesChunk) {
                 (blob, int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
                 error err => {
                     GmailError gmailError;
                     gmailError.cause = err;
-                    gmailError.message = "Error occured while reading byte channel for file: " + filePath ;
+                    gmailError.message = "Error occured while reading byte channel for file: " + filePath;
                     return gmailError;
                 }
             }
@@ -229,40 +194,47 @@ function encodeFile(string filePath) returns (string|GmailError) {
             return gmailError;
         }
     }
-    encodedFile = readEncodedContent.toString(UTF_8);
-    return encodedFile;
+    return readEncodedContent.toString(UTF_8);
 }
 
 
-documentation{Gets the file name from the given file path.
-    P{{filePath}} - File path **(including the file name and extension at the end)**
-    R{{pathParts}} - Returns the file name extracted from the file path.
+documentation{
+    Gets the file name from the given file path.
+
+    P{{filePath}} File path (including the file name and extension at the end)
+    R{{pathParts}} Returns the file name extracted from the file path
 }
 function getFileNameFromPath(string filePath) returns string {
     string[] pathParts = filePath.split("/");
     return pathParts[lengthof pathParts - 1];
 }
 
-documentation{Handles the http response.
-    P{{response}} - Http response or HttpConnectorEror
-    R{{}} - If successful returns json reponse. Else returns GmailError.
+documentation{
+    Handles the http response.
+
+    P{{response}} Http response or error
+    R{{}} If successful returns json response. Else returns GmailError.
 }
 function handleResponse (http:Response|error response) returns (json|GmailError){
     match response {
         http:Response httpResponse => {
             if (httpResponse.statusCode == http:NO_CONTENT_204){
+                //If status 204, then no response body. So returns json boolean true.
                 return true;
             }
-            match httpResponse.getJsonPayload(){
+            match httpResponse.getJsonPayload(){ //For every other responses, get json payload
                 json jsonPayload => {
                     if (httpResponse.statusCode == http:OK_200) {
+                        //If status is 200, request is successful. Returns resulting payload.
                         return jsonPayload;
                     }
-                    else {
+                    else { //If status is not 200 or 204, request is unsuccessful. Returns gmailError.
                         GmailError gmailError;
                         gmailError.message = STATUS_CODE + COLON_SYMBOL + jsonPayload.error.code.toString()
                                              + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE
                                              + jsonPayload.error.message.toString();
+                        //Iterate the errors array in Gmail API error response and concat the error information to
+                        //Gmail error message
                         foreach err in jsonPayload.error.errors {
                             string reason = err.reason.toString();
                             string message = err.message.toString();
@@ -281,6 +253,7 @@ function handleResponse (http:Response|error response) returns (json|GmailError)
                     }
                 }
                 error payloadError => {
+                    //Error occurred in getting the json payload from response. Eg: When response body is not json
                     GmailError gmailError = { message:"Error occurred when parsing to json response; message: " +
                                              payloadError.message, cause:payloadError.cause };
                     return gmailError;
@@ -288,18 +261,21 @@ function handleResponse (http:Response|error response) returns (json|GmailError)
             }
         }
         error err => {
-            GmailError gmailError = { message:"Error occurred during HTTP Client invocation; message: "
-                +  err.message, cause:err.cause };
+            //Error occurred in http connector. Eg: Timeout
+            GmailError gmailError = { message:"Error occurred during HTTP Client invocation; message: " +  err.message,
+                                      cause:err.cause };
             return gmailError;
         }
     }
 }
 
-documentation{Create url encoded request body with given key and value.
-    P{{requestPath}} - Request path to be appended values.
-    P{{key}} - Key of the form value parameter.
-    P{{value}} - Value of the form value parameter.
-    R{{}} - If successful returns created request with encoded string. Else returns GmailError.
+documentation{
+    Append given key and value as URI query parameter.
+
+    P{{requestPath}} Request path to append values
+    P{{key}} Key of the form value parameter
+    P{{value}} Value of the form value parameter
+    R{{}} If successful, returns created request path as an encoded string. Else returns GmailError.
 }
 function appendEncodedURIParameter(string requestPath, string key, string value) returns (string|GmailError) {
     var encodedVar = http:encode(value, UTF_8);
@@ -319,4 +295,174 @@ function appendEncodedURIParameter(string requestPath, string key, string value)
         requestPath += QUESTION_MARK_SYMBOL;
     }
     return requestPath + key + EQUAL_SYMBOL + encodedString;
+}
+
+documentation{
+    Get the value of the given key of the map.
+
+    P{{targetMap}} Target map
+    P{{key}} Key to get value of
+    R{{}} Returns the string value if key is present, if not returns an empty string
+}
+function getValueForMapKey(map targetMap, string key) returns string {
+   //If the key is not present, returns an empty string
+   return targetMap.hasKey(key) ? <string>targetMap[key] : EMPTY_STRING;
+}
+
+documentation{
+    Create and encode the whole message as a raw string.
+
+    P{{msgRequest}} MessageRequest to create the message
+    R{{}} If successful, returns the encoded raw string. Else returns GmailError.
+}
+function createEncodedRawMessage(MessageRequest msgRequest) returns string|GmailError {
+    //The content type should be either TEXT_PLAIN or TEXT_HTML. If not returns an error.
+    if (msgRequest.contentType != TEXT_PLAIN && msgRequest.contentType != TEXT_HTML) {
+        GmailError gmailError;
+        gmailError.message = "Does not support the given content type: " + msgRequest.contentType
+                                + " for the message with subject: " + msgRequest.subject;
+        return gmailError;
+    }
+    //Adding inline images to messages of TEXT_PLAIN content type is not unsupported.
+    if (msgRequest.contentType == TEXT_PLAIN && (lengthof msgRequest.inlineImagePaths != 0)){
+        GmailError gmailError;
+        gmailError.message = "Does not support adding inline images to text/plain body of the message with subject: "
+            + msgRequest.subject;
+        return gmailError;
+    }
+    //Raw string of message
+    string concatRequest = EMPTY_STRING;
+
+    //Set the general headers of the message
+    concatRequest += TO + COLON_SYMBOL + msgRequest.recipient + NEW_LINE;
+    concatRequest += SUBJECT + COLON_SYMBOL + msgRequest.subject + NEW_LINE;
+    if (msgRequest.sender != EMPTY_STRING) {
+        concatRequest += FROM + COLON_SYMBOL + msgRequest.sender + NEW_LINE;
+    }
+    if (msgRequest.cc != EMPTY_STRING) {
+        concatRequest += CC + COLON_SYMBOL + msgRequest.cc + NEW_LINE;
+    }
+    if (msgRequest.bcc != EMPTY_STRING) {
+        concatRequest += BCC + COLON_SYMBOL + msgRequest.bcc + NEW_LINE;
+    }
+    //------Start of multipart/mixed mime part (parent mime part)------
+
+    //Set the content type header of top level MIME message part
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_MIXED + SEMICOLON_SYMBOL + BOUNDARY + EQUAL_SYMBOL
+        + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
+
+    concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
+
+    //------Start of multipart/related mime part------
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_RELATED + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
+        + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
+
+    concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
+
+    //------Start of multipart/alternative mime part------
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE +
+        BOUNDARY + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
+
+    //Set the body part : text/plain
+    if (msgRequest.contentType == TEXT_PLAIN){
+        concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
+        concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_PLAIN + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
+            + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+        concatRequest += NEW_LINE + msgRequest.messageBody + NEW_LINE;
+    }
+
+    //Set the body part : text/html
+    if (msgRequest.contentType == TEXT_HTML) {
+        concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
+        concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_HTML + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
+            + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+        concatRequest += NEW_LINE + msgRequest.messageBody + NEW_LINE + NEW_LINE;
+    }
+
+    concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + DASH_SYMBOL + DASH_SYMBOL;
+    //------End of multipart/alternative mime part------
+
+    //Set inline Images as body parts
+    foreach inlineImage in msgRequest.inlineImagePaths {
+        concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
+        //The mime type of inline image cannot be empty
+        if (inlineImage.mimeType == EMPTY_STRING){
+            GmailError gmailError;
+            gmailError.message = "Image content type cannot be empty for image: " + inlineImage.imagePath;
+            return gmailError;
+        } else if (inlineImage.imagePath == EMPTY_STRING){ //Inline image path cannot be empty
+            GmailError gmailError;
+            gmailError.message = "File path of inline image in message with subject: " + msgRequest.subject
+                                + "cannot be empty";
+            return gmailError;
+        }
+        //If the mime type of the inline image is image/*
+        if (isMimeType(inlineImage.mimeType, IMAGE_ANY)) {
+            //Open and encode the image file into base64. Return a GmailError if fails.
+            string encodedFile = check encodeFile(inlineImage.imagePath);
+            //Set the inline image headers of the message
+            concatRequest += CONTENT_TYPE + COLON_SYMBOL + inlineImage.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE
+                            + NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(inlineImage.imagePath)
+                            + APOSTROPHE_SYMBOL + NEW_LINE;
+            concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + INLINE + SEMICOLON_SYMBOL + WHITE_SPACE
+                            + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(inlineImage.imagePath)
+                            + APOSTROPHE_SYMBOL + NEW_LINE;
+            concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
+            concatRequest += CONTENT_ID + COLON_SYMBOL + LESS_THAN_SYMBOL + INLINE_IMAGE_CONTENT_ID_PREFIX
+                            + getFileNameFromPath(inlineImage.imagePath) + GREATER_THAN_SYMBOL + NEW_LINE;
+            concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
+        } else {
+            //Return an error if an unsupported content type other than image/* is passed
+            GmailError gmailError;
+            gmailError.message = "Unsupported content type:" + inlineImage.mimeType + "for the image:"
+                                + inlineImage.imagePath;
+            return gmailError;
+        }
+    }
+    if (lengthof (msgRequest.inlineImagePaths) != 0) {
+        concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + DASH_SYMBOL + DASH_SYMBOL + NEW_LINE;
+    }
+    //------End of multipart/related mime part------
+
+    //Set attachments
+    foreach attachment in msgRequest.attachmentPaths {
+        concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
+        //The mime type of the attachment cannot be empty
+        if (attachment.mimeType == EMPTY_STRING){
+            GmailError gmailError;
+            gmailError.message = "Content type of attachment:" + attachment.attachmentPath + "cannot be empty";
+            return gmailError;
+        } else if (attachment.attachmentPath == EMPTY_STRING){ //The attachment path cannot be empty
+            GmailError gmailError;
+            gmailError.message = "File path of attachment in message with subject: " + msgRequest.subject
+                                + "cannot be empty";
+            return gmailError;
+        }
+        //Open and encode the file into base64. Return a GmailError if fails.
+        string encodedFile = check encodeFile(attachment.attachmentPath);
+        //Set attachment headers of the messsage
+        concatRequest += CONTENT_TYPE + COLON_SYMBOL + attachment.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE + NAME
+                        + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(attachment.attachmentPath)
+                        + APOSTROPHE_SYMBOL + NEW_LINE;
+        concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + ATTACHMENT + SEMICOLON_SYMBOL + WHITE_SPACE + FILE_NAME
+                        + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + getFileNameFromPath(attachment.attachmentPath)
+                        + APOSTROPHE_SYMBOL + NEW_LINE;
+        concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
+        concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
+    }
+    if (lengthof (msgRequest.attachmentPaths) != 0)   {
+        concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + DASH_SYMBOL + DASH_SYMBOL;
+    }
+    //------End of multipart/mixed mime part------
+
+    match (concatRequest.base64Encode()){
+        string encodedRequest => return encodedRequest.replace(PLUS_SYMBOL, DASH_SYMBOL)
+                                                      .replace(FORWARD_SLASH_SYMBOL, UNDERSCORE_SYMBOL);
+        error encodeError => {
+            GmailError gmailError;
+            gmailError.message = "Error occurred during base64 encoding of the mime message request : " + concatRequest;
+            gmailError.cause = encodeError;
+            return gmailError;
+        }
+    }
 }
