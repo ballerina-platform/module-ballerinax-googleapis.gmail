@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Gmail API Version |  
 | :-------------------------:|:-----------------:| 
-| 0.970.0                    |        v1         | 
+| 0.970.1                    |        v1         | 
 
 ### Prerequisites
 
@@ -37,14 +37,25 @@ Visit `test.bal` file to find the way of creating Gmail endpoint.
 
 #### Running gmail tests
 In order to run the tests, the user will need to have a Gmail account and configure the `ballerina.conf` configuration
-file with the obtained tokens.
+file with the obtained tokens and other parameters.
 
 ###### ballerina.conf
 ```ballerina.conf
+//Give the credentials and tokens for the authorized user
 ACCESS_TOKEN="enter your access token here"
 CLIENT_ID="enter your client id here"
 CLIENT_SECRET="enter your client secret here"
 REFRESH_TOKEN="enter your refresh token here"
+
+//Give values for the following to run the tests
+RECIPIENT="recipient@gmail.com"
+SENDER="sender@gmail.com"
+CC="cc@gmail.com"
+ATTACHMENT_PATH="/home/dushaniw/hello.txt"
+ATTACHMENT_CONTENT_TYPE="text/plain"
+INLINE_IMAGE_PATH="/home/user/Picture2.jpg"
+INLINE_IMAGE_NAME="Picture2.jpg"
+IMAGE_CONTENT_TYPE="image/jpeg"
 ```
 
 Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal 
@@ -72,16 +83,17 @@ endpoint Client gmailEP {
 };
 ```
 
-Assign values for the following variables defined at the top in test.bal file.
-* recipient (Example: "recipient@gmail.com")
-* sender (Example: "sender@gmail.com")
-* cc (Example: "cc@gmail.com")
-* attachmentPath (Example: "/home/user/hello.txt")
-* attachmentContentType (Example: "text/plain")
-* inlineImagePath (Example: "/home/user/Picture2.jpg")
-* inlineImageName (Example: "Picture2.jpg")
-* imageContentType (Example: "image/jpeg")
-
+Assign values for other necessary parameters to perform api operations in test.bal as follows.
+```ballerina
+string recipient = config:getAsString("RECIPIENT"); 
+string sender = config:getAsString("SENDER"); 
+string cc = config:getAsString("CC"); 
+string attachmentPath = config:getAsString("ATTACHMENT_PATH"); 
+string attachmentContentType = config:getAsString("ATTACHMENT_CONTENT_TYPE"); 
+string inlineImagePath = config:getAsString("INLINE_IMAGE_PATH"); 
+string inlineImageName = config:getAsString("INLINE_IMAGE_NAME"); 
+string imageContentType = config:getAsString("IMAGE_CONTENT_TYPE"); 
+```
 Run tests :
 
 ```

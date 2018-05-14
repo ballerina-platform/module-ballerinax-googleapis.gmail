@@ -30,15 +30,15 @@ endpoint Client gmailEP {
     }
 };
 
-//---------------Fill the following before running the tests-------------------//
-string recipient = ""; //Example: "recipient@gmail.com"
-string sender = ""; //Example: "sender@gmail.com"
-string cc = ""; //Example: "cc@gmail.com"
-string attachmentPath = ""; //Example: "/home/user/hello.txt"
-string attachmentContentType = ""; //Example: "text/plain"
-string inlineImagePath = ""; //Example: "/home/user/Picture2.jpg"
-string inlineImageName = ""; //Example: "Picture2.jpg"
-string imageContentType = ""; //Example: "image/jpeg"
+//---------------Provide the following in the conf file before running the tests-------------------//
+string recipient = config:getAsString("RECIPIENT"); //Example: "recipient@gmail.com"
+string sender = config:getAsString("SENDER"); //Example: "sender@gmail.com"
+string cc = config:getAsString("CC"); //Example: "cc@gmail.com"
+string attachmentPath = config:getAsString("ATTACHMENT_PATH"); //Example: "/home/user/hello.txt"
+string attachmentContentType = config:getAsString("ATTACHMENT_CONTENT_TYPE"); //Example: "text/plain"
+string inlineImagePath = config:getAsString("INLINE_IMAGE_PATH"); //Example: "/home/user/Picture2.jpg"
+string inlineImageName = config:getAsString("INLINE_IMAGE_NAME"); //Example: "Picture2.jpg"
+string imageContentType = config:getAsString("IMAGE_CONTENT_TYPE"); //Example: "image/jpeg"
 //----------------------------------------------------------------//
 
 //---------------Do not change the following variables-----------------------//
