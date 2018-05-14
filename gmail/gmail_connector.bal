@@ -41,10 +41,12 @@ public type GmailConnector object {
 
         P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{message}} MessageRequest to send
+        P{{threadId}} Optional. Required if message is expected to be send The ID of the thread the message belongs to. (The Subject headers must match)
         R{{}} If successful, returns (message id, thread id) of the successfully sent message. Else
                 returns GmailError.
     }
-    public function sendMessage(string userId, MessageRequest message) returns (string, string)|GmailError;
+    public function sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
+                                                                                            (string, string)|GmailError;
 
     documentation{
         Read the specified mail from users mailbox.
@@ -408,12 +410,18 @@ public function GmailConnector::listMessages(string userId, MsgSearchFilter? fil
     return convertJSONToMessageListPageType(jsonlistMsgResponse);
 }
 
-public function GmailConnector::sendMessage(string userId, MessageRequest message) returns (string, string)|GmailError {
+public function GmailConnector::sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
+                                                                                           (string, string)|GmailError {
     endpoint http:Client httpClient = self.client;
     //Create the whole message as an encoded raw string. If unsuccessful throws and returns GmailError.
     string encodedRequest = check createEncodedRawMessage(message);
     http:Request request = new;
     json jsonPayload = { raw: encodedRequest };
+    //Thread Id is optional. If the messages is expected to be sent as a reply, thread Id is added to the payload.
+    match threadId {
+        string tId => jsonPayload.threadId = tId;
+        () => {}
+    }
     string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
     request.setJsonPayload(jsonPayload);
     var httpResponse = httpClient->post(sendMessagePath, request = request);
