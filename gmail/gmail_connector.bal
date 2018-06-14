@@ -424,7 +424,7 @@ public function GmailConnector::sendMessage(string userId, MessageRequest messag
     }
     string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->post(sendMessagePath, request = request);
+    var httpResponse = httpClient->post(sendMessagePath, request);
     //Get json sent msg response. If unsuccessful throws and returns GmailError.
     json jsonSendMessageResponse = check handleResponse(httpResponse);
     //Return the (messageId, threadId) of the sent message
@@ -471,9 +471,10 @@ public function GmailConnector::getAttachment(string userId, string messageId, s
 
 public function GmailConnector::trashMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
+    http:Request request = new;
     string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
-                            + FORWARD_SLASH_SYMBOL + TRASH;
-    var httpResponse = httpClient->post(trashMessagePath);
+        + FORWARD_SLASH_SYMBOL + TRASH;
+    var httpResponse = httpClient->post(trashMessagePath, request);
     //Get json trash response. If unsuccessful, throws and returns GmailError.
     json jsonTrashMessageResponse = check handleResponse(httpResponse);
     //Return status of trashing message
@@ -482,9 +483,10 @@ public function GmailConnector::trashMessage(string userId, string messageId) re
 
 public function GmailConnector::untrashMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
+    http:Request request = new;
     string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
-                                + FORWARD_SLASH_SYMBOL + UNTRASH;
-    var httpResponse = httpClient->post(untrashMessagePath);
+        + FORWARD_SLASH_SYMBOL + UNTRASH;
+    var httpResponse = httpClient->post(untrashMessagePath, request);
     //Get json untrash response. If unsuccessful, throws and returns GmailError.
     json jsonUntrashMessageReponse = check handleResponse(httpResponse);
     //Return status of untrashing message
@@ -493,8 +495,9 @@ public function GmailConnector::untrashMessage(string userId, string messageId) 
 
 public function GmailConnector::deleteMessage(string userId, string messageId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
+    http:Request request = new;
     string deleteMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
-    var httpResponse = httpClient->delete(deleteMessagePath);
+    var httpResponse = httpClient->delete(deleteMessagePath, request);
     //Return boolean status of message deletion response. If unsuccessful, throws and returns GmailError.
     return <boolean>check handleResponse(httpResponse);
 }
@@ -557,9 +560,10 @@ public function GmailConnector::readThread(string userId, string threadId, strin
 
 public function GmailConnector::trashThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
+    http:Request request = new;
     string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
-                            + FORWARD_SLASH_SYMBOL + TRASH;
-    var httpResponse = httpClient->post(trashThreadPath);
+        + FORWARD_SLASH_SYMBOL + TRASH;
+    var httpResponse = httpClient->post(trashThreadPath, request);
     //Get json trash response. If unsuccessful, throws and returns GmailError.
     json jsonTrashThreadResponse = check handleResponse(httpResponse);
     //Return status of trashing thread
@@ -568,9 +572,10 @@ public function GmailConnector::trashThread(string userId, string threadId) retu
 
 public function GmailConnector::untrashThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
+    http:Request request = new;
     string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
-                                + FORWARD_SLASH_SYMBOL + UNTRASH;
-    var httpResponse = httpClient->post(untrashThreadPath);
+        + FORWARD_SLASH_SYMBOL + UNTRASH;
+    var httpResponse = httpClient->post(untrashThreadPath, request);
     //Get json untrash response. If unsuccessful, throws and returns GmailError.
     json jsonUntrashThreadResponse = check handleResponse(httpResponse);
     //Return status of untrashing thread
@@ -579,8 +584,9 @@ public function GmailConnector::untrashThread(string userId, string threadId) re
 
 public function GmailConnector::deleteThread(string userId, string threadId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
+    http:Request request = new;
     string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
-    var httpResponse = httpClient->delete(deleteThreadPath);
+    var httpResponse = httpClient->delete(deleteThreadPath, request);
     //Return boolean status of thread deletion response. If unsuccessful, throws and returns GmailError.
     return <boolean>check handleResponse(httpResponse);
 }
@@ -620,7 +626,7 @@ public function GmailConnector::createLabel(string userId, string name, string l
     }
     http:Request request = new;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->post(createLabelPath, request = request);
+    var httpResponse = httpClient->post(createLabelPath, request);
     //Get create label json response. If unsuccessful, throws and returns GmailError.
     json jsonCreateLabelResponse = check handleResponse(httpResponse);
     //Returns the label id of the created label
@@ -638,8 +644,9 @@ public function GmailConnector::listLabels(string userId) returns Label[]|GmailE
 
 public function GmailConnector::deleteLabel(string userId, string labelId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
+    http:Request request = new;
     string deleteLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
-    var httpResponse = httpClient->delete(deleteLabelPath);
+    var httpResponse = httpClient->delete(deleteLabelPath, request);
     //Return boolean status of label deletion response. If unsuccessful, throws and returns GmailError.
     return <boolean>check handleResponse(httpResponse);
 }
@@ -673,7 +680,7 @@ public function GmailConnector::updateLabel(string userId, string labelId, strin
     }
     http:Request request = new;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->patch(updateLabelPath, request = request);
+    var httpResponse = httpClient->patch(updateLabelPath, request);
     json jsonUpdateResponse = check handleResponse(httpResponse);
     return convertJSONToLabelType(jsonUpdateResponse);
 }
@@ -693,7 +700,7 @@ public function GmailConnector::modifyMessage(string userId, string messageId, s
                          removeLabelIds: convertStringArrayToJSONArray(removeLabelIds) };
     http:Request request = new;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->post(modifyMsgPath, request = request);
+    var httpResponse = httpClient->post(modifyMsgPath, request);
     //Transform the json mail response from Gmail API to Message type in minimal format. If unsuccessful throws and
     //returns GmailError.
     return convertJSONToMessageType(check handleResponse(httpResponse));
@@ -713,7 +720,7 @@ public function GmailConnector::modifyThread(string userId, string threadId, str
                          removeLabelIds: convertStringArrayToJSONArray(removeLabelIds) };
     http:Request request = new;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->post(modifyThreadPath, request = request);
+    var httpResponse = httpClient->post(modifyThreadPath, request);
     //Transform the json thread response from Gmail API to Thread type. If unsuccessful throws and returns GmailError.
     return convertJSONToThreadType(check handleResponse(httpResponse));
 }
@@ -796,8 +803,9 @@ public function GmailConnector::readDraft(string userId, string draftId, string?
 
 public function GmailConnector::deleteDraft(string userId, string draftId) returns boolean|GmailError {
     endpoint http:Client httpClient = self.client;
+    http:Request request = new;
     string deleteDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE + FORWARD_SLASH_SYMBOL + draftId;
-    var httpResponse = httpClient->delete(deleteDraftPath);
+    var httpResponse = httpClient->delete(deleteDraftPath, request);
     //Return boolean status of darft deletion response. If unsuccessful, throws and returns GmailError.
     return <boolean>check handleResponse(httpResponse);
 }
@@ -814,7 +822,7 @@ public function GmailConnector::createDraft(string userId, MessageRequest messag
     }
     string createDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->post(createDraftPath, request = request);
+    var httpResponse = httpClient->post(createDraftPath, request);
     json jsonCreateDraftResponse = check handleResponse(httpResponse);
     //Return draft id of the created draft
     return jsonCreateDraftResponse.id.toString();
@@ -832,7 +840,7 @@ public function GmailConnector::updateDraft(string userId, string draftId, Messa
     }
     string updateDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE + FORWARD_SLASH_SYMBOL + draftId;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->put(updateDraftPath, request = request);
+    var httpResponse = httpClient->put(updateDraftPath, request);
     json jsonUpdateDraftResponse = check handleResponse(httpResponse);
     //Return draft id of the updated draft
     return jsonUpdateDraftResponse.id.toString();
@@ -844,7 +852,7 @@ public function GmailConnector::sendDraft(string userId, string draftId) returns
     json jsonPayload = { id: draftId };
     string updateDraftPath = USER_RESOURCE + userId + DRAFT_SEND_RESOURCE;
     request.setJsonPayload(jsonPayload);
-    var httpResponse = httpClient->post(updateDraftPath, request = request);
+    var httpResponse = httpClient->post(updateDraftPath, request);
     json jsonSendDraftResponse = check handleResponse(httpResponse);
     //Return tuple of sent draft message id and thread id
     return (jsonSendDraftResponse.id.toString(), jsonSendDraftResponse.threadId.toString());

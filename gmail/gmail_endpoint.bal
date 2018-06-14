@@ -40,7 +40,7 @@ public type Client object {
             () => {}
             http:AuthConfig authConfig => {
                 authConfig.refreshUrl = REFRESH_TOKEN_EP;
-                authConfig.scheme = OAUTH;
+                authConfig.scheme = http:OAUTH2;
             }
         }
         self.gmailConnector = new;

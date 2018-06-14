@@ -369,9 +369,9 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns History {
     }
     match <json[]>sourceJsonHistory.labelsAdded {
         json[] lbls => {
-            foreach i, record in lbls {
-                targetHistory.labelsAdded[i] = { message: convertJSONToMessageType(record.message) };
-                match <json[]>record.labelIds{
+            foreach i, recordData in lbls {
+                targetHistory.labelsAdded[i] = { message: convertJSONToMessageType(recordData.message) };
+                match <json[]>recordData.labelIds{
                     json[] labelIds => targetHistory.labelsAdded[i] =
                                                                   { labelIds: convertJSONArrayToStringArray(labelIds) };
                     error err => log:printDebug("History record: " + targetHistory.id
@@ -383,9 +383,9 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns History {
     }
     match <json[]>sourceJsonHistory.labelsRemoved {
         json[] lbls => {
-            foreach i, record in lbls {
-                targetHistory.labelsRemoved[i] = { message: convertJSONToMessageType(record.message) };
-                match <json[]>record.labelIds{
+            foreach i, recordData in lbls {
+                targetHistory.labelsRemoved[i] = { message: convertJSONToMessageType(recordData.message) };
+                match <json[]>recordData.labelIds{
                     json[] labelIds => targetHistory.labelsRemoved[i] =
                                                                  { labelIds: convertJSONArrayToStringArray(labelIds) };
                     error err => log:printDebug("History record: " + targetHistory.id
