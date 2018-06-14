@@ -35,7 +35,7 @@ The `wso2/gmail` package contains operations to lists the history of changes to 
 ## Compatibility
 |                    |    Version     |  
 | :-----------------:|:--------------:| 
-| Ballerina Language |    0.970.1     |
+| Ballerina Language |    0.974.1     |
 |     Gmail API      |    v1         |  
 
 ## Sample
