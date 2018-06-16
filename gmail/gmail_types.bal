@@ -339,6 +339,6 @@ documentation{
     F{{message}} The message content of the draft
 }
 public type Draft {
-   @readonly string id;
-   @readonly Message message;
+    @readonly string id;
+    @readonly Message message;
 };

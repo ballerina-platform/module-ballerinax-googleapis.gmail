@@ -32,11 +32,11 @@ public type Client object {
     documentation{
         Gets called when the gmail endpoint is beign initialized.
 
-        P{{gmailConfig}} Gmail connector configuration
+        P{{config}} Gmail connector configuration
     }
-    public function init(GmailConfiguration gmailConfig) {
-        gmailConfig.clientConfig.url = BASE_URL;
-        match gmailConfig.clientConfig.auth {
+    public function init(GmailConfiguration config) {
+        config.clientConfig.url = BASE_URL;
+        match config.clientConfig.auth {
             () => {}
             http:AuthConfig authConfig => {
                 authConfig.refreshUrl = REFRESH_TOKEN_EP;
@@ -44,7 +44,7 @@ public type Client object {
             }
         }
         self.gmailConnector = new;
-        self.gmailConnector.client.init(gmailConfig.clientConfig);
+        self.gmailConnector.client.init(config.clientConfig);
     }
 
     documentation{
