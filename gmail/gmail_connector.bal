@@ -41,7 +41,8 @@ public type GmailConnector object {
 
         P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
         P{{message}} MessageRequest to send
-        P{{threadId}} Optional. Required if message is expected to be send The ID of the thread the message belongs to. (The Subject headers must match)
+        P{{threadId}} Optional. Required if message is expected to be send The ID of the thread the message belongs to.
+        (The Subject headers must match)
         R{{}} If successful, returns (message id, thread id) of the successfully sent message. Else
                 returns GmailError.
     }
