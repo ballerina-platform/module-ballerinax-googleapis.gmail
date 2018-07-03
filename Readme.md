@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wso2-ballerina/package-gmail.svg?branch=master)](https://travis-ci.org/wso2-ballerina/package-gmail)
+
 Connects to Gmail from Ballerina. 
 
 # Package Overview
