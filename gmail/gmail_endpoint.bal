@@ -24,10 +24,8 @@ documentation{
     F{{gmailConnector}} Gmail connector
 }
 public type Client object {
-    public {
-        GmailConfiguration gmailConfig;
-        GmailConnector gmailConnector;
-    }
+    public GmailConfiguration gmailConfig;
+    public GmailConnector gmailConnector;
 
     documentation{
         Gets called when the gmail endpoint is beign initialized.
@@ -62,6 +60,6 @@ documentation{
 
     F{{clientConfig}} The HTTP Client endpoint configuration
 }
-public type GmailConfiguration {
+public type GmailConfiguration record {
     http:ClientEndpointConfig clientConfig;
 };
