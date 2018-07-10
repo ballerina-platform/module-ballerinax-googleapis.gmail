@@ -22,7 +22,7 @@ documentation{
     F{{threadsTotal}} The total number of threads in the mailbox
     F{{historyId}} The ID of the mailbox's current history record
 }
-public type UserProfile {
+public type UserProfile record {
     @readonly string emailAddress;
     @readonly string messagesTotal;
     @readonly string threadsTotal;
@@ -37,7 +37,7 @@ documentation{
     F{{historyId}} The ID of the last history record that modified this thread
     F{{messages}} The list of messages in the thread
 }
-public type Thread {
+public type Thread record {
     @readonly string id;
     @readonly string snippet;
     @readonly string historyId;
@@ -60,7 +60,7 @@ documentation{
     F{{attachmentPaths}} The AttachmentPath array consisting the attachment file paths and mime types. Optional.
 }
 
-public type MessageRequest {
+public type MessageRequest record {
     string recipient;
     string subject;
     string messageBody;
@@ -80,7 +80,7 @@ documentation{
                   For ex: If you are sending a jpg image, give the mime type as **image/jpeg**.
                           If you are sending a png image, give the mime type as **image/png**.
 }
-public type InlineImagePath {
+public type InlineImagePath record {
     string imagePath;
     string mimeType;
 };
@@ -93,7 +93,7 @@ documentation{
                   For ex: If you are sending a pdf document, give the mime type as **application/pdf**.
                           If you are sending a text file, give the mime type as **text/plain**.
 }
-public type AttachmentPath {
+public type AttachmentPath record {
     string attachmentPath;
     string mimeType;
 };
@@ -125,7 +125,7 @@ documentation{
     F{{msgAttachments}} MIME Message Parts of the message consisting the attachments
 }
 
-public type Message {
+public type Message record {
     @readonly string threadId;
     @readonly string id;
     @readonly string[] labelIds;
@@ -162,7 +162,7 @@ documentation{
     F{{partId}} The part id of the message part
     F{{size}} Number of bytes of message part data
 }
-public type MessageBodyPart {
+public type MessageBodyPart record {
     @readonly string body;
     @readonly string mimeType;
     @readonly map bodyHeaders;
@@ -178,7 +178,7 @@ documentation{
     F{{message}} Gmail error message
     F{{cause}} The error which caused the Gmail error
 }
-public type GmailError {
+public type GmailError record {
     string message;
     error? cause;
 };
@@ -194,7 +194,7 @@ documentation{
     F{{q}} Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports
            the same query format as the Gmail search box.
 }
-public type MsgSearchFilter {
+public type MsgSearchFilter record {
     boolean includeSpamTrash;
     string[] labelIds;
     string maxResults;
@@ -211,7 +211,7 @@ documentation{
     F{{q}} Query for searching . Only returns drafts matching the specified query. Supports
            the same query format as the Gmail search box.
 }
-public type DraftSearchFilter {
+public type DraftSearchFilter record {
     boolean includeSpamTrash;
     string maxResults;
     string pageToken;
@@ -225,7 +225,7 @@ documentation{
     F{{resultSizeEstimate}} Estimated size of the whole list
     F{{nextPageToken}} Token for next page of message list
 }
-public type MessageListPage {
+public type MessageListPage record {
     @readonly map[] messages;
     @readonly string resultSizeEstimate;
     @readonly string nextPageToken;
@@ -238,7 +238,7 @@ documentation{
     F{{resultSizeEstimate}} Estimated size of the whole list
     F{{nextPageToken}} Token for next page of mail thread list
 }
-public type ThreadListPage {
+public type ThreadListPage record {
     @readonly map[] threads;
     @readonly string resultSizeEstimate;
     @readonly string nextPageToken;
@@ -251,7 +251,7 @@ documentation{
     F{{resultSizeEstimate}} Estimated size of the whole list
     F{{nextPageToken}} Token for next page of mail drafts list
 }
-public type DraftListPage {
+public type DraftListPage record {
     @readonly map[] drafts;
     @readonly string resultSizeEstimate;
     @readonly string nextPageToken;
@@ -285,7 +285,7 @@ documentation{
     F{{textColor}} The text color of the label, represented as hex string
     F{{backgroundColor}} The background color represented as hex string
 }
-public type Label {
+public type Label record {
     @readonly string id;
     @readonly string name;
     @readonly string messageListVisibility;
@@ -307,7 +307,7 @@ documentation{
     F{{nextPageToken}} Page token to retrieve the next page of results in the list
     F{{historyId}} The ID of the mailbox's current history record
 }
-public type MailboxHistoryPage {
+public type MailboxHistoryPage record {
     @readonly History[] historyRecords;
     @readonly string nextPageToken;
     @readonly string historyId;
@@ -323,7 +323,7 @@ documentation{
     F{{labelsAdded}} Array of maps of Labels added to messages in this history record
     F{{labelsRemoved}} Array of maps of Labels removed from messages in this history record
 }
-public type History {
+public type History record {
     @readonly string id;
     @readonly Message[] messages;
     @readonly Message[] messagesAdded;
@@ -338,7 +338,7 @@ documentation{
     F{{id}} The immutable id of the draft
     F{{message}} The message content of the draft
 }
-public type Draft {
+public type Draft record {
     @readonly string id;
     @readonly Message message;
 };

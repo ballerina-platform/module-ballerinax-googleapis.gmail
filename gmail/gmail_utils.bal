@@ -16,6 +16,7 @@
 
 import ballerina/io;
 import ballerina/http;
+import ballerina/internal;
 import ballerina/mime;
 
 documentation{
@@ -175,12 +176,12 @@ documentation{
 function encodeFile(string filePath) returns (string|GmailError) {
     io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
     int bytesChunk = BYTES_CHUNK;
-    blob readEncodedContent;
+    byte[] readEncodedContent;
     int readEncodedCount;
     match fileChannel.base64Encode() {
         io:ByteChannel encodedfileChannel => {
             match encodedfileChannel.read(bytesChunk) {
-                (blob, int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
+                (byte[], int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
                 error err => {
                     GmailError gmailError;
                     gmailError.cause = err;
@@ -196,7 +197,7 @@ function encodeFile(string filePath) returns (string|GmailError) {
             return gmailError;
         }
     }
-    return readEncodedContent.toString(UTF_8);
+    return internal:byteArrayToString(readEncodedContent, UTF_8);
 }
 
 
