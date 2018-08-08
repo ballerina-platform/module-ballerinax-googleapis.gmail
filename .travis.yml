@@ -13,7 +13,7 @@
 # limitations under the License.
 
 script:
-- BALLERINA_VERSION="${VERSION:-0.976.1-SNAPSHOT}"
+- BALLERINA_VERSION="${VERSION:-0.981.1-SNAPSHOT}"
 - echo -e "\033[36m${BALLERINA_VERSION}\033[m"
 
 - DISTRIBUTION_NAME=ballerina-platform-$BALLERINA_VERSION
