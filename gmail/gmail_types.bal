@@ -43,12 +43,12 @@ public type Thread record {
 # + subject - The subject of the mail
 # + messageBody - The message body of the mail. Can be either plain text or html text.
 # + contentType - The content type of the mail, whether it is text/plain or text/html. Only pass one of the
-#                        constant values defined in the package; TEXT_PLAIN or TEXT_HTML
+#                        constant values defined in the package; `TEXT_PLAIN` or `TEXT_HTML`
 # + sender - The sender of the mail
 # + cc - The cc recipient of the mail. Optional.
 # + bcc - The bcc recipient of the mail. Optional.
 # + inlineImagePaths - The InlineImagePath array consisting the inline image file paths and mime types. Optional.
-#                            Note that inline images can only be send for TEXT_HTML messages.
+#                            Note that inline images can only be send for `TEXT_HTML` messages.
 # + attachmentPaths - The AttachmentPath array consisting the attachment file paths and mime types. Optional.
 public type MessageRequest record {
     string recipient;
@@ -64,9 +64,9 @@ public type MessageRequest record {
 
 # Represents image file path and mime type of an inline image in a message request.
 # + imagePath - The file path of the image
-# + mimeType - The mime type of the image. The primary type should be **image**.
-#                  For ex: If you are sending a jpg image, give the mime type as **image/jpeg**.
-#                          If you are sending a png image, give the mime type as **image/png**.
+# + mimeType - The mime type of the image. The primary type should be `image`.
+#                  For ex: If you are sending a jpg image, give the mime type as `image/jpeg`.
+#                          If you are sending a png image, give the mime type as `image/png`.
 public type InlineImagePath record {
     string imagePath;
     string mimeType;
@@ -75,8 +75,8 @@ public type InlineImagePath record {
 # Represents an attachment file path and mime type of an attachment in a message request.
 # + attachmentPath - The file path of the attachment
 # + mimeType - The mime type of the attachment
-#                  For ex: If you are sending a pdf document, give the mime type as **application/pdf**.
-#                  If you are sending a text file, give the mime type as **text/plain**.
+#                  For ex: If you are sending a pdf document, give the mime type as `application/pdf`.
+#                  If you are sending a text file, give the mime type as `text/plain`.
 public type AttachmentPath record {
     string attachmentPath;
     string mimeType;

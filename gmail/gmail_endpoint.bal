@@ -18,13 +18,13 @@ import ballerina/http;
 
 # Represents Gmail endpoint.
 # + gmailConfig - Gmail endpoint configuration
-# + gmailConnector - Gmail connector
+# + gmailConnector - Gmail Connector
 public type Client object {
     public GmailConfiguration gmailConfig;
     public GmailConnector gmailConnector;
 
     # Gets called when the gmail endpoint is beign initialized.
-    # + config - Gmail connector configuration
+    # + config - Gmail Connector Configuration
     public function init(GmailConfiguration config) {
         config.clientConfig.url = BASE_URL;
         match config.clientConfig.auth {
@@ -45,7 +45,7 @@ public type Client object {
     }
 };
 
-# Represents the Gmail client endpoint configuration.
+# Represents the Gmail Client endpoint configuration.
 # + clientConfig - The HTTP Client endpoint configuration
 public type GmailConfiguration record {
     http:ClientEndpointConfig clientConfig;

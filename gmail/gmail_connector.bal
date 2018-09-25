@@ -44,15 +44,15 @@ public type GmailConnector object {
     #              Acceptable values for format for a get message request are defined as following constants
     #              in the package:
     #
-    #               *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
+    #               `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
     #                                field;the raw field is not used. (default)
     #
-    #                *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
+    #                `FORMAT_METADATA` : Returns only email message ID, labels, and email headers.
     #
-    #                *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
+    #                `FORMAT_MINIMAL` : Returns only email message ID and labels; does not return the email headers,
     #                                  body, or payload.
     #
-    #               *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
+    #               `FORMAT_RAW` : Returns the full email message data with body content in the raw field as a
     #                               base64url encoded string. (the payload field is not included in the response)
     # + metadataHeaders - Optional. The meta data headers array to include in the response when the format is given
     #                       as *FORMAT_METADATA*.
@@ -108,18 +108,18 @@ public type GmailConnector object {
     #              Acceptable values for format for a get thread request are defined as following constants
     #             in the package:
     #
-    #                *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
+    #                `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
     #                                field;the raw field is not used. (default)
     #
-    #                *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
+    #                `FORMAT_METADATA` : Returns only email message ID, labels, and email headers.
     #
-    #                *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
+    #                `FORMAT_MINIMAL` : Returns only email message ID and labels; does not return the email headers,
     #                                  body, or payload.
     #
-    #                *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
+    #                `FORMAT_RAW` : Returns the full email message data with body content in the raw field as a
     #                               base64url encoded string. (the payload field is not included in the response)
     # + metadataHeaders - Optional. The meta data headers array to include in the reponse when the format is given
-    #                           as *FORMAT_METADATA*.
+    #                           as `FORMAT_METADATA`.
     # + return - If successful, returns Thread type of the specified mail thread. Else returns GmailError.
     public function readThread(string userId, string threadId, string? format = (), string[]? metadataHeaders = ())
                         returns Thread|GmailError;
@@ -168,14 +168,14 @@ public type GmailConnector object {
     # + labelListVisibility - The visibility of the label in the label list in the Gmail web interface.
     #                             Acceptable values are:
     #
-    #                            *labelHide*: Do not show the label in the label list.
-    #                            *labelShow*: Show the label in the label list.
-    #                            *labelShowIfUnread*: Show the label if there are any unread messages with that label.
+    #                            `labelHide`: Do not show the label in the label list.
+    #                            `labelShow`: Show the label in the label list.
+    #                            `labelShowIfUnread`: Show the label if there are any unread messages with that label.
     # + messageListVisibility - The visibility of messages with this label in the message list in the Gmail web interface.
     #                               Acceptable values are:
     #
-    #                               *hide*: Do not show the label in the message list.
-    #                               *show*: Show the label in the message list. (Default)
+    #                               `hide`: Do not show the label in the message list.
+    #                               `show`: Show the label in the message list. (Default)
     # + backgroundColor - Optional. The background color represented as hex string #RRGGBB (ex #000000).
     #                         This field is required in order to set the color of a label.
     # + textColor - Optional. The text color of the label, represented as hex string. This field is required in order
@@ -204,14 +204,14 @@ public type GmailConnector object {
     #                               web interface.
     #                               Acceptable values are:
     #
-    #                               *hide*: Do not show the label in the message list
-    #                               *show*: Show the label in the message list
+    #                               `hide`: Do not show the label in the message list
+    #                               `show`: Show the label in the message list
     # + labelListVisibility - Optional. The visibility of the label in the label list in the Gmail web interface.
     #                             Acceptable values are:
     #
-    #                             *labelHide*: Do not show the label in the label list
-    #                             *labelShow*: Show the label in the label list
-    #                             *labelShowIfUnread*: Show the label if there are any unread messages with that label
+    #                             `labelHide`: Do not show the label in the label list
+    #                             `labelShow`: Show the label in the label list
+    #                             `labelShowIfUnread`: Show the label if there are any unread messages with that label
     # + backgroundColor - Optional. The background color represented as hex string #RRGGBB (ex #000000).
     # + textColor - Optional. The text color of the label, represented as hex string.
     # + return - If successful, returns updated Label type object. Else returns GmailError.
@@ -227,10 +227,10 @@ public type GmailConnector object {
     # + historyTypes - Optional. Array of history types to be returned by the function.
     #                      Acceptable values are:
     #
-    #                        *labelAdded*
-    #                        *labelRemoved*
-    #                        *messageAdded*
-    #                        *messageDeleted*
+    #                        `labelAdded`
+    #                        `labelRemoved`
+    #                        `messageAdded`
+    #                        `messageDeleted`
     # + labelId - Optional. Only return messages with a label matching the ID
     # + maxResults - Optional. The maximum number of history records to return
     # + pageToken - Optional. Page token to retrieve a specific page of results in the list
@@ -252,15 +252,15 @@ public type GmailConnector object {
     #              Acceptable values for format for a get draft request are defined as following constants
     #              in the package:
     #
-    #                *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
+    #                `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
     #                                field;the raw field is not used. (default)
     #
-    #                *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
+    #                `FORMAT_METADATA` : Returns only email message ID, labels, and email headers.
     #
-    #                *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
+    #                `FORMAT_MINIMAL` : Returns only email message ID and labels; does not return the email headers,
     #                                  body, or payload.
     #
-    #                *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
+    #                `FORMAT_RAW` : Returns the full email message data with body content in the raw field as a
     #                               base64url encoded string. (the payload field is not included in the response)
     # + return - If successful, returns Draft type of the specified draft. Else returns GmailError.
     public function readDraft(string userId, string draftId, string? format = ()) returns Draft|GmailError;

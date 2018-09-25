@@ -19,8 +19,8 @@ import ballerina/http;
 import ballerina/internal;
 import ballerina/mime;
 
-# Gets only the attachment and inline image MIME messageParts from the json message payload of the email.
-# + messagePayload - Json message payload which is the parent message part of the email
+# Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
+# + messagePayload - `json` message payload which is the parent message part of the email
 # + msgAttachments - Initial array of attachment message parts
 # + inlineMessageImages - Initial array of inline image message parts
 # + return - Returns a tuple of two arrays of attachement parts and inline image parts
@@ -55,10 +55,10 @@ function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttac
 }
 
 # Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
-#    from the json message payload of the email.
+#    from the JSON message payload of the email.
 #    Can be used only if there is only one message part with the given mime type in the email payload,
 #    otherwise, it will return with first found matching message part.
-# + messagePayload - Json message payload which is the parent message part of the email
+# + messagePayload - `json` message payload which is the parent message part of the email
 # + mimeType - Mime type of the message body part to retrieve
 # + return - Returns MessageBodyPart
 function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType) returns @tainted MessageBodyPart
@@ -104,8 +104,8 @@ function getDispostionFromPayload(json messagePayload) returns string {
     return disposition;
 }
 
-# Converts json string array to string array.
-# + sourceJsonObject - Json array
+# Converts JSON string array to string array.
+# + sourceJsonObject - `json` array
 # + return - String array
 function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[] {
     string[] targetStringArray;
@@ -115,9 +115,9 @@ function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[]
     return targetStringArray;
 }
 
-# Converts string array to json string array.
+# Converts string array to JSON string array.
 # + sourceStringObject - String array
-# + return - Json array
+# + return - `json` array
 function convertStringArrayToJSONArray(string[] sourceStringObject) returns json[] {
     json[] targetJSONArray;
     foreach i, element in sourceStringObject {
@@ -188,9 +188,9 @@ function getFileNameFromPath(string filePath) returns string {
     return pathParts[lengthof pathParts - 1];
 }
 
-# Handles the http response.
+# Handles the HTTP response.
 # + response - Http response or error
-# + return - If successful returns json response. Else returns GmailError.
+# + return - If successful returns `json` response. Else returns GmailError.
 function handleResponse(http:Response|error response) returns (json|GmailError) {
     match response {
         http:Response httpResponse => {

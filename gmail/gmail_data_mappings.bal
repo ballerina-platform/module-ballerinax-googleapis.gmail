@@ -19,7 +19,7 @@ import ballerina/log;
 //Includes all the transforming functions which transform required json to type object/record and vice versa
 
 # Transforms JSON message object into Message Type Object.
-# + sourceMessageJsonObject - Json message object
+# + sourceMessageJsonObject - `json` message object
 # + return - Returns Message type object
 function convertJSONToMessageType(json sourceMessageJsonObject) returns Message {
     Message targetMessageType;
@@ -69,8 +69,8 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns Message 
     return targetMessageType;
 }
 
-# Transforms MIME Message Part Json into MessageBody.
-# + sourceMessagePartJsonObject - Json message part object
+# Transforms MIME Message Part JSON into MessageBody.
+# + sourceMessagePartJsonObject - `json` message part object
 # + return - Returns MessageBodyPart type
 function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageBodyType;
@@ -95,7 +95,7 @@ function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns Mess
 }
 
 # Transforms single body of MIME Message part into MessageBodyPart Attachment.
-# + sourceMessageBodyJsonObject - Json message body object
+# + sourceMessageBodyJsonObject - `json` message body object
 # + return - Returns MessageBodyPart type object
 function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageAttachment;
@@ -109,8 +109,8 @@ function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) return
     return targetMessageAttachment;
 }
 
-# Transforms mail thread Json object into Thread.
-# + sourceThreadJsonObject - Json message thread object.
+# Transforms mail thread JSON object into Thread.
+# + sourceThreadJsonObject - `json` message thread object.
 # + return - Returns Thread type.
 function convertJSONToThreadType(json sourceThreadJsonObject) returns Thread {
     Thread targetThreadType;
@@ -126,8 +126,8 @@ function convertJSONToThreadType(json sourceThreadJsonObject) returns Thread {
     return targetThreadType;
 }
 
-# Converts the json message array into Message type array.
-# + sourceMessageArrayJsonObject - Json message array object
+# Converts the JSON message array into Message type array.
+# + sourceMessageArrayJsonObject - `json` message array object
 # + return - Message type array
 function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[] {
     Message[] messages = [];
@@ -137,8 +137,8 @@ function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Mess
     return messages;
 }
 
-# Transforms user profile json object into UserProfile.
-# + sourceUserProfileJsonObject - Json user profile object
+# Transforms user profile JSON object into UserProfile.
+# + sourceUserProfileJsonObject - `json` user profile object
 # + return - UserProfile type
 function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
     UserProfile targetUserProfile;
@@ -154,8 +154,8 @@ function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns 
     return targetUserProfile;
 }
 
-# Transforms message list json object into MessageListPage.
-# + sourceMsgListJsonObject - Json Messsage List object
+# Transforms message list JSON object into MessageListPage.
+# + sourceMsgListJsonObject - `json` Messsage List object
 # + return - MessageListPage type
 function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
     MessageListPage targetMsgListPage;
@@ -180,8 +180,8 @@ function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns 
     return targetMsgListPage;
 }
 
-# Transforms thread list json object into ThreadListPage.
-# + sourceThreadListJsonObject - Json Thead List object
+# Transforms thread list JSON object into ThreadListPage.
+# + sourceThreadListJsonObject - `json` Thead List object
 # + return - ThreadListPage type
 function convertJSONToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
     ThreadListPage targetThreadListPage;
@@ -205,8 +205,8 @@ function convertJSONToThreadListPageType(json sourceThreadListJsonObject) return
     return targetThreadListPage;
 }
 
-# Converts the message part header json array to headers.
-# + jsonMsgPartHeaders - Json array of message part headers
+# Converts the message part header JSON array to headers.
+# + jsonMsgPartHeaders - `json` array of message part headers
 # + return - Map of headers
 function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map {
     map headers;
@@ -216,8 +216,8 @@ function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map {
     return headers;
 }
 
-# Converts the json label resource to Label type.
-# + sourceLabelJsonObject - Json label
+# Converts the JSON label resource to Label type.
+# + sourceLabelJsonObject - `json` label
 # + return - Label type object
 function convertJSONToLabelType(json sourceLabelJsonObject) returns Label {
     Label targetLabel;
@@ -257,8 +257,8 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label {
     return targetLabel;
 }
 
-# Convert Json label list response to an array of Label type objects.
-# + sourceJsonLabelList - Source json object
+# Convert JSON label list response to an array of Label type objects.
+# + sourceJsonLabelList - Source `json` object
 # + return - Returns an array of Label type objects
 function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[] {
     Label[] targetLabelList;
@@ -275,8 +275,8 @@ function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[] {
     return targetLabelList;
 }
 
-# Converts json mailbox history to MailboxHistoryPage Type.
-# + sourceJsonMailboxHistory - Json mailbox history
+# Converts JSON mailbox history to MailboxHistoryPage Type.
+# + sourceJsonMailboxHistory - `json` mailbox history
 # + return-  Returns MailboxHistoryPage Type object
 function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns MailboxHistoryPage {
     MailboxHistoryPage targetMailboxHistoryPage;
@@ -295,8 +295,8 @@ function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns
     return targetMailboxHistoryPage;
 }
 
-# Converts json list of messages to Message Type list.
-# + messages - Json list of messages
+# Converts JSON list of messages to Message Type list.
+# + messages - `json` list of messages
 # + targetList - Message Type list to be returned
 # + return - Returns Message Type list
 function convertJSONToMsgTypeList(json[] messages, Message[] targetList) returns Message[] {
@@ -306,8 +306,8 @@ function convertJSONToMsgTypeList(json[] messages, Message[] targetList) returns
     return targetList;
 }
 
-# Converts json history to History Type object.
-# + sourceJsonHistory - Source json History
+# Converts JSON history to History Type object.
+# + sourceJsonHistory - Source `json` History
 # + return - Returns History Type object
 function convertJSONToHistoryType(json sourceJsonHistory) returns History {
     History targetHistory;
@@ -356,8 +356,8 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns History {
     return targetHistory;
 }
 
-# Transforms drafts list json object into DraftListPage.
-# + sourceDraftListJsonObject - Json Draft List object
+# Transforms drafts list JSON object into DraftListPage.
+# + sourceDraftListJsonObject - `json` Draft List object
 # + return - DraftListPage type
 function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
     DraftListPage targetDraftListPage;
@@ -380,8 +380,8 @@ function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns 
     return targetDraftListPage;
 }
 
-# Transform draft json object into Draft Type Object.
-# + sourceDraftJsonObject - Json Draft Object
+# Transform draft JSON object into Draft Type Object.
+# + sourceDraftJsonObject - `json` Draft Object
 # + return - If successful, returns Draft. Else returns GmailError.
 function convertJSONToDraftType(json sourceDraftJsonObject) returns Draft {
     Draft targetDraft;
