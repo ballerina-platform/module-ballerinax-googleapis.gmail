@@ -16,22 +16,15 @@
 
 import ballerina/http;
 
-documentation{
-    Represents Gmail endpoint.
-
-    E{{}}
-    F{{gmailConfig}} Gmail endpoint configuration
-    F{{gmailConnector}} Gmail connector
-}
+# Represents Gmail endpoint.
+# + gmailConfig - Gmail endpoint configuration
+# + gmailConnector - Gmail Connector
 public type Client object {
     public GmailConfiguration gmailConfig;
     public GmailConnector gmailConnector;
 
-    documentation{
-        Gets called when the gmail endpoint is beign initialized.
-
-        P{{config}} Gmail connector configuration
-    }
+    # Gets called when the gmail endpoint is beign initialized.
+    # + config - Gmail Connector Configuration
     public function init(GmailConfiguration config) {
         config.clientConfig.url = BASE_URL;
         match config.clientConfig.auth {
@@ -45,21 +38,15 @@ public type Client object {
         self.gmailConnector.client.init(config.clientConfig);
     }
 
-    documentation{
-        Returns the connector that client code uses.
-
-        R{{}} Returns GmailConnector
-    }
+    # Returns the connector that client code uses.
+    # + return - Returns GmailConnector
     public function getCallerActions() returns GmailConnector {
         return self.gmailConnector;
     }
 };
 
-documentation{
-    Represents the Gmail client endpoint configuration.
-
-    F{{clientConfig}} The HTTP Client endpoint configuration
-}
+# Represents the Gmail Client endpoint configuration.
+# + clientConfig - The HTTP Client endpoint configuration
 public type GmailConfiguration record {
     http:ClientEndpointConfig clientConfig;
 };

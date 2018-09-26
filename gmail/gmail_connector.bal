@@ -16,364 +16,280 @@
 
 import ballerina/http;
 
-documentation{
-    Represents the Gmail Client Connector.
-
-    F{{client}} HTTP Client used in Gmail connector
-}
+# Represents the Gmail Client Connector.
+# + client - HTTP Client used in Gmail connector
 public type GmailConnector object {
     public http:Client client;
 
-    documentation{
-        List the messages in user's mailbox.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} Optional. MsgSearchFilter with optional query parameters to search messages.
-        R{{}} If successful, returns MessageListPage. Else returns GmailError.
-    }
+    # List the messages in user's mailbox.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + filter - Optional. MsgSearchFilter with optional query parameters to search messages.
+    # + return - If successful, returns MessageListPage. Else returns GmailError.
     public function listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|GmailError;
 
-    documentation{
-        Create the raw base 64 encoded string of the whole message and send it as an email from the user's
-        mailbox to its recipient.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{message}} MessageRequest to send
-        P{{threadId}} Optional. Required if message is expected to be send The ID of the thread the message belongs to.
-        (The Subject headers must match)
-        R{{}} If successful, returns (message id, thread id) of the successfully sent message. Else
-                returns GmailError.
-    }
+    # Create the raw base 64 encoded string of the whole message and send it as an email from the user's
+    # mailbox to its recipient.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + message - MessageRequest to send
+    # + threadId - Optional. Required if message is expected to be send The ID of the thread the message belongs to.
+    # (The Subject headers must match)
+    # + return - If successful, return(message id, thread id) of the successfully sent message. Else return GmailError.
     public function sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
                                                                                             (string, string)|GmailError;
 
-    documentation{
-        Read the specified mail from users mailbox.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} The id of the message to retrieve
-        P{{format}} Optional. The format to return the message in.
-                  Acceptable values for format for a get message request are defined as following constants
-                  in the package:
-
-                    *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
-                                    field;the raw field is not used. (default)
-
-                    *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
-
-                    *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
-                                      body, or payload.
-
-                    *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
-                                   base64url encoded string. (the payload field is not included in the response)
-        P{{metadataHeaders}} Optional. The meta data headers array to include in the response when the format is given
-                               as *FORMAT_METADATA*.
-        R{{}} If successful, returns Message type object of the specified mail. Else returns GmailError.
-    }
+    # Read the specified mail from users mailbox.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + messageId - The id of the message to retrieve
+    # + format - Optional. The format to return the message in.
+    #              Acceptable values for format for a get message request are defined as following constants
+    #              in the package:
+    #
+    #               `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
+    #                                field;the raw field is not used. (default)
+    #
+    #                `FORMAT_METADATA` : Returns only email message ID, labels, and email headers.
+    #
+    #                `FORMAT_MINIMAL` : Returns only email message ID and labels; does not return the email headers,
+    #                                  body, or payload.
+    #
+    #               `FORMAT_RAW` : Returns the full email message data with body content in the raw field as a
+    #                               base64url encoded string. (the payload field is not included in the response)
+    # + metadataHeaders - Optional. The meta data headers array to include in the response when the format is given
+    #                       as *FORMAT_METADATA*.
+    # + return - If successful, returns Message type object of the specified mail. Else returns GmailError.
     public function readMessage(string userId, string messageId, string? format = (), string[]? metadataHeaders = ())
                                                                                             returns Message|GmailError;
 
-    documentation{
-        Gets the specified message attachment from users mailbox.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} The id of  the message to retrieve
-        P{{attachmentId}} The id of the attachment to retrieve
-        R{{}} If successful, returns MessageBodyPart type object of the specified attachment. Else returns GmailError.
-    }
+    # Gets the specified message attachment from users mailbox.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + messageId - The id of  the message to retrieve
+    # + attachmentId - The id of the attachment to retrieve
+    # + return - If successful, returns MessageBodyPart type object of the specified attachment. Else returns GmailError.
     public function getAttachment(string userId, string messageId, string attachmentId)
                         returns MessageBodyPart|GmailError;
 
-    documentation{
-        Move the specified message to the trash.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} The id of the message to trash
-        R{{}} If successful, returns boolean specifying the status of trashing. Else returns GmailError.
-    }
+    # Move the specified message to the trash.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + messageId - The id of the message to trash
+    # + return - If successful, returns boolean specifying the status of trashing. Else returns GmailError.
     public function trashMessage(string userId, string messageId) returns boolean|GmailError;
 
-    documentation{
-        Removes the specified message from the trash.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} The id of the message to untrash
-        R{{}} If successful, returns boolean specifying the status of untrashing. Else returns GmailError.
-    }
+    # Removes the specified message from the trash.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + messageId - The id of the message to untrash
+    # + return - If successful, returns boolean specifying the status of untrashing. Else returns GmailError.
     public function untrashMessage(string userId, string messageId) returns boolean|GmailError;
 
-    documentation{
-        Immediately and permanently deletes the specified message. This operation cannot be undone.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} The id of the message to delete
-        R{{}} If successful, returns boolean status of deletion. Else returns GmailError.
-    }
+    # Immediately and permanently deletes the specified message. This operation cannot be undone.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + messageId - The id of the message to delete
+    # + return - If successful, returns boolean status of deletion. Else returns GmailError.
     public function deleteMessage(string userId, string messageId) returns boolean|GmailError;
 
-    documentation{
-        Modifies the labels on the specified message.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{messageId}} The id of the message to modify
-        P{{addLabelIds}} A list of Ids of labels to add to this message
-        P{{removeLabelIds}} A list Ids of labels to remove from this message
-        R{{}} If successful, returns modified Message type object in **minimal** format. Else returns GmailError.
-    }
+    # Modifies the labels on the specified message.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + messageId - The id of the message to modify
+    # + addLabelIds - A list of Ids of labels to add to this message
+    # + removeLabelIds - A list Ids of labels to remove from this message
+    # + return - If successful, returns modified Message type object in **minimal** format. Else returns GmailError.
     public function modifyMessage(string userId, string messageId, string[] addLabelIds, string[] removeLabelIds)
                         returns Message|GmailError;
 
-    documentation{
-        List the threads in user's mailbox.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} Optional. The MsgSearchFilter with optional query parameters to search a thread.
-        R{{}} If successful, returns ThreadListPage type. Else returns GmailError.
-    }
+    # List the threads in user's mailbox.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + filter - Optional. The MsgSearchFilter with optional query parameters to search a thread.
+    # + return - If successful, returns ThreadListPage type. Else returns GmailError.
     public function listThreads(string userId, MsgSearchFilter? filter = ()) returns ThreadListPage|GmailError;
 
-    documentation{
-        Read the specified mail thread from users mailbox.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} The id of the thread to retrieve
-        P{{format}} Optional. The format to return the messages in.
-                  Acceptable values for format for a get thread request are defined as following constants
-                  in the package:
-
-                    *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
-                                    field;the raw field is not used. (default)
-
-                    *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
-
-                    *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
-                                      body, or payload.
-
-                    *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
-                                   base64url encoded string. (the payload field is not included in the response)
-        P{{metadataHeaders}} Optional. The meta data headers array to include in the reponse when the format is given
-                               as *FORMAT_METADATA*.
-        R{{}} If successful, returns Thread type of the specified mail thread. Else returns GmailError.
-    }
+    # Read the specified mail thread from users mailbox.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + threadId - The id of the thread to retrieve
+    # + format - Optional. The format to return the messages in.
+    #              Acceptable values for format for a get thread request are defined as following constants
+    #             in the package:
+    #
+    #                `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
+    #                                field;the raw field is not used. (default)
+    #
+    #                `FORMAT_METADATA` : Returns only email message ID, labels, and email headers.
+    #
+    #                `FORMAT_MINIMAL` : Returns only email message ID and labels; does not return the email headers,
+    #                                  body, or payload.
+    #
+    #                `FORMAT_RAW` : Returns the full email message data with body content in the raw field as a
+    #                               base64url encoded string. (the payload field is not included in the response)
+    # + metadataHeaders - Optional. The meta data headers array to include in the reponse when the format is given
+    #                           as `FORMAT_METADATA`.
+    # + return - If successful, returns Thread type of the specified mail thread. Else returns GmailError.
     public function readThread(string userId, string threadId, string? format = (), string[]? metadataHeaders = ())
                         returns Thread|GmailError;
 
-    documentation{
-        Move the specified mail thread to the trash.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} The id of the thread to trash
-        R{{}} If successful, returns boolean status of trashing. Else returns GmailError.
-    }
+    # Move the specified mail thread to the trash.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + threadId - The id of the thread to trash
+    # + return - If successful, returns boolean status of trashing. Else returns GmailError.
     public function trashThread(string userId, string threadId) returns boolean|GmailError;
 
-    documentation{
-        Removes the specified mail thread from the trash.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} The id of the thread to untrash
-        R{{}} If successful, returns boolean status of untrashing. Else returns GmailError.
-    }
+    # Removes the specified mail thread from the trash.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + threadId - The id of the thread to untrash
+    # + return - If successful, returns boolean status of untrashing. Else returns GmailError.
     public function untrashThread(string userId, string threadId) returns boolean|GmailError;
 
-    documentation{
-        Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} The id of the thread to delete
-        R{{}} If successful, returns boolean status of deletion. Else returns GmailError.
-    }
+    # Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + threadId - The id of the thread to delete
+    # + return - If successful, returns boolean status of deletion. Else returns GmailError.
     public function deleteThread(string userId, string threadId) returns boolean|GmailError;
 
-    documentation{
-        Modifies the labels on the specified thread.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{threadId}} The id of the thread to modify
-        P{{addLabelIds}} A list of IDs of labels to add to this thread
-        P{{removeLabelIds}} A list IDs of labels to remove from this thread
-        R{{}} If successful, returns modified Thread type object. Else returns GmailError.
-    }
+    # Modifies the labels on the specified thread.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + threadId - The id of the thread to modify
+    # + addLabelIds - A list of IDs of labels to add to this thread
+    # + removeLabelIds - A list IDs of labels to remove from this thread
+    # + return - If successful, returns modified Thread type object. Else returns GmailError.
     public function modifyThread(string userId, string threadId, string[] addLabelIds, string[] removeLabelIds)
                                                                                               returns Thread|GmailError;
 
-    documentation{
-        Get the current user's Gmail Profile.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        R{{}} If successful, returns UserProfile type. Else returns GmailError.
-    }
+    # Get the current user's Gmail Profile.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + return - If successful, returns UserProfile type. Else returns GmailError.
     public function getUserProfile(string userId) returns UserProfile|GmailError;
 
-    documentation{
-        Get the label.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{labelId}} The label Id
-        R{{}} If successful, returns Label type. Else returns GmailError.
-    }
+    # Get the label.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + labelId - The label Id
+    # + return - If successful, returns Label type. Else returns GmailError.
     public function getLabel(string userId, string labelId) returns Label|GmailError;
 
-    documentation{
-        Create a new label.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{name}} The display name of the label
-        P{{labelListVisibility}} The visibility of the label in the label list in the Gmail web interface.
-                                 Acceptable values are:
-
-                                *labelHide*: Do not show the label in the label list.
-                                *labelShow*: Show the label in the label list.
-                                *labelShowIfUnread*: Show the label if there are any unread messages with that label.
-        P{{messageListVisibility}} The visibility of messages with this label in the message list in the Gmail web interface.
-                                   Acceptable values are:
-
-                                   *hide*: Do not show the label in the message list.
-                                   *show*: Show the label in the message list. (Default)
-        P{{backgroundColor}} Optional. The background color represented as hex string #RRGGBB (ex #000000).
-                             This field is required in order to set the color of a label.
-        P{{textColor}} Optional. The text color of the label, represented as hex string. This field is required in order
-                       to set the color of a label.
-        R{{}} If successful, returns id of the created label. If not, returns GmailError.
-    }
+    # Create a new label.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + name - The display name of the label
+    # + labelListVisibility - The visibility of the label in the label list in the Gmail web interface.
+    #                             Acceptable values are:
+    #
+    #                            `labelHide`: Do not show the label in the label list.
+    #                            `labelShow`: Show the label in the label list.
+    #                            `labelShowIfUnread`: Show the label if there are any unread messages with that label.
+    # + messageListVisibility - The visibility of messages with this label in the message list in the Gmail web interface.
+    #                               Acceptable values are:
+    #
+    #                               `hide`: Do not show the label in the message list.
+    #                               `show`: Show the label in the message list. (Default)
+    # + backgroundColor - Optional. The background color represented as hex string #RRGGBB (ex #000000).
+    #                         This field is required in order to set the color of a label.
+    # + textColor - Optional. The text color of the label, represented as hex string. This field is required in order
+    #                   to set the color of a label.
+    # + return - If successful, returns id of the created label. If not, returns GmailError.
     public function createLabel(string userId, string name, string labelListVisibility, string messageListVisibility,
                                 string? backgroundColor = (), string? textColor = ()) returns string|GmailError;
 
-    documentation{
-        Lists all labels in the user's mailbox.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        R{{}} If successful, returns an array of Label type objects with values for a set of main fields only. (Use
-              `getLabel` to get all the details for a specific label) If not successful, returns GmailError.
-    }
+    # Lists all labels in the user's mailbox.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + return - If successful, returns an array of Label type objects with values for a set of main fields only. (Use
+    #          `getLabel` to get all the details for a specific label) If not successful, returns GmailError.
     public function listLabels(string userId) returns Label[]|GmailError;
 
-    documentation{
-        Delete a label.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{labelId}} The id of the label to delete
-        R{{}} If successful, returns boolean status of deletion. Else returns GmailError.
-    }
+    # Delete a label.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + labelId - The id of the label to delete
+    # + return - If successful, returns boolean status of deletion. Else returns GmailError.
     public function deleteLabel(string userId, string labelId) returns boolean|GmailError;
 
-    documentation{
-        Update a label.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{labelId}} The id of the label to update
-        P{{name}} Optional. The display name of the label
-        P{{messageListVisibility}} Optional. The visibility of messages with this label in the message list in the Gmail
-                                   web interface.
-                                   Acceptable values are:
-
-                                   *hide*: Do not show the label in the message list
-                                   *show*: Show the label in the message list
-        P{{labelListVisibility}} Optional. The visibility of the label in the label list in the Gmail web interface.
-                                 Acceptable values are:
-
-                                 *labelHide*: Do not show the label in the label list
-                                 *labelShow*: Show the label in the label list
-                                 *labelShowIfUnread*: Show the label if there are any unread messages with that label
-        P{{backgroundColor}} Optional. The background color represented as hex string #RRGGBB (ex #000000).
-        P{{textColor}} Optional. The text color of the label, represented as hex string.
-        R{{}} If successful, returns updated Label type object. Else returns GmailError.
-    }
+    # Update a label.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + labelId - The id of the label to update
+    # + name - Optional. The display name of the label
+    # + messageListVisibility - Optional. The visibility of messages with this label in the message list in the Gmail
+    #                               web interface.
+    #                               Acceptable values are:
+    #
+    #                               `hide`: Do not show the label in the message list
+    #                               `show`: Show the label in the message list
+    # + labelListVisibility - Optional. The visibility of the label in the label list in the Gmail web interface.
+    #                             Acceptable values are:
+    #
+    #                             `labelHide`: Do not show the label in the label list
+    #                             `labelShow`: Show the label in the label list
+    #                             `labelShowIfUnread`: Show the label if there are any unread messages with that label
+    # + backgroundColor - Optional. The background color represented as hex string #RRGGBB (ex #000000).
+    # + textColor - Optional. The text color of the label, represented as hex string.
+    # + return - If successful, returns updated Label type object. Else returns GmailError.
     public function updateLabel(string userId, string labelId, string? name = (), string? messageListVisibility = (),
                                 string? labelListVisibility = (), string? backgroundColor = (), string? textColor = ())
                                 returns Label|GmailError;
 
-    documentation{
-        Lists the history of all changes to the given mailbox. History results are returned in chronological order
-       (increasing historyId).
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{startHistoryId}}  Returns history records after the specified startHistoryId
-        P{{historyTypes}} Optional. Array of history types to be returned by the function.
-                          Acceptable values are:
-
-                            *labelAdded*
-                            *labelRemoved*
-                            *messageAdded*
-                            *messageDeleted*
-        P{{labelId}} Optional. Only return messages with a label matching the ID
-        P{{maxResults}} Optional. The maximum number of history records to return
-        P{{pageToken}} Optional. Page token to retrieve a specific page of results in the list
-        R{{}} If successful, returns MailboxHistoryPage. Else returns GmailError.
-    }
+    # Lists the history of all changes to the given mailbox. History results are returned in chronological order
+    #   (increasing historyId).
+    #
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + startHistoryId -  Returns history records after the specified startHistoryId
+    # + historyTypes - Optional. Array of history types to be returned by the function.
+    #                      Acceptable values are:
+    #
+    #                        `labelAdded`
+    #                        `labelRemoved`
+    #                        `messageAdded`
+    #                        `messageDeleted`
+    # + labelId - Optional. Only return messages with a label matching the ID
+    # + maxResults - Optional. The maximum number of history records to return
+    # + pageToken - Optional. Page token to retrieve a specific page of results in the list
+    # + return - If successful, returns MailboxHistoryPage. Else returns GmailError.
     public function listHistory(string userId, string startHistoryId, string[]? historyTypes = (),
                                    string? labelId = (), string? maxResults = (), string? pageToken =())
                                    returns MailboxHistoryPage|GmailError;
 
-    documentation{
-        List the drafts in user's mailbox.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{filter}} Optional. DraftSearchFilter with optional query parameters to search drafts.
-        R{{}} If successful, returns DraftListPage. Else returns GmailError.
-    }
+    # List the drafts in user's mailbox.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + filter - Optional. DraftSearchFilter with optional query parameters to search drafts.
+    # + return - If successful, returns DraftListPage. Else returns GmailError.
     public function listDrafts(string userId, DraftSearchFilter? filter = ()) returns DraftListPage|GmailError;
 
-    documentation{
-        Read the specified draft from users mailbox.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{draftId}} The id of the draft to retrieve
-        P{{format}} Optional. The format to return the draft in.
-                  Acceptable values for format for a get draft request are defined as following constants
-                  in the package:
-
-                    *FORMAT_FULL* : Returns the full email message data with body content parsed in the payload
-                                    field;the raw field is not used. (default)
-
-                    *FORMAT_METADATA* : Returns only email message ID, labels, and email headers.
-
-                    *FORMAT_MINIMAL* : Returns only email message ID and labels; does not return the email headers,
-                                      body, or payload.
-
-                    *FORMAT_RAW* : Returns the full email message data with body content in the raw field as a
-                                   base64url encoded string. (the payload field is not included in the response)
-        R{{}} If successful, returns Draft type of the specified draft. Else returns GmailError.
-    }
+    # Read the specified draft from users mailbox.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + draftId - The id of the draft to retrieve
+    # + format - Optional. The format to return the draft in.
+    #              Acceptable values for format for a get draft request are defined as following constants
+    #              in the package:
+    #
+    #                `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
+    #                                field;the raw field is not used. (default)
+    #
+    #                `FORMAT_METADATA` : Returns only email message ID, labels, and email headers.
+    #
+    #                `FORMAT_MINIMAL` : Returns only email message ID and labels; does not return the email headers,
+    #                                  body, or payload.
+    #
+    #                `FORMAT_RAW` : Returns the full email message data with body content in the raw field as a
+    #                               base64url encoded string. (the payload field is not included in the response)
+    # + return - If successful, returns Draft type of the specified draft. Else returns GmailError.
     public function readDraft(string userId, string draftId, string? format = ()) returns Draft|GmailError;
 
-    documentation{
-        Immediately and permanently deletes the specified draft.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{draftId}} The id of the draft to delete
-        R{{}} If successful, returns boolean status of deletion. Else returns GmailError.
-    }
+    # Immediately and permanently deletes the specified draft.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + draftId - The id of the draft to delete
+    # + return - If successful, returns boolean status of deletion. Else returns GmailError.
     public function deleteDraft(string userId, string draftId) returns boolean|GmailError;
 
-    documentation{
-        Creates a new draft with the DRAFT label.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{message}} MessageRequest to create a draft
-        P{{threadId}} Optional. Thread Id of the draft to reply
-        R{{}} If successful, returns the draft Id of the created Draft. Else returns GmailError.
-    }
+    # Creates a new draft with the DRAFT label.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + message - MessageRequest to create a draft
+    # + threadId - Optional. Thread Id of the draft to reply
+    # + return - If successful, returns the draft Id of the created Draft. Else returns GmailError.
     public function createDraft(string userId, MessageRequest message, string? threadId = ()) returns string|GmailError;
 
-    documentation{
-        Replaces a draft's content.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{draftId}} The draft Id to update
-        P{{message}} MessageRequest to update a draft
-        P{{threadId}} Optional. Thread Id of the draft to reply
-        R{{}} If successful, returns the draft Id of the updated Draft. Else returns GmailError.
-    }
+    # Replaces a draft's content.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + draftId - The draft Id to update
+    # + message - MessageRequest to update a draft
+    # + threadId - Optional. Thread Id of the draft to reply
+    # + return - If successful, returns the draft Id of the updated Draft. Else returns GmailError.
     public function updateDraft(string userId, string draftId, MessageRequest message, string? threadId = ())
                                                                                               returns string|GmailError;
-    documentation{
-        Sends the specified, existing draft to the recipients in the To, Cc, and Bcc headers.
-
-        P{{userId}} The user's email address. The special value **me** can be used to indicate the authenticated user.
-        P{{draftId}} The draft Id to send
-        R{{}} If successful, returns the message Id and thread Id of the sent Draft. Else returns GmailError.
-    }
+    # Sends the specified, existing draft to the recipients in the To, Cc, and Bcc headers.
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + draftId - The draft Id to send
+    # + return - If successful, returns the message Id and thread Id of the sent Draft. Else returns GmailError.
     public function sendDraft(string userId, string draftId) returns (string, string)|GmailError;
 };
 

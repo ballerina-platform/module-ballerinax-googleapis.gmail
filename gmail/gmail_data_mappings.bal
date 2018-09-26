@@ -18,12 +18,9 @@ import ballerina/log;
 
 //Includes all the transforming functions which transform required json to type object/record and vice versa
 
-documentation{
-    Transforms JSON message object into Message Type Object.
-
-    P{{sourceMessageJsonObject}} Json message object
-    R{{}} Returns Message type object
-}
+# Transforms JSON message object into Message Type Object.
+# + sourceMessageJsonObject - `json` message object
+# + return - Returns Message type object
 function convertJSONToMessageType(json sourceMessageJsonObject) returns Message {
     Message targetMessageType;
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
@@ -72,12 +69,9 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns Message 
     return targetMessageType;
 }
 
-documentation{
-    Transforms MIME Message Part Json into MessageBody.
-
-    P{{sourceMessagePartJsonObject}} Json message part object
-    R{{}} Returns MessageBodyPart type
-}
+# Transforms MIME Message Part JSON into MessageBody.
+# + sourceMessagePartJsonObject - `json` message part object
+# + return - Returns MessageBodyPart type
 function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageBodyType;
     if (sourceMessagePartJsonObject != ()){
@@ -100,12 +94,9 @@ function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns Mess
     return targetMessageBodyType;
 }
 
-documentation{
-    Transforms single body of MIME Message part into MessageBodyPart Attachment.
-
-    P{{sourceMessageBodyJsonObject}} Json message body object
-    R{{}} Returns MessageBodyPart type object
-}
+# Transforms single body of MIME Message part into MessageBodyPart Attachment.
+# + sourceMessageBodyJsonObject - `json` message body object
+# + return - Returns MessageBodyPart type object
 function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageAttachment;
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
@@ -118,12 +109,9 @@ function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) return
     return targetMessageAttachment;
 }
 
-documentation{
-    Transforms mail thread Json object into Thread.
-
-    P{{sourceThreadJsonObject}} Json message thread object.
-    R{{}} Returns Thread type.
-}
+# Transforms mail thread JSON object into Thread.
+# + sourceThreadJsonObject - `json` message thread object.
+# + return - Returns Thread type.
 function convertJSONToThreadType(json sourceThreadJsonObject) returns Thread {
     Thread targetThreadType;
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
@@ -138,12 +126,9 @@ function convertJSONToThreadType(json sourceThreadJsonObject) returns Thread {
     return targetThreadType;
 }
 
-documentation{
-    Converts the json message array into Message type array.
-
-    P{{sourceMessageArrayJsonObject}} Json message array object
-    R{{}} Message type array
-}
+# Converts the JSON message array into Message type array.
+# + sourceMessageArrayJsonObject - `json` message array object
+# + return - Message type array
 function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[] {
     Message[] messages = [];
     foreach i, jsonMessage in sourceMessageArrayJsonObject {
@@ -152,12 +137,9 @@ function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Mess
     return messages;
 }
 
-documentation{
-    Transforms user profile json object into UserProfile.
-
-    P{{sourceUserProfileJsonObject}} Json user profile object
-    R{{}} UserProfile type
-}
+# Transforms user profile JSON object into UserProfile.
+# + sourceUserProfileJsonObject - `json` user profile object
+# + return - UserProfile type
 function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
     UserProfile targetUserProfile;
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
@@ -172,12 +154,9 @@ function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns 
     return targetUserProfile;
 }
 
-documentation{
-    Transforms message list json object into MessageListPage.
-
-    P{{sourceMsgListJsonObject}} Json Messsage List object
-    R{{}} MessageListPage type
-}
+# Transforms message list JSON object into MessageListPage.
+# + sourceMsgListJsonObject - `json` Messsage List object
+# + return - MessageListPage type
 function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
     MessageListPage targetMsgListPage;
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
@@ -201,12 +180,9 @@ function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns 
     return targetMsgListPage;
 }
 
-documentation{
-    Transforms thread list json object into ThreadListPage.
-
-    P{{sourceThreadListJsonObject}} Json Thead List object
-    R{{}} ThreadListPage type
-}
+# Transforms thread list JSON object into ThreadListPage.
+# + sourceThreadListJsonObject - `json` Thead List object
+# + return - ThreadListPage type
 function convertJSONToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
     ThreadListPage targetThreadListPage;
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
@@ -229,12 +205,9 @@ function convertJSONToThreadListPageType(json sourceThreadListJsonObject) return
     return targetThreadListPage;
 }
 
-documentation{
-    Converts the message part header json array to headers.
-
-    P{{jsonMsgPartHeaders}} Json array of message part headers
-    R{{}} Map of headers
-}
+# Converts the message part header JSON array to headers.
+# + jsonMsgPartHeaders - `json` array of message part headers
+# + return - Map of headers
 function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map {
     map headers;
     foreach jsonHeader in jsonMsgPartHeaders {
@@ -243,12 +216,9 @@ function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map {
     return headers;
 }
 
-documentation{
-    Converts the json label resource to Label type.
-
-    P{{sourceLabelJsonObject}} Json label
-    R{{}} Label type object
-}
+# Converts the JSON label resource to Label type.
+# + sourceLabelJsonObject - `json` label
+# + return - Label type object
 function convertJSONToLabelType(json sourceLabelJsonObject) returns Label {
     Label targetLabel;
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
@@ -287,12 +257,9 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label {
     return targetLabel;
 }
 
-documentation {
-    Convert Json label list response to an array of Label type objects.
-
-    P{{sourceJsonLabelList}} Source json object
-    R{{}} Returns an array of Label type objects
-}
+# Convert JSON label list response to an array of Label type objects.
+# + sourceJsonLabelList - Source `json` object
+# + return - Returns an array of Label type objects
 function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[] {
     Label[] targetLabelList;
     //Convert json object to json array object
@@ -308,12 +275,9 @@ function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[] {
     return targetLabelList;
 }
 
-documentation{
-    Converts json mailbox history to MailboxHistoryPage Type.
-
-    P{{sourceJsonMailboxHistory}} Json mailbox history
-    R{{}} Returns MailboxHistoryPage Type object
-}
+# Converts JSON mailbox history to MailboxHistoryPage Type.
+# + sourceJsonMailboxHistory - `json` mailbox history
+# + return-  Returns MailboxHistoryPage Type object
 function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns MailboxHistoryPage {
     MailboxHistoryPage targetMailboxHistoryPage;
     targetMailboxHistoryPage.nextPageToken = sourceJsonMailboxHistory.nextPageToken != () ?
@@ -331,13 +295,10 @@ function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns
     return targetMailboxHistoryPage;
 }
 
-documentation{
-    Converts json list of messages to Message Type list.
-
-    P{{messages}} Json list of messages
-    P{{targetList}} Message Type list to be returned
-    R{{}} Returns Message Type list
-}
+# Converts JSON list of messages to Message Type list.
+# + messages - `json` list of messages
+# + targetList - Message Type list to be returned
+# + return - Returns Message Type list
 function convertJSONToMsgTypeList(json[] messages, Message[] targetList) returns Message[] {
     foreach i, msg in messages {
         targetList[i] = convertJSONToMessageType(msg);
@@ -345,12 +306,9 @@ function convertJSONToMsgTypeList(json[] messages, Message[] targetList) returns
     return targetList;
 }
 
-documentation{
-    Converts json history to History Type object.
-
-    P{{sourceJsonHistory}} Source json History
-    R{{}} Returns History Type object
-}
+# Converts JSON history to History Type object.
+# + sourceJsonHistory - Source `json` History
+# + return - Returns History Type object
 function convertJSONToHistoryType(json sourceJsonHistory) returns History {
     History targetHistory;
     targetHistory.id = sourceJsonHistory.id != () ? sourceJsonHistory.id.toString() : EMPTY_STRING;
@@ -398,12 +356,9 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns History {
     return targetHistory;
 }
 
-documentation{
-    Transforms drafts list json object into DraftListPage.
-
-    P{{sourceDraftListJsonObject}} Json Draft List object
-    R{{}} DraftListPage type
-}
+# Transforms drafts list JSON object into DraftListPage.
+# + sourceDraftListJsonObject - `json` Draft List object
+# + return - DraftListPage type
 function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
     DraftListPage targetDraftListPage;
     targetDraftListPage.resultSizeEstimate = sourceDraftListJsonObject.resultSizeEstimate != () ?
@@ -425,12 +380,9 @@ function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns 
     return targetDraftListPage;
 }
 
-documentation{
-    Transform draft json object into Draft Type Object.
-
-    P{{sourceDraftJsonObject}} Json Draft Object
-    R{{}} If successful, returns Draft. Else returns GmailError.
-}
+# Transform draft JSON object into Draft Type Object.
+# + sourceDraftJsonObject - `json` Draft Object
+# + return - If successful, returns Draft. Else returns GmailError.
 function convertJSONToDraftType(json sourceDraftJsonObject) returns Draft {
     Draft targetDraft;
     targetDraft.id = sourceDraftJsonObject.id != () ? sourceDraftJsonObject.id.toString() : EMPTY_STRING;

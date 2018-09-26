@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Gmail API Version |  
 |:--------------------------:|:-----------------:|
-| 0.981.0                    |        v1         |
+| 0.982.0                    |        v1         |
 
 ### Prerequisites
 
@@ -98,5 +98,5 @@ Run tests :
 
 ```
 ballerina init
-ballerina test gmail --c ballerina.conf
+ballerina test gmail --config ballerina.conf
 ```
