@@ -57,8 +57,10 @@ and refresh token.
 [OAuth 2.0 playground](https://developers.google.com/oauthplayground) to receive the authorization code and obtain the 
 access token and refresh token). 
 5. Click **Create**. Your client ID and client secret appear. 
-6. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground), select the required Gmail API scopes, and then click **Authorize APIs**.
-7. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token and access token. 
+6. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground). Click on the `OAuth 2.0 configuration`
+ icon in the top right corner and click on `Use your own OAuth credentials` and provide your `OAuth Client ID` and `OAuth Client secret`.
+7. Select the required Gmail API scopes from the list of API's, and then click **Authorize APIs**.
+8. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token and access token.
 
 You can now enter the credentials in the HTTP client config. 
 ```ballerina
