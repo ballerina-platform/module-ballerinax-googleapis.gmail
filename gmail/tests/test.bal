@@ -22,6 +22,7 @@ import ballerina/config;
 endpoint Client gmailEP {
     clientConfig: {
         auth: {
+            scheme: http:OAUTH2,
             accessToken: config:getAsString("ACCESS_TOKEN"),
             clientId: config:getAsString("CLIENT_ID"),
             clientSecret: config:getAsString("CLIENT_SECRET"),
@@ -84,8 +85,8 @@ function testSendTextMessage() {
     match sendMessageResponse {
         (string, string) sendStatus => {
             (messageId, threadId) = sendStatus;
-            sentTextMessageId = messageId;
-            sentTextMessageThreadId = threadId;
+            sentTextMessageId = untaint messageId;
+            sentTextMessageThreadId = untaint threadId;
             test:assertTrue(messageId != "null" && threadId != "null", msg = "Send Text Message Failed");
         }
         GmailError e => test:assertFail(msg = e.message);
@@ -119,7 +120,7 @@ function testSendHTMLMessage() {
     match sendMessageResponse {
         (string, string) sendStatus => {
             (messageId, threadId) = sendStatus;
-            sentHtmlMessageId = messageId;
+            sentHtmlMessageId = untaint messageId;
             test:assertTrue(messageId != "null" && threadId != "null", msg = "Send HTML message failed");
         }
         GmailError e => test:assertFail(msg = e.message);
@@ -364,7 +365,7 @@ function testCreateLabel() {
     var createLabelResponse = gmailEP->createLabel(testUserId, "Test", "labelShow", "show");
     match createLabelResponse {
         string id => {
-            createdLabelId = id;
+            createdLabelId = untaint id;
             test:assertTrue(id != "null", msg = "Create Label failed");
         }
         GmailError e => test:assertFail(msg = e.message);
@@ -457,7 +458,7 @@ function testCreateDraft() {
     match draftResponse {
         string id => {
             test:assertTrue(id != "null", msg = "Create Draft failed");
-            createdDraftId = id;
+            createdDraftId = untaint id;
         }
         GmailError e => test:assertFail(msg = e.message);
     }
@@ -533,7 +534,7 @@ function testDeleteDraft() {
     match draftResponse {
         string id => {
             test:assertTrue(id != "null", msg = "Create Draft failed");
-            draftIdToDelete = id;
+            draftIdToDelete = untaint id;
         }
         GmailError e => test:assertFail(msg = e.message);
     }

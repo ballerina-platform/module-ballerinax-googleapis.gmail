@@ -43,7 +43,7 @@ public type Thread record {
 # + subject - The subject of the mail
 # + messageBody - The message body of the mail. Can be either plain text or html text.
 # + contentType - The content type of the mail, whether it is text/plain or text/html. Only pass one of the
-#                        constant values defined in the package; `TEXT_PLAIN` or `TEXT_HTML`
+#                        constant values defined in the module; `TEXT_PLAIN` or `TEXT_HTML`
 # + sender - The sender of the mail
 # + cc - The cc recipient of the mail. Optional.
 # + bcc - The bcc recipient of the mail. Optional.

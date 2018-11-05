@@ -153,12 +153,13 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 # + filePath - File path
 # + return - If successful returns encoded file. Else returns GmailError.
 function encodeFile(string filePath) returns (string|GmailError) {
-    io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
+    //io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
+    io:ReadableByteChannel fileChannel = io:openReadableFile(filePath);
     int bytesChunk = BYTES_CHUNK;
     byte[] readEncodedContent;
     int readEncodedCount;
     match fileChannel.base64Encode() {
-        io:ByteChannel encodedfileChannel => {
+        io:ReadableByteChannel encodedfileChannel => {
             match encodedfileChannel.read(bytesChunk) {
                 (byte[], int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
                 error err => {
