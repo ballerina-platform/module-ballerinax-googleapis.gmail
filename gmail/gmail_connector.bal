@@ -42,7 +42,7 @@ public type GmailConnector object {
     # + messageId - The id of the message to retrieve
     # + format - Optional. The format to return the message in.
     #              Acceptable values for format for a get message request are defined as following constants
-    #              in the package:
+    #              in the module:
     #
     #               `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
     #                                field;the raw field is not used. (default)
@@ -106,7 +106,7 @@ public type GmailConnector object {
     # + threadId - The id of the thread to retrieve
     # + format - Optional. The format to return the messages in.
     #              Acceptable values for format for a get thread request are defined as following constants
-    #             in the package:
+    #             in the module:
     #
     #                `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
     #                                field;the raw field is not used. (default)
@@ -250,7 +250,7 @@ public type GmailConnector object {
     # + draftId - The id of the draft to retrieve
     # + format - Optional. The format to return the draft in.
     #              Acceptable values for format for a get draft request are defined as following constants
-    #              in the package:
+    #              in the module:
     #
     #                `FORMAT_FULL` : Returns the full email message data with body content parsed in the payload
     #                                field;the raw field is not used. (default)
@@ -314,7 +314,7 @@ function GmailConnector::listMessages(string userId, MsgSearchFilter? filter = (
                              check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
             uriParams = searchFilter.q != EMPTY_STRING ?
                                           check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
-            getListMessagesPath += uriParams;
+            getListMessagesPath += untaint uriParams;
         }
         () => {} //If filter is nill(not defined by the caller), do nothing.
     }
@@ -437,7 +437,7 @@ function GmailConnector::listThreads(string userId, MsgSearchFilter? filter = ()
                              check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
             uriParams = searchFilter.q != EMPTY_STRING ?
                                           check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
-            getListThreadPath += uriParams;
+            getListThreadPath += untaint uriParams;
         }
         () => {} //If filter is not defined, do nothing
     }
@@ -688,7 +688,7 @@ function GmailConnector::listDrafts(string userId, DraftSearchFilter? filter = (
                              check appendEncodedURIParameter(uriParams, PAGE_TOKEN, searchFilter.pageToken) : uriParams;
             uriParams = searchFilter.q != EMPTY_STRING ?
                                           check appendEncodedURIParameter(uriParams, QUERY, searchFilter.q) : uriParams;
-            getListDraftsPath += uriParams;
+            getListDraftsPath += untaint uriParams;
         }
         () => {} //If not given, do nothing
     }

@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Gmail API Version |  
 |:--------------------------:|:-----------------:|
-| 0.982.0                    |        v1         |
+| 0.983.0                    |        v1         |
 
 ### Prerequisites
 
