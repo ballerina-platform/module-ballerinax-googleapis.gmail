@@ -91,7 +91,7 @@ messageRequest.contentType = gmail:TEXT_PLAIN;
 var sendMessageResponse = gmailEP -> sendMessage(userId, messageRequest);
 ```
 The response from `sendMessage` is either a string tuple with the message ID and thread ID 
-(if the message was sent successfully) or a `GmailError` (if the message was unsuccessful). The `match` operation can be 
+(if the message was sent successfully) or a `error` (if the message was unsuccessful). The `match` operation can be 
 used to handle the response if an error occurs.
 ```ballerina
 match sendMessageResponse {
@@ -105,23 +105,23 @@ match sendMessageResponse {
     }
     
     //Unsuccessful attempts return a Gmail error.
-    gmail:GmailError e => io:println(e); 
+    gmail:error e => io:println(e); 
 }
 ```
 The `readMessage` function reads messages. It returns the `Message` struct when successful and 
-`GmailError` when unsuccessful. 
+`error` when unsuccessful. 
 ```ballerina
 var response = gmailEP -> readMessage(userId, messageIdToRead);
 match response {
     gmail:Message m => io:println("Sent Message: " + m);
-    gmail:GmailError e => io:println(e);
+    gmail:error e => io:println(e);
 } 
 ```
-The `deleteMessage` function deletes messages. It returns a `GmailError` when unsuccessful. 
+The `deleteMessage` function deletes messages. It returns a `error` when unsuccessful. 
 ```ballerina    
 var delete = gmailEP -> deleteMessage(userId, messageIdToDelete);
 match delete {
     boolean success => io:println("Message deletion success!");
-    gmail:GmailError e => io:println(e);
+    gmail:error e => io:println(e);
 }
 ```

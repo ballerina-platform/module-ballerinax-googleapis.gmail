@@ -382,7 +382,7 @@ function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns 
 
 # Transform draft JSON object into Draft Type Object.
 # + sourceDraftJsonObject - `json` Draft Object
-# + return - If successful, returns Draft. Else returns GmailError.
+# + return - If successful, returns Draft. Else returns error.
 function convertJSONToDraftType(json sourceDraftJsonObject) returns Draft {
     Draft targetDraft;
     targetDraft.id = sourceDraftJsonObject.id != () ? sourceDraftJsonObject.id.toString() : EMPTY_STRING;

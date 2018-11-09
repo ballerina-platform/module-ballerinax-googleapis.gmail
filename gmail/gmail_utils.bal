@@ -151,8 +151,8 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 
 # Opens a file from file path and returns the as base 64 encoded string.
 # + filePath - File path
-# + return - If successful returns encoded file. Else returns GmailError.
-function encodeFile(string filePath) returns (string|GmailError) {
+# + return - If successful returns encoded file. Else returns error.
+function encodeFile(string filePath) returns string|error {
     //io:ByteChannel fileChannel = io:openFile(filePath, io:READ);
     io:ReadableByteChannel fileChannel = io:openReadableFile(filePath);
     int bytesChunk = BYTES_CHUNK;
@@ -163,18 +163,12 @@ function encodeFile(string filePath) returns (string|GmailError) {
             match encodedfileChannel.read(bytesChunk) {
                 (byte[], int) readChannel => (readEncodedContent, readEncodedCount) = readChannel;
                 error err => {
-                    GmailError gmailError;
-                    gmailError.cause = err;
-                    gmailError.message = "Error occured while reading byte channel for file: " + filePath;
-                    return gmailError;
+                    return err;
                 }
             }
         }
         error err => {
-            GmailError gmailError;
-            gmailError.message = "Error occured while base64 encoding byte channel for file: " + filePath;
-            gmailError.cause = err;
-            return gmailError;
+            return err;
         }
     }
     return internal:byteArrayToString(readEncodedContent, UTF_8);
@@ -191,8 +185,8 @@ function getFileNameFromPath(string filePath) returns string {
 
 # Handles the HTTP response.
 # + response - Http response or error
-# + return - If successful returns `json` response. Else returns GmailError.
-function handleResponse(http:Response|error response) returns (json|GmailError) {
+# + return - If successful returns `json` response. Else returns error.
+function handleResponse(http:Response|error response) returns json|error {
     match response {
         http:Response httpResponse => {
             if (httpResponse.statusCode == http:NO_CONTENT_204){
@@ -205,8 +199,8 @@ function handleResponse(http:Response|error response) returns (json|GmailError) 
                         //If status is 200, request is successful. Returns resulting payload.
                         return jsonPayload;
                     }
-                    else { //If status is not 200 or 204, request is unsuccessful. Returns gmailError.
-                        GmailError gmailError;
+                    else { //If status is not 200 or 204, request is unsuccessful. Returns error.
+                        error gmailError;
                         gmailError.message = STATUS_CODE + COLON_SYMBOL + jsonPayload.error.code.toString()
                             + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE
                             + jsonPayload.error.message.toString();
@@ -229,19 +223,13 @@ function handleResponse(http:Response|error response) returns (json|GmailError) 
                         return gmailError;
                     }
                 }
-                error payloadError => {
-                    //Error occurred in getting the json payload from response. Eg: When response body is not json
-                    GmailError gmailError = { message: "Error occurred when parsing to json response; message: " +
-                        payloadError.message, cause: payloadError.cause };
-                    return gmailError;
+                error err => {
+                    return err;
                 }
             }
         }
         error err => {
-            //Error occurred in http connector. Eg: Timeout
-            GmailError gmailError = { message: "Error occurred during HTTP Client invocation; message: " + err.message,
-                cause: err.cause };
-            return gmailError;
+            return err;
         }
     }
 }
@@ -250,17 +238,15 @@ function handleResponse(http:Response|error response) returns (json|GmailError) 
 # + requestPath - Request path to append values
 # + key - Key of the form value parameter
 # + value - Value of the form value parameter
-# + return - If successful, returns created request path as an encoded string. Else returns GmailError.
-function appendEncodedURIParameter(string requestPath, string key, string value) returns (string|GmailError) {
+# + return - If successful, returns created request path as an encoded string. Else returns error.
+function appendEncodedURIParameter(string requestPath, string key, string value) returns string|error {
     var encodedVar = http:encode(value, UTF_8);
     string encodedString;
     string path;
     match encodedVar {
         string encoded => encodedString = encoded;
         error err => {
-            GmailError gmailError = { message: "Error occurred when encoding the value " + value + " with charset "
-                + UTF_8, cause: err };
-            return gmailError;
+            return err;
         }
     }
     if (requestPath != EMPTY_STRING) {
@@ -283,18 +269,17 @@ function getValueForMapKey(map targetMap, string key) returns string {
 
 # Create and encode the whole message as a raw string.
 # + msgRequest - MessageRequest to create the message
-# + return - If successful, returns the encoded raw string. Else returns GmailError.
-function createEncodedRawMessage(MessageRequest msgRequest) returns string|GmailError {
+# + return - If successful, returns the encoded raw string. Else returns error.
+function createEncodedRawMessage(MessageRequest msgRequest) returns string|error {
     //The content type should be either TEXT_PLAIN or TEXT_HTML. If not returns an error.
+    error gmailError;
     if (msgRequest.contentType != TEXT_PLAIN && msgRequest.contentType != TEXT_HTML) {
-        GmailError gmailError;
         gmailError.message = "Does not support the given content type: " + msgRequest.contentType
             + " for the message with subject: " + msgRequest.subject;
         return gmailError;
     }
     //Adding inline images to messages of TEXT_PLAIN content type is not unsupported.
     if (msgRequest.contentType == TEXT_PLAIN && (lengthof msgRequest.inlineImagePaths != 0)){
-        GmailError gmailError;
         gmailError.message = "Does not support adding inline images to text/plain body of the message with subject: "
             + msgRequest.subject;
         return gmailError;
@@ -356,11 +341,9 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|Gmail
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
         //The mime type of inline image cannot be empty
         if (inlineImage.mimeType == EMPTY_STRING){
-            GmailError gmailError;
             gmailError.message = "Image content type cannot be empty for image: " + inlineImage.imagePath;
             return gmailError;
         } else if (inlineImage.imagePath == EMPTY_STRING){ //Inline image path cannot be empty
-            GmailError gmailError;
             gmailError.message = "File path of inline image in message with subject: " + msgRequest.subject
                 + "cannot be empty";
             return gmailError;
@@ -382,7 +365,6 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|Gmail
             concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
         } else {
             //Return an error if an unsupported content type other than image/* is passed
-            GmailError gmailError;
             gmailError.message = "Unsupported content type:" + inlineImage.mimeType + "for the image:"
                 + inlineImage.imagePath;
             return gmailError;
@@ -398,16 +380,14 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|Gmail
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
         //The mime type of the attachment cannot be empty
         if (attachment.mimeType == EMPTY_STRING){
-            GmailError gmailError;
             gmailError.message = "Content type of attachment:" + attachment.attachmentPath + "cannot be empty";
             return gmailError;
         } else if (attachment.attachmentPath == EMPTY_STRING){ //The attachment path cannot be empty
-            GmailError gmailError;
             gmailError.message = "File path of attachment in message with subject: " + msgRequest.subject
                 + "cannot be empty";
             return gmailError;
         }
-        //Open and encode the file into base64. Return a GmailError if fails.
+        //Open and encode the file into base64. Return a error if fails.
         string encodedFile = check encodeFile(attachment.attachmentPath);
         //Set attachment headers of the messsage
         concatRequest += CONTENT_TYPE + COLON_SYMBOL + attachment.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE + NAME
@@ -428,10 +408,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|Gmail
         string encodedRequest => return encodedRequest.replace(PLUS_SYMBOL, DASH_SYMBOL)
         .replace(FORWARD_SLASH_SYMBOL, UNDERSCORE_SYMBOL);
         error encodeError => {
-            GmailError gmailError;
-            gmailError.message = "Error occurred during base64 encoding of the mime message request : " + concatRequest;
-            gmailError.cause = encodeError;
-            return gmailError;
+            return encodeError;
         }
     }
 }
