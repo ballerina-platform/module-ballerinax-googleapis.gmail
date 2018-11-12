@@ -105,7 +105,7 @@ match sendMessageResponse {
     }
     
     //Unsuccessful attempts return a Gmail error.
-    gmail:error e => io:println(e); 
+    error e => io:println(e); 
 }
 ```
 The `readMessage` function reads messages. It returns the `Message` struct when successful and 
@@ -114,7 +114,7 @@ The `readMessage` function reads messages. It returns the `Message` struct when 
 var response = gmailEP -> readMessage(userId, messageIdToRead);
 match response {
     gmail:Message m => io:println("Sent Message: " + m);
-    gmail:error e => io:println(e);
+    error e => io:println(e);
 } 
 ```
 The `deleteMessage` function deletes messages. It returns a `error` when unsuccessful. 
@@ -122,6 +122,6 @@ The `deleteMessage` function deletes messages. It returns a `error` when unsucce
 var delete = gmailEP -> deleteMessage(userId, messageIdToDelete);
 match delete {
     boolean success => io:println("Message deletion success!");
-    gmail:error e => io:println(e);
+    error e => io:println(e);
 }
 ```
