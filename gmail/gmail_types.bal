@@ -149,14 +149,6 @@ public type MessageBodyPart record {
     @readonly string size;
 };
 
-# Represents Gmail error.
-# + message - Gmail error message
-# + cause - The error which caused the Gmail error
-public type GmailError record {
-    string message;
-    error? cause;
-};
-
 # Represents the optional search message filter fields.
 # + includeSpamTrash - Specifies whether to include messages/threads from SPAM and TRASH in the results
 # + labelIds - Array of label ids. Only return messages/threads with labels that match all of the specified

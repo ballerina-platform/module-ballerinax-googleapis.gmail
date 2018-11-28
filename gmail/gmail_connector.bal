@@ -24,8 +24,8 @@ public type GmailConnector object {
     # List the messages in user's mailbox.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + filter - Optional. MsgSearchFilter with optional query parameters to search messages.
-    # + return - If successful, returns MessageListPage. Else returns GmailError.
-    public function listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|GmailError;
+    # + return - If successful, returns MessageListPage. Else returns error.
+    public function listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|error;
 
     # Create the raw base 64 encoded string of the whole message and send it as an email from the user's
     # mailbox to its recipient.
@@ -33,9 +33,9 @@ public type GmailConnector object {
     # + message - MessageRequest to send
     # + threadId - Optional. Required if message is expected to be send The ID of the thread the message belongs to.
     # (The Subject headers must match)
-    # + return - If successful, return(message id, thread id) of the successfully sent message. Else return GmailError.
+    # + return - If successful, return(message id, thread id) of the successfully sent message. Else return error.
     public function sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
-                                                                                            (string, string)|GmailError;
+                                                                                            (string, string)|error;
 
     # Read the specified mail from users mailbox.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -56,50 +56,50 @@ public type GmailConnector object {
     #                               base64url encoded string. (the payload field is not included in the response)
     # + metadataHeaders - Optional. The meta data headers array to include in the response when the format is given
     #                       as *FORMAT_METADATA*.
-    # + return - If successful, returns Message type object of the specified mail. Else returns GmailError.
+    # + return - If successful, returns Message type object of the specified mail. Else returns error.
     public function readMessage(string userId, string messageId, string? format = (), string[]? metadataHeaders = ())
-                                                                                            returns Message|GmailError;
+                                                                                            returns Message|error;
 
     # Gets the specified message attachment from users mailbox.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of  the message to retrieve
     # + attachmentId - The id of the attachment to retrieve
-    # + return - If successful, returns MessageBodyPart type object of the specified attachment. Else returns GmailError.
+    # + return - If successful, returns MessageBodyPart type object of the specified attachment. Else returns error.
     public function getAttachment(string userId, string messageId, string attachmentId)
-                        returns MessageBodyPart|GmailError;
+                        returns MessageBodyPart|error;
 
     # Move the specified message to the trash.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to trash
-    # + return - If successful, returns boolean specifying the status of trashing. Else returns GmailError.
-    public function trashMessage(string userId, string messageId) returns boolean|GmailError;
+    # + return - If successful, returns boolean specifying the status of trashing. Else returns error.
+    public function trashMessage(string userId, string messageId) returns boolean|error;
 
     # Removes the specified message from the trash.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to untrash
-    # + return - If successful, returns boolean specifying the status of untrashing. Else returns GmailError.
-    public function untrashMessage(string userId, string messageId) returns boolean|GmailError;
+    # + return - If successful, returns boolean specifying the status of untrashing. Else returns error.
+    public function untrashMessage(string userId, string messageId) returns boolean|error;
 
     # Immediately and permanently deletes the specified message. This operation cannot be undone.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to delete
-    # + return - If successful, returns boolean status of deletion. Else returns GmailError.
-    public function deleteMessage(string userId, string messageId) returns boolean|GmailError;
+    # + return - If successful, returns boolean status of deletion. Else returns error.
+    public function deleteMessage(string userId, string messageId) returns boolean|error;
 
     # Modifies the labels on the specified message.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to modify
     # + addLabelIds - A list of Ids of labels to add to this message
     # + removeLabelIds - A list Ids of labels to remove from this message
-    # + return - If successful, returns modified Message type object in **minimal** format. Else returns GmailError.
+    # + return - If successful, returns modified Message type object in **minimal** format. Else returns error.
     public function modifyMessage(string userId, string messageId, string[] addLabelIds, string[] removeLabelIds)
-                        returns Message|GmailError;
+                        returns Message|error;
 
     # List the threads in user's mailbox.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + filter - Optional. The MsgSearchFilter with optional query parameters to search a thread.
-    # + return - If successful, returns ThreadListPage type. Else returns GmailError.
-    public function listThreads(string userId, MsgSearchFilter? filter = ()) returns ThreadListPage|GmailError;
+    # + return - If successful, returns ThreadListPage type. Else returns error.
+    public function listThreads(string userId, MsgSearchFilter? filter = ()) returns ThreadListPage|error;
 
     # Read the specified mail thread from users mailbox.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -120,47 +120,47 @@ public type GmailConnector object {
     #                               base64url encoded string. (the payload field is not included in the response)
     # + metadataHeaders - Optional. The meta data headers array to include in the reponse when the format is given
     #                           as `FORMAT_METADATA`.
-    # + return - If successful, returns Thread type of the specified mail thread. Else returns GmailError.
+    # + return - If successful, returns Thread type of the specified mail thread. Else returns error.
     public function readThread(string userId, string threadId, string? format = (), string[]? metadataHeaders = ())
-                        returns Thread|GmailError;
+                        returns Thread|error;
 
     # Move the specified mail thread to the trash.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to trash
-    # + return - If successful, returns boolean status of trashing. Else returns GmailError.
-    public function trashThread(string userId, string threadId) returns boolean|GmailError;
+    # + return - If successful, returns boolean status of trashing. Else returns error.
+    public function trashThread(string userId, string threadId) returns boolean|error;
 
     # Removes the specified mail thread from the trash.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to untrash
-    # + return - If successful, returns boolean status of untrashing. Else returns GmailError.
-    public function untrashThread(string userId, string threadId) returns boolean|GmailError;
+    # + return - If successful, returns boolean status of untrashing. Else returns error.
+    public function untrashThread(string userId, string threadId) returns boolean|error;
 
     # Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to delete
-    # + return - If successful, returns boolean status of deletion. Else returns GmailError.
-    public function deleteThread(string userId, string threadId) returns boolean|GmailError;
+    # + return - If successful, returns boolean status of deletion. Else returns error.
+    public function deleteThread(string userId, string threadId) returns boolean|error;
 
     # Modifies the labels on the specified thread.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to modify
     # + addLabelIds - A list of IDs of labels to add to this thread
     # + removeLabelIds - A list IDs of labels to remove from this thread
-    # + return - If successful, returns modified Thread type object. Else returns GmailError.
+    # + return - If successful, returns modified Thread type object. Else returns error.
     public function modifyThread(string userId, string threadId, string[] addLabelIds, string[] removeLabelIds)
-                                                                                              returns Thread|GmailError;
+                                                                                              returns Thread|error;
 
     # Get the current user's Gmail Profile.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
-    # + return - If successful, returns UserProfile type. Else returns GmailError.
-    public function getUserProfile(string userId) returns UserProfile|GmailError;
+    # + return - If successful, returns UserProfile type. Else returns error.
+    public function getUserProfile(string userId) returns UserProfile|error;
 
     # Get the label.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + labelId - The label Id
-    # + return - If successful, returns Label type. Else returns GmailError.
-    public function getLabel(string userId, string labelId) returns Label|GmailError;
+    # + return - If successful, returns Label type. Else returns error.
+    public function getLabel(string userId, string labelId) returns Label|error;
 
     # Create a new label.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -180,21 +180,21 @@ public type GmailConnector object {
     #                         This field is required in order to set the color of a label.
     # + textColor - Optional. The text color of the label, represented as hex string. This field is required in order
     #                   to set the color of a label.
-    # + return - If successful, returns id of the created label. If not, returns GmailError.
+    # + return - If successful, returns id of the created label. If not, returns error.
     public function createLabel(string userId, string name, string labelListVisibility, string messageListVisibility,
-                                string? backgroundColor = (), string? textColor = ()) returns string|GmailError;
+                                string? backgroundColor = (), string? textColor = ()) returns string|error;
 
     # Lists all labels in the user's mailbox.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns an array of Label type objects with values for a set of main fields only. (Use
-    #          `getLabel` to get all the details for a specific label) If not successful, returns GmailError.
-    public function listLabels(string userId) returns Label[]|GmailError;
+    #          `getLabel` to get all the details for a specific label) If not successful, returns error.
+    public function listLabels(string userId) returns Label[]|error;
 
     # Delete a label.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + labelId - The id of the label to delete
-    # + return - If successful, returns boolean status of deletion. Else returns GmailError.
-    public function deleteLabel(string userId, string labelId) returns boolean|GmailError;
+    # + return - If successful, returns boolean status of deletion. Else returns error.
+    public function deleteLabel(string userId, string labelId) returns boolean|error;
 
     # Update a label.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -214,10 +214,10 @@ public type GmailConnector object {
     #                             `labelShowIfUnread`: Show the label if there are any unread messages with that label
     # + backgroundColor - Optional. The background color represented as hex string #RRGGBB (ex #000000).
     # + textColor - Optional. The text color of the label, represented as hex string.
-    # + return - If successful, returns updated Label type object. Else returns GmailError.
+    # + return - If successful, returns updated Label type object. Else returns error.
     public function updateLabel(string userId, string labelId, string? name = (), string? messageListVisibility = (),
                                 string? labelListVisibility = (), string? backgroundColor = (), string? textColor = ())
-                                returns Label|GmailError;
+                                returns Label|error;
 
     # Lists the history of all changes to the given mailbox. History results are returned in chronological order
     #   (increasing historyId).
@@ -234,16 +234,16 @@ public type GmailConnector object {
     # + labelId - Optional. Only return messages with a label matching the ID
     # + maxResults - Optional. The maximum number of history records to return
     # + pageToken - Optional. Page token to retrieve a specific page of results in the list
-    # + return - If successful, returns MailboxHistoryPage. Else returns GmailError.
+    # + return - If successful, returns MailboxHistoryPage. Else returns error.
     public function listHistory(string userId, string startHistoryId, string[]? historyTypes = (),
                                    string? labelId = (), string? maxResults = (), string? pageToken =())
-                                   returns MailboxHistoryPage|GmailError;
+                                   returns MailboxHistoryPage|error;
 
     # List the drafts in user's mailbox.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + filter - Optional. DraftSearchFilter with optional query parameters to search drafts.
-    # + return - If successful, returns DraftListPage. Else returns GmailError.
-    public function listDrafts(string userId, DraftSearchFilter? filter = ()) returns DraftListPage|GmailError;
+    # + return - If successful, returns DraftListPage. Else returns error.
+    public function listDrafts(string userId, DraftSearchFilter? filter = ()) returns DraftListPage|error;
 
     # Read the specified draft from users mailbox.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -262,45 +262,45 @@ public type GmailConnector object {
     #
     #                `FORMAT_RAW` : Returns the full email message data with body content in the raw field as a
     #                               base64url encoded string. (the payload field is not included in the response)
-    # + return - If successful, returns Draft type of the specified draft. Else returns GmailError.
-    public function readDraft(string userId, string draftId, string? format = ()) returns Draft|GmailError;
+    # + return - If successful, returns Draft type of the specified draft. Else returns error.
+    public function readDraft(string userId, string draftId, string? format = ()) returns Draft|error;
 
     # Immediately and permanently deletes the specified draft.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + draftId - The id of the draft to delete
-    # + return - If successful, returns boolean status of deletion. Else returns GmailError.
-    public function deleteDraft(string userId, string draftId) returns boolean|GmailError;
+    # + return - If successful, returns boolean status of deletion. Else returns error.
+    public function deleteDraft(string userId, string draftId) returns boolean|error;
 
     # Creates a new draft with the DRAFT label.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + message - MessageRequest to create a draft
     # + threadId - Optional. Thread Id of the draft to reply
-    # + return - If successful, returns the draft Id of the created Draft. Else returns GmailError.
-    public function createDraft(string userId, MessageRequest message, string? threadId = ()) returns string|GmailError;
+    # + return - If successful, returns the draft Id of the created Draft. Else returns error.
+    public function createDraft(string userId, MessageRequest message, string? threadId = ()) returns string|error;
 
     # Replaces a draft's content.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + draftId - The draft Id to update
     # + message - MessageRequest to update a draft
     # + threadId - Optional. Thread Id of the draft to reply
-    # + return - If successful, returns the draft Id of the updated Draft. Else returns GmailError.
+    # + return - If successful, returns the draft Id of the updated Draft. Else returns error.
     public function updateDraft(string userId, string draftId, MessageRequest message, string? threadId = ())
-                                                                                              returns string|GmailError;
+                                                                                              returns string|error;
     # Sends the specified, existing draft to the recipients in the To, Cc, and Bcc headers.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + draftId - The draft Id to send
-    # + return - If successful, returns the message Id and thread Id of the sent Draft. Else returns GmailError.
-    public function sendDraft(string userId, string draftId) returns (string, string)|GmailError;
+    # + return - If successful, returns the message Id and thread Id of the sent Draft. Else returns error.
+    public function sendDraft(string userId, string draftId) returns (string, string)|error;
 };
 
-function GmailConnector::listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|GmailError {
+function GmailConnector::listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|error {
     endpoint http:Client httpClient = self.client;
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
     match filter {
         MsgSearchFilter searchFilter => {
             string uriParams;
             //The default value for include spam trash query parameter of the api call is false
-            //If append unsuccessful throws and returns GmailError
+            //If append unsuccessful throws and returns error
             uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, <string>searchFilter.
                 includeSpamTrash);
             //---Append other optional URI query parameters---
@@ -319,15 +319,15 @@ function GmailConnector::listMessages(string userId, MsgSearchFilter? filter = (
         () => {} //If filter is nill(not defined by the caller), do nothing.
     }
     var httpResponse = httpClient->get(getListMessagesPath);
-    //Get json msg list reponse. If unsuccessful throws and returns GmailError.
+    //Get json msg list reponse. If unsuccessful throws and returns error.
     json jsonlistMsgResponse = check handleResponse(httpResponse);
     return convertJSONToMessageListPageType(jsonlistMsgResponse);
 }
 
 function GmailConnector::sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
-                                                                                           (string, string)|GmailError {
+                                                                                           (string, string)|error {
     endpoint http:Client httpClient = self.client;
-    //Create the whole message as an encoded raw string. If unsuccessful throws and returns GmailError.
+    //Create the whole message as an encoded raw string. If unsuccessful throws and returns error.
     string encodedRequest = check createEncodedRawMessage(message);
     http:Request request = new;
     json jsonPayload = { raw: encodedRequest };
@@ -339,14 +339,14 @@ function GmailConnector::sendMessage(string userId, MessageRequest message, stri
     string sendMessagePath = USER_RESOURCE + userId + MESSAGE_SEND_RESOURCE;
     request.setJsonPayload(untaint jsonPayload);
     var httpResponse = httpClient->post(sendMessagePath, request);
-    //Get json sent msg response. If unsuccessful throws and returns GmailError.
+    //Get json sent msg response. If unsuccessful throws and returns error.
     json jsonSendMessageResponse = check handleResponse(httpResponse);
     //Return the (messageId, threadId) of the sent message
     return (jsonSendMessageResponse.id.toString(), jsonSendMessageResponse.threadId.toString());
 }
 
 function GmailConnector::readMessage(string userId, string messageId, string? format = (),
-                                            string[]? metadataHeaders = ()) returns Message|GmailError {
+                                            string[]? metadataHeaders = ()) returns Message|error {
     endpoint http:Client httpClient = self.client;
     string uriParams;
     //Append format query parameter
@@ -365,65 +365,65 @@ function GmailConnector::readMessage(string userId, string messageId, string? fo
     }
     string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId + uriParams;
     var httpResponse = httpClient->get(readMessagePath);
-    //Get json message response. If unsuccessful, throws and returns GmailError.
+    //Get json message response. If unsuccessful, throws and returns error.
     json jsonreadMessageResponse = check handleResponse(httpResponse);
-    //Transform the json mail response from Gmail API to Message type. If unsuccessful, throws and returns GmailError.
+    //Transform the json mail response from Gmail API to Message type. If unsuccessful, throws and returns error.
     return convertJSONToMessageType(jsonreadMessageResponse);
 }
 
 function GmailConnector::getAttachment(string userId, string messageId, string attachmentId)
-                                                                                    returns MessageBodyPart|GmailError {
+                                                                                    returns MessageBodyPart|error {
     endpoint http:Client httpClient = self.client;
     string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
                             + ATTACHMENT_RESOURCE + attachmentId;
     var httpResponse = httpClient->get(getAttachmentPath);
-    //Get json attachment response. If unsuccessful, throws and returns GmailError.
+    //Get json attachment response. If unsuccessful, throws and returns error.
     json jsonAttachment = check handleResponse(httpResponse);
     //Transform the json attachment message body response from Gmail API to MessageBodyPart type.
     return convertJSONToMsgBodyAttachment(jsonAttachment);
 }
 
-function GmailConnector::trashMessage(string userId, string messageId) returns boolean|GmailError {
+function GmailConnector::trashMessage(string userId, string messageId) returns boolean|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
         + FORWARD_SLASH_SYMBOL + TRASH;
     var httpResponse = httpClient->post(trashMessagePath, request);
-    //Get json trash response. If unsuccessful, throws and returns GmailError.
+    //Get json trash response. If unsuccessful, throws and returns error.
     json jsonTrashMessageResponse = check handleResponse(httpResponse);
     //Return status of trashing message
     return jsonTrashMessageResponse.id.toString() == messageId;
 }
 
-function GmailConnector::untrashMessage(string userId, string messageId) returns boolean|GmailError {
+function GmailConnector::untrashMessage(string userId, string messageId) returns boolean|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
         + FORWARD_SLASH_SYMBOL + UNTRASH;
     var httpResponse = httpClient->post(untrashMessagePath, request);
-    //Get json untrash response. If unsuccessful, throws and returns GmailError.
+    //Get json untrash response. If unsuccessful, throws and returns error.
     json jsonUntrashMessageReponse = check handleResponse(httpResponse);
     //Return status of untrashing message
     return jsonUntrashMessageReponse.id.toString() == messageId;
 }
 
-function GmailConnector::deleteMessage(string userId, string messageId) returns boolean|GmailError {
+function GmailConnector::deleteMessage(string userId, string messageId) returns boolean|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string deleteMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
     var httpResponse = httpClient->delete(deleteMessagePath, request);
-    //Return boolean status of message deletion response. If unsuccessful, throws and returns GmailError.
+    //Return boolean status of message deletion response. If unsuccessful, throws and returns error.
     return <boolean>check handleResponse(httpResponse);
 }
 
-function GmailConnector::listThreads(string userId, MsgSearchFilter? filter = ()) returns ThreadListPage|GmailError {
+function GmailConnector::listThreads(string userId, MsgSearchFilter? filter = ()) returns ThreadListPage|error {
     endpoint http:Client httpClient = self.client;
     string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
     match filter {
         MsgSearchFilter searchFilter => {
             string uriParams;
             //The default value for include spam trash query parameter of the api call is false
-            //If append unsuccessful throws and returns GmailError
+            //If append unsuccessful throws and returns error
             uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
                                                                                  <string>searchFilter.includeSpamTrash);
             //---Append other optional URI query parameters---
@@ -442,13 +442,13 @@ function GmailConnector::listThreads(string userId, MsgSearchFilter? filter = ()
         () => {} //If filter is not defined, do nothing
     }
     var httpResponse = httpClient->get(getListThreadPath);
-    //Get json thread list reponse. If unsuccessful throws and returns GmailError.
+    //Get json thread list reponse. If unsuccessful throws and returns error.
     json jsonListThreadResponse = check handleResponse(httpResponse);
     return convertJSONToThreadListPageType(jsonListThreadResponse);
 }
 
 function GmailConnector::readThread(string userId, string threadId, string? format = (),
-                                           string[]? metadataHeaders = ()) returns Thread|GmailError {
+                                           string[]? metadataHeaders = ()) returns Thread|error {
     endpoint http:Client httpClient = self.client;
     string uriParams;
     match format { //Append the format optional query parameter
@@ -465,60 +465,60 @@ function GmailConnector::readThread(string userId, string threadId, string? form
     }
     string readThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId + uriParams;
     var httpResponse = httpClient->get(readThreadPath);
-    //Get json thread response. If unsuccessful, throws and returns GmailError.
+    //Get json thread response. If unsuccessful, throws and returns error.
     json jsonReadThreadResponse = check handleResponse(httpResponse);
-    //Transform the json thread response from Gmail API to Thread type. If unsuccessful, throws and returns GmailError.
+    //Transform the json thread response from Gmail API to Thread type. If unsuccessful, throws and returns error.
     return convertJSONToThreadType(jsonReadThreadResponse);
 }
 
-function GmailConnector::trashThread(string userId, string threadId) returns boolean|GmailError {
+function GmailConnector::trashThread(string userId, string threadId) returns boolean|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
         + FORWARD_SLASH_SYMBOL + TRASH;
     var httpResponse = httpClient->post(trashThreadPath, request);
-    //Get json trash response. If unsuccessful, throws and returns GmailError.
+    //Get json trash response. If unsuccessful, throws and returns error.
     json jsonTrashThreadResponse = check handleResponse(httpResponse);
     //Return status of trashing thread
     return jsonTrashThreadResponse.id.toString() == threadId;
 }
 
-function GmailConnector::untrashThread(string userId, string threadId) returns boolean|GmailError {
+function GmailConnector::untrashThread(string userId, string threadId) returns boolean|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
         + FORWARD_SLASH_SYMBOL + UNTRASH;
     var httpResponse = httpClient->post(untrashThreadPath, request);
-    //Get json untrash response. If unsuccessful, throws and returns GmailError.
+    //Get json untrash response. If unsuccessful, throws and returns error.
     json jsonUntrashThreadResponse = check handleResponse(httpResponse);
     //Return status of untrashing thread
     return jsonUntrashThreadResponse.id.toString() == threadId;
 }
 
-function GmailConnector::deleteThread(string userId, string threadId) returns boolean|GmailError {
+function GmailConnector::deleteThread(string userId, string threadId) returns boolean|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
     var httpResponse = httpClient->delete(deleteThreadPath, request);
-    //Return boolean status of thread deletion response. If unsuccessful, throws and returns GmailError.
+    //Return boolean status of thread deletion response. If unsuccessful, throws and returns error.
     return <boolean>check handleResponse(httpResponse);
 }
 
-function GmailConnector::getUserProfile(string userId) returns UserProfile|GmailError {
+function GmailConnector::getUserProfile(string userId) returns UserProfile|error {
     endpoint http:Client httpClient = self.client;
     string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
     var httpResponse = httpClient->get(getProfilePath);
-    //Get json user profile response. If unsuccessful, throws and returns GmailError.
+    //Get json user profile response. If unsuccessful, throws and returns error.
     json jsonProfileResponse = check handleResponse(httpResponse);
     //Transform the json profile response from Gmail API to User Profile type.
     return convertJSONToUserProfileType(jsonProfileResponse);
 }
 
-function GmailConnector::getLabel(string userId, string labelId) returns Label|GmailError {
+function GmailConnector::getLabel(string userId, string labelId) returns Label|error {
     endpoint http:Client httpClient = self.client;
     string getLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
     var httpResponse = httpClient->get(getLabelPath);
-    //Get json label response. If unsuccessful, throws and returns GmailError.
+    //Get json label response. If unsuccessful, throws and returns error.
     json jsonGetLabelResponse = check handleResponse(httpResponse);
     //Transform the json label response from Gmail API to Label type.
     return convertJSONToLabelType(jsonGetLabelResponse);
@@ -526,7 +526,7 @@ function GmailConnector::getLabel(string userId, string labelId) returns Label|G
 
 function GmailConnector::createLabel(string userId, string name, string labelListVisibility,
                                             string messageListVisibility, string? backgroundColor = (),
-                                            string? textColor = ()) returns string|GmailError {
+                                            string? textColor = ()) returns string|error {
     endpoint http:Client httpClient = self.client;
     string createLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE;
     json jsonPayload = { labelListVisibility: labelListVisibility, messageListVisibility: messageListVisibility,
@@ -540,34 +540,34 @@ function GmailConnector::createLabel(string userId, string name, string labelLis
     http:Request request = new;
     request.setJsonPayload(jsonPayload);
     var httpResponse = httpClient->post(createLabelPath, request);
-    //Get create label json response. If unsuccessful, throws and returns GmailError.
+    //Get create label json response. If unsuccessful, throws and returns error.
     json jsonCreateLabelResponse = check handleResponse(httpResponse);
     //Returns the label id of the created label
     return jsonCreateLabelResponse.id.toString();
 }
 
-function GmailConnector::listLabels(string userId) returns Label[]|GmailError {
+function GmailConnector::listLabels(string userId) returns Label[]|error {
     endpoint http:Client httpClient = self.client;
     string listLabelsPath = USER_RESOURCE + userId + LABEL_RESOURCE;
     var httpResponse = httpClient->get(listLabelsPath);
-    //Get list labels json response. If unsuccessful, throws and returns GmailError.
+    //Get list labels json response. If unsuccessful, throws and returns error.
     json jsonLabelListResponse = check handleResponse(httpResponse);
     return convertJSONToLabelTypeList(jsonLabelListResponse);
 }
 
-function GmailConnector::deleteLabel(string userId, string labelId) returns boolean|GmailError {
+function GmailConnector::deleteLabel(string userId, string labelId) returns boolean|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string deleteLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
     var httpResponse = httpClient->delete(deleteLabelPath, request);
-    //Return boolean status of label deletion response. If unsuccessful, throws and returns GmailError.
+    //Return boolean status of label deletion response. If unsuccessful, throws and returns error.
     return <boolean>check handleResponse(httpResponse);
 }
 
 function GmailConnector::updateLabel(string userId, string labelId, string? name = (),
                                             string? messageListVisibility = (), string? labelListVisibility = (),
                                             string? backgroundColor = (), string? textColor = ())
-                                            returns Label|GmailError {
+                                            returns Label|error {
     endpoint http:Client httpClient = self.client;
     string updateLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
     json jsonPayload = { id: labelId };
@@ -599,13 +599,13 @@ function GmailConnector::updateLabel(string userId, string labelId, string? name
 }
 
 function GmailConnector::modifyMessage(string userId, string messageId, string[] addLabelIds,
-                                              string[] removeLabelIds) returns Message|GmailError {
+                                              string[] removeLabelIds) returns Message|error {
     endpoint http:Client httpClient = self.client;
     string modifyMsgPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
                            + MODIFY_RESOURCE;
     //When modifying message labels, at least one of the arrays from addLabelIds and removeLabelIds should not be empty.
     if (lengthof addLabelIds == 0 && lengthof removeLabelIds == 0) {
-        GmailError gmailError = { message: "Both addLabelIds and removeLabelIds arrays cannot be empty when modifying"
+        error gmailError = { message: "Both addLabelIds and removeLabelIds arrays cannot be empty when modifying"
                                     + " messageId: " + messageId };
         return gmailError;
     }
@@ -615,17 +615,17 @@ function GmailConnector::modifyMessage(string userId, string messageId, string[]
     request.setJsonPayload(jsonPayload);
     var httpResponse = httpClient->post(modifyMsgPath, request);
     //Transform the json mail response from Gmail API to Message type in minimal format. If unsuccessful throws and
-    //returns GmailError.
+    //returns error.
     return convertJSONToMessageType(check handleResponse(httpResponse));
 }
 
 function GmailConnector::modifyThread(string userId, string threadId, string[] addLabelIds,
-                                             string[] removeLabelIds) returns Thread|GmailError {
+                                             string[] removeLabelIds) returns Thread|error {
     endpoint http:Client httpClient = self.client;
     string modifyThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
                             + MODIFY_RESOURCE;
     if (lengthof addLabelIds == 0 && lengthof removeLabelIds == 0) {
-        GmailError gmailError = { message: "Both addLabelIds and removeLabelIds arrays cannot be empty when modifying"
+        error gmailError = { message: "Both addLabelIds and removeLabelIds arrays cannot be empty when modifying"
                                             + " threadId: " + threadId };
         return gmailError;
     }
@@ -634,13 +634,13 @@ function GmailConnector::modifyThread(string userId, string threadId, string[] a
     http:Request request = new;
     request.setJsonPayload(jsonPayload);
     var httpResponse = httpClient->post(modifyThreadPath, request);
-    //Transform the json thread response from Gmail API to Thread type. If unsuccessful throws and returns GmailError.
+    //Transform the json thread response from Gmail API to Thread type. If unsuccessful throws and returns error.
     return convertJSONToThreadType(check handleResponse(httpResponse));
 }
 
 function GmailConnector::listHistory(string userId, string startHistoryId, string[]? historyTypes = (),
                                             string? labelId = (), string? maxResults = (), string? pageToken = ())
-                                            returns MailboxHistoryPage|GmailError {
+                                            returns MailboxHistoryPage|error {
     endpoint http:Client httpClient = self.client;
     string uriParams;
     uriParams = check appendEncodedURIParameter(uriParams, START_HISTORY_ID, startHistoryId);
@@ -667,13 +667,13 @@ function GmailConnector::listHistory(string userId, string startHistoryId, strin
     }
     string listHistoryPath = USER_RESOURCE + userId + HISTORY_RESOURCE + uriParams;
     var httpResponse = httpClient->get(listHistoryPath);
-    //Get json history reponse. If unsuccessful, throws and returns GmailError.
+    //Get json history reponse. If unsuccessful, throws and returns error.
     json jsonHistoryResponse = check handleResponse(httpResponse);
     //Transform the json history response from Gmail API to Mailbox History Page type.s
     return convertJSONToMailboxHistoryPage(jsonHistoryResponse);
 }
 
-function GmailConnector::listDrafts(string userId, DraftSearchFilter? filter = ()) returns DraftListPage|GmailError {
+function GmailConnector::listDrafts(string userId, DraftSearchFilter? filter = ()) returns DraftListPage|error {
     endpoint http:Client httpClient = self.client;
     string getListDraftsPath = USER_RESOURCE + userId + DRAFT_RESOURCE;
     match filter {
@@ -697,7 +697,7 @@ function GmailConnector::listDrafts(string userId, DraftSearchFilter? filter = (
     return convertJSONToDraftListPageType(jsonListDraftResponse);
 }
 
-function GmailConnector::readDraft(string userId, string draftId, string? format = ()) returns Draft|GmailError {
+function GmailConnector::readDraft(string userId, string draftId, string? format = ()) returns Draft|error {
     endpoint http:Client httpClient = self.client;
     string uriParams;
     //Append format query parameter
@@ -707,23 +707,23 @@ function GmailConnector::readDraft(string userId, string draftId, string? format
     }
     string readDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE + FORWARD_SLASH_SYMBOL + draftId + uriParams;
     var httpResponse = httpClient->get(readDraftPath);
-    //Get json draft response. If unsuccessful, throws and returns GmailError.
+    //Get json draft response. If unsuccessful, throws and returns error.
     json jsonReadDraftResponse = check handleResponse(httpResponse);
-    //Transform the json draft response from Gmail API to Draft type. If unsuccessful, throws and returns GmailError.
+    //Transform the json draft response from Gmail API to Draft type. If unsuccessful, throws and returns error.
     return convertJSONToDraftType(jsonReadDraftResponse);
 }
 
-function GmailConnector::deleteDraft(string userId, string draftId) returns boolean|GmailError {
+function GmailConnector::deleteDraft(string userId, string draftId) returns boolean|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     string deleteDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE + FORWARD_SLASH_SYMBOL + draftId;
     var httpResponse = httpClient->delete(deleteDraftPath, request);
-    //Return boolean status of darft deletion response. If unsuccessful, throws and returns GmailError.
+    //Return boolean status of darft deletion response. If unsuccessful, throws and returns error.
     return <boolean>check handleResponse(httpResponse);
 }
 
 function GmailConnector::createDraft(string userId, MessageRequest message, string? threadId = ())
-                                                                                            returns string|GmailError {
+                                                                                            returns string|error {
     endpoint http:Client httpClient = self.client;
     string encodedRequest = check createEncodedRawMessage(message);
     http:Request request = new;
@@ -741,7 +741,7 @@ function GmailConnector::createDraft(string userId, MessageRequest message, stri
 }
 
 function GmailConnector::updateDraft(string userId, string draftId, MessageRequest message,
-                                            string? threadId = ()) returns string|GmailError {
+                                            string? threadId = ()) returns string|error {
     endpoint http:Client httpClient = self.client;
     string encodedRequest = check createEncodedRawMessage(message);
     http:Request request = new;
@@ -758,7 +758,7 @@ function GmailConnector::updateDraft(string userId, string draftId, MessageReque
     return jsonUpdateDraftResponse.id.toString();
 }
 
-function GmailConnector::sendDraft(string userId, string draftId) returns (string, string)|GmailError {
+function GmailConnector::sendDraft(string userId, string draftId) returns (string, string)|error {
     endpoint http:Client httpClient = self.client;
     http:Request request = new;
     json jsonPayload = { id: draftId };
