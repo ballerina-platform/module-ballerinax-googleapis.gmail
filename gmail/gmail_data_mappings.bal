@@ -22,18 +22,13 @@ import ballerina/log;
 # + sourceMessageJsonObject - `json` message object
 # + return - Returns Message type object
 function convertJSONToMessageType(json sourceMessageJsonObject) returns Message {
-    Message targetMessageType;
+    Message targetMessageType = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMessageType.id = sourceMessageJsonObject.id != () ? sourceMessageJsonObject.id.toString() : EMPTY_STRING;
     targetMessageType.threadId = sourceMessageJsonObject.threadId != () ? sourceMessageJsonObject.threadId.toString()
                                                                                                          : EMPTY_STRING;
-    match <json[]>sourceMessageJsonObject.labelIds {
-        json[] labelIds => {
-            targetMessageType.labelIds = convertJSONArrayToStringArray(labelIds);
-        }
-        //No key named labelIds in the response.
-        error err => log:printDebug("Message response:" + targetMessageType.id + " does not contain a label Id array.");
-    }
+    targetMessageType.labelIds = sourceMessageJsonObject.labelIds != () ?
+                                        convertJSONArrayToStringArray(<json[]>sourceMessageJsonObject.labelIds) : [];
     targetMessageType.raw = sourceMessageJsonObject.raw != () ? sourceMessageJsonObject.raw.toString() : EMPTY_STRING;
     targetMessageType.snippet = sourceMessageJsonObject.snippet != () ? sourceMessageJsonObject.snippet.toString()
                                                                                                         : EMPTY_STRING;
@@ -73,7 +68,7 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns Message 
 # + sourceMessagePartJsonObject - `json` message part object
 # + return - Returns MessageBodyPart type
 function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart {
-    MessageBodyPart targetMessageBodyType;
+    MessageBodyPart targetMessageBodyType = {};
     if (sourceMessagePartJsonObject != ()){
         //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
         targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId != () ?
@@ -98,7 +93,7 @@ function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns Mess
 # + sourceMessageBodyJsonObject - `json` message body object
 # + return - Returns MessageBodyPart type object
 function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
-    MessageBodyPart targetMessageAttachment;
+    MessageBodyPart targetMessageAttachment = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMessageAttachment.fileId = sourceMessageBodyJsonObject.attachmentId != () ?
                                                      sourceMessageBodyJsonObject.attachmentId.toString() : EMPTY_STRING;
@@ -113,16 +108,12 @@ function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) return
 # + sourceThreadJsonObject - `json` message thread object.
 # + return - Returns Thread type.
 function convertJSONToThreadType(json sourceThreadJsonObject) returns Thread {
-    Thread targetThreadType;
+    Thread targetThreadType = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetThreadType.id = sourceThreadJsonObject.id != () ? sourceThreadJsonObject.id.toString() : EMPTY_STRING;
     targetThreadType.historyId = sourceThreadJsonObject.historyId != () ?
                                                              sourceThreadJsonObject.historyId.toString() : EMPTY_STRING;
-    match <json[]>sourceThreadJsonObject.messages{
-        json[] messages => targetThreadType.messages = convertToMessageArray(messages);
-        //No key named messages in the json response
-        error err => log:printDebug("Thread response:" + targetThreadType.id + " does not contain any messages");
-    }
+    targetThreadType.messages = convertToMessageArray(<json[]> sourceThreadJsonObject.messages);
     return targetThreadType;
 }
 
@@ -131,8 +122,10 @@ function convertJSONToThreadType(json sourceThreadJsonObject) returns Thread {
 # + return - Message type array
 function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Message[] {
     Message[] messages = [];
-    foreach i, jsonMessage in sourceMessageArrayJsonObject {
+    int i = 0;
+    foreach json jsonMessage in sourceMessageArrayJsonObject {
         messages[i] = convertJSONToMessageType(jsonMessage);
+        i = i + 1;
     }
     return messages;
 }
@@ -141,7 +134,7 @@ function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns Mess
 # + sourceUserProfileJsonObject - `json` user profile object
 # + return - UserProfile type
 function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
-    UserProfile targetUserProfile;
+    UserProfile targetUserProfile = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress != () ?
                                                      sourceUserProfileJsonObject.emailAddress.toString() : EMPTY_STRING;
@@ -158,25 +151,24 @@ function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns 
 # + sourceMsgListJsonObject - `json` Messsage List object
 # + return - MessageListPage type
 function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
-    MessageListPage targetMsgListPage;
+    MessageListPage targetMsgListPage = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMsgListPage.resultSizeEstimate = sourceMsgListJsonObject.resultSizeEstimate != () ?
                                                    sourceMsgListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
     targetMsgListPage.nextPageToken = sourceMsgListJsonObject.nextPageToken != () ?
                                                         sourceMsgListJsonObject.nextPageToken.toString() : EMPTY_STRING;
     //Convert json object to json array object
-    match <json[]> sourceMsgListJsonObject.messages {
-        json[] messages => {
-            //for each message resource in messages json array of the response
-            foreach i, message in messages {
-                //Create a map with message Id and thread Id as keys and add it to the array of messages
-                //Assume message json field always has id and threadId as its subfields
-                targetMsgListPage.messages[i] = { messageId: message.id.toString(),
-                                                  threadId: message.threadId.toString() };
-            }
-        } //If the key messages is not in response, fails and throws an error in conversion
-        error err => log:printDebug("List messages reponse does not have an array of messages");
+    //for each message resource in messages json array of the response
+    json[] messages = <json[]> sourceMsgListJsonObject.messages;
+    int  i = 0;
+    foreach json message in messages {
+        //Create a map with message Id and thread Id as keys and add it to the array of messages
+        //Assume message json field always has id and threadId as its subfields
+        targetMsgListPage.messages[i] = { messageId: message.id.toString(),
+                                          threadId: message.threadId.toString() };
+        i = i + 1;
     }
+
     return targetMsgListPage;
 }
 
@@ -184,23 +176,22 @@ function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns 
 # + sourceThreadListJsonObject - `json` Thead List object
 # + return - ThreadListPage type
 function convertJSONToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
-    ThreadListPage targetThreadListPage;
+    ThreadListPage targetThreadListPage = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetThreadListPage.resultSizeEstimate = sourceThreadListJsonObject.resultSizeEstimate != () ?
                                                 sourceThreadListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
     targetThreadListPage.nextPageToken = sourceThreadListJsonObject.nextPageToken != () ?
                                                      sourceThreadListJsonObject.nextPageToken.toString() : EMPTY_STRING;
-    match <json[]>sourceThreadListJsonObject.threads {
-        json[] threads => {
-            //for each thread resource in threads json array of the response
-            foreach i, thread in threads {
-                //Create a map with thread Id, snippet and history Id as keys and add it to the array of threads
-                //Assume thread json field always has thread.id and thread.snippet and thread.historyId as its subfields
-                targetThreadListPage.threads[i] = { threadId: thread.id.toString(), snippet: thread.snippet.toString(),
-                                                    historyId: thread.historyId.toString() };
-            }
-        } //If the key threads is not in response, fails and throws an error in conversion
-        error err => log:printDebug("List threads response does not have an array of threads");
+    //for each thread resource in threads json array of the response
+    json[] jsonThreads = <json[]>sourceThreadListJsonObject.threads;
+    int  i = 0;
+    foreach json thread in jsonThreads {
+    //    //Create a map with thread Id, snippet and history Id as keys and add it to the array of threads
+    //    //Assume thread json field always has thread.id and thread.snippet and thread.historyId as its subfields
+        targetThreadListPage.threads[i] = {
+                threadId: thread["id"].toString(), snippet: thread.snippet.toString(),
+                                            historyId: thread.historyId.toString() };
+        i = i + 1;
     }
     return targetThreadListPage;
 }
@@ -208,9 +199,10 @@ function convertJSONToThreadListPageType(json sourceThreadListJsonObject) return
 # Converts the message part header JSON array to headers.
 # + jsonMsgPartHeaders - `json` array of message part headers
 # + return - Map of headers
-function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map {
-    map headers;
-    foreach jsonHeader in jsonMsgPartHeaders {
+function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<string> {
+    map<string> headers = {};
+    json[] jsonHeaders = <json[]>jsonMsgPartHeaders;
+    foreach json jsonHeader in jsonHeaders {
         headers[jsonHeader.name.toString()] = jsonHeader.value.toString();
     }
     return headers;
@@ -220,7 +212,7 @@ function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map {
 # + sourceLabelJsonObject - `json` label
 # + return - Label type object
 function convertJSONToLabelType(json sourceLabelJsonObject) returns Label {
-    Label targetLabel;
+    Label targetLabel = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetLabel.id = sourceLabelJsonObject.id != () ? sourceLabelJsonObject.id.toString() : EMPTY_STRING;
     targetLabel.name = sourceLabelJsonObject.name != () ? sourceLabelJsonObject.name.toString() : EMPTY_STRING;
@@ -228,28 +220,20 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label {
                                                   sourceLabelJsonObject.messageListVisibility.toString() : EMPTY_STRING;
     targetLabel.labelListVisibility = sourceLabelJsonObject.labelListVisibility != () ?
                                                     sourceLabelJsonObject.labelListVisibility.toString() : EMPTY_STRING;
-    targetLabel.ownerType = sourceLabelJsonObject.^"type" != () ? sourceLabelJsonObject.^"type".toString()
+    targetLabel.ownerType = sourceLabelJsonObject["type"] != () ? sourceLabelJsonObject["type"].toString()
                                                                                                          : EMPTY_STRING;
-    match <int>sourceLabelJsonObject.messagesTotal {
-        int msgTotal => targetLabel.messagesTotal = msgTotal;
-        //No key named messagesTotal in the response
-        error err => log:printDebug("Label response:" + targetLabel.id + " does not contain field messagesTotal.");
-    }
-    match <int>sourceLabelJsonObject.messagesUnread {
-        int msgUnread => targetLabel.messagesUnread = msgUnread;
-        //No key named messagesUnread in the response
-        error err => log:printDebug("Label response:" + targetLabel.id + " does not contain field messagesUnread.");
-    }
-    match <int>sourceLabelJsonObject.threadsUnread {
-        int threadsUnread => targetLabel.threadsUnread = threadsUnread;
-        //No key named threadsUnread in the response
-        error err => log:printDebug("Label response:" + targetLabel.id + " does not contain field threadsUnread.");
-    }
-    match <int>sourceLabelJsonObject.threadsTotal {
-        int threadsTotal => targetLabel.threadsTotal = threadsTotal;
-        //No key named threadsTotal in the response
-        error err => log:printDebug("Label response:" + targetLabel.id + " does not contain field threadsTotal.");
-    }
+    targetLabel.messagesTotal = sourceLabelJsonObject.messagesTotal != () ?
+                                    convertToInt(sourceLabelJsonObject.messagesTotal) : 0;
+
+    targetLabel.messagesUnread = sourceLabelJsonObject.messagesUnread != () ?
+                                    convertToInt(sourceLabelJsonObject.messagesUnread) : 0;
+
+    targetLabel.threadsUnread = sourceLabelJsonObject.threadsUnread != () ?
+                                    convertToInt(sourceLabelJsonObject.threadsUnread) : 0;
+
+    targetLabel.threadsTotal = sourceLabelJsonObject.threadsTotal != () ?
+                                    convertToInt(sourceLabelJsonObject.threadsTotal) : 0;
+
     targetLabel.textColor = sourceLabelJsonObject.color.textColor != () ?
                                                         sourceLabelJsonObject.color.textColor.toString() : EMPTY_STRING;
     targetLabel.backgroundColor = sourceLabelJsonObject.color.backgroundColor != () ?
@@ -257,20 +241,33 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label {
     return targetLabel;
 }
 
+function convertToInt(json jsonVal) returns int {
+    string stringVal = jsonVal.toString();
+    if (stringVal != "") {
+        var intVal = int.convert(stringVal);
+    if (intVal is int) {
+        return intVal;
+    } else {
+        error err = error(GMAIL_ERROR_CODE,
+        { message: "Error occurred when converting " + stringVal + " to int"});
+        panic err;
+        }
+    } else {
+        return 0;
+    }
+}
+
 # Convert JSON label list response to an array of Label type objects.
 # + sourceJsonLabelList - Source `json` object
 # + return - Returns an array of Label type objects
 function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[] {
-    Label[] targetLabelList;
+    Label[] targetLabelList = [];
     //Convert json object to json array object
-    match <json[]>sourceJsonLabelList.labels {
-        json[] jsonLabelList => {
-            foreach i, label in jsonLabelList {
-                targetLabelList[i] = convertJSONToLabelType(label);
-            }
-        }
-        //No key named labels in the response
-        error err => log:printDebug("Label list response does not contain a label array");
+    json[] jsonLabelList = <json[]>sourceJsonLabelList.labels;
+    int i = 0;
+    foreach json label in jsonLabelList {
+        targetLabelList[i] = convertJSONToLabelType(label);
+        i = i + 1;
     }
     return targetLabelList;
 }
@@ -279,19 +276,18 @@ function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[] {
 # + sourceJsonMailboxHistory - `json` mailbox history
 # + return-  Returns MailboxHistoryPage Type object
 function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns MailboxHistoryPage {
-    MailboxHistoryPage targetMailboxHistoryPage;
+    MailboxHistoryPage targetMailboxHistoryPage = {};
     targetMailboxHistoryPage.nextPageToken = sourceJsonMailboxHistory.nextPageToken != () ?
                                                        sourceJsonMailboxHistory.nextPageToken.toString() : EMPTY_STRING;
     targetMailboxHistoryPage.historyId = sourceJsonMailboxHistory.historyId != () ?
                                                            sourceJsonMailboxHistory.historyId.toString() : EMPTY_STRING;
-    match <json[]>sourceJsonMailboxHistory.history {
-        json[] historyList => {
-            foreach i, history in historyList {
-                targetMailboxHistoryPage.historyRecords[i] = convertJSONToHistoryType(history);
-            }
-        }
-        error err => log:printDebug("History response does not have any history records");
+    json[] historyList = <json[]>sourceJsonMailboxHistory.history;
+    int i = 0;
+    foreach json history in historyList {
+        targetMailboxHistoryPage.historyRecords[i] = convertJSONToHistoryType(history);
+        i = i + 1;
     }
+
     return targetMailboxHistoryPage;
 }
 
@@ -300,8 +296,10 @@ function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns
 # + targetList - Message Type list to be returned
 # + return - Returns Message Type list
 function convertJSONToMsgTypeList(json[] messages, Message[] targetList) returns Message[] {
-    foreach i, msg in messages {
+    int i = 0;
+    foreach json msg in messages {
         targetList[i] = convertJSONToMessageType(msg);
+        i = i + 1;
     }
     return targetList;
 }
@@ -310,48 +308,33 @@ function convertJSONToMsgTypeList(json[] messages, Message[] targetList) returns
 # + sourceJsonHistory - Source `json` History
 # + return - Returns History Type object
 function convertJSONToHistoryType(json sourceJsonHistory) returns History {
-    History targetHistory;
+    History targetHistory = {};
     targetHistory.id = sourceJsonHistory.id != () ? sourceJsonHistory.id.toString() : EMPTY_STRING;
-    match <json[]>sourceJsonHistory.messages {
-        json[] messages => targetHistory.messages = convertJSONToMsgTypeList(messages, targetHistory.messages);
-        error err => log:printDebug("History record: " + targetHistory.id + "does not have a messages field");
-    }
-    match <json[]>sourceJsonHistory.messagesAdded {
-        json[] messages => targetHistory.messagesAdded = convertJSONToMsgTypeList(messages, targetHistory.messagesAdded);
-        error err => log:printDebug("History record: " + targetHistory.id + "does not have a messagesAdded field");
-    }
-    match <json[]>sourceJsonHistory.messagesDeleted {
-        json[] messages => targetHistory.messagesDeleted =
-                                                      convertJSONToMsgTypeList(messages, targetHistory.messagesDeleted);
-        error err => log:printDebug("History record: " + targetHistory.id + "does not have a messagesDeleted field");
-    }
-    match <json[]>sourceJsonHistory.labelsAdded {
-        json[] lbls => {
-            foreach i, recordData in lbls {
-                targetHistory.labelsAdded[i] = { message: convertJSONToMessageType(recordData.message) };
-                match <json[]>recordData.labelIds{
-                    json[] labelIds => targetHistory.labelsAdded[i] =
-                                                                  { labelIds: convertJSONArrayToStringArray(labelIds) };
-                    error err => log:printDebug("History record: " + targetHistory.id
-                                                                        + "does not have a labelsAdded.labelIds field");
-                }
-            }
+    targetHistory.messages = sourceJsonHistory.messages != () ?
+                            convertJSONToMsgTypeList(<json[]> sourceJsonHistory.messages, targetHistory.messages) : [];
+    targetHistory.messages = sourceJsonHistory.messagesAdded != () ?
+                            convertJSONToMsgTypeList(<json[]> sourceJsonHistory.messagesAdded, targetHistory.messages)
+                            : [];
+    targetHistory.messages = sourceJsonHistory.messagesDeleted != () ?
+                            convertJSONToMsgTypeList(<json[]> sourceJsonHistory.messagesDeleted, targetHistory.messages)
+                            : [];
+    if(sourceJsonHistory.labelsAdded != ()) {
+        json[] lbls = <json[]>sourceJsonHistory.labelsAdded;
+        int i = 0;
+        foreach json recordData in lbls {
+            targetHistory.labelsAdded[i] = { message: convertJSONToMessageType(recordData.message) };
+            targetHistory.labelsAdded[i] = { labelIds: convertJSONArrayToStringArray(< json[] > recordData.labelIds) };
+            i = i + 1;
         }
-        error err => log:printDebug("History record: " + targetHistory.id + "does not have a labelsAdded field");
     }
-    match <json[]>sourceJsonHistory.labelsRemoved {
-        json[] lbls => {
-            foreach i, recordData in lbls {
-                targetHistory.labelsRemoved[i] = { message: convertJSONToMessageType(recordData.message) };
-                match <json[]>recordData.labelIds{
-                    json[] labelIds => targetHistory.labelsRemoved[i] =
-                                                                 { labelIds: convertJSONArrayToStringArray(labelIds) };
-                    error err => log:printDebug("History record: " + targetHistory.id
-                                                                        + "does not have a labelsAdded.labelIds field");
-                }
-            }
+    if(sourceJsonHistory.labelsRemoved != ()) {
+        json[] lblsRemoved = < json[]> sourceJsonHistory.labelsRemoved;
+        int j =0;
+        foreach json recordData in lblsRemoved {
+            targetHistory.labelsRemoved[j] = { message: convertJSONToMessageType(recordData.message) };
+            targetHistory.labelsRemoved[j] = { labelIds: convertJSONArrayToStringArray(< json[] > recordData.labelIds) };
+            j = j +1;
         }
-        error err => log:printDebug("History record: " + targetHistory.id + "does not have a labelsRemoved field");
     }
     return targetHistory;
 }
@@ -360,22 +343,20 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns History {
 # + sourceDraftListJsonObject - `json` Draft List object
 # + return - DraftListPage type
 function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
-    DraftListPage targetDraftListPage;
+    DraftListPage targetDraftListPage = {};
     targetDraftListPage.resultSizeEstimate = sourceDraftListJsonObject.resultSizeEstimate != () ?
                                                  sourceDraftListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
     targetDraftListPage.nextPageToken = sourceDraftListJsonObject.nextPageToken != () ?
                                                       sourceDraftListJsonObject.nextPageToken.toString() : EMPTY_STRING;
-    match <json[]>sourceDraftListJsonObject.drafts {
-        json[] drafts => {
-            //for each draft resource in drafts json array of the response
-            foreach i, draft in drafts {
-                //Add the draft map with the Id and the message map with message Id and thread Id as keys, to the array
-                targetDraftListPage.drafts[i] = { draftId: draft.id.toString(),
-                                                  messageId: draft.message.messageId.toString(),
-                                                  threadId: draft.message.threadId.toString() };
-            }
-        }
-        error err => log:printDebug("List drafts response does not contain an array of drafts");
+    json[] drafts = <json[]>sourceDraftListJsonObject.drafts;
+    //for each draft resource in drafts json array of the response
+    int i = 0;
+    foreach json draft in drafts {
+        //Add the draft map with the Id and the message map with message Id and thread Id as keys, to the array
+        targetDraftListPage.drafts[i] = { draftId: draft.id.toString(),
+                                          messageId: draft.message.messageId.toString(),
+                                          threadId: draft.message.threadId.toString() };
+        i = i + 1;
     }
     return targetDraftListPage;
 }
@@ -384,7 +365,7 @@ function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns 
 # + sourceDraftJsonObject - `json` Draft Object
 # + return - If successful, returns Draft. Else returns error.
 function convertJSONToDraftType(json sourceDraftJsonObject) returns Draft {
-    Draft targetDraft;
+    Draft targetDraft = {};
     targetDraft.id = sourceDraftJsonObject.id != () ? sourceDraftJsonObject.id.toString() : EMPTY_STRING;
     targetDraft.message = sourceDraftJsonObject.message != () ?
                                                            convertJSONToMessageType(sourceDraftJsonObject.message) : {};
