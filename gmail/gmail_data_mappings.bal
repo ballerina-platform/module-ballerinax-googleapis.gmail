@@ -186,8 +186,8 @@ function convertJSONToThreadListPageType(json sourceThreadListJsonObject) return
     json[] jsonThreads = <json[]>sourceThreadListJsonObject.threads;
     int  i = 0;
     foreach json thread in jsonThreads {
-    //    //Create a map with thread Id, snippet and history Id as keys and add it to the array of threads
-    //    //Assume thread json field always has thread.id and thread.snippet and thread.historyId as its subfields
+        //Create a map with thread Id, snippet and history Id as keys and add it to the array of threads
+        //Assume thread json field always has thread.id and thread.snippet and thread.historyId as its subfields
         targetThreadListPage.threads[i] = {
                 threadId: thread["id"].toString(), snippet: thread.snippet.toString(),
                                             historyId: thread.historyId.toString() };
@@ -245,12 +245,12 @@ function convertToInt(json jsonVal) returns int {
     string stringVal = jsonVal.toString();
     if (stringVal != "") {
         var intVal = int.convert(stringVal);
-    if (intVal is int) {
-        return intVal;
-    } else {
-        error err = error(GMAIL_ERROR_CODE,
-        { message: "Error occurred when converting " + stringVal + " to int"});
-        panic err;
+        if (intVal is int) {
+            return intVal;
+        } else {
+            error err = error(GMAIL_ERROR_CODE,
+            { message: "Error occurred when converting " + stringVal + " to int"});
+            panic err;
         }
     } else {
         return 0;
@@ -311,29 +311,29 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns History {
     History targetHistory = {};
     targetHistory.id = sourceJsonHistory.id != () ? sourceJsonHistory.id.toString() : EMPTY_STRING;
     targetHistory.messages = sourceJsonHistory.messages != () ?
-                            convertJSONToMsgTypeList(<json[]> sourceJsonHistory.messages, targetHistory.messages) : [];
+                            convertJSONToMsgTypeList(<json[]>sourceJsonHistory.messages, targetHistory.messages) : [];
     targetHistory.messages = sourceJsonHistory.messagesAdded != () ?
-                            convertJSONToMsgTypeList(<json[]> sourceJsonHistory.messagesAdded, targetHistory.messages)
+                            convertJSONToMsgTypeList(<json[]>sourceJsonHistory.messagesAdded, targetHistory.messages)
                             : [];
     targetHistory.messages = sourceJsonHistory.messagesDeleted != () ?
-                            convertJSONToMsgTypeList(<json[]> sourceJsonHistory.messagesDeleted, targetHistory.messages)
+                            convertJSONToMsgTypeList(<json[]>sourceJsonHistory.messagesDeleted, targetHistory.messages)
                             : [];
     if(sourceJsonHistory.labelsAdded != ()) {
         json[] lbls = <json[]>sourceJsonHistory.labelsAdded;
         int i = 0;
         foreach json recordData in lbls {
             targetHistory.labelsAdded[i] = { message: convertJSONToMessageType(recordData.message) };
-            targetHistory.labelsAdded[i] = { labelIds: convertJSONArrayToStringArray(< json[] > recordData.labelIds) };
+            targetHistory.labelsAdded[i] = { labelIds: convertJSONArrayToStringArray(<json[]>recordData.labelIds) };
             i = i + 1;
         }
     }
     if(sourceJsonHistory.labelsRemoved != ()) {
-        json[] lblsRemoved = < json[]> sourceJsonHistory.labelsRemoved;
-        int j =0;
+        json[] lblsRemoved = <json[]>sourceJsonHistory.labelsRemoved;
+        int j = 0;
         foreach json recordData in lblsRemoved {
             targetHistory.labelsRemoved[j] = { message: convertJSONToMessageType(recordData.message) };
-            targetHistory.labelsRemoved[j] = { labelIds: convertJSONArrayToStringArray(< json[] > recordData.labelIds) };
-            j = j +1;
+            targetHistory.labelsRemoved[j] = { labelIds: convertJSONArrayToStringArray(<json[]>recordData.labelIds) };
+            j = j + 1;
         }
     }
     return targetHistory;

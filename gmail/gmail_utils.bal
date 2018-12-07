@@ -213,7 +213,7 @@ function handleResponse(http:Response|error httpResponse) returns json|error {
         var jsonResponse = httpResponse.getJsonPayload();
         if (jsonResponse is json) {
             if (httpResponse.statusCode == http:OK_200) {
-            //    //If status is 200, request is successful. Returns resulting payload.
+                //If status is 200, request is successful. Returns resulting payload.
                 return jsonResponse;
             } else {
                 //If status is not 200 or 204, request is unsuccessful. Returns error.
@@ -237,8 +237,7 @@ function handleResponse(http:Response|error httpResponse) returns json|error {
                         + WHITE_SPACE + locationType + SEMICOLON_SYMBOL + WHITE_SPACE
                         + LOCATION + COLON_SYMBOL + WHITE_SPACE + location;
                 }
-                error err = error(GMAIL_ERROR_CODE,
-                { message: errorMsg });
+                error err = error(GMAIL_ERROR_CODE, { message: errorMsg });
                 return err;
             }
         } else {
@@ -262,7 +261,7 @@ function appendEncodedURIParameter(string requestPath, string key, string value)
     var encodedVar = http:encode(value, UTF_8);
     string encodedString = "";
     string path = "";
-    if(encodedVar is string) {
+    if (encodedVar is string) {
         encodedString = encodedVar;
     } else {
         error err = error(GMAIL_ERROR_CODE,

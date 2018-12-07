@@ -39,7 +39,7 @@ public type Client client object {
     # + return - If successful, returns MessageListPage. Else returns error.
     public remote function listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|error;
 
-   # Create the raw base 64 encoded string of the whole message and send it as an email from the user's
+    # Create the raw base 64 encoded string of the whole message and send it as an email from the user's
     # mailbox to its recipient.
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -164,6 +164,7 @@ public type Client client object {
     # + threadId - The id of the thread to delete
     # + return - If successful, returns boolean status of deletion. Else returns error.
     public remote function deleteThread(string userId, string threadId) returns boolean|error;
+
     # Modifies the labels on the specified thread.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to modify
@@ -383,9 +384,9 @@ remote function Client.readMessage(string userId, string messageId, string? form
         uriParams = check appendEncodedURIParameter(uriParams, FORMAT, format);
     }
     if (metadataHeaders is string[]) {
-            foreach string metaDataHeader in metadataHeaders {
-                uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
-            }
+        foreach string metaDataHeader in metadataHeaders {
+            uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
+        }
     }
     string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId + uriParams;
     var httpResponse = self.gmailClient->get(readMessagePath);
@@ -476,9 +477,9 @@ remote function Client.readThread(string userId, string threadId, string? format
     }
     string readThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId + uriParams;
     var httpResponse = self.gmailClient->get(readThreadPath);
-    ////Get json thread response. If unsuccessful, throws and returns error.
+    //Get json thread response. If unsuccessful, throws and returns error.
     json jsonReadThreadResponse = check handleResponse(httpResponse);
-    ////Transform the json thread response from Gmail API to Thread type. If unsuccessful, throws and returns error.
+    //Transform the json thread response from Gmail API to Thread type. If unsuccessful, throws and returns error.
     return convertJSONToThreadType(jsonReadThreadResponse);
 }
 
