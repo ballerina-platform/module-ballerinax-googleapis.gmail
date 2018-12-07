@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Gmail API Version |  
 |:--------------------------:|:-----------------:|
-| 0.983.0                    |        v1         |
+| 0.990.0                    |        v1         |
 
 ### Prerequisites
 
@@ -61,26 +61,30 @@ IMAGE_CONTENT_TYPE="image/jpeg"
 Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal 
 in either way following,
 ```ballerina
-endpoint Client gmailEP {
-    clientConfig:{
-        auth:{
-            accessToken:config:getAsString("ACCESS_TOKEN")
+GmailConfiguration gmailConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            accessToken: testAccessToken
         }
     }
 };
 ```
 
 ```ballerina
-endpoint Client gmailEP {
-    clientConfig:{
-        auth:{
-            accessToken:config:getAsString("ACCESS_TOKEN"),
-            clientId:config:getAsString("CLIENT_ID"),
-            clientSecret:config:getAsString("CLIENT_SECRET"),
-            refreshToken:config:getAsString("REFRESH_TOKEN")
+GmailConfiguration gmailConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            accessToken: testAccessToken,
+            clientId: testClientId,
+            clientSecret: testClientSecret,
+            refreshToken: testRefreshToken
         }
     }
 };
+
+Client gmailClient = new(gmailConfig);
 ```
 
 Assign values for other necessary parameters to perform api operations in test.bal as follows.

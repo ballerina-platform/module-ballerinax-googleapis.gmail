@@ -35,7 +35,7 @@ The `wso2/gmail` module contains operations to lists the history of changes to t
 ## Compatibility
 |                    |    Version     |  
 |:------------------:|:--------------:|
-| Ballerina Language | 0.982.0        |
+| Ballerina Language | 0.990.0         |
 | Gmail API          | v1             |
 
 ## Sample
@@ -64,16 +64,19 @@ access token and refresh token).
 
 You can now enter the credentials in the HTTP client config. 
 ```ballerina
-endpoint gmail:Client gmailEP {
-    clientConfig:{
-        auth:{
-            accessToken:accessToken,
-            clientId:clientId,
-            clientSecret:clientSecret,
-            refreshToken:refreshToken
+GmailConfiguration gmailConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            accessToken: testAccessToken,
+            clientId: testClientId,
+            clientSecret: testClientSecret,
+            refreshToken: testRefreshToken
         }
     }
 };
+
+Client gmailClient = new(gmailConfig);
 ```
 The `sendMessage` function sends an email. `MessageRequest` is a structure that contains all the data that is required 
 to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 
@@ -88,40 +91,40 @@ messageRequest.messageBody = "Email Message Body Text";
 //Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
 messageRequest.contentType = gmail:TEXT_PLAIN;
 //Send the message.
-var sendMessageResponse = gmailEP -> sendMessage(userId, messageRequest);
+var sendMessageResponse = gmailEP->sendMessage(userId, messageRequest);
 ```
 The response from `sendMessage` is either a string tuple with the message ID and thread ID 
 (if the message was sent successfully) or a `error` (if the message was unsuccessful). The `match` operation can be 
 used to handle the response if an error occurs.
 ```ballerina
-match sendMessageResponse {
-    (string, string) sendStatus => {
-        //If successful, returns the message ID and thread ID.
-        string messageId;
-        string threadId;
-        (messageId, threadId) = sendStatus;
-        io:println("Sent Message ID: " + messageId);
-        io:println("Sent Thread ID: " + threadId);
-    }
-    
-    //Unsuccessful attempts return a Gmail error.
-    error e => io:println(e); 
+if (sendMessageResponse is (string, string)) {
+    //If successful, returns the message ID and thread ID.
+    string messageId;
+    string threadId;
+    (messageId, threadId) = sendMessageResponse;
+    io:println("Sent Message ID: " + messageId);
+    io:println("Sent Thread ID: " + threadId);
+} else {
+    /Unsuccessful attempts return a Gmail error.
+    io:println(sendMessageResponse); 
 }
 ```
 The `readMessage` function reads messages. It returns the `Message` struct when successful and 
 `error` when unsuccessful. 
 ```ballerina
 var response = gmailEP -> readMessage(userId, messageIdToRead);
-match response {
-    gmail:Message m => io:println("Sent Message: " + m);
-    error e => io:println(e);
-} 
+if (response is gmail:Message) {
+    io:println("Sent Message: " + response);
+} else {
+    io:println(response);
+}
 ```
 The `deleteMessage` function deletes messages. It returns a `error` when unsuccessful. 
 ```ballerina    
 var delete = gmailEP -> deleteMessage(userId, messageIdToDelete);
-match delete {
-    boolean success => io:println("Message deletion success!");
-    error e => io:println(e);
+if (delete is boolean) {
+    io:println("Message deletion success!");
+} else {
+    io:println(delete);
 }
 ```
