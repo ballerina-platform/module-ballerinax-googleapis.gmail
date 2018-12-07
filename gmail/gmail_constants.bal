@@ -176,18 +176,18 @@ final string ID = "id";
 final string THREAD_ID = "threadId";
 
 # Holds string for Gmail message/thread response format **full**.
-final string FORMAT_FULL = "full";
+public final string FORMAT_FULL = "full";
 # Holds string for Gmail message/thread response format **metadata**.
-final string FORMAT_METADATA = "metadata";
+public final string FORMAT_METADATA = "metadata";
 # Holds string for Gmail message/thread response format **minimal**.
-final string FORMAT_MINIMAL = "minimal";
+public final string FORMAT_MINIMAL = "minimal";
 # Holds string for Gmail message/thread response format **raw**.
-final string FORMAT_RAW = "raw";
+public final string FORMAT_RAW = "raw";
 
 # Holds value for message type **text/plain**.
-final string TEXT_PLAIN = "text/plain";
+public final string TEXT_PLAIN = "text/plain";
 # Holds value for message type **text/html**.
-final string TEXT_HTML = "text/html";
+public final string TEXT_HTML = "text/html";
 
 // Error Codes
 final string GMAIL_ERROR_CODE = "(wso2/gmail)GmailError";
