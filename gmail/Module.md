@@ -64,7 +64,7 @@ access token and refresh token).
 
 You can now enter the credentials in the HTTP client config. 
 ```ballerina
-GmailConfiguration gmailConfig = {
+gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
@@ -76,7 +76,7 @@ GmailConfiguration gmailConfig = {
     }
 };
 
-Client gmailClient = new(gmailConfig);
+gmail:Client gmailClient = new(gmailConfig);
 ```
 The `sendMessage` function sends an email. `MessageRequest` is a structure that contains all the data that is required 
 to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 

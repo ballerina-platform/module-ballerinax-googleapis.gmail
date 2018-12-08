@@ -61,7 +61,7 @@ IMAGE_CONTENT_TYPE="image/jpeg"
 Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal 
 in either way following,
 ```ballerina
-GmailConfiguration gmailConfig = {
+gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
@@ -72,7 +72,7 @@ GmailConfiguration gmailConfig = {
 ```
 
 ```ballerina
-GmailConfiguration gmailConfig = {
+gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
@@ -84,7 +84,7 @@ GmailConfiguration gmailConfig = {
     }
 };
 
-Client gmailClient = new(gmailConfig);
+gmail:Client gmailClient = new(gmailConfig);
 ```
 
 Assign values for other necessary parameters to perform api operations in test.bal as follows.
