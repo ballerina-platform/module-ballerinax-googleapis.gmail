@@ -82,7 +82,7 @@ The `sendMessage` function sends an email. `MessageRequest` is a structure that 
 to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 
 (the currently authenticated user).
 ```ballerina
-gmail:MessageRequest messageRequest;
+gmail:MessageRequest messageRequest = {};
 messageRequest.recipient = "recipient@mail.com";
 messageRequest.sender = "sender@mail.com";
 messageRequest.cc = "cc@mail.com";
@@ -99,20 +99,20 @@ used to handle the response if an error occurs.
 ```ballerina
 if (sendMessageResponse is (string, string)) {
     //If successful, returns the message ID and thread ID.
-    string messageId;
-    string threadId;
+    string messageId = "":
+    string threadId = "":
     (messageId, threadId) = sendMessageResponse;
     io:println("Sent Message ID: " + messageId);
     io:println("Sent Thread ID: " + threadId);
 } else {
-    /Unsuccessful attempts return a Gmail error.
+    //Unsuccessful attempts return a Gmail error.
     io:println(sendMessageResponse); 
 }
 ```
 The `readMessage` function reads messages. It returns the `Message` struct when successful and 
 `error` when unsuccessful. 
 ```ballerina
-var response = gmailEP -> readMessage(userId, messageIdToRead);
+var response = gmailEP->readMessage(userId, messageIdToRead);
 if (response is gmail:Message) {
     io:println("Sent Message: " + response);
 } else {
@@ -121,7 +121,7 @@ if (response is gmail:Message) {
 ```
 The `deleteMessage` function deletes messages. It returns a `error` when unsuccessful. 
 ```ballerina    
-var delete = gmailEP -> deleteMessage(userId, messageIdToDelete);
+var delete = gmailEP->deleteMessage(userId, messageIdToDelete);
 if (delete is boolean) {
     io:println("Message deletion success!");
 } else {
