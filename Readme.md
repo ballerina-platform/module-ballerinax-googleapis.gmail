@@ -85,7 +85,7 @@ to send an email. The `userId` represents the authenticated user and can be a Gm
 (the currently authenticated user).
 ```ballerina
 string userId = "me";
-gmail:MessageRequest messageRequest;
+gmail:MessageRequest messageRequest = {};
 messageRequest.recipient = "recipient@mail.com";
 messageRequest.sender = "sender@mail.com";
 messageRequest.cc = "cc@mail.com";
@@ -104,13 +104,13 @@ string messageId;
 string threadId;
 if (sendMessageResponse is (string, string)) {
     //If successful, returns the message ID and thread ID.
-    string messageId;
-    string threadId;
+    string messageId = "";
+    string threadId = "";
     (messageId, threadId) = sendMessageResponse;
     io:println("Sent Message ID: " + messageId);
     io:println("Sent Thread ID: " + threadId);
 } else {
-    /Unsuccessful attempts return a Gmail error.
+    //Unsuccessful attempts return a Gmail error.
     io:println(sendMessageResponse);  
 }
 ```
