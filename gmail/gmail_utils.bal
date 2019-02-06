@@ -14,11 +14,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
-import ballerina/http;
-import ballerina/internal;
-import ballerina/mime;
 import ballerina/encoding;
+import ballerina/http;
+import ballerina/io;
+import ballerina/mime;
 
 # Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
 #
