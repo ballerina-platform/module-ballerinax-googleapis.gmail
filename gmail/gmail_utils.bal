@@ -14,9 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/io;
+import ballerina/encoding;
 import ballerina/http;
-import ballerina/internal;
+import ballerina/io;
 import ballerina/mime;
 
 # Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
@@ -187,7 +187,7 @@ function encodeFile(string filePath) returns string|error {
                     { message: "Error occurred encoding the file channel" });
         return err;
     }
-    return internal:byteArrayToString(readEncodedContent, UTF_8);
+    return encoding:byteArrayToString(readEncodedContent, encoding = UTF_8);
 }
 
 
@@ -427,12 +427,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
         concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + DASH_SYMBOL + DASH_SYMBOL;
     }
     //------End of multipart/mixed mime part------
-
-    if(concatRequest.base64Encode() is string) {
-        string encodedRequest = check concatRequest.base64Encode();
-        return encodedRequest.replace(PLUS_SYMBOL, DASH_SYMBOL).replace(FORWARD_SLASH_SYMBOL, UNDERSCORE_SYMBOL);
-    } else {
-        error err = error(GMAIL_ERROR_CODE, { message: "Error occurred while encoding the request" });
-        return err;
-    }
+    byte[] concatRequestByte = concatRequest.toByteArray("UTF-8");
+    string encodedRequest = encoding:encodeBase64(concatRequestByte);
+    return encodedRequest.replace(PLUS_SYMBOL, DASH_SYMBOL).replace(FORWARD_SLASH_SYMBOL, UNDERSCORE_SYMBOL);
 }

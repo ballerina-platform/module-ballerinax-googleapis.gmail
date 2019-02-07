@@ -330,7 +330,7 @@ public type Client client object {
     public remote function sendDraft(string userId, string draftId) returns (string, string)|error;
 };
 
-remote function Client.listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|error {
+public remote function Client.listMessages(string userId, MsgSearchFilter? filter = ()) returns MessageListPage|error {
     string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
     if (filter is MsgSearchFilter) {
         string uriParams = "";
@@ -357,7 +357,7 @@ remote function Client.listMessages(string userId, MsgSearchFilter? filter = ())
 }
 
 
-remote function Client.sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
+public remote function Client.sendMessage(string userId, MessageRequest message, string? threadId = ()) returns
                                                                                            (string, string)|error {
     //Create the whole message as an encoded raw string. If unsuccessful throws and returns error.
     string encodedRequest = check createEncodedRawMessage(message);
@@ -376,7 +376,7 @@ remote function Client.sendMessage(string userId, MessageRequest message, string
     return (jsonSendMessageResponse.id.toString(), jsonSendMessageResponse.threadId.toString());
 }
 
-remote function Client.readMessage(string userId, string messageId, string? format = (),
+public remote function Client.readMessage(string userId, string messageId, string? format = (),
                                             string[]? metadataHeaders = ()) returns Message|error {
     string uriParams = "";
     //Append format query parameter
@@ -396,7 +396,7 @@ remote function Client.readMessage(string userId, string messageId, string? form
     return convertJSONToMessageType(jsonreadMessageResponse);
 }
 
-remote function Client.getAttachment(string userId, string messageId, string attachmentId)
+public remote function Client.getAttachment(string userId, string messageId, string attachmentId)
                                                                                     returns MessageBodyPart|error {
     string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
                             + ATTACHMENT_RESOURCE + attachmentId;
@@ -407,7 +407,7 @@ remote function Client.getAttachment(string userId, string messageId, string att
     return convertJSONToMsgBodyAttachment(jsonAttachment);
 }
 
-remote function Client.trashMessage(string userId, string messageId) returns boolean|error {
+public remote function Client.trashMessage(string userId, string messageId) returns boolean|error {
     http:Request request = new;
     string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
         + FORWARD_SLASH_SYMBOL + TRASH;
@@ -418,7 +418,7 @@ remote function Client.trashMessage(string userId, string messageId) returns boo
     return jsonTrashMessageResponse.id.toString() == messageId;
 }
 
-remote function Client.untrashMessage(string userId, string messageId) returns boolean|error {
+public remote function Client.untrashMessage(string userId, string messageId) returns boolean|error {
     http:Request request = new;
     string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
         + FORWARD_SLASH_SYMBOL + UNTRASH;
@@ -429,7 +429,7 @@ remote function Client.untrashMessage(string userId, string messageId) returns b
     return jsonUntrashMessageReponse.id.toString() == messageId;
 }
 
-remote function Client.deleteMessage(string userId, string messageId) returns boolean|error {
+public remote function Client.deleteMessage(string userId, string messageId) returns boolean|error {
     http:Request request = new;
     string deleteMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
     var httpResponse = self.gmailClient->delete(deleteMessagePath, request);
@@ -437,7 +437,7 @@ remote function Client.deleteMessage(string userId, string messageId) returns bo
     return <boolean>check handleResponse(httpResponse);
 }
 
-remote function Client.listThreads(string userId, MsgSearchFilter? filter = ()) returns ThreadListPage|error {
+public remote function Client.listThreads(string userId, MsgSearchFilter? filter = ()) returns ThreadListPage|error {
     string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
     if (filter is MsgSearchFilter) {
         string uriParams = "";
@@ -464,7 +464,7 @@ remote function Client.listThreads(string userId, MsgSearchFilter? filter = ()) 
     return convertJSONToThreadListPageType(jsonListThreadResponse);
 }
 
-remote function Client.readThread(string userId, string threadId, string? format = (),
+public remote function Client.readThread(string userId, string threadId, string? format = (),
                                            string[]? metadataHeaders = ()) returns Thread|error {
     string uriParams = "";
     if (format is string) {
@@ -483,7 +483,7 @@ remote function Client.readThread(string userId, string threadId, string? format
     return convertJSONToThreadType(jsonReadThreadResponse);
 }
 
-remote function Client.trashThread(string userId, string threadId) returns boolean|error {
+public remote function Client.trashThread(string userId, string threadId) returns boolean|error {
     http:Request request = new;
     string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
         + FORWARD_SLASH_SYMBOL + TRASH;
@@ -494,7 +494,7 @@ remote function Client.trashThread(string userId, string threadId) returns boole
     return jsonTrashThreadResponse.id.toString() == threadId;
 }
 
-remote function Client.untrashThread(string userId, string threadId) returns boolean|error {
+public remote function Client.untrashThread(string userId, string threadId) returns boolean|error {
     http:Request request = new;
     string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
         + FORWARD_SLASH_SYMBOL + UNTRASH;
@@ -505,7 +505,7 @@ remote function Client.untrashThread(string userId, string threadId) returns boo
     return jsonUntrashThreadResponse.id.toString() == threadId;
 }
 
-remote function Client.deleteThread(string userId, string threadId) returns boolean|error {
+public remote function Client.deleteThread(string userId, string threadId) returns boolean|error {
     http:Request request = new;
     string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
     var httpResponse = self.gmailClient->delete(deleteThreadPath, request);
@@ -513,7 +513,7 @@ remote function Client.deleteThread(string userId, string threadId) returns bool
     return <boolean>check handleResponse(httpResponse);
 }
 
-remote function Client.getUserProfile(string userId) returns UserProfile|error {
+public remote function Client.getUserProfile(string userId) returns UserProfile|error {
     string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
     var httpResponse = self.gmailClient->get(getProfilePath);
     //Get json user profile response. If unsuccessful, throws and returns error.
@@ -522,7 +522,7 @@ remote function Client.getUserProfile(string userId) returns UserProfile|error {
     return convertJSONToUserProfileType(jsonProfileResponse);
 }
 
-remote function Client.getLabel(string userId, string labelId) returns Label|error {
+public remote function Client.getLabel(string userId, string labelId) returns Label|error {
     string getLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
     var httpResponse = self.gmailClient->get(getLabelPath);
     //Get json label response. If unsuccessful, throws and returns error.
@@ -531,7 +531,7 @@ remote function Client.getLabel(string userId, string labelId) returns Label|err
     return convertJSONToLabelType(jsonGetLabelResponse);
 }
 
-remote function Client.createLabel(string userId, string name, string labelListVisibility,
+public remote function Client.createLabel(string userId, string name, string labelListVisibility,
                                             string messageListVisibility, string? backgroundColor = (),
                                             string? textColor = ()) returns string|error {
     string createLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE;
@@ -552,7 +552,7 @@ remote function Client.createLabel(string userId, string name, string labelListV
     return jsonCreateLabelResponse.id.toString();
 }
 
-remote function Client.listLabels(string userId) returns Label[]|error {
+public remote function Client.listLabels(string userId) returns Label[]|error {
     string listLabelsPath = USER_RESOURCE + userId + LABEL_RESOURCE;
     var httpResponse = self.gmailClient->get(listLabelsPath);
     //Get list labels json response. If unsuccessful, throws and returns error.
@@ -560,7 +560,7 @@ remote function Client.listLabels(string userId) returns Label[]|error {
     return convertJSONToLabelTypeList(jsonLabelListResponse);
 }
 
-remote function Client.deleteLabel(string userId, string labelId) returns boolean|error {
+public remote function Client.deleteLabel(string userId, string labelId) returns boolean|error {
     http:Request request = new;
     string deleteLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
     var httpResponse = self.gmailClient->delete(deleteLabelPath, request);
@@ -568,7 +568,7 @@ remote function Client.deleteLabel(string userId, string labelId) returns boolea
     return <boolean>check handleResponse(httpResponse);
 }
 
-remote function Client.updateLabel(string userId, string labelId, string? name = (),
+public remote function Client.updateLabel(string userId, string labelId, string? name = (),
                                             string? messageListVisibility = (), string? labelListVisibility = (),
                                             string? backgroundColor = (), string? textColor = ())
                                             returns Label|error {
@@ -596,7 +596,7 @@ remote function Client.updateLabel(string userId, string labelId, string? name =
     return convertJSONToLabelType(jsonUpdateResponse);
 }
 
-remote function Client.modifyMessage(string userId, string messageId, string[] addLabelIds,
+public remote function Client.modifyMessage(string userId, string messageId, string[] addLabelIds,
                                               string[] removeLabelIds) returns Message|error {
     string modifyMsgPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
                            + MODIFY_RESOURCE;
@@ -617,7 +617,7 @@ remote function Client.modifyMessage(string userId, string messageId, string[] a
     return convertJSONToMessageType(check handleResponse(httpResponse));
 }
 
-remote function Client.modifyThread(string userId, string threadId, string[] addLabelIds,
+public remote function Client.modifyThread(string userId, string threadId, string[] addLabelIds,
                                              string[] removeLabelIds) returns Thread|error {
     string modifyThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
                             + MODIFY_RESOURCE;
@@ -635,7 +635,7 @@ remote function Client.modifyThread(string userId, string threadId, string[] add
     return convertJSONToThreadType(check handleResponse(httpResponse));
 }
 
-remote function Client.listHistory(string userId, string startHistoryId, string[]? historyTypes = (),
+public remote function Client.listHistory(string userId, string startHistoryId, string[]? historyTypes = (),
                                             string? labelId = (), string? maxResults = (), string? pageToken = ())
                                             returns MailboxHistoryPage|error {
     string uriParams = "";
@@ -663,7 +663,7 @@ remote function Client.listHistory(string userId, string startHistoryId, string[
     return convertJSONToMailboxHistoryPage(jsonHistoryResponse);
 }
 
-remote function Client.listDrafts(string userId, DraftSearchFilter? filter = ()) returns DraftListPage|error {
+public remote function Client.listDrafts(string userId, DraftSearchFilter? filter = ()) returns DraftListPage|error {
     string getListDraftsPath = USER_RESOURCE + userId + DRAFT_RESOURCE;
     if (filter is DraftSearchFilter) {
         string uriParams = "";
@@ -682,7 +682,7 @@ remote function Client.listDrafts(string userId, DraftSearchFilter? filter = ())
     return convertJSONToDraftListPageType(jsonListDraftResponse);
 }
 
-remote function Client.readDraft(string userId, string draftId, string? format = ()) returns Draft|error {
+public remote function Client.readDraft(string userId, string draftId, string? format = ()) returns Draft|error {
     string uriParams = "";
     //Append format query parameter
     if (format is string) {
@@ -696,7 +696,7 @@ remote function Client.readDraft(string userId, string draftId, string? format =
     return convertJSONToDraftType(jsonReadDraftResponse);
 }
 
-remote function Client.deleteDraft(string userId, string draftId) returns boolean|error {
+public remote function Client.deleteDraft(string userId, string draftId) returns boolean|error {
     http:Request request = new;
     string deleteDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE + FORWARD_SLASH_SYMBOL + draftId;
     var httpResponse = self.gmailClient->delete(deleteDraftPath, request);
@@ -704,7 +704,7 @@ remote function Client.deleteDraft(string userId, string draftId) returns boolea
     return <boolean>check handleResponse(httpResponse);
 }
 
-remote function Client.createDraft(string userId, MessageRequest message, string? threadId = ())
+public remote function Client.createDraft(string userId, MessageRequest message, string? threadId = ())
                                                                                             returns string|error {
     string encodedRequest = check createEncodedRawMessage(message);
     http:Request request = new;
@@ -720,7 +720,7 @@ remote function Client.createDraft(string userId, MessageRequest message, string
     return jsonCreateDraftResponse.id.toString();
 }
 
-remote function Client.updateDraft(string userId, string draftId, MessageRequest message,
+public remote function Client.updateDraft(string userId, string draftId, MessageRequest message,
                                             string? threadId = ()) returns string|error {
     string encodedRequest = check createEncodedRawMessage(message);
     http:Request request = new;
@@ -736,7 +736,7 @@ remote function Client.updateDraft(string userId, string draftId, MessageRequest
     return jsonUpdateDraftResponse.id.toString();
 }
 
-remote function Client.sendDraft(string userId, string draftId) returns (string, string)|error {
+public remote function Client.sendDraft(string userId, string draftId) returns (string, string)|error {
     http:Request request = new;
     json jsonPayload = { id: draftId };
     string updateDraftPath = USER_RESOURCE + userId + DRAFT_SEND_RESOURCE;
@@ -747,7 +747,7 @@ remote function Client.sendDraft(string userId, string draftId) returns (string,
     return (jsonSendDraftResponse.id.toString(), jsonSendDraftResponse.threadId.toString());
 }
 
-function Client.init(GmailConfiguration gmailConfig) {
+public function Client.init(GmailConfiguration gmailConfig) {
     http:AuthConfig? authConfig = gmailConfig.clientConfig.auth;
     if (authConfig is http:AuthConfig) {
         authConfig.refreshUrl = REFRESH_TOKEN_EP;
