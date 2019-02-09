@@ -78,8 +78,8 @@ gmail:GmailConfiguration gmailConfig = {
 
 gmail:Client gmailClient = new(gmailConfig);
 ```
-The `sendMessage` function sends an email. `MessageRequest` is an object that contains all the data that is required
-to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ (the currently authenticated user).
+The `sendMessage` remote function sends an email. `MessageRequest` is an object that contains all the data that is required
+to send an email. The `userId` represents the authenticated user and can be a Gmail address or "me" (the current authenticated user).
 
 ```ballerina
 gmail:MessageRequest messageRequest = {};
@@ -94,7 +94,7 @@ messageRequest.contentType = gmail:TEXT_PLAIN;
 var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
 ```
 
-The response from `sendMessage` is either a string tuple with the message ID and thread ID (if the message was sent successfully) or an `error` (if the message was unsuccessful).
+The response from `sendMessage` is either a string tuple with the message ID and thread ID (if the message was sent successfully) or an `error` (if sending the message was unsuccessful).
 
 ```ballerina
 if (sendMessageResponse is (string, string)) {
@@ -110,7 +110,7 @@ if (sendMessageResponse is (string, string)) {
 }
 ```
 
-The `readMessage` function reads messages. It returns the `Message` object when successful or an `error` when unsuccessful.
+The `readMessage` remote function reads messages. It returns the `Message` object when successful or an `error` when unsuccessful.
 
 ```ballerina
 var response = gmailClient->readMessage(userId, messageIdToRead);
@@ -121,7 +121,7 @@ if (response is gmail:Message) {
 }
 ```
 
-The `deleteMessage` function deletes messages. It returns an `error` when unsuccessful.
+The `deleteMessage` remote function deletes messages. It returns an `error` when unsuccessful.
 
 ```ballerina    
 var delete = gmailClient->deleteMessage(userId, messageIdToDelete);
@@ -160,13 +160,13 @@ public function main(string... args) {
     messageRequest.cc = "cc@gmail.com";
     messageRequest.subject = "Email-Subject";
     messageRequest.messageBody = "Email Message Body Text";
-    //Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
+    // Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
     messageRequest.contentType = gmail:TEXT_PLAIN;
     string userId = "me";
-    //Send the message.
+    // Send the message.
     var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
     if (sendMessageResponse is (string, string)) {
-        //If successful, print the message ID and thread ID.
+        // If successful, print the message ID and thread ID.
         string messageId = "";
         string threadId = "";
         (messageId, threadId) = sendMessageResponse;

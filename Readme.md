@@ -80,7 +80,7 @@ gmail:GmailConfiguration gmailConfig = {
 
 gmail:Client gmailClient = new(gmailConfig);
 ```
-The `sendMessage` function sends an email. `MessageRequest` is an object that contains all the data that is required
+The `sendMessage` remote function sends an email. `MessageRequest` is an object that contains all the data that is required
 to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 
 (the currently authenticated user).
 
@@ -99,7 +99,7 @@ var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
 ```
 
 The response from `sendMessage` is either a string tuple with the message ID and thread ID 
-(if the message was sent successfully) or an `error` (if the message was unsuccessful).
+(if the message was sent successfully) or an `error` (if sending the message was unsuccessful).
 
 ```ballerina
 string messageId;
@@ -117,7 +117,7 @@ if (sendMessageResponse is (string, string)) {
 }
 ```
 
-The `readMessage` function reads messages. It returns the `Message` object when successful or an `error` when unsuccessful.
+The `readMessage` remote function reads messages. It returns the `Message` object when successful or an `error` when unsuccessful.
 
 ```ballerina
 var response = gmailClient->readMessage(userId, untaint messageId);
@@ -128,7 +128,7 @@ if (response is gmail:Message) {
 }
 ```
 
-The `deleteMessage` function deletes messages. It returns an `error` when unsuccessful.
+The `deleteMessage` remote function deletes messages. It returns an `error` when unsuccessful.
 
 ```ballerina    
 var delete = gmailClient->deleteMessage(userId, untaint messageId);
