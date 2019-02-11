@@ -82,10 +82,8 @@ function testSendTextMessage() {
     log:printInfo("testSendTextMessage");
     //----Send the mail----
     var sendMessageResponse = gmailClient->sendMessage(testUserId, messageRequest);
-    string messageId = "";
-    string threadId = "";
     if (sendMessageResponse is (string, string)) {
-        (messageId, threadId) = sendMessageResponse;
+        (string, string) (messageId, threadId) = sendMessageResponse;
         sentTextMessageId = untaint messageId;
         sentTextMessageThreadId = untaint threadId;
         test:assertTrue(messageId != "null" && threadId != "null", msg = "Send Text Message Failed");
@@ -515,12 +513,10 @@ function testReadDraft() {
 function testSendDraft() {
     log:printInfo("testSendDraft");
     var sendDraftResponse = gmailClient->sendDraft(testUserId, createdDraftId);
-    string messageId = "";
-    string threadId = "";
     if (sendDraftResponse is error) {
         test:assertFail(msg = <string>sendDraftResponse.detail().message);
     } else {
-        (messageId, threadId) = sendDraftResponse;
+        (string, string) (messageId, threadId) = sendDraftResponse;
         test:assertTrue(messageId != "null" && threadId != "null", msg = "Send HTML message failed");
     }
 }

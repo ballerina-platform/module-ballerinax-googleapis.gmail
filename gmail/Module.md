@@ -99,9 +99,7 @@ The response from `sendMessage` is either a string tuple with the message ID and
 ```ballerina
 if (sendMessageResponse is (string, string)) {
     // If successful, print the message ID and thread ID.
-    string messageId = "";
-    string threadId = "";
-    (messageId, threadId) = sendMessageResponse;
+    (string, string) (messageId, threadId) = sendMessageResponse;
     io:println("Sent Message ID: " + messageId);
     io:println("Sent Thread ID: " + threadId);
 } else {
@@ -126,7 +124,7 @@ The `deleteMessage` remote function deletes messages. It returns an `error` when
 ```ballerina    
 var delete = gmailClient->deleteMessage(userId, messageIdToDelete);
 if (delete is boolean) {
-    io:println("Message deletion success!");
+    io:println("Message deletion successful!");
 } else {
     io:println("Error: ", delete);
 }
