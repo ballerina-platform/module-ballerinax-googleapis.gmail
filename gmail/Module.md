@@ -78,9 +78,9 @@ gmail:GmailConfiguration gmailConfig = {
 
 gmail:Client gmailClient = new(gmailConfig);
 ```
-The `sendMessage` function sends an email. `MessageRequest` is a structure that contains all the data that is required 
-to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 
-(the currently authenticated user).
+The `sendMessage` remote function sends an email. `MessageRequest` is an object that contains all the data that is required
+to send an email. The `userId` represents the authenticated user and can be a Gmail address or "me" (the current authenticated user).
+
 ```ballerina
 gmail:MessageRequest messageRequest = {};
 messageRequest.recipient = "recipient@mail.com";
@@ -91,40 +91,86 @@ messageRequest.messageBody = "Email Message Body Text";
 //Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
 messageRequest.contentType = gmail:TEXT_PLAIN;
 //Send the message.
-var sendMessageResponse = gmailEP->sendMessage(userId, messageRequest);
+var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
 ```
-The response from `sendMessage` is either a string tuple with the message ID and thread ID 
-(if the message was sent successfully) or a `error` (if the message was unsuccessful). The `match` operation can be 
-used to handle the response if an error occurs.
+
+The response from `sendMessage` is either a string tuple with the message ID and thread ID (if the message was sent successfully) or an `error` (if sending the message was unsuccessful).
+
 ```ballerina
 if (sendMessageResponse is (string, string)) {
-    //If successful, returns the message ID and thread ID.
-    string messageId = "":
-    string threadId = "":
-    (messageId, threadId) = sendMessageResponse;
+    // If successful, print the message ID and thread ID.
+    (string, string) (messageId, threadId) = sendMessageResponse;
     io:println("Sent Message ID: " + messageId);
     io:println("Sent Thread ID: " + threadId);
 } else {
-    //Unsuccessful attempts return a Gmail error.
-    io:println(sendMessageResponse); 
+    // If unsuccessful, print the error returned.
+    io:println("Error: ", sendMessageResponse);
 }
 ```
-The `readMessage` function reads messages. It returns the `Message` struct when successful and 
-`error` when unsuccessful. 
+
+The `readMessage` remote function reads messages. It returns the `Message` object when successful or an `error` when unsuccessful.
+
 ```ballerina
-var response = gmailEP->readMessage(userId, messageIdToRead);
+var response = gmailClient->readMessage(userId, messageIdToRead);
 if (response is gmail:Message) {
     io:println("Sent Message: " + response);
 } else {
-    io:println(response);
+    io:println("Error: ", response);
 }
 ```
-The `deleteMessage` function deletes messages. It returns a `error` when unsuccessful. 
+
+The `deleteMessage` remote function deletes messages. It returns an `error` when unsuccessful.
+
 ```ballerina    
-var delete = gmailEP->deleteMessage(userId, messageIdToDelete);
+var delete = gmailClient->deleteMessage(userId, messageIdToDelete);
 if (delete is boolean) {
-    io:println("Message deletion success!");
+    io:println("Message deletion successful!");
 } else {
-    io:println(delete);
+    io:println("Error: ", delete);
+}
+```
+
+## Example
+
+```ballerina
+import ballerina/http;
+import ballerina/io;
+import wso2/gmail;
+
+gmail:GmailConfiguration gmailConfig = {
+    clientConfig: {
+        auth: {
+            scheme: http:OAUTH2,
+            accessToken: "<accessToken>",
+            clientId: "<clientId>",
+            clientSecret: "<clientSecret>",
+            refreshToken: "<refreshToken>"
+        }
+    }
+};
+
+gmail:Client gmailClient = new(gmailConfig);
+
+public function main(string... args) {
+    gmail:MessageRequest messageRequest = {};
+    messageRequest.recipient = "aa@gmail.com";
+    messageRequest.sender = "bb@gmail.com";
+    messageRequest.cc = "cc@gmail.com";
+    messageRequest.subject = "Email-Subject";
+    messageRequest.messageBody = "Email Message Body Text";
+    // Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
+    messageRequest.contentType = gmail:TEXT_PLAIN;
+    string userId = "me";
+    // Send the message.
+    var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+    if (sendMessageResponse is (string, string)) {
+        // If successful, print the message ID and thread ID.
+        (string, string) (messageId, threadId) = sendMessageResponse;
+        io:println("Sent Message ID: " + messageId);
+        io:println("Sent Thread ID: " + threadId);
+    } else {
+        // If unsuccessful, print the error returned.
+        io:println("Error: ", sendMessageResponse);
+    }
 }
 ```
