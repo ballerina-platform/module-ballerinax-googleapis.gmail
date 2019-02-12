@@ -106,9 +106,7 @@ string messageId;
 string threadId;
 if (sendMessageResponse is (string, string)) {
     // If successful, print the message ID and thread ID.
-    string messageId = "";
-    string threadId = "";
-    (messageId, threadId) = sendMessageResponse;
+    (string, string) (messageId, threadId) = sendMessageResponse;
     io:println("Sent Message ID: " + messageId);
     io:println("Sent Thread ID: " + threadId);
 } else {
