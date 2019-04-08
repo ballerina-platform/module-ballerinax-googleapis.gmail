@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Gmail API Version |  
 |:--------------------------:|:-----------------:|
-| 0.990.4                    |        v1         |
+| 0.991.0                    |        v1         |
 
 ### Prerequisites
 
@@ -65,7 +65,12 @@ gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: testAccessToken
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: testAccessToken
+                }
+            }
         }
     }
 };
@@ -76,10 +81,18 @@ gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: testAccessToken,
-            clientId: testClientId,
-            clientSecret: testClientSecret,
-            refreshToken: testRefreshToken
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: testAccessToken,
+                    refreshConfig: {
+                        refreshUrl: REFRESH_TOKEN_EP,
+                        refreshToken: testRefreshToken,
+                        clientId: testClientId,
+                        clientSecret: testClientSecret
+                    }
+                }
+            }
         }
     }
 };

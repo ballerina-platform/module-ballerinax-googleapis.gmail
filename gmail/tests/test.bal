@@ -25,10 +25,18 @@ GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: config:getAsString("ACCESS_TOKEN"),
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: config:getAsString("ACCESS_TOKEN"),
+                    refreshConfig: {
+                        refreshUrl: REFRESH_TOKEN_EP,
+                        refreshToken: config:getAsString("REFRESH_TOKEN"),
+                        clientId: config:getAsString("CLIENT_ID"),
+                        clientSecret: config:getAsString("CLIENT_SECRET")
+                    }
+                }
+            }
         }
     }
 };
