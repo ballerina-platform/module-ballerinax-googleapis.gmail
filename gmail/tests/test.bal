@@ -30,7 +30,7 @@ GmailConfiguration gmailConfig = {
                 config: {
                     accessToken: config:getAsString("ACCESS_TOKEN"),
                     refreshConfig: {
-                        refreshUrl: REFRESH_TOKEN_EP,
+                        refreshUrl: REFRESH_URL,
                         refreshToken: config:getAsString("REFRESH_TOKEN"),
                         clientId: config:getAsString("CLIENT_ID"),
                         clientSecret: config:getAsString("CLIENT_SECRET")

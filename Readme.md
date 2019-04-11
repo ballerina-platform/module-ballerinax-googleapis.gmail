@@ -75,7 +75,7 @@ gmail:GmailConfiguration gmailConfig = {
                 config: {
                     accessToken: testAccessToken,
                     refreshConfig: {
-                        refreshUrl: REFRESH_TOKEN_EP,
+                        refreshUrl: REFRESH_URL,
                         refreshToken: testRefreshToken,
                         clientId: testClientId,
                         clientSecret: testClientSecret
