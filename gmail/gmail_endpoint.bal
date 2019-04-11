@@ -23,14 +23,8 @@ public type Client client object {
     public http:Client gmailClient;
 
     public function __init(GmailConfiguration gmailConfig) {
-        self.init(gmailConfig);
         self.gmailClient = new(BASE_URL, config = gmailConfig.clientConfig);
     }
-
-    # Initialize Gmail endpoint.
-    #
-    # + gmailConfig - Gmail configuraion
-    public function init(GmailConfiguration gmailConfig);
 
     # List the messages in user's mailbox.
     #
@@ -746,13 +740,6 @@ public remote function Client.sendDraft(string userId, string draftId) returns (
     json jsonSendDraftResponse = check handleResponse(httpResponse);
     //Return tuple of sent draft message id and thread id
     return (jsonSendDraftResponse.id.toString(), jsonSendDraftResponse.threadId.toString());
-}
-
-public function Client.init(GmailConfiguration gmailConfig) {
-    http:AuthConfig? authConfig = gmailConfig.clientConfig.auth;
-    if (authConfig is http:AuthConfig) {
-        authConfig.scheme = http:OAUTH2;
-    }
 }
 
 # Object for Spreadsheet configuration.
