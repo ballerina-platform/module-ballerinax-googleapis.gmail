@@ -35,7 +35,7 @@ The `wso2/gmail` module contains operations to lists the history of changes to t
 ## Compatibility
 |                    |    Version     |  
 |:------------------:|:--------------:|
-| Ballerina Language | 0.990.4         |
+| Ballerina Language | 0.991.0         |
 | Gmail API          | v1             |
 
 ## Sample
@@ -68,10 +68,18 @@ gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: testAccessToken,
-            clientId: testClientId,
-            clientSecret: testClientSecret,
-            refreshToken: testRefreshToken
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: testAccessToken,
+                    refreshConfig: {
+                        refreshUrl: gmail:REFRESH_URL,
+                        refreshToken: testRefreshToken,
+                        clientId: testClientId,
+                        clientSecret: testClientSecret
+                    }
+                }
+            }
         }
     }
 };
@@ -141,10 +149,18 @@ gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
             scheme: http:OAUTH2,
-            accessToken: "<accessToken>",
-            clientId: "<clientId>",
-            clientSecret: "<clientSecret>",
-            refreshToken: "<refreshToken>"
+            config: {
+                grantType: http:DIRECT_TOKEN,
+                config: {
+                    accessToken: "<accessToken>",
+                    refreshConfig: {
+                        refreshUrl: gmail:REFRESH_URL,
+                        refreshToken: "<refreshToken>",
+                        clientId: "<clientId>",
+                        clientSecret: "<clientSecret>"
+                    }
+                }
+            }
         }
     }
 };

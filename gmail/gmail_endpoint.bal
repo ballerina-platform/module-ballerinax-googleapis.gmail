@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerina/io;
 
 # Gmail Client object.
 #
@@ -23,14 +24,8 @@ public type Client client object {
     public http:Client gmailClient;
 
     public function __init(GmailConfiguration gmailConfig) {
-        self.init(gmailConfig);
         self.gmailClient = new(BASE_URL, config = gmailConfig.clientConfig);
     }
-
-    # Initialize Gmail endpoint.
-    #
-    # + gmailConfig - Gmail configuraion
-    public function init(GmailConfiguration gmailConfig);
 
     # List the messages in user's mailbox.
     #
@@ -336,7 +331,8 @@ public remote function Client.listMessages(string userId, MsgSearchFilter? filte
         string uriParams = "";
         //The default value for include spam trash query parameter of the api call is false
         //If append unsuccessful throws and returns error
-        uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, <string>filter.includeSpamTrash);
+        uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
+                                                   io:sprintf("%s", filter.includeSpamTrash));
         //---Append other optional URI query parameters---
         foreach string labelId in filter.labelIds {
             uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
@@ -444,7 +440,7 @@ public remote function Client.listThreads(string userId, MsgSearchFilter? filter
         //The default value for include spam trash query parameter of the api call is false
         //If append unsuccessful throws and returns error
         uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
-                                                                             <string>filter.includeSpamTrash);
+                                                    io:sprintf("%s", filter.includeSpamTrash));
         //---Append other optional URI query parameters---
         foreach string labelId in filter.labelIds {
             uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
@@ -668,7 +664,8 @@ public remote function Client.listDrafts(string userId, DraftSearchFilter? filte
     if (filter is DraftSearchFilter) {
         string uriParams = "";
         //The default value for include spam trash query parameter of the api call is false
-        uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, <string>filter.includeSpamTrash);
+        uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
+                                                    io:sprintf("%s", filter.includeSpamTrash));
         uriParams = filter.maxResults != EMPTY_STRING ?
                        check appendEncodedURIParameter(uriParams, MAX_RESULTS, filter.maxResults) : uriParams;
         uriParams = filter.pageToken != EMPTY_STRING ?
@@ -745,14 +742,6 @@ public remote function Client.sendDraft(string userId, string draftId) returns (
     json jsonSendDraftResponse = check handleResponse(httpResponse);
     //Return tuple of sent draft message id and thread id
     return (jsonSendDraftResponse.id.toString(), jsonSendDraftResponse.threadId.toString());
-}
-
-public function Client.init(GmailConfiguration gmailConfig) {
-    http:AuthConfig? authConfig = gmailConfig.clientConfig.auth;
-    if (authConfig is http:AuthConfig) {
-        authConfig.refreshUrl = REFRESH_TOKEN_EP;
-        authConfig.scheme = http:OAUTH2;
-    }
 }
 
 # Object for Spreadsheet configuration.
