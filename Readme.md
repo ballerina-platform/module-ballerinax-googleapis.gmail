@@ -110,8 +110,6 @@ The response from `sendMessage` is either a string tuple with the message ID and
 (if the message was sent successfully) or an `error` (if sending the message was unsuccessful).
 
 ```ballerina
-string messageId;
-string threadId;
 if (sendMessageResponse is (string, string)) {
     // If successful, print the message ID and thread ID.
     (string, string) (messageId, threadId) = sendMessageResponse;
