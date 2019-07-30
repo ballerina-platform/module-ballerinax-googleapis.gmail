@@ -35,7 +35,7 @@ The `wso2/gmail` module contains operations to lists the history of changes to t
 ## Compatibility
 |                    |    Version     |  
 |:------------------:|:--------------:|
-| Ballerina Language | 0.991.0         |
+| Ballerina Language | 1.0            |
 | Gmail API          | v1             |
 
 ## Sample
@@ -83,7 +83,6 @@ gmail:GmailConfiguration gmailConfig = {
         }
     }
 };
-
 gmail:Client gmailClient = new(gmailConfig);
 ```
 The `sendMessage` remote function sends an email. `MessageRequest` is an object that contains all the data that is required
@@ -144,7 +143,6 @@ if (delete is boolean) {
 import ballerina/http;
 import ballerina/io;
 import wso2/gmail;
-
 gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
         auth: {
@@ -164,9 +162,7 @@ gmail:GmailConfiguration gmailConfig = {
         }
     }
 };
-
 gmail:Client gmailClient = new(gmailConfig);
-
 public function main(string... args) {
     gmail:MessageRequest messageRequest = {};
     messageRequest.recipient = "aa@gmail.com";
