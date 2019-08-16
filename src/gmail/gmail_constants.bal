@@ -17,7 +17,7 @@
 //API urls
 const string BASE_URL = "https://www.googleapis.com/gmail";
 # Holds the value for URL of refresh token end point.
-public const string REFRESH_URL = "https://www.googleapis.com/oauth2/v3/token";
+public const string REFRESH_URL = "https://www.googleapis.com/oauth2/v4/token";
 # Holds the value for oauth scheme.
 const string OAUTH = "oauth";
 
