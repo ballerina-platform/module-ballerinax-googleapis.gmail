@@ -1,3 +1,5 @@
+import ballerinax/java;
+
 function split(handle receiver, handle delimeter) returns handle = @java:Method {
     class: "java.lang.String"
 } external;

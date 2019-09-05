@@ -71,7 +71,11 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
         targetMessageType.htmlBodyPart = getMessageBodyPartFromPayloadByMimeType(srcMssgJsonPayload, TEXT_HTML);
         //Recursively go through the payload and get message attachment and inline image parts
         [MessageBodyPart[], MessageBodyPart[]] parts = getFilePartsFromPayload(srcMssgJsonPayload, [], []);
-        [targetMessageType.msgAttachments, targetMessageType.inlineImgParts] = parts;
+        MessageBodyPart[] attachments;
+        MessageBodyPart[] imageParts;
+        [attachments, imageParts] = parts;
+        targetMessageType.msgAttachments = attachments;
+        targetMessageType.inlineImgParts = imageParts;
     } else {
         targetMessageType.plainTextBodyPart = {};
         targetMessageType.htmlBodyPart = {};

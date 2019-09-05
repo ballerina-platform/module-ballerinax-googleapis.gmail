@@ -17,6 +17,7 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/oauth2;
+import ballerina/config;
 
 # Gmail Client object.
 #
@@ -35,6 +36,12 @@ public type Client client object {
         self.gmailClient = new(BASE_URL, {
             auth: {
                 authHandler: bearerHandler
+            },
+            secureSocket:{
+                trustStore:{
+                    path: config:getAsString("TRUST_STORE_PATH"),
+                    password: config:getAsString("TRUST_STORE_PASSWORD")
+                }
             }
         });
     }

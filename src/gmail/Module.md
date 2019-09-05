@@ -71,12 +71,20 @@ gmail:GmailConfiguration gmailConfig = {
             config: {
                 grantType: http:DIRECT_TOKEN,
                 config: {
-                    accessToken: testAccessToken,
+                    accessToken: <ACCESS_TOKEN>,
                     refreshConfig: {
                         refreshUrl: gmail:REFRESH_URL,
-                        refreshToken: testRefreshToken,
-                        clientId: testClientId,
-                        clientSecret: testClientSecret
+                        refreshToken: <REFRESH_TOKEN>,
+                        clientId: <CLIENT_ID>,
+                        clientSecret: <CLIENT_SECRET>,
+                        clientConfig: {
+                            secureSocket:{
+                                trustStore:{
+                                    path: <TRUST_STORE_PATH>,
+                                    password: <TRUST_STORE_PASSWORD>
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -150,12 +158,20 @@ gmail:GmailConfiguration gmailConfig = {
             config: {
                 grantType: http:DIRECT_TOKEN,
                 config: {
-                    accessToken: "<accessToken>",
+                    accessToken: <ACCESS_TOKEN>,
                     refreshConfig: {
                         refreshUrl: gmail:REFRESH_URL,
-                        refreshToken: "<refreshToken>",
-                        clientId: "<clientId>",
-                        clientSecret: "<clientSecret>"
+                        refreshToken: <REFRESH_TOKEN>,
+                        clientId: <CLIENT_ID>,
+                        clientSecret: <CLIENT_SECRET>,
+                        clientConfig: {
+                            secureSocket:{
+                                trustStore:{
+                                    path: <TRUST_STORE_PATH>,
+                                    password: <TRUST_STORE_PASSWORD>
+                                }
+                            }
+                        }
                     }
                 }
             }

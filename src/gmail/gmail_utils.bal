@@ -19,6 +19,7 @@ import ballerina/http;
 import ballerina/io;
 import ballerina/mime;
 import ballerinax/java;
+import ballerina/log;
 
 # Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
 #
@@ -185,7 +186,7 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 # + filePath - File path
 # + return - If successful returns encoded file. Else returns error.
 function encodeFile(string filePath) returns string|error {
-    io:ReadableByteChannel|io:GenericError|io:ConnectionTimedOutError fileChannel = io:openReadableFile(filePath);
+    io:ReadableByteChannel|io:Error fileChannel = io:openReadableFile(filePath);
     int bytesChunk = BYTES_CHUNK;
     byte[] readEncodedContent = [];
     int readEncodedCount = 0;
@@ -214,7 +215,7 @@ function encodeFile(string filePath) returns string|error {
         message = "Connection TimedOut error occurred while reading file from path: " + filePath);
         return err;
     }
-    return encoding:byteArrayToString(readEncodedContent);
+    return encoding:encodeBase64Url(readEncodedContent);
 }
 
 
@@ -310,7 +311,7 @@ function handleResponse(http:Response|error httpResponse) returns @tainted json|
 # + value - Value of the form value parameter
 # + return - If successful, returns created request path as an encoded string. Else returns error.
 function appendEncodedURIParameter(string requestPath, string key, string value) returns string|error {
-    var encodedVar = http:encode(value, UTF_8);
+    var encodedVar = encoding:encodeUriComponent(value, "UTF-8");
     string encodedString = "";
     string path = "";
     if (encodedVar is string) {
@@ -488,7 +489,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
     }
     //------End of multipart/mixed mime part------
     byte[] concatRequestByte = concatRequest.toBytes();
-    string encodedRequest = encoding:encodeBase64(concatRequestByte);
+    string encodedRequest = encoding:encodeBase64Url(concatRequestByte);
     string? encodedRequestReplacePlus = java:toString(replace(java:fromString(encodedRequest), 
         java:fromString(PLUS_SYMBOL), java:fromString(DASH_SYMBOL)));
     if (encodedRequestReplacePlus is string) {

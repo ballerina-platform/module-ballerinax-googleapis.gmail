@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Gmail API Version |  
 |:--------------------------:|:-----------------:|
-| 0.991.0                    |        v1         |
+| 1.0.0                    |        v1         |
 
 ### Prerequisites
 
@@ -12,7 +12,7 @@
     * Access Token
     * Refresh Token
     
-    *Please note that, providing ClientId, Client Secret, Refresh Token are optional if you are only providing a 
+    *Please note that, providing Client Id, Client Secret, Refresh Token are optional if you are only providing a
 valid Access Token vise versa.*
 
 * Go through the following steps to obtain client id, client secret, refresh token and access token for Gmail API.
@@ -33,32 +33,35 @@ valid Access Token vise versa.*
 
 In order to use the Gmail connector, first you need to create a Gmail endpoint by passing above mentioned parameters.
 
-Visit `test.bal` file to find the way of creating Gmail endpoint.
+Visit `main_test.bal` file to find the way of creating Gmail endpoint.
 
-#### Running gmail tests
+#### Running Gmail tests
 In order to run the tests, the user will need to have a Gmail account and configure the `ballerina.conf` configuration
 file with the obtained tokens and other parameters.
 
-###### ballerina.conf
+##### ballerina.conf
 ```ballerina.conf
 //Give the credentials and tokens for the authorized user
 ACCESS_TOKEN="enter your access token here"
 CLIENT_ID="enter your client id here"
 CLIENT_SECRET="enter your client secret here"
 REFRESH_TOKEN="enter your refresh token here"
+TRUST_STORE_PATH = "${ballerina.home}/bre/security/ballerinaTruststore.p12"
+TRUST_STORE_PASSWORD = "ballerina"
 
 //Give values for the following to run the tests
 RECIPIENT="recipient@gmail.com"
 SENDER="sender@gmail.com"
 CC="cc@gmail.com"
-ATTACHMENT_PATH="/home/dushaniw/hello.txt"
+ATTACHMENT_PATH="src/gmail/tests/resources/hello.txt"
 ATTACHMENT_CONTENT_TYPE="text/plain"
-INLINE_IMAGE_PATH="/home/user/Picture2.jpg"
-INLINE_IMAGE_NAME="Picture2.jpg"
+INLINE_IMAGE_PATH="src/gmail/tests/resources/workplace.jpg"
+INLINE_IMAGE_NAME="workplace.jpg"
 IMAGE_CONTENT_TYPE="image/jpeg"
 ```
 
-Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in test.bal 
+Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in 
+main_test.bal
 in either way following,
 ```ballerina
 gmail:GmailConfiguration gmailConfig = {
@@ -79,17 +82,17 @@ gmail:GmailConfiguration gmailConfig = {
 ```ballerina
 gmail:GmailConfiguration gmailConfig = {
     clientConfig: {
-        auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: testAccessToken,
-                    refreshConfig: {
-                        refreshUrl: gmail:REFRESH_URL,
-                        refreshToken: testRefreshToken,
-                        clientId: testClientId,
-                        clientSecret: testClientSecret
+        accessToken: config:getAsString("ACCESS_TOKEN"),
+        refreshConfig: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: config:getAsString("REFRESH_TOKEN"),
+            clientId: config:getAsString("CLIENT_ID"),
+            clientSecret: config:getAsString("CLIENT_SECRET"),
+            clientConfig: {
+                secureSocket:{
+                    trustStore:{
+                        path: config:getAsString("TRUST_STORE_PATH"),
+                        password: config:getAsString("TRUST_STORE_PASSWORD")
                     }
                 }
             }
