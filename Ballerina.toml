@@ -1,9 +1,9 @@
 [project]
 org-name= "wso2"
-version= "1.0"
+version= "1.0.0"
 authors = ["WSO2"]
 repository = "https://github.com/wso2-ballerina/module-gmail"
 keywords = ["gmail","email"]
-license = "Apache-2.0"
+license = ["Apache-2.0"]
 
 [dependencies]

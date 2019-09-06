@@ -15,10 +15,8 @@
 // under the License.
 
 import ballerina/config;
-import ballerina/io;
 import ballerina/test;
 import ballerina/log;
-import ballerina/http;
 
 //Create an endpoint to use Gmail Connector
 GmailConfiguration gmailConfig = {
@@ -28,7 +26,15 @@ GmailConfiguration gmailConfig = {
             refreshUrl: REFRESH_URL,
             refreshToken: config:getAsString("REFRESH_TOKEN"),
             clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET")
+            clientSecret: config:getAsString("CLIENT_SECRET"),
+            clientConfig: {
+                secureSocket:{
+                    trustStore:{
+                        path: config:getAsString("TRUST_STORE_PATH"),
+                        password: config:getAsString("TRUST_STORE_PASSWORD")
+                    }
+                }
+            }
         }
     }
 };
