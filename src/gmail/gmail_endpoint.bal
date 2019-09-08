@@ -17,7 +17,7 @@
 import ballerina/http;
 import ballerina/io;
 import ballerina/oauth2;
-import ballerina/config;
+import ballerina/log;
 
 # Gmail Client object.
 #
@@ -26,24 +26,30 @@ public type Client client object {
     http:Client gmailClient;
 
     public function __init(GmailConfiguration gmailConfig) {
-        // self.gmailClient = new(BASE_URL, config = gmailConfig.clientConfig);
-
         // Create OAuth2 provider.
-        oauth2:OutboundOAuth2Provider oauth2Provider = new(gmailConfig.clientConfig);
+        oauth2:OutboundOAuth2Provider oauth2Provider = new(gmailConfig.oauthClientConfig);
         // Create bearer auth handler using created provider.
         http:BearerAuthHandler bearerHandler = new(oauth2Provider);
+
         // Create gmail http client.
-        self.gmailClient = new(BASE_URL, {
-            auth: {
-                authHandler: bearerHandler
-            },
-            secureSocket:{
-                trustStore:{
-                    path: config:getAsString("TRUST_STORE_PATH"),
-                    password: config:getAsString("TRUST_STORE_PASSWORD")
+        if (gmailConfig.httpClientConfig.secureSocket is http:ClientSecureSocket) {
+            self.gmailClient = new(BASE_URL, {
+                auth: {
+                    authHandler: bearerHandler
+                },
+                secureSocket: gmailConfig.httpClientConfig.secureSocket
+            });
+        } else {
+            log:printWarn("An unsecured connection is establishing since SSL configuration not provided.");
+            self.gmailClient = new(BASE_URL, {
+                auth: {
+                    authHandler: bearerHandler
+                },
+                secureSocket: {
+                    disable: true
                 }
-            }
-        });
+            });
+        }
     }
 
     # List the messages in user's mailbox.
@@ -724,7 +730,9 @@ public type Client client object {
 
 # Object for Spreadsheet configuration.
 #
-# + clientConfig - The http client endpoint
+# + oauthClientConfig - OAuth client configuration.
+# + httpClientConfig - HTTP client configuration.
 public type GmailConfiguration record {
-    oauth2:DirectTokenConfig clientConfig;
+    oauth2:DirectTokenConfig oauthClientConfig;
+    http:ClientConfiguration httpClientConfig = {};
 };

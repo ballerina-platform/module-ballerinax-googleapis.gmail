@@ -20,6 +20,8 @@ import ballerina/io;
 import ballerina/mime;
 import ballerinax/java;
 import ballerina/log;
+import ballerinax/java.arrays as jarrays;
+import ballerina/lang.'string as strings;
 
 # Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
 #
@@ -112,7 +114,7 @@ function getDispostionFromPayload(json messagePayload) returns string {
             map<string> headers = convertJSONToHeaderMap(payloadHeaders);
             string contentDispositionHeader = getValueForMapKey(headers, CONTENT_DISPOSITION);
             handle headerParts = split(java:fromString(contentDispositionHeader), java:fromString(SEMICOLON_SYMBOL));
-            string? dispositionStr = java:toString(java:getArrayElement(headerParts, 0));
+            string? dispositionStr = java:toString(jarrays:get(headerParts, 0));
             if (dispositionStr is string) {
                 disposition = dispositionStr;
             } else {
@@ -161,12 +163,12 @@ function convertStringArrayToJSONArray(string[] sourceStringObject) returns json
 # + return - Boolean status of mime type match
 function isMimeType(string msgMimeType, string mType) returns boolean {
     handle msgTypes = split(java:fromString(msgMimeType), java:fromString(FORWARD_SLASH_SYMBOL));
-    string|() msgPrimaryType = java:toString(java:getArrayElement(msgTypes, 0));
-    string|() msgSecondaryType = java:toString(java:getArrayElement(msgTypes, 1));
+    string|() msgPrimaryType = java:toString(jarrays:get(msgTypes, 0));
+    string|() msgSecondaryType = java:toString(jarrays:get(msgTypes, 1));
 
     handle requestmTypes = split(java:fromString(mType), java:fromString(FORWARD_SLASH_SYMBOL));
-    string|() reqPrimaryType = java:toString(java:getArrayElement(requestmTypes, 0));
-    string|() reqSecondaryType = java:toString(java:getArrayElement(requestmTypes, 1));
+    string|() reqPrimaryType = java:toString(jarrays:get(requestmTypes, 0));
+    string|() reqSecondaryType = java:toString(jarrays:get(requestmTypes, 1));
 
     if (msgPrimaryType is () || msgSecondaryType is () || reqPrimaryType is () || reqSecondaryType is ()) {
         return false;
@@ -189,15 +191,14 @@ function encodeFile(string filePath) returns string|error {
     io:ReadableByteChannel|io:Error fileChannel = io:openReadableFile(filePath);
     int bytesChunk = BYTES_CHUNK;
     byte[] readEncodedContent = [];
-    int readEncodedCount = 0;
 
     if(fileChannel is io:ReadableByteChannel) {
         var fileContent = fileChannel.base64Encode();
         if(fileContent is io:ReadableByteChannel) {
             io:ReadableByteChannel encodedfileChannel = fileContent;
             var readChannel = encodedfileChannel.read(bytesChunk);
-            if(readChannel is [byte[], int]) {
-                [readEncodedContent, readEncodedCount] = readChannel;
+            if(readChannel is byte[]) {
+                readEncodedContent = readChannel;
             } else {
                 error err = error(GMAIL_ERROR_CODE, message = "Error occurred while reading the file channel");
                 return err;
@@ -215,7 +216,7 @@ function encodeFile(string filePath) returns string|error {
         message = "Connection TimedOut error occurred while reading file from path: " + filePath);
         return err;
     }
-    return encoding:encodeBase64Url(readEncodedContent);
+    return <@untained>strings:fromBytes(readEncodedContent);
 }
 
 
@@ -225,8 +226,8 @@ function encodeFile(string filePath) returns string|error {
 # + return - Returns the file name extracted from the file path
 function getFileNameFromPath(string filePath) returns string|error {
     handle pathParts = split(java:fromString(filePath), java:fromString("/"));
-    int pathPartsLength = java:getArrayLength(pathParts);
-    string? fileName = java:toString(java:getArrayElement(pathParts, (pathPartsLength - 1)));
+    int pathPartsLength = jarrays:getLength(pathParts);
+    string? fileName = java:toString(jarrays:get(pathParts, (pathPartsLength - 1)));
     if (fileName is string){
         return fileName;
     } else {
@@ -349,7 +350,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
         + msgRequest.contentType + " for the message with subject: " + msgRequest.subject);
         return err;
     }
-    //Adding inline images to messages of TEXT_PLAIN content type is not unsupported.
+    //Adding inline images to messages of TEXT_PLAIN content type is not supported.
     if (msgRequest.contentType == TEXT_PLAIN && (msgRequest.inlineImagePaths.length() != 0)){
         error err = error(GMAIL_ERROR_CODE, message = 
         "Does not support adding inline images to text/plain body of the message with subject: " + msgRequest.subject);

@@ -20,7 +20,7 @@ import ballerina/log;
 
 //Create an endpoint to use Gmail Connector
 GmailConfiguration gmailConfig = {
-    clientConfig: {
+    oauthClientConfig: {
         accessToken: config:getAsString("ACCESS_TOKEN"),
         refreshConfig: {
             refreshUrl: REFRESH_URL,
@@ -30,10 +30,18 @@ GmailConfiguration gmailConfig = {
             clientConfig: {
                 secureSocket:{
                     trustStore:{
-                        path: config:getAsString("TRUST_STORE_PATH"),
-                        password: config:getAsString("TRUST_STORE_PASSWORD")
+                        path: config:getAsString("OAUTH_TRUST_STORE_PATH"),
+                        password: config:getAsString("OAUTH_TRUST_STORE_PASSWORD")
                     }
                 }
+            }
+        }
+    },
+    httpClientConfig: {
+        secureSocket:{
+            trustStore:{
+                path: config:getAsString("HTTP_TRUST_STORE_PATH"),
+                password: config:getAsString("HTTP_TRUST_STORE_PASSWORD")
             }
         }
     }
