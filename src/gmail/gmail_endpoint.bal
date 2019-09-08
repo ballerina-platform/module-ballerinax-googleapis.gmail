@@ -30,14 +30,15 @@ public type Client client object {
         oauth2:OutboundOAuth2Provider oauth2Provider = new(gmailConfig.oauthClientConfig);
         // Create bearer auth handler using created provider.
         http:BearerAuthHandler bearerHandler = new(oauth2Provider);
+        http:ClientSecureSocket? result = gmailConfig?.secureSocketConfig;
 
         // Create gmail http client.
-        if (gmailConfig.httpClientConfig.secureSocket is http:ClientSecureSocket) {
+        if (result is http:ClientSecureSocket) {
             self.gmailClient = new(BASE_URL, {
                 auth: {
                     authHandler: bearerHandler
                 },
-                secureSocket: gmailConfig.httpClientConfig.secureSocket
+                secureSocket: result
             });
         } else {
             log:printWarn("An unsecured connection is establishing since SSL configuration not provided.");
@@ -731,8 +732,8 @@ public type Client client object {
 # Object for Spreadsheet configuration.
 #
 # + oauthClientConfig - OAuth client configuration.
-# + httpClientConfig - HTTP client configuration.
+# + secureSocketConfig - HTTP client configuration.
 public type GmailConfiguration record {
     oauth2:DirectTokenConfig oauthClientConfig;
-    http:ClientConfiguration httpClientConfig = {};
+    http:ClientSecureSocket secureSocketConfig?;
 };

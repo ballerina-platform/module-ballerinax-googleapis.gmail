@@ -37,12 +37,10 @@ GmailConfiguration gmailConfig = {
             }
         }
     },
-    httpClientConfig: {
-        secureSocket:{
-            trustStore:{
-                path: config:getAsString("HTTP_TRUST_STORE_PATH"),
-                password: config:getAsString("HTTP_TRUST_STORE_PASSWORD")
-            }
+    secureSocketConfig: {
+        trustStore:{
+            path: config:getAsString("HTTP_TRUST_STORE_PATH"),
+            password: config:getAsString("HTTP_TRUST_STORE_PASSWORD")
         }
     }
 };
