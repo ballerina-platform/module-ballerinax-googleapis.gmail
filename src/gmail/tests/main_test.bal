@@ -26,21 +26,7 @@ GmailConfiguration gmailConfig = {
             refreshUrl: REFRESH_URL,
             refreshToken: config:getAsString("REFRESH_TOKEN"),
             clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            clientConfig: {
-                secureSocket: {
-                    trustStore: {
-                        path: config:getAsString("OAUTH_TRUST_STORE_PATH"),
-                        password: config:getAsString("OAUTH_TRUST_STORE_PASSWORD")
-                    }
-                }
-            }
-        }
-    },
-    secureSocketConfig: {
-        trustStore: {
-            path: config:getAsString("HTTP_TRUST_STORE_PATH"),
-            password: config:getAsString("HTTP_TRUST_STORE_PASSWORD")
+            clientSecret: config:getAsString("CLIENT_SECRET")
         }
     }
 };

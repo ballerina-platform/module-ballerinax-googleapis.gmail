@@ -16,7 +16,6 @@
 
 import ballerina/http;
 import ballerina/io;
-import ballerina/log;
 import ballerina/oauth2;
 
 # Gmail Client object.
@@ -41,13 +40,9 @@ public type Client client object {
                 secureSocket: result
             });
         } else {
-            log:printWarn("An unsecured connection is establishing since SSL configuration not provided.");
             self.gmailClient = new (BASE_URL, {
                 auth: {
                     authHandler: bearerHandler
-                },
-                secureSocket: {
-                    disable: true
                 }
             });
         }
