@@ -1,94 +1,97 @@
 [![Build Status](https://travis-ci.org/wso2-ballerina/module-gmail.svg?branch=master)](https://travis-ci.org/wso2-ballerina/module-gmail)
 
-Connects to Gmail from Ballerina. 
+# Ballerina Gmail Connector
 
-# module Overview
+Ballerina Gmail Connector provides the capability to send, read and delete emails through the Gmail REST API. It also provides the ability to read, trash, untrash and delete threads, ability to get the Gmail profile and mailbox history, etc. The connector handles OAuth 2.0 authentication.
 
-The Gmail connector allows you to send, read, and delete emails through the Gmail REST API. It handles OAuth 2.0 
-authentication. It also provides the ability to read, trash, untrash, delete threads, get the Gmail profile, mailbox 
-history, etc.
+The following sections provide you with information on how to use the Ballerina Gmail Connector.
 
-**Working with Messages**
+- [Compatibility](#compatibility)
+- [Feature Overview](#feature-overview)
+- [Getting Started](#getting-started)
+- [Sample](#sample)
 
-The `wso2/gmail` module contains operations to send emails in Text and HTML formats with attachments and inline images. 
-It supports searching and reading messages in Gmail using Gmail filters. The module also supports trashing, untrashing, 
-deleting, and modifying messages as well.
+## Compatibility
 
-**Working with Threads**
+| Ballerina Language Version  | Gmail API Version |
+|:---------------------------:|:------------------------------:|
+|  1.0.0                     |   v1                           |
 
-The `wso2/gmail` module contains operations to read, search, trash, untrash, modify, and delete mail threads in Gmail.
+## Feature Overview
 
-**Working with Drafts**
+#### Working with Emails
 
-The `wso2/gmail` module contains operations to search, read, delete, create, update, and send drafts in Gmail.   
+The `wso2/gmail` module contains operations to send emails in Text and HTML formats with attachments and inline images. It supports searching and reading emails in Gmail using Gmail filters. The module also supports trashing, untrashing, deleting, and modifying emails.
 
-**Working with Labels**
+#### Working with Threads
 
-The `wso2/gmail` module containes operations to list, read, create, update, and delete labels in Gmail.
+The `wso2/gmail` module contains operations to read, search, trash, untrash, modify and delete email threads in Gmail.
 
-**Working with User Profiles**
+#### Working with Drafts
+
+The `wso2/gmail` module contains operations to search, read, delete, create, update and send drafts in Gmail.
+
+#### Working with Labels
+
+The `wso2/gmail` module containes operations to list, read, create, update and delete labels in Gmail.
+
+#### Working with User Profiles
 
 The `wso2/gmail` module contains operations to get Gmail user profile details.
 
-**Working with User History**
+#### Working with Mailbox History
 
 The `wso2/gmail` module contains operations to lists the history of changes to the user's mailbox.
 
-## Compatibility
-|                    |    Version     |  
-|:------------------:|:--------------:|
-| Ballerina Language | 1.0            |
-| Gmail API          | v1             |
+## Getting Started
+
+### Prerequisites
+Download and install [Ballerina](https://ballerinalang.org/downloads/).
+
+### Pull the Module
+You can pull the Gmail module from Ballerina Central using the command:
+```ballerina
+$ ballerina pull wso2/gmail
+```
 
 ## Sample
 First, import the `wso2/gmail` module into the Ballerina project.
 ```ballerina
 import wso2/gmail;
 ```
-Instantiate the connector by giving authentication details in the HTTP client config, which has built-in support for 
-BasicAuth and OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be 
-minimally instantiated in the HTTP client config using the access token or using the client ID, client secret, 
-and refresh token.
+Instantiate the connector by giving authentication details in the Gmail client config, which has built-in support for OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be minimally instantiated in the Gmail client config using the Access Token or by using the Client ID, Client Secret and Refresh Token.
 
 **Obtaining Tokens to Run the Sample**
 
 1. Visit [Google API Console](https://console.developers.google.com), click **Create Project**, and follow the wizard to create a new project.
-2. Go to **Credentials -> OAuth consent screen**, enter a product name to be shown to users, and click **Save**.
-3. On the **Credentials** tab, click **Create credentials** and select **OAuth client ID**. 
+2. Go to **Credentials -> OAuth Consent Screen**, enter a product name to be shown to users, and click **Save**.
+3. On the **Credentials** tab, click **Create Credentials** and select **OAuth Client ID**.
 4. Select an application type, enter a name for the application, and specify a redirect URI (enter https://developers.google.com/oauthplayground if you want to use 
-[OAuth 2.0 playground](https://developers.google.com/oauthplayground) to receive the authorization code and obtain the 
-access token and refresh token). 
-5. Click **Create**. Your client ID and client secret appear. 
-6. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground). Click on the `OAuth 2.0 configuration`
- icon in the top right corner and click on `Use your own OAuth credentials` and provide your `OAuth Client ID` and `OAuth Client secret`.
+[OAuth 2.0 Playground](https://developers.google.com/oauthplayground) to receive the Authorization Code and obtain the 
+Access Token and Refresh Token).
+5. Click **Create**. Your Client ID and Client Secret will appear.
+6. In a separate browser window or tab, visit [OAuth 2.0 Playground](https://developers.google.com/oauthplayground). Click on the `OAuth 2.0 Configuration`
+ icon in the top right corner and click on `Use your own OAuth credentials` and provide your `OAuth Client ID` and `OAuth Client Secret`.
 7. Select the required Gmail API scopes from the list of API's, and then click **Authorize APIs**.
 8. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token and access token.
 
-You can now enter the credentials in the HTTP client config. 
+You can now enter the credentials in the Gmail client config.
 ```ballerina
 gmail:GmailConfiguration gmailConfig = {
-    clientConfig: {
-        auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: testAccessToken,
-                    refreshConfig: {
-                        refreshUrl: gmail:REFRESH_URL,
-                        refreshToken: testRefreshToken,
-                        clientId: testClientId,
-                        clientSecret: testClientSecret
-                    }
-                }
-            }
+    oauthClientConfig: {
+        accessToken: <ACCESS_TOKEN>,
+        refreshConfig: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: <REFRESH_TOKEN>,
+            clientId: <CLIENT_ID>,
+            clientSecret: <CLIENT_SECRET>
         }
     }
 };
 
-gmail:Client gmailClient = new(gmailConfig);
+gmail:Client gmailClient = new (gmailConfig);
 ```
-The `sendMessage` remote function sends an email. `MessageRequest` is an object that contains all the data that is required
+The `sendMessage` remote function sends an email. `MessageRequest` object which contains all the data is required
 to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 
 (the currently authenticated user).
 
@@ -110,9 +113,9 @@ The response from `sendMessage` is either a string tuple with the message ID and
 (if the message was sent successfully) or an `error` (if sending the message was unsuccessful).
 
 ```ballerina
-if (sendMessageResponse is (string, string)) {
+if (sendMessageResponse is [string, string]) {
     // If successful, print the message ID and thread ID.
-    (string, string) (messageId, threadId) = sendMessageResponse;
+    [string, string][messageId, threadId] = sendMessageResponse;
     io:println("Sent Message ID: " + messageId);
     io:println("Sent Thread ID: " + threadId);
 } else {
@@ -124,7 +127,7 @@ if (sendMessageResponse is (string, string)) {
 The `readMessage` remote function reads messages. It returns the `Message` object when successful or an `error` when unsuccessful.
 
 ```ballerina
-var response = gmailClient->readMessage(userId, untaint messageId);
+var response = gmailClient->readMessage(userId, <@untainted>messageId);
 if (response is gmail:Message) {
     io:println("Sent Message: " + response);
 } else {
@@ -135,10 +138,10 @@ if (response is gmail:Message) {
 The `deleteMessage` remote function deletes messages. It returns an `error` when unsuccessful.
 
 ```ballerina    
-var delete = gmailClient->deleteMessage(userId, untaint messageId);
-if (delete is boolean) {
-    io:println("Message deletion success!");
-} else {
+var delete = gmailClient->deleteMessage(userId, <@untainted>messageId);
+if (delete is error) {
     io:println("Error: ", delete);
+} else {
+    io:println("Message deletion success!");
 }
 ```
