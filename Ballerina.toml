@@ -1,6 +1,6 @@
 [project]
 org-name= "wso2"
-version= "1.0.0"
+version= "0.10.0"
 authors = ["WSO2"]
 repository = "https://github.com/wso2-ballerina/module-gmail"
 keywords = ["gmail","email"]

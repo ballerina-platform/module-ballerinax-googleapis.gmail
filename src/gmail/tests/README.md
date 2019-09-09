@@ -16,16 +16,17 @@
 valid Access Token vise versa.*
 
 * Go through the following steps to obtain client id, client secret, refresh token and access token for Gmail API.
-    *   Go to Google APIs console to create a project and create an app for the project to connect with Gmail API.
+    *   Go to [Google API Console](https://console.developers.google.com) to create a project and an app for the project to connect with Gmail API.
     
-    *   Configure the OAuth consent screen under Credentials and give a product name to shown to users.
+    *   Configure the OAuth consent screen under **Credentials** and give a product name to shown to users.
     
-    *   Create OAuth client ID credentials by selecting an application type and giving a name and a redirect URI. 
+    *   Create OAuth Client ID credentials by selecting an application type and giving a name and a redirect URI.
 
-        *Give the redirect URI as (https://developers.google.com/oauthplayground), if you are using OAuth2 playground to 
-        receive the authorization code and obtain access token and refresh token.*
+    *Give the redirect URI as (https://developers.google.com/oauthplayground), if you are using [OAuth 2.0 Playground](https://developers.google.com/oauthplayground) to
+    receive the authorization code and obtain access token and refresh token.*
 
-    *   Visit OAuth 2.0 Playground and select the required Gmail API scopes. 
+    *   Visit [OAuth 2.0 Playground](https://developers.google.com/oauthplayground) and select the required Gmail API scopes.
+
     *   Give previously obtained client id and client secret and obtain the refresh token and access token.
 
     
@@ -35,19 +36,19 @@ In order to use the Gmail connector, first you need to create a Gmail endpoint b
 
 Visit `main_test.bal` file to find the way of creating Gmail endpoint.
 
-#### Running Gmail tests
+### Running Gmail tests
 In order to run the tests, the user will need to have a Gmail account and configure the `ballerina.conf` configuration
 file with the obtained tokens and other parameters.
 
-##### ballerina.conf
+#### ballerina.conf
 ```ballerina.conf
 //Give the credentials and tokens for the authorized user
 ACCESS_TOKEN="enter your access token here"
 CLIENT_ID="enter your client id here"
 CLIENT_SECRET="enter your client secret here"
 REFRESH_TOKEN="enter your refresh token here"
-TRUST_STORE_PATH = "${ballerina.home}/bre/security/ballerinaTruststore.p12"
-TRUST_STORE_PASSWORD = "ballerina"
+TRUST_STORE_PATH = "enter a truststore path if required"
+TRUST_STORE_PASSWORD = "enter a truststore password if required"
 
 //Give values for the following to run the tests
 RECIPIENT="recipient@gmail.com"
@@ -63,44 +64,21 @@ IMAGE_CONTENT_TYPE="image/jpeg"
 Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in 
 main_test.bal
 in either way following,
-```ballerina
-gmail:GmailConfiguration gmailConfig = {
-    clientConfig: {
-        auth: {
-            scheme: http:OAUTH2,
-            config: {
-                grantType: http:DIRECT_TOKEN,
-                config: {
-                    accessToken: testAccessToken
-                }
-            }
-        }
-    }
-};
-```
 
 ```ballerina
-gmail:GmailConfiguration gmailConfig = {
-    clientConfig: {
+GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
         accessToken: config:getAsString("ACCESS_TOKEN"),
         refreshConfig: {
-            refreshUrl: gmail:REFRESH_URL,
+            refreshUrl: REFRESH_URL,
             refreshToken: config:getAsString("REFRESH_TOKEN"),
             clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            clientConfig: {
-                secureSocket:{
-                    trustStore:{
-                        path: config:getAsString("TRUST_STORE_PATH"),
-                        password: config:getAsString("TRUST_STORE_PASSWORD")
-                    }
-                }
-            }
+            clientSecret: config:getAsString("CLIENT_SECRET")
         }
     }
 };
 
-gmail:Client gmailClient = new(gmailConfig);
+Client gmailClient = new(gmailConfig);
 ```
 
 Assign values for other necessary parameters to perform api operations in test.bal as follows.
@@ -117,6 +95,5 @@ string imageContentType = config:getAsString("IMAGE_CONTENT_TYPE");
 Run tests :
 
 ```
-ballerina init
-ballerina test gmail --config ballerina.conf
+ballerina test gmail --b7a.config.file=<path_to_ballerina.conf>
 ```
