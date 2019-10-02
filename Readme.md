@@ -15,7 +15,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Version  | Gmail API Version |
 |:---------------------------:|:------------------------------:|
-|  1.0.0                     |   v1                           |
+|  1.0.1                     |   v1                           |
 
 ## Feature Overview
 
@@ -44,15 +44,6 @@ The `wso2/gmail` module contains operations to get Gmail user profile details.
 The `wso2/gmail` module contains operations to lists the history of changes to the user's mailbox.
 
 ## Getting Started
-
-### Prerequisites
-Download and install [Ballerina](https://ballerinalang.org/downloads/).
-
-### Pull the Module
-You can pull the Gmail module from Ballerina Central using the command:
-```ballerina
-$ ballerina pull wso2/gmail
-```
 
 ## Sample
 First, import the `wso2/gmail` module into the Ballerina project.
@@ -129,7 +120,7 @@ The `readMessage` remote function reads messages. It returns the `Message` objec
 ```ballerina
 var response = gmailClient->readMessage(userId, <@untainted>messageId);
 if (response is gmail:Message) {
-    io:println("Sent Message: " + response);
+    io:println("Sent Message: " + response.toString());
 } else {
     io:println("Error: ", response);
 }
