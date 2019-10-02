@@ -1,14 +1,14 @@
 org_name = "wso2"
-version = "0.10.0"
+version = "0.10.1"
 lockfile_version = "1.0.0"
-ballerina_version = "1.0.0"
+ballerina_version = "1.0.1"
 
-[[imports."wso2/gmail:0.10.0"]]
+[[imports."wso2/gmail:0.10.1"]]
 org_name = "ballerinax"
 name = "java"
 version = "0.0.0"
 
-[[imports."wso2/gmail:0.10.0"]]
+[[imports."wso2/gmail:0.10.1"]]
 org_name = "ballerinax"
 name = "java.arrays"
 version = "0.0.0"

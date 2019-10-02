@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Gmail API Version |  
 |:--------------------------:|:-----------------:|
-| 1.0.0                    |        v1         |
+| 1.0.1                    |        v1         |
 
 ### Prerequisites
 
@@ -37,8 +37,7 @@ In order to use the Gmail connector, first you need to create a Gmail endpoint b
 Visit `main_test.bal` file to find the way of creating Gmail endpoint.
 
 ### Running Gmail tests
-In order to run the tests, the user will need to have a Gmail account and configure the `ballerina.conf` configuration
-file with the obtained tokens and other parameters.
+In order to run the tests, the user will need to have a Gmail account and create a configuration file named `ballerina.conf` in the project's root directory with the obtained tokens and other parameters.
 
 #### ballerina.conf
 ```ballerina.conf
@@ -95,5 +94,5 @@ string imageContentType = config:getAsString("IMAGE_CONTENT_TYPE");
 Run tests :
 
 ```
-ballerina test gmail --b7a.config.file=<path_to_ballerina.conf>
+ballerina test gmail
 ```
