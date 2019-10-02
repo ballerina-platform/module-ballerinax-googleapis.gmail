@@ -1,4 +1,6 @@
-# Ballerina Gmail Connector
+Connects to Gmail from Ballerina.
+
+## Module Overview
 
 Ballerina Gmail Connector provides the capability to send, read and delete emails through the Gmail REST API. It also provides the ability to read, trash, untrash and delete threads, ability to get the Gmail profile and mailbox history, etc. The connector handles OAuth 2.0 authentication.
 
