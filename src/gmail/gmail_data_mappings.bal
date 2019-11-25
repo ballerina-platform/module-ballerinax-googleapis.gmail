@@ -343,8 +343,8 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error 
         }
         return targetLabel;
     } else {
-        log:printError("Error occurred while converting sourceLabelJsonObject json to map of json. 
-        sourceLabelJsonObject: " + sourceLabelJsonObject.toString(), err = srcLabelJsonObjectMap);
+        log:printError("Error occurred while converting sourceLabelJsonObject json to map of json. sourceLabelJsonObject: " 
+        + sourceLabelJsonObject.toString(), err = srcLabelJsonObjectMap);
         error err = error(GMAIL_ERROR_CODE, 
         message = "Error occurred while converting sourceLabelJsonObject json to map of json.");
         return err;
