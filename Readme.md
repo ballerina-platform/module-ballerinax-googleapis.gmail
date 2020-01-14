@@ -13,9 +13,9 @@ The following sections provide you with information on how to use the Ballerina 
 
 ## Compatibility
 
-| Ballerina Language Version  | Gmail API Version |
+| Ballerina Language Versions  | Gmail API Version |
 |:---------------------------:|:------------------------------:|
-|  1.0.1                     |   v1                           |
+|  1.0.x, 1.1.x                   |   v1                           |
 
 ## Feature Overview
 
