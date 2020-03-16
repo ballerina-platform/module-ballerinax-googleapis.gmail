@@ -50,7 +50,7 @@ googleapis.gmail:Client gmailClient = new (gmailConfig);
 
 ```ballerina
 import ballerina/io;
-import wso2/gmail as gmail;
+import ballerinax/googleapis.gmail as gmail;
 
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
