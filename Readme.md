@@ -69,11 +69,11 @@ Access Token and Refresh Token).
 
 You can now enter the credentials in the Gmail client config.
 ```ballerina
-googleapis.gmail:GmailConfiguration gmailConfig = {
+gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
         accessToken: <ACCESS_TOKEN>,
         refreshConfig: {
-            refreshUrl: googleapis.gmail:REFRESH_URL,
+            refreshUrl: gmail:REFRESH_URL,
             refreshToken: <REFRESH_TOKEN>,
             clientId: <CLIENT_ID>,
             clientSecret: <CLIENT_SECRET>
@@ -81,7 +81,7 @@ googleapis.gmail:GmailConfiguration gmailConfig = {
     }
 };
 
-googleapis.gmail:Client gmailClient = new (gmailConfig);
+gmail:Client gmailClient = new (gmailConfig);
 ```
 The `sendMessage` remote function sends an email. `MessageRequest` object which contains all the data is required
 to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 
@@ -89,14 +89,14 @@ to send an email. The `userId` represents the authenticated user and can be a Gm
 
 ```ballerina
 string userId = "me";
-googleapis.gmail:MessageRequest messageRequest = {};
+gmail:MessageRequest messageRequest = {};
 messageRequest.recipient = "recipient@mail.com";
 messageRequest.sender = "sender@mail.com";
 messageRequest.cc = "cc@mail.com";
 messageRequest.subject = "Email-Subject";
 messageRequest.messageBody = "Email Message Body Text";
 //Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
-messageRequest.contentType = googleapis.gmail:TEXT_PLAIN;
+messageRequest.contentType = gmail:TEXT_PLAIN;
 //Send the message.
 var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
 ```
@@ -120,7 +120,7 @@ The `readMessage` remote function reads messages. It returns the `Message` objec
 
 ```ballerina
 var response = gmailClient->readMessage(userId, <@untainted>messageId);
-if (response is googleapis.gmail:Message) {
+if (response is gmail:Message) {
     io:println("Sent Message: " + response.toString());
 } else {
     io:println("Error: ", response);
