@@ -25,11 +25,11 @@ Access Token and Refresh Token).
 You can now enter the credentials in the Gmail client config.
 
 ```ballerina
-gmail:GmailConfiguration gmailConfig = {
+googleapis.gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
         accessToken: <ACCESS_TOKEN>,
         refreshConfig: {
-            refreshUrl: gmail:REFRESH_URL,
+            refreshUrl: googleapis.gmail:REFRESH_URL,
             refreshToken: <REFRESH_TOKEN>,
             clientId: <CLIENT_ID>,
             clientSecret: <CLIENT_SECRET>
@@ -37,7 +37,7 @@ gmail:GmailConfiguration gmailConfig = {
     }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+googleapis.gmail:Client gmailClient = new (gmailConfig);
 ```
 
 ## Compatibility
@@ -50,7 +50,7 @@ gmail:Client gmailClient = new (gmailConfig);
 
 ```ballerina
 import ballerina/io;
-import wso2/gmail;
+import wso2/gmail as gmail;
 
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {

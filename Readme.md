@@ -15,40 +15,41 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Versions  | Gmail API Version |
 |:---------------------------:|:------------------------------:|
-|  1.0.x, 1.1.x                   |   v1                           |
+|  1.0.x, 1.1.x, 1.2.x            |   v1                           |
 
 ## Feature Overview
 
 #### Working with Emails
 
-The `wso2/gmail` module contains operations to send emails in Text and HTML formats with attachments and inline images. It supports searching and reading emails in Gmail using Gmail filters. The module also supports trashing, untrashing, deleting, and modifying emails.
+The `ballerinax/googleapis.gmail` module contains operations to send emails in Text and HTML formats with attachments and inline
+ images. It supports searching and reading emails in Gmail using Gmail filters. The module also supports trashing, untrashing, deleting, and modifying emails.
 
 #### Working with Threads
 
-The `wso2/gmail` module contains operations to read, search, trash, untrash, modify and delete email threads in Gmail.
+The `ballerinax/googleapis.gmail` module contains operations to read, search, trash, untrash, modify and delete email threads in Gmail.
 
 #### Working with Drafts
 
-The `wso2/gmail` module contains operations to search, read, delete, create, update and send drafts in Gmail.
+The `ballerinax/googleapis.gmail` module contains operations to search, read, delete, create, update and send drafts in Gmail.
 
 #### Working with Labels
 
-The `wso2/gmail` module containes operations to list, read, create, update and delete labels in Gmail.
+The `ballerinax/googleapis.gmail` module containes operations to list, read, create, update and delete labels in Gmail.
 
 #### Working with User Profiles
 
-The `wso2/gmail` module contains operations to get Gmail user profile details.
+The `ballerinax/googleapis.gmail` module contains operations to get Gmail user profile details.
 
 #### Working with Mailbox History
 
-The `wso2/gmail` module contains operations to lists the history of changes to the user's mailbox.
+The `ballerinax/googleapis.gmail` module contains operations to lists the history of changes to the user's mailbox.
 
 ## Getting Started
 
 ## Sample
-First, import the `wso2/gmail` module into the Ballerina project.
+First, import the `ballerinax/googleapis.gmail` module into the Ballerina project.
 ```ballerina
-import wso2/gmail;
+import ballerinax/googleapis.gmail;
 ```
 Instantiate the connector by giving authentication details in the Gmail client config, which has built-in support for OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be minimally instantiated in the Gmail client config using the Access Token or by using the Client ID, Client Secret and Refresh Token.
 
@@ -68,11 +69,11 @@ Access Token and Refresh Token).
 
 You can now enter the credentials in the Gmail client config.
 ```ballerina
-gmail:GmailConfiguration gmailConfig = {
+googleapis.gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
         accessToken: <ACCESS_TOKEN>,
         refreshConfig: {
-            refreshUrl: gmail:REFRESH_URL,
+            refreshUrl: googleapis.gmail:REFRESH_URL,
             refreshToken: <REFRESH_TOKEN>,
             clientId: <CLIENT_ID>,
             clientSecret: <CLIENT_SECRET>
@@ -80,7 +81,7 @@ gmail:GmailConfiguration gmailConfig = {
     }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+googleapis.gmail:Client gmailClient = new (gmailConfig);
 ```
 The `sendMessage` remote function sends an email. `MessageRequest` object which contains all the data is required
 to send an email. The `userId` represents the authenticated user and can be a Gmail address or ‘me’ 
@@ -88,14 +89,14 @@ to send an email. The `userId` represents the authenticated user and can be a Gm
 
 ```ballerina
 string userId = "me";
-gmail:MessageRequest messageRequest = {};
+googleapis.gmail:MessageRequest messageRequest = {};
 messageRequest.recipient = "recipient@mail.com";
 messageRequest.sender = "sender@mail.com";
 messageRequest.cc = "cc@mail.com";
 messageRequest.subject = "Email-Subject";
 messageRequest.messageBody = "Email Message Body Text";
 //Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
-messageRequest.contentType = gmail:TEXT_PLAIN;
+messageRequest.contentType = googleapis.gmail:TEXT_PLAIN;
 //Send the message.
 var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
 ```
@@ -119,7 +120,7 @@ The `readMessage` remote function reads messages. It returns the `Message` objec
 
 ```ballerina
 var response = gmailClient->readMessage(userId, <@untainted>messageId);
-if (response is gmail:Message) {
+if (response is googleapis.gmail:Message) {
     io:println("Sent Message: " + response.toString());
 } else {
     io:println("Error: ", response);
