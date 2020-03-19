@@ -266,7 +266,7 @@ function testReadThread() {
     log:printInfo("testReadThread");
     var thread = gmailClient->readThread(testUserId, sentTextMessageThreadId, format = FORMAT_METADATA,
         metadataHeaders = ["Subject"]);
-    if (thread is Thread) {
+    if (thread is MailThread) {
         test:assertEquals(thread.id, sentTextMessageThreadId, msg = "Read thread failed");
     } else {
         test:assertFail(msg = <string>thread.detail()["message"]);
@@ -281,13 +281,13 @@ function testModifyThread() {
     //Modify labels of the thread with thread id which was sent in testSendTextMessage
     log:printInfo("testModifyThread");
     var response = gmailClient->modifyThread(testUserId, sentTextMessageThreadId, ["INBOX"], []);
-    if (response is Thread) {
+    if (response is MailThread) {
         test:assertTrue(response.id == sentTextMessageThreadId, msg = "Modify thread by adding new label failed");
     } else {
         test:assertFail(msg = <string>response.detail()["message"]);
     }
     response = gmailClient->modifyThread(testUserId, sentTextMessageThreadId, [], ["INBOX"]);
-    if (response is Thread) {
+    if (response is MailThread) {
         test:assertTrue(response.id == sentTextMessageThreadId,
             msg = "Modify thread by removing existing label failed");
     } else {
