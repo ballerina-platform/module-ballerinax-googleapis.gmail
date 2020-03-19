@@ -1,0 +1,24 @@
+name: Deployment
+
+on: [release]
+
+jobs:
+    build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Ballerina Build
+              uses: ballerina-platform/ballerina-action/@master
+              with:
+                  args:
+                      build -a -c --skip-tests
+            - name: Ballerina Push
+              uses: ballerina-platform/ballerina-action/@master
+              with:
+                  args:
+                      push -a
+              env:
+                  JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
+                  BALLERINA_CENTRAL_ACCESS_TOKEN: ${{ secrets.BALLERINA_CENTRAL_ACCESS_TOKEN }}
