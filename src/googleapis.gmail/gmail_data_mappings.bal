@@ -131,11 +131,11 @@ function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) return
     return targetMessageAttachment;
 }
 
-# Transforms mail thread JSON object into Thread.
+# Transforms mail thread JSON object into MailThread type.
 # + sourceThreadJsonObject - `json` message thread object.
-# + return - Returns Thread type.
-function convertJSONToThreadType(json sourceThreadJsonObject) returns @tainted Thread {
-    Thread targetThreadType = {};
+# + return - Returns MailThread type.
+function convertJSONToThreadType(json sourceThreadJsonObject) returns @tainted MailThread {
+    MailThread targetThreadType = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetThreadType.id = sourceThreadJsonObject.id != () ? sourceThreadJsonObject.id.toString() : EMPTY_STRING;
     targetThreadType.historyId = sourceThreadJsonObject.historyId != () ?

@@ -17,11 +17,11 @@
 import ballerina/encoding;
 import ballerina/http;
 import ballerina/io;
+import ballerina/java;
+import ballerina/java.arrays as jarrays;
 import ballerina/lang.'string as strings;
 import ballerina/log;
 import ballerina/mime;
-import ballerinax/java;
-import ballerinax/java.arrays as jarrays;
 
 # Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
 #
