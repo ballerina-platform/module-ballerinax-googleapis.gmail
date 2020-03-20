@@ -1,8 +1,8 @@
 [project]
-org-name= "wso2"
-version= "0.11.0"
-authors = ["WSO2"]
-repository = "https://github.com/wso2-ballerina/module-gmail"
+org-name= "ballerinax"
+version= "0.12.0"
+authors = ["Ballerina"]
+repository = "https://github.com/ballerina-platform/module-gmail"
 keywords = ["gmail","email"]
 license = ["Apache-2.0"]
 

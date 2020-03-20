@@ -293,9 +293,9 @@ public type Client client object {
     #                               base64url encoded string. (the payload field is not included in the response)
     # + metadataHeaders - Optional. The meta data headers array to include in the reponse when the format is given
     #                           as `FORMAT_METADATA`.
-    # + return - If successful, returns Thread type of the specified mail thread. Else returns error.
+    # + return - If successful, returns MailThread type of the specified mail thread. Else returns error.
     public remote function readThread(string userId, string threadId, string? format = (),
-    string[]? metadataHeaders = ()) returns @tainted Thread | error {
+    string[]? metadataHeaders = ()) returns @tainted MailThread | error {
         string uriParams = "";
         if (format is string) {
             uriParams = check appendEncodedURIParameter(uriParams, FORMAT, format);
@@ -310,7 +310,7 @@ public type Client client object {
         var httpResponse = self.gmailClient->get(readThreadPath);
         //Get json thread response. If unsuccessful, throws and returns error.
         json jsonReadThreadResponse = check handleResponse(httpResponse);
-        //Transform the json thread response from Gmail API to Thread type. If unsuccessful, throws and returns error.
+        //Transform the json thread response from Gmail API to MailThread type. If unsuccessful, throws and returns error.
         return convertJSONToThreadType(jsonReadThreadResponse);
     }
 
@@ -364,9 +364,9 @@ public type Client client object {
     # + threadId - The id of the thread to modify
     # + addLabelIds - A list of IDs of labels to add to this thread
     # + removeLabelIds - A list IDs of labels to remove from this thread
-    # + return - If successful, returns modified Thread type object. Else returns error.
+    # + return - If successful, returns modified MailThread type object. Else returns error.
     public remote function modifyThread(string userId, string threadId, string[] addLabelIds, string[] removeLabelIds)
-    returns @tainted Thread | error {
+    returns @tainted MailThread | error {
         string modifyThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
             + MODIFY_RESOURCE;
         if (addLabelIds.length() == 0 && removeLabelIds.length() == 0) {
@@ -382,7 +382,7 @@ public type Client client object {
         http:Request request = new;
         request.setJsonPayload(jsonPayload);
         var httpResponse = self.gmailClient->post(modifyThreadPath, request);
-        //Transform the json thread response from Gmail API to Thread type. If unsuccessful throws and returns error.
+        //Transform the json thread response from Gmail API to MailThread type. If unsuccessful throws and returns error.
         return convertJSONToThreadType(check handleResponse(httpResponse));
     }
 

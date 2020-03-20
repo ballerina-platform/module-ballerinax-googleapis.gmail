@@ -33,7 +33,7 @@ public type UserProfile record {
 # + snippet - A short part of the message text
 # + historyId - The ID of the last history record that modified this thread
 # + messages - The list of messages in the thread
-public type Thread record {
+public type MailThread record {
     string id = "";
     string snippet = "";
     string historyId = "";
