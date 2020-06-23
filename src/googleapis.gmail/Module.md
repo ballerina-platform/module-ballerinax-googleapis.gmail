@@ -43,8 +43,8 @@ gmail:Client gmailClient = new (gmailConfig);
 ## Compatibility
 
 | Ballerina Language Versions  | Gmail API Version |
-|:---------------------------:|:------------------------------:|
-|  1.0.x, 1.1.x                      |   v1                           |
+|:----------------------------:|:-----------------:|
+|  Swan Lake Preview1          |   v1              |
 
 ## Sample
 

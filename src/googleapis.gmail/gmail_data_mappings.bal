@@ -240,7 +240,7 @@ function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<string> {
 # + return - Label type object
 function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error {
     Label targetLabel = {};
-    map<json>|error srcLabelJsonObjectMap = map<json>.constructFrom(sourceLabelJsonObject);
+    map<json>|error srcLabelJsonObjectMap = <map<json>|error> sourceLabelJsonObject.cloneWithType(json);
     if (srcLabelJsonObjectMap is map<json>) {
         // id
         if (elementExists(srcLabelJsonObjectMap, "id")) {
@@ -274,7 +274,7 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error 
         }
         // messgTotal
         if (elementExists(srcLabelJsonObjectMap, "messagesTotal")) {
-            int|error messagesTotal = int.constructFrom(srcLabelJsonObjectMap["messagesTotal"]);
+            int|error messagesTotal = srcLabelJsonObjectMap["messagesTotal"].cloneWithType(int);
             if (messagesTotal is int) {
                 targetLabel.messagesTotal = messagesTotal;
             } else {
@@ -287,7 +287,7 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error 
         }
         // messagesUnread
         if (elementExists(srcLabelJsonObjectMap, "messagesUnread")) {
-            int|error messagesUnread = int.constructFrom(srcLabelJsonObjectMap["messagesUnread"]);
+            int|error messagesUnread = srcLabelJsonObjectMap["messagesUnread"].cloneWithType(int);
             if (messagesUnread is int) {
                 targetLabel.messagesUnread = messagesUnread;
             } else {
@@ -300,7 +300,7 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error 
         }
         // threadsUnread
         if (elementExists(srcLabelJsonObjectMap, "threadsUnread")) {
-            int|error threadsUnread = int.constructFrom(srcLabelJsonObjectMap["threadsUnread"]);
+            int|error threadsUnread = srcLabelJsonObjectMap["threadsUnread"].cloneWithType(int);
             if (threadsUnread is int) {
                 targetLabel.threadsUnread = threadsUnread;
             } else {
@@ -313,7 +313,7 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error 
         }
         // threadsTotal
         if (elementExists(srcLabelJsonObjectMap, "threadsTotal")) {
-            int|error threadsTotal = int.constructFrom(srcLabelJsonObjectMap["threadsTotal"]);
+            int|error threadsTotal = srcLabelJsonObjectMap["threadsTotal"].cloneWithType(int);
             if (threadsTotal is int) {
                 targetLabel.threadsTotal = threadsTotal;
             } else {
@@ -328,7 +328,7 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error 
         if (elementExists(srcLabelJsonObjectMap, "color")) {
             json|error color = srcLabelJsonObjectMap["color"];
             if (color is json) {
-                map<json>|error colorMap = map<json>.constructFrom(color);
+                map<json>|error colorMap = <map<json>|error> color.cloneWithType(json);
                 if (colorMap is map<json>) {
                     // textColor
                     if (elementExists(colorMap, "textColor")) {
@@ -423,7 +423,7 @@ function convertJSONToMsgTypeList(json[] messages, @tainted Message[] targetList
 # + return - Returns History Type object
 function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted History {
     History targetHistory = {};
-    map<json>|error srcJsonHisMap = map<json>.constructFrom(sourceJsonHistory);
+    map<json>|error srcJsonHisMap = <map<json>|error> sourceJsonHistory.cloneWithType(json);
     if (srcJsonHisMap is map<json>) {
         // id
         if (elementExists(srcJsonHisMap, "id")) {
