@@ -264,7 +264,7 @@ function handleResponse(http:Response | error httpResponse) returns @tainted jso
                     string location = "";
                     string locationType = "";
                     string domain = "";
-                    map<json> | error errMap = <map<json> | error> err.cloneWithType(json);
+                    map<json> | error errMap = err.cloneWithType(mapJson);
                     if (errMap is map<json>) {
                         if (errMap.hasKey("reason")) {
                             reason = err.reason.toString();

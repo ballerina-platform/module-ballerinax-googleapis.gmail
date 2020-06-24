@@ -17,6 +17,8 @@
 import ballerina/log;
 import ballerina/'lang\.int as ints;
 
+type mapJson map<json>;
+
 //Includes all the transforming functions which transform required json to type object/record and vice versa
 
 # Transforms JSON message object into Message Type Object.
@@ -240,7 +242,7 @@ function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<string> {
 # + return - Label type object
 function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error {
     Label targetLabel = {};
-    map<json>|error srcLabelJsonObjectMap = <map<json>|error> sourceLabelJsonObject.cloneWithType(json);
+    map<json>|error srcLabelJsonObjectMap = sourceLabelJsonObject.cloneWithType(mapJson);
     if (srcLabelJsonObjectMap is map<json>) {
         // id
         if (elementExists(srcLabelJsonObjectMap, "id")) {
@@ -328,7 +330,7 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error 
         if (elementExists(srcLabelJsonObjectMap, "color")) {
             json|error color = srcLabelJsonObjectMap["color"];
             if (color is json) {
-                map<json>|error colorMap = <map<json>|error> color.cloneWithType(json);
+                map<json>|error colorMap = color.cloneWithType(mapJson);
                 if (colorMap is map<json>) {
                     // textColor
                     if (elementExists(colorMap, "textColor")) {
@@ -423,7 +425,7 @@ function convertJSONToMsgTypeList(json[] messages, @tainted Message[] targetList
 # + return - Returns History Type object
 function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted History {
     History targetHistory = {};
-    map<json>|error srcJsonHisMap = <map<json>|error> sourceJsonHistory.cloneWithType(json);
+    map<json>|error srcJsonHisMap = sourceJsonHistory.cloneWithType(mapJson);
     if (srcJsonHisMap is map<json>) {
         // id
         if (elementExists(srcJsonHisMap, "id")) {
