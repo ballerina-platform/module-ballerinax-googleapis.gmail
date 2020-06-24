@@ -24,7 +24,7 @@ import ballerina/oauth2;
 public type Client client object {
     http:Client gmailClient;
 
-    public function __init(GmailConfiguration gmailConfig) {
+    public function init(GmailConfiguration gmailConfig) {
         // Create OAuth2 provider.
         oauth2:OutboundOAuth2Provider oauth2Provider = new (gmailConfig.oauthClientConfig);
         // Create bearer auth handler using created provider.
