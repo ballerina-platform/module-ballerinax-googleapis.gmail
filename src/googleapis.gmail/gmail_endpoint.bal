@@ -21,7 +21,7 @@ import ballerina/oauth2;
 # Gmail Client object.
 #
 # + gmailClient - The HTTP Client
-public type Client client object {
+public client class   Client{
     http:Client gmailClient;
 
     public function init(GmailConfiguration gmailConfig) {

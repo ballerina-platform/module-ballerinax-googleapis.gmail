@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/log;
-import ballerina/'lang\.int as ints;
+import ballerina/lang.'int;
 
 type mapJson map<json>;
 
@@ -91,7 +91,7 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
 # Transforms MIME Message Part JSON into MessageBody.
 # + sourceMessagePartJsonObject - `json` message part object
 # + return - Returns MessageBodyPart type
-function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart {
+isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageBodyType = {};
     if (sourceMessagePartJsonObject != ()){
         //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
@@ -121,7 +121,7 @@ function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns Mess
 # Transforms single body of MIME Message part into MessageBodyPart Attachment.
 # + sourceMessageBodyJsonObject - `json` message body object
 # + return - Returns MessageBodyPart type object
-function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
+isolated function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageAttachment = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMessageAttachment.fileId = sourceMessageBodyJsonObject.attachmentId != () ?
@@ -162,7 +162,7 @@ function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns @tai
 # Transforms user profile JSON object into UserProfile.
 # + sourceUserProfileJsonObject - `json` user profile object
 # + return - UserProfile type
-function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
+isolated function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
     UserProfile targetUserProfile = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress != () ?
@@ -179,7 +179,7 @@ function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns 
 # Transforms message list JSON object into MessageListPage.
 # + sourceMsgListJsonObject - `json` Messsage List object
 # + return - MessageListPage type
-function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
+isolated function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
     MessageListPage targetMsgListPage = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetMsgListPage.resultSizeEstimate = sourceMsgListJsonObject.resultSizeEstimate != () ?
@@ -204,7 +204,7 @@ function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns 
 # Transforms thread list JSON object into ThreadListPage.
 # + sourceThreadListJsonObject - `json` Thead List object
 # + return - ThreadListPage type
-function convertJSONToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
+isolated function convertJSONToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
     ThreadListPage targetThreadListPage = {};
     //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
     targetThreadListPage.resultSizeEstimate = sourceThreadListJsonObject.resultSizeEstimate != () ?
@@ -228,7 +228,7 @@ function convertJSONToThreadListPageType(json sourceThreadListJsonObject) return
 # Converts the message part header JSON array to headers.
 # + jsonMsgPartHeaders - `json` array of message part headers
 # + return - Map of headers
-function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<string> {
+isolated function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<string> {
     map<string> headers = {};
     json[] jsonHeaders = <json[]>jsonMsgPartHeaders;
     foreach json jsonHeader in jsonHeaders {
@@ -240,7 +240,7 @@ function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<string> {
 # Converts the JSON label resource to Label type.
 # + sourceLabelJsonObject - `json` label
 # + return - Label type object
-function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error {
+isolated function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error {
     Label targetLabel = {};
     map<json>|error srcLabelJsonObjectMap = sourceLabelJsonObject.cloneWithType(mapJson);
     if (srcLabelJsonObjectMap is map<json>) {
@@ -353,10 +353,10 @@ function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error 
     }
 }
 
-function convertToInt(json jsonVal) returns int {
+isolated function convertToInt(json jsonVal) returns int {
     string stringVal = jsonVal.toString();
     if (stringVal != "") {
-        int | error intVal = ints:fromString(stringVal);
+        int | error intVal = 'int:fromString(stringVal);
         if (intVal is int) {
             return intVal;
         } else {
@@ -371,7 +371,7 @@ function convertToInt(json jsonVal) returns int {
 # Convert JSON label list response to an array of Label type objects.
 # + sourceJsonLabelList - Source `json` object
 # + return - Returns an array of Label type objects
-function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[]|error {
+isolated function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[]|error {
     Label[] targetLabelList = [];
     //Convert json object to json array object
     json[] jsonLabelList = <json[]>sourceJsonLabelList.labels;
@@ -491,7 +491,7 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
 # Transforms drafts list JSON object into DraftListPage.
 # + sourceDraftListJsonObject - `json` Draft List object
 # + return - DraftListPage type
-function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
+isolated function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
     DraftListPage targetDraftListPage = {};
     targetDraftListPage.resultSizeEstimate = sourceDraftListJsonObject.resultSizeEstimate != () ?
                                                  sourceDraftListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;

@@ -131,7 +131,7 @@ function getDispostionFromPayload(json messagePayload) returns string {
 #
 # + sourceJsonObject - `json` array
 # + return - String array
-function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[] {
+isolated function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[] {
     string[] targetStringArray = [];
     int i = 0;
     foreach json element in sourceJsonObject {
@@ -145,7 +145,7 @@ function convertJSONArrayToStringArray(json[] sourceJsonObject) returns string[]
 #
 # + sourceStringObject - String array
 # + return - `json` array
-function convertStringArrayToJSONArray(string[] sourceStringObject) returns json[] {
+isolated function convertStringArrayToJSONArray(string[] sourceStringObject) returns json[] {
     json[] targetJSONArray = [];
     int i = 0;
     foreach json element in sourceStringObject {
@@ -240,7 +240,7 @@ function getFileNameFromPath(string filePath) returns string | error {
 #
 # + httpResponse - Http response or error
 # + return - If successful returns `json` response. Else returns error.
-function handleResponse(http:Response | error httpResponse) returns @tainted json | error {
+isolated function handleResponse(http:Response | error httpResponse) returns @tainted json | error {
     if (httpResponse is http:Response) {
         if (httpResponse.statusCode == http:STATUS_NO_CONTENT) {
             //If status 204, then no response body. So returns json boolean true.
@@ -308,7 +308,7 @@ function handleResponse(http:Response | error httpResponse) returns @tainted jso
 # + key - Key of the form value parameter
 # + value - Value of the form value parameter
 # + return - If successful, returns created request path as an encoded string. Else returns error.
-function appendEncodedURIParameter(string requestPath, string key, string value) returns string | error {
+isolated function appendEncodedURIParameter(string requestPath, string key, string value) returns string | error {
     var encodedVar = encoding:encodeUriComponent(value, "UTF-8");
     string encodedString = "";
     string path = "";
@@ -331,7 +331,7 @@ function appendEncodedURIParameter(string requestPath, string key, string value)
 # + targetMap - Target map
 # + key - Key to get value of
 # + return - Returns the string value if key is present, if not returns an empty string
-function getValueForMapKey(map<string> targetMap, string key) returns string {
+isolated function getValueForMapKey(map<string> targetMap, string key) returns string {
     //If the key is not present, returns an empty string
     return targetMap.hasKey(key) ? <string>targetMap[key] : EMPTY_STRING;
 }
@@ -502,7 +502,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
     }
 }
 
-function equalsIgnoreCase(string str1, string str2) returns boolean {
+isolated function equalsIgnoreCase(string str1, string str2) returns boolean {
     if (str1.toUpperAscii() == str2.toUpperAscii()) {
         return true;
     } else {
@@ -510,7 +510,7 @@ function equalsIgnoreCase(string str1, string str2) returns boolean {
     }
 }
 
-function elementExists(map<json> Map, string element) returns boolean {
+isolated function elementExists(map<json> Map, string element) returns boolean {
     if (Map.hasKey(element)) {
         return true;
     } else {
