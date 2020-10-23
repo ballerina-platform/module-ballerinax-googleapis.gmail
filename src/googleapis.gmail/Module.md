@@ -44,7 +44,7 @@ gmail:Client gmailClient = new (gmailConfig);
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Preview1          |   v1              |
+|  Swan Lake Preview4          |   v1              |
 
 ## Sample
 

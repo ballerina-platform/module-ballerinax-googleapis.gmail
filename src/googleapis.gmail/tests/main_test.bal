@@ -18,6 +18,8 @@ import ballerina/config;
 import ballerina/log;
 import ballerina/test;
 
+
+
 //Create an endpoint to use Gmail Connector
 GmailConfiguration gmailConfig = {
     oauthClientConfig: {
@@ -80,6 +82,7 @@ function testSendTextMessage() {
     log:printInfo("testSendTextMessage");
     //----Send the mail----
     var sendMessageResponse = gmailClient->sendMessage(testUserId, messageRequest);
+    
     if (sendMessageResponse is [string, string]) {
         [string, string][messageId, threadId] = sendMessageResponse;
         sentTextMessageId = <@untainted>messageId;
@@ -324,6 +327,7 @@ function testUnTrashThread() {
 }
 
 @test:Config {
+    enable: true,
     dependsOn: ["testUnTrashThread"],
     groups: ["textMessageTestGroup"]
 }
@@ -529,14 +533,14 @@ function testSendDraft() {
 }
 function testDeleteDraft() {
     log:printInfo("testDeleteDraft");
-    //Create a draft first
+    //Create a new draft first
     MessageRequest messageRequest = {};
     messageRequest.recipient = testRecipient;
     messageRequest.sender = testSender;
     messageRequest.subject = "Draft To Delete";
     messageRequest.messageBody = "Draft Text Message Body To Delete";
     messageRequest.contentType = TEXT_PLAIN;
-    var draftResponse = gmailClient->createDraft(testUserId, messageRequest, threadId = sentTextMessageThreadId);
+    var draftResponse = gmailClient->createDraft(testUserId, messageRequest);
     string draftIdToDelete = "";
     if (draftResponse is string) {
         test:assertTrue(draftResponse != "null", msg = "Create Draft failed");
