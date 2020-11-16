@@ -540,7 +540,7 @@ function testDeleteDraft() {
     messageRequest.subject = "Draft To Delete";
     messageRequest.messageBody = "Draft Text Message Body To Delete";
     messageRequest.contentType = TEXT_PLAIN;
-    var draftResponse = gmailClient->createDraft(testUserId, messageRequest,threadId = sentTextMessageThreadId);
+    var draftResponse = gmailClient->createDraft(testUserId, messageRequest, threadId = sentTextMessageThreadId);
     string draftIdToDelete = "";
     if (draftResponse is string) {
         test:assertTrue(draftResponse != "null", msg = "Create Draft failed");
