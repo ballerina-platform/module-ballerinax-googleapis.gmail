@@ -18,8 +18,6 @@ import ballerina/config;
 import ballerina/log;
 import ballerina/test;
 
-
-
 //Create an endpoint to use Gmail Connector
 GmailConfiguration gmailConfig = {
     oauthClientConfig: {
