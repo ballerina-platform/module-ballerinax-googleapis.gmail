@@ -13,7 +13,7 @@ jobs:
               uses: ballerina-platform/ballerina-action/@swan-lake-connector-release
               with:
                   args:
-                      build --skip-tests
+                      build 
               env:
                   JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
                   ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
