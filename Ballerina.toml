@@ -7,11 +7,6 @@ repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis
 keywords = ["gmail","email"]
 license = ["Apache-2.0"]
 
-
 [build-options]
 observabilityIncluded = true
 
-[[dependency]]
-org = "ballerina"
-name = "config"
-version = "1.0.3"
