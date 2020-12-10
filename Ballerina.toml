@@ -1,9 +1,12 @@
-[project]
-org-name= "ballerinax"
-version= "0.99.1"
+[package]
+org = "ballerinax"
+name = "googleapis_gmail"
+version = "0.99.2"
 authors = ["Ballerina"]
-repository = "https://github.com/ballerina-platform/module-gmail"
+repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
 keywords = ["gmail","email"]
 license = ["Apache-2.0"]
 
-[dependencies]
+[build-options]
+observabilityIncluded = true
+

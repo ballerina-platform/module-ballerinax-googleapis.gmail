@@ -726,7 +726,7 @@ public client class Client {
         //Return tuple of sent draft message id and thread id
         return [jsonSendDraftResponse.id.toString(), jsonSendDraftResponse.threadId.toString()];
     }
-};
+}
 
 # Object for Spreadsheet configuration.
 #

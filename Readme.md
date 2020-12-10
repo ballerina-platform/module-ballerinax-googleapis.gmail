@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ballerina-platform/module-gmail.svg?branch=master)](https://travis-ci.org/ballerina-platform/module-gmail)
+[![Build Status](https://travis-ci.org/ballerina-platform/module-ballerinax-googleapis.gmail.svg?branch=master)](https://travis-ci.org/ballerina-platform/module-ballerinax-googleapis.gmail)
 
 # Ballerina Gmail Connector
 
@@ -17,7 +17,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Preview5          |   v1              |
+|  Swan Lake Preview7          |   v1              |
 
 ## Feature Overview
 
