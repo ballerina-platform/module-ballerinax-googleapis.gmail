@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ballerina-platform/module-gmail.svg?branch=master)](https://travis-ci.org/ballerina-platform/module-gmail)
+[![Build Status](https://travis-ci.org/ballerina-platform/mmodule-ballerinax-googleapis.gmail.svg?branch=master)](https://travis-ci.org/ballerina-platform/module-ballerinax-googleapis.gmail)
 
 # Ballerina Gmail Connector
 
