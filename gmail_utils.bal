@@ -118,7 +118,7 @@ function getDispostionFromPayload(json messagePayload) returns string {
             if (dispositionStr is string) {
                 disposition = dispositionStr;
             } else {
-                log:printInfo("disposition is ()");
+                log:print("disposition is ()");
             }
         }
     } else {
