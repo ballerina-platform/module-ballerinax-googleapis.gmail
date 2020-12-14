@@ -10,12 +10,12 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@slp8_SS
+              uses: ballerina-platform/ballerina-action/@slp8ss
               with:
                   args:
                       build -c --skip-tests
             - name: Ballerina Push
-              uses: ballerina-platform/ballerina-action/@slp8_SS
+              uses: ballerina-platform/ballerina-action/@slp8ss
                   args:
                       push 
               env:
