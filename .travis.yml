@@ -13,8 +13,8 @@
 # limitations under the License.
 
 script:
-  - wget http://dist-dev.ballerina.io/downloads/swan-lake-preview7/ballerina-linux-installer-x64-swan-lake-preview7.deb
-  - sudo dpkg -i ballerina-linux-installer-x64-swan-lake-preview7.deb
+  - wget http://dist-dev.ballerina.io/downloads/swan-lake-preview8/ballerina-linux-installer-x64-swan-lake-preview8.deb
+  - sudo dpkg -i ballerina-linux-installer-x64-swan-lake-preview8.deb
   - sudo apt-get install -f
   - ballerina --version
   - ballerina build -c --skip-tests
