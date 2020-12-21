@@ -10,12 +10,13 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@slp8ss
+              uses: ballerina-platform/ballerina-action/@swan-lake-connector-release
               with:
                   args:
                       build -c --skip-tests
             - name: Ballerina Push
-              uses: ballerina-platform/ballerina-action/@slp8ss
+              uses: ballerina-platform/ballerina-action/@swan-lake-connector-release
+              with:
                   args:
                       push 
               env:
