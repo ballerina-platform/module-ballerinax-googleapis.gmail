@@ -17,7 +17,7 @@ The following sections provide you with information on how to use the Ballerina 
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Preview7          |   v1              |
+|  Swan Lake Preview8          |   v1              |
 
 ## Feature Overview
 
