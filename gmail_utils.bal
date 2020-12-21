@@ -240,7 +240,7 @@ function getFileNameFromPath(string filePath) returns string | error {
 #
 # + httpResponse - Http response or error
 # + return - If successful returns `json` response. Else returns error.
-isolated function handleResponse(http:Response |http:Payload |error httpResponse) returns @tainted json | error {
+isolated function handleResponse(http:Response |http:PayloadType |error httpResponse) returns @tainted json | error {
     if (httpResponse is http:Response) {
         if (httpResponse.statusCode == http:STATUS_NO_CONTENT) {
             //If status 204, then no response body. So returns json boolean true.
