@@ -23,38 +23,38 @@ The following sections provide you with information on how to use the Ballerina 
 
 #### Working with Emails
 
-The `ballerinax/googleapis.gmail` module contains operations to send emails in Text and HTML formats with 
+The `ballerinax/googleapis_gmail` module contains operations to send emails in Text and HTML formats with 
 attachments and inline images. It supports searching and reading emails in Gmail using Gmail filters. The module 
 also supports trashing, untrashing, deleting, and modifying emails.
 
 #### Working with Threads
 
-The `ballerinax/googleapis.gmail` module contains operations to read, search, trash, untrash, modify and delete 
+The `ballerinax/googleapis_gmail` module contains operations to read, search, trash, untrash, modify and delete 
 email threads in Gmail.
 
 #### Working with Drafts
 
-The `ballerinax/googleapis.gmail` module contains operations to search, read, delete, create, update and send 
+The `ballerinax/googleapis_gmail` module contains operations to search, read, delete, create, update and send 
 drafts in Gmail.
 
 #### Working with Labels
 
-The `ballerinax/googleapis.gmail` module contains operations to list, read, create, update and delete labels in Gmail.
+The `ballerinax/googleapis_gmail` module contains operations to list, read, create, update and delete labels in Gmail.
 
 #### Working with User Profiles
 
-The `ballerinax/googleapis.gmail` module contains operations to get Gmail user profile details.
+The `ballerinax/googleapis_gmail` module contains operations to get Gmail user profile details.
 
 #### Working with Mailbox History
 
-The `ballerinax/googleapis.gmail` module contains operations to lists the history of changes to the user's mailbox.
+The `ballerinax/googleapis_gmail` module contains operations to lists the history of changes to the user's mailbox.
 
 ## Getting Started
 
 ## Sample
-First, import the `ballerinax/googleapis.gmail` module into the Ballerina project.
+First, import the `ballerinax/googleapis_gmail` module into the Ballerina project.
 ```ballerina
-import ballerinax/googleapis.gmail;
+import ballerinax/googleapis_gmail;
 ```
 Instantiate the connector by giving authentication details in the Gmail client config, which has built-in support 
 for OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be minimally 
