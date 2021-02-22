@@ -52,18 +52,18 @@ public client class Client {
             //The default value for include spam trash query parameter of the api call is false
             //If append unsuccessful throws and returns error
             uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
-                io:sprintf("%s", filter.includeSpamTrash));
+                    io:sprintf("%s", filter.includeSpamTrash));
             //---Append other optional URI query parameters---
             foreach string labelId in filter.labelIds {
                 uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
             }
             //Empty check is done since these parameters are optional to be filled in MsgSearchFilter Type object
             uriParams = filter.maxResults != EMPTY_STRING ?
-                check appendEncodedURIParameter(uriParams, MAX_RESULTS, filter.maxResults) : uriParams;
+                    check appendEncodedURIParameter(uriParams, MAX_RESULTS, filter.maxResults) : uriParams;
             uriParams = filter.pageToken != EMPTY_STRING ?
-                check appendEncodedURIParameter(uriParams, PAGE_TOKEN, filter.pageToken) : uriParams;
+                    check appendEncodedURIParameter(uriParams, PAGE_TOKEN, filter.pageToken) : uriParams;
             uriParams = filter.q != EMPTY_STRING ?
-                check appendEncodedURIParameter(uriParams, QUERY, filter.q) : uriParams;
+                    check appendEncodedURIParameter(uriParams, QUERY, filter.q) : uriParams;
             getListMessagesPath = getListMessagesPath + <@untainted>uriParams;
         }
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getListMessagesPath);
@@ -155,7 +155,7 @@ public client class Client {
     remote function getAttachment(string userId, string messageId, string attachmentId)
     returns @tainted MessageBodyPart | error {
         string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
-            + ATTACHMENT_RESOURCE + attachmentId;
+                + ATTACHMENT_RESOURCE + attachmentId;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getAttachmentPath);
         //Get json attachment response. If unsuccessful, throws and returns error.
         json jsonAttachment = check handleResponse(httpResponse);
@@ -171,7 +171,7 @@ public client class Client {
     remote function trashMessage(string userId, string messageId) returns @tainted boolean | error {
         http:Request request = new;
         string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
-            + FORWARD_SLASH_SYMBOL + TRASH;
+                + FORWARD_SLASH_SYMBOL + TRASH;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(trashMessagePath, request);
         //Get json trash response. If unsuccessful, throws and returns error.
         json jsonTrashMessageResponse = check handleResponse(httpResponse);
@@ -188,7 +188,7 @@ public client class Client {
     remote function untrashMessage(string userId, string messageId) returns @tainted boolean | error {
         http:Request request = new;
         string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
-            + FORWARD_SLASH_SYMBOL + UNTRASH;
+                + FORWARD_SLASH_SYMBOL + UNTRASH;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(untrashMessagePath, request);
         //Get json untrash response. If unsuccessful, throws and returns error.
         json jsonUntrashMessageReponse = check handleResponse(httpResponse);
@@ -322,7 +322,7 @@ public client class Client {
     remote function trashThread(string userId, string threadId) returns @tainted boolean | error {
         http:Request request = new;
         string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
-            + FORWARD_SLASH_SYMBOL + TRASH;
+                + FORWARD_SLASH_SYMBOL + TRASH;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(trashThreadPath, request);
         //Get json trash response. If unsuccessful, throws and returns error.
         json jsonTrashThreadResponse = check handleResponse(httpResponse);
@@ -370,11 +370,11 @@ public client class Client {
     remote function modifyThread(string userId, string threadId, string[] addLabelIds, string[] removeLabelIds)
     returns @tainted MailThread | error {
         string modifyThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
-            + MODIFY_RESOURCE;
+                + MODIFY_RESOURCE;
         if (addLabelIds.length() == 0 && removeLabelIds.length() == 0) {
             error gmailError = error(GMAIL_ERROR_CODE,
-            message = "Both addLabelIds and removeLabelIds arrays cannot be empty when modifying"
-            + " threadId: " + threadId);
+                    message = "Both addLabelIds and removeLabelIds arrays cannot be empty when modifying"
+                    + " threadId: " + threadId);
             return gmailError;
         }
         json jsonPayload = {
@@ -597,14 +597,14 @@ public client class Client {
             string uriParams = "";
             //The default value for include spam trash query parameter of the api call is false
             uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
-                io:sprintf("%s", filter.includeSpamTrash));
+                    io:sprintf("%s", filter.includeSpamTrash));
             uriParams = filter.maxResults != EMPTY_STRING ?
-                check appendEncodedURIParameter(uriParams, MAX_RESULTS, filter.maxResults) : uriParams;
+                    check appendEncodedURIParameter(uriParams, MAX_RESULTS, filter.maxResults) : uriParams;
             uriParams = filter.pageToken != EMPTY_STRING ?
-                check appendEncodedURIParameter(uriParams, PAGE_TOKEN, filter.pageToken) : uriParams;
+                    check appendEncodedURIParameter(uriParams, PAGE_TOKEN, filter.pageToken) : uriParams;
             uriParams = filter.q != EMPTY_STRING ?
-                check appendEncodedURIParameter(uriParams, QUERY, filter.q) : uriParams;
-            getListDraftsPath += <@untainted>uriParams;
+                    check appendEncodedURIParameter(uriParams, QUERY, filter.q) : uriParams;
+                    getListDraftsPath += <@untainted>uriParams;
         }
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getListDraftsPath);
         json jsonListDraftResponse = check handleResponse(httpResponse);
@@ -725,9 +725,9 @@ public client class Client {
     remote function sendDraft(string userId, string draftId) returns @tainted [string, string] | error {
         http:Request request = new;
         json jsonPayload = {id: draftId};
-        string updateDraftPath = USER_RESOURCE + userId + DRAFT_SEND_RESOURCE;
+        string updateDraftPath = USER_RESOURCE + userId + DRAFT_SEND_RESOURCE;        
         request.setJsonPayload(jsonPayload);
-        http:Response httpResponse = <http:Response> check self.gmailClient->put(updateDraftPath, request);
+        http:Response httpResponse = <http:Response> check self.gmailClient->post(updateDraftPath, request);        
         json jsonSendDraftResponse = check handleResponse(httpResponse);
         //Return tuple of sent draft message id and thread id
         string identity = let var id = jsonSendDraftResponse.id in id is string ? id : EMPTY_STRING;

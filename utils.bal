@@ -54,7 +54,7 @@ MessageBodyPart[] inlineMessageImages) returns @tainted [MessageBodyPart[], Mess
                 foreach json part in messagePartsArr {
                     //Recursively check each ith child mime part
                     [MessageBodyPart[], MessageBodyPart[]] parts = getFilePartsFromPayload(part, attachmentParts,
-                        inlineImgParts);
+                            inlineImgParts);
                     [attachmentParts, inlineImgParts] = parts;
                 }
             }
@@ -211,11 +211,11 @@ function encodeFile(string filePath) returns string | error {
         }
     } else if (fileChannel is io:GenericError) {
         error err = error(GMAIL_ERROR_CODE, message = "Generic error occurred while reading file from path: "
-        + filePath);
+                + filePath);
         return err;
     } else {
         error err = error(GMAIL_ERROR_CODE,
-        message = "Connection TimedOut error occurred while reading file from path: " + filePath);
+                message = "Connection TimedOut error occurred while reading file from path: " + filePath);
         return err;
     }
     return <@untainted>strings:fromBytes(readEncodedContent);
@@ -304,8 +304,8 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
 
         }
     } else {
-        error err = error(GMAIL_ERROR_CODE,
-        message = "Error occurred while accessing the JSON payload of the response");
+        error err = error(GMAIL_ERROR_CODE, 
+                message = "Error occurred while accessing the JSON payload of the response");
         return err;
     }
 }
@@ -352,7 +352,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
     //The content type should be either TEXT_PLAIN or TEXT_HTML. If not returns an error.
     if (msgRequest.contentType != TEXT_PLAIN && msgRequest.contentType != TEXT_HTML) {
         error err = error(GMAIL_ERROR_CODE, message = "Does not support the given content type: "
-        + msgRequest.contentType + " for the message with subject: " + msgRequest.subject);
+                + msgRequest.contentType + " for the message with subject: " + msgRequest.subject);
         return err;
     }
     //Adding inline images to messages of TEXT_PLAIN content type is not supported.
@@ -418,12 +418,12 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         //The mime type of inline image cannot be empty
         if (inlineImage.mimeType == EMPTY_STRING) {
             error err = error(GMAIL_ERROR_CODE, message = "Image content type cannot be empty for image: "
-                + inlineImage.imagePath);
+                    + inlineImage.imagePath);
             return err;
         } else if (inlineImage.imagePath == EMPTY_STRING) {
             //Inline image path cannot be empty
             error err = error(GMAIL_ERROR_CODE, message = "File path of inline image in message with subject: "
-                + msgRequest.subject + "cannot be empty");
+                    + msgRequest.subject + "cannot be empty");
             return err;
         }
         //If the mime type of the inline image is image/*
@@ -448,7 +448,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         } else {
             //Return an error if an unsupported content type other than image/* is passed
             error err = error(GMAIL_ERROR_CODE, message = "Unsupported content type:" + inlineImage.mimeType
-            + "for the image:" + inlineImage.imagePath);
+                    + "for the image:" + inlineImage.imagePath);
             return err;
         }
     }
@@ -463,12 +463,12 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         //The mime type of the attachment cannot be empty
         if (attachment.mimeType == EMPTY_STRING) {
             error err = error(GMAIL_ERROR_CODE, message = "Content type of attachment:" + attachment.attachmentPath
-            + "cannot be empty");
+                    + "cannot be empty");
             return err;
         } else if (attachment.attachmentPath == EMPTY_STRING) {
             //The attachment path cannot be empty
             error err = error(GMAIL_ERROR_CODE, message = "File path of attachment in message with subject: "
-            + msgRequest.subject + "cannot be empty");
+                    + msgRequest.subject + "cannot be empty");
             return err;
         }
         //Open and encode the file into base64. Return a error if fails.

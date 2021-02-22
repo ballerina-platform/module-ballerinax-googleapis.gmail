@@ -15,8 +15,12 @@
 // under the License.
 
 import ballerina/log;
-import ballerina/test;
 import ballerina/os;
+import ballerina/test;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
 
 GmailConfiguration gmailConfig = {
     oauthClientConfig: {
