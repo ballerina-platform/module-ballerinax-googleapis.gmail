@@ -30,13 +30,13 @@ GmailConfiguration gmailConfig = {
 Client gmailClient = checkpanic new(gmailConfig);
 
 //---------------Provide the following in the conf file before running the tests-------------------//
-string testRecipient = os:getEnv("TEST_RECIPIENT");
-string testSender = os:getEnv("TEST_SENDER");
+string testRecipient = os:getEnv("RECIPIENT");
+string testSender = os:getEnv("SENDER");
 string testCc = os:getEnv("CC");
-string testAttachmentPath = os:getEnv("TEST_ATTACHMENT_PATH");
-string attachmentContentType = os:getEnv("TEST_ATTACHMENT_CONTENT_TYPE");
-string inlineImagePath = os:getEnv("IMAGE_PATH");
-string inlineImageName = os:getEnv("IMAGE_NAME");
+string testAttachmentPath = os:getEnv("ATTACHMENT_PATH");
+string attachmentContentType = os:getEnv("ATTACHMENT_CONTENT_TYPE");
+string inlineImagePath = os:getEnv("INLINE_IMAGE_PATH");
+string inlineImageName = os:getEnv("INLINE_IMAGE_NAME");
 string imageContentType = os:getEnv("IMAGE_CONTENT_TYPE");
 
 //---------------Do not change the following variables-----------------------//
