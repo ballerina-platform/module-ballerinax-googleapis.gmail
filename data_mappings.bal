@@ -14,8 +14,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/log;
+import ballerina/lang.array;
 import ballerina/lang.'int;
+import ballerina/log;
 
 type mapJson map<json>;
 
@@ -26,28 +27,28 @@ type mapJson map<json>;
 # + return - Returns Message type object
 function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted Message {
     Message targetMessageType = {};
-    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
-    targetMessageType.id = sourceMessageJsonObject.id != () ? sourceMessageJsonObject.id.toString() : EMPTY_STRING;
-    targetMessageType.threadId = sourceMessageJsonObject.threadId != () ? sourceMessageJsonObject.threadId.toString()
-                                                                                                         : EMPTY_STRING;
 
+    targetMessageType.id = let var id = sourceMessageJsonObject.id in id is string ? id : EMPTY_STRING;
+    targetMessageType.threadId = let var threadId = sourceMessageJsonObject.threadId in threadId is string ? threadId : 
+            EMPTY_STRING;
     json|error labelIds = sourceMessageJsonObject.labelIds;
     if (labelIds is json) {
-        json[] labelIdsArr = <json[]> labelIds;
+        json[] labelIdsArr = <json[]>labelIds;
         targetMessageType.labelIds = convertJSONArrayToStringArray(labelIdsArr);
+
     } else {
         targetMessageType.labelIds = [];
     }
-    
-    targetMessageType.raw = sourceMessageJsonObject.raw != () ? sourceMessageJsonObject.raw.toString() : EMPTY_STRING;
-    targetMessageType.snippet = sourceMessageJsonObject.snippet != () ? sourceMessageJsonObject.snippet.toString()
-                                                                                                        : EMPTY_STRING;
-    targetMessageType.historyId = sourceMessageJsonObject.historyId != () ? sourceMessageJsonObject.historyId.toString()
-                                                                                                        : EMPTY_STRING;
-    targetMessageType.internalDate = sourceMessageJsonObject.internalDate != () ?
-                                                        sourceMessageJsonObject.internalDate.toString() : EMPTY_STRING;
-    targetMessageType.sizeEstimate = sourceMessageJsonObject.sizeEstimate != () ?
-                                                        sourceMessageJsonObject.sizeEstimate.toString() : EMPTY_STRING;
+    targetMessageType.raw = let var raw = sourceMessageJsonObject.raw in raw is string ? raw : EMPTY_STRING;
+    targetMessageType.snippet = let var snippet = sourceMessageJsonObject.snippet in snippet is string ? snippet : 
+            EMPTY_STRING;
+    targetMessageType.historyId = let var historyId 
+            = sourceMessageJsonObject.historyId in historyId is string ? historyId : EMPTY_STRING;
+    targetMessageType.internalDate = let var internalDate 
+            = sourceMessageJsonObject.internalDate in internalDate is string ? internalDate : EMPTY_STRING;
+    targetMessageType.sizeEstimate = let var sizeEstimate 
+            = sourceMessageJsonObject.sizeEstimate in sizeEstimate is string ? sizeEstimate : EMPTY_STRING;
+
     json|error srcMssgHeaders = sourceMessageJsonObject.payload.headers;
     if(srcMssgHeaders is json) {
         targetMessageType.headers = convertJSONToHeaderMap(srcMssgHeaders);
@@ -61,10 +62,12 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
     targetMessageType.headerContentType = getValueForMapKey(targetMessageType.headers, CONTENT_TYPE);
     targetMessageType.headerCc = getValueForMapKey(targetMessageType.headers, CC);
     targetMessageType.headerBcc = getValueForMapKey(targetMessageType.headers, BCC);
-    targetMessageType.mimeType = sourceMessageJsonObject.payload.mimeType != () ?
-                                                     sourceMessageJsonObject.payload.mimeType.toString() : EMPTY_STRING;
-    string payloadMimeType = sourceMessageJsonObject.payload.mimeType != () ?
-                                                     sourceMessageJsonObject.payload.mimeType.toString() : EMPTY_STRING;
+    
+    targetMessageType.mimeType = let var mimeType 
+            = sourceMessageJsonObject.payload.mimeType in mimeType is string ? mimeType : EMPTY_STRING;
+    // This is an unused code block
+    // string payloadMimeType = sourceMessageJsonObject.payload.mimeType != () ?
+    //                                                  sourceMessageJsonObject.payload.mimeType.toString() : EMPTY_STRING;
 
     //Recursively go through the payload and get relevant message body part from content type
     json|error srcMssgJsonPayload = sourceMessageJsonObject.payload;
@@ -94,21 +97,24 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
 isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) returns MessageBodyPart {
     MessageBodyPart targetMessageBodyType = {};
     if (sourceMessagePartJsonObject != ()){
-        //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
-        targetMessageBodyType.fileId = sourceMessagePartJsonObject.body.attachmentId != () ?
-                                                sourceMessagePartJsonObject.body.attachmentId.toString() : EMPTY_STRING;
-        targetMessageBodyType.body = sourceMessagePartJsonObject.body.data != () ?
-                                                        sourceMessagePartJsonObject.body.data.toString() : EMPTY_STRING;
-        targetMessageBodyType.size = sourceMessagePartJsonObject.body.size != () ?
-                                                        sourceMessagePartJsonObject.body.size.toString() : EMPTY_STRING;
-        targetMessageBodyType.mimeType = sourceMessagePartJsonObject.mimeType != () ?
-                                                         sourceMessagePartJsonObject.mimeType.toString() : EMPTY_STRING;
-        targetMessageBodyType.partId = sourceMessagePartJsonObject.partId != () ?
-                                                           sourceMessagePartJsonObject.partId.toString() : EMPTY_STRING;
-        targetMessageBodyType.fileName = sourceMessagePartJsonObject.filename != () ?
-                                                         sourceMessagePartJsonObject.filename.toString() : EMPTY_STRING;
+        targetMessageBodyType.fileId = let var fileId 
+                = sourceMessagePartJsonObject.body.attachmentId in fileId is string ? fileId : EMPTY_STRING;
+        // body is an object of MessagePartBody in the docs.
+        targetMessageBodyType.body = let var body = sourceMessagePartJsonObject.body.data in body is map<json> ? body : 
+                EMPTY_STRING;
+        // In the payload body, "size" is an integer.
+        targetMessageBodyType.size = let var size 
+                = sourceMessagePartJsonObject.body.size in size is int ? size.toString() : EMPTY_STRING;
+        targetMessageBodyType.mimeType = let var mimeType 
+                = sourceMessagePartJsonObject.mimeType in mimeType is string ? mimeType : EMPTY_STRING;
+        targetMessageBodyType.partId = let var partId 
+                = sourceMessagePartJsonObject.partId in partId is string ? partId : EMPTY_STRING;
+        targetMessageBodyType.fileName = let var fileName 
+                = sourceMessagePartJsonObject.fileName in fileName is string ? fileName : EMPTY_STRING;
+
         json|error srcMssgPartHeaders = sourceMessagePartJsonObject.headers;
         if(srcMssgPartHeaders is json) {
+            // Headers is an object of type headers
             targetMessageBodyType.bodyHeaders = sourceMessagePartJsonObject.headers != () ?
                         convertJSONToHeaderMap(srcMssgPartHeaders) : targetMessageBodyType.bodyHeaders;
         } else {
@@ -122,28 +128,24 @@ isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) ret
 # + sourceMessageBodyJsonObject - `json` message body object
 # + return - Returns MessageBodyPart type object
 isolated function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
-    MessageBodyPart targetMessageAttachment = {};
-    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
-    targetMessageAttachment.fileId = sourceMessageBodyJsonObject.attachmentId != () ?
-                                                     sourceMessageBodyJsonObject.attachmentId.toString() : EMPTY_STRING;
-    targetMessageAttachment.body = sourceMessageBodyJsonObject.data != () ?
-                                                             sourceMessageBodyJsonObject.data.toString() : EMPTY_STRING;
-    targetMessageAttachment.size = sourceMessageBodyJsonObject.size != () ?
-                                                             sourceMessageBodyJsonObject.size.toString() : EMPTY_STRING;
-    return targetMessageAttachment;
+    return {
+        fileId: let var fileId = sourceMessageBodyJsonObject.attachmentId in fileId is string ? fileId : EMPTY_STRING,
+        body: let var body = sourceMessageBodyJsonObject.data in body is string ? body : EMPTY_STRING,
+        size: let var size = sourceMessageBodyJsonObject.body.size in size is int ? size.toString() : EMPTY_STRING
+    };
 }
 
 # Transforms mail thread JSON object into MailThread type.
 # + sourceThreadJsonObject - `json` message thread object.
 # + return - Returns MailThread type.
 function convertJSONToThreadType(json sourceThreadJsonObject) returns @tainted MailThread {
-    MailThread targetThreadType = {};
-    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
-    targetThreadType.id = sourceThreadJsonObject.id != () ? sourceThreadJsonObject.id.toString() : EMPTY_STRING;
-    targetThreadType.historyId = sourceThreadJsonObject.historyId != () ?
-                                                             sourceThreadJsonObject.historyId.toString() : EMPTY_STRING;
-    targetThreadType.messages = convertToMessageArray(<json[]> sourceThreadJsonObject.messages);
-    return targetThreadType;
+    return {
+        id: let var id = sourceThreadJsonObject.id in id is string ? id : EMPTY_STRING,
+        historyId: let var historyId = sourceThreadJsonObject.historyId in historyId is string ? historyId : 
+                EMPTY_STRING,
+        messages: let var messages 
+                = sourceThreadJsonObject.messages in messages is json[] ? convertToMessageArray(messages): []
+    };
 }
 
 # Converts the JSON message array into Message type array.
@@ -163,17 +165,18 @@ function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns @tai
 # + sourceUserProfileJsonObject - `json` user profile object
 # + return - UserProfile type
 isolated function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
-    UserProfile targetUserProfile = {};
-    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
-    targetUserProfile.emailAddress = sourceUserProfileJsonObject.emailAddress != () ?
-                                                     sourceUserProfileJsonObject.emailAddress.toString() : EMPTY_STRING;
-    targetUserProfile.threadsTotal = sourceUserProfileJsonObject.threadsTotal != () ?
-                                                     sourceUserProfileJsonObject.threadsTotal.toString() : EMPTY_STRING;
-    targetUserProfile.messagesTotal = sourceUserProfileJsonObject.messagesTotal != () ?
-                                                    sourceUserProfileJsonObject.messagesTotal.toString() : EMPTY_STRING;
-    targetUserProfile.historyId = sourceUserProfileJsonObject.historyId != () ?
-                                                        sourceUserProfileJsonObject.historyId.toString() : EMPTY_STRING;
-    return targetUserProfile;
+    return {
+        emailAddress: let var emailAddress 
+                = sourceUserProfileJsonObject.emailAddress in emailAddress is string ? emailAddress : EMPTY_STRING,
+        threadsTotal: let var threadsTotal 
+                = sourceUserProfileJsonObject.threadsTotal in threadsTotal is int ? threadsTotal.toString() : 
+                EMPTY_STRING,
+        messagesTotal: let var messagesTotal 
+                = sourceUserProfileJsonObject.messagesTotal in messagesTotal is int ? messagesTotal.toString() : 
+                EMPTY_STRING,
+        historyId: let var historyId = sourceUserProfileJsonObject.historyId in historyId is string ? historyId : 
+                EMPTY_STRING
+    };
 }
 
 # Transforms message list JSON object into MessageListPage.
@@ -181,23 +184,28 @@ isolated function convertJSONToUserProfileType(json sourceUserProfileJsonObject)
 # + return - MessageListPage type
 isolated function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
     MessageListPage targetMsgListPage = {};
-    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
-    targetMsgListPage.resultSizeEstimate = sourceMsgListJsonObject.resultSizeEstimate != () ?
-                                                   sourceMsgListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
-    targetMsgListPage.nextPageToken = sourceMsgListJsonObject.nextPageToken != () ?
-                                                        sourceMsgListJsonObject.nextPageToken.toString() : EMPTY_STRING;
+    targetMsgListPage.resultSizeEstimate 
+            = let var resultSizeEstimate = sourceMsgListJsonObject.resultSizeEstimate in resultSizeEstimate is int ? 
+            resultSizeEstimate.toString() : EMPTY_STRING;
+    targetMsgListPage.nextPageToken = let var nextPageToken 
+            = sourceMsgListJsonObject.nextPageToken in nextPageToken is string ? nextPageToken : EMPTY_STRING;
+
     //Convert json object to json array object
     //for each message resource in messages json array of the response
-    json[] messages = <json[]> sourceMsgListJsonObject.messages;
-    int  i = 0;
-    foreach json message in messages {
-        //Create a map with message Id and thread Id as keys and add it to the array of messages
-        //Assume message json field always has id and threadId as its subfields
-        targetMsgListPage.messages[i] = { messageId: message.id.toString(),
-                                          threadId: message.threadId.toString() };
-        i = i + 1;
+    json|error messages = sourceMsgListJsonObject.messages;
+    if (messages is json) {
+        foreach json message in <json[]>messages {
+            //Create a map with message Id and thread Id as keys and add it to the array of messages
+            //Assume message json field always has id and threadId as its subfields
+            json singleMsg = { 
+                messageId: let var id = message.id in id is string ? id : EMPTY_STRING,
+                threadId: let var id = message.threadId in id is string ? id : EMPTY_STRING 
+            };
+            array:push(targetMsgListPage.messages, singleMsg);
+        }
+    } else {
+        log:printError("Error occurred while getting messages", err = messages);
     }
-
     return targetMsgListPage;
 }
 
@@ -206,21 +214,26 @@ isolated function convertJSONToMessageListPageType(json sourceMsgListJsonObject)
 # + return - ThreadListPage type
 isolated function convertJSONToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
     ThreadListPage targetThreadListPage = {};
-    //Empty check is done since toString() returns "null" when accessing non existing keys of a json object
-    targetThreadListPage.resultSizeEstimate = sourceThreadListJsonObject.resultSizeEstimate != () ?
-                                                sourceThreadListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
-    targetThreadListPage.nextPageToken = sourceThreadListJsonObject.nextPageToken != () ?
-                                                     sourceThreadListJsonObject.nextPageToken.toString() : EMPTY_STRING;
+    targetThreadListPage.resultSizeEstimate = let var resultSizeEstimate 
+            = sourceThreadListJsonObject.resultSizeEstimate in resultSizeEstimate is int ? resultSizeEstimate.toString() 
+            : EMPTY_STRING;
+    targetThreadListPage.nextPageToken = let var nextPageToken 
+            = sourceThreadListJsonObject.nextPageToken in nextPageToken is string ? nextPageToken : EMPTY_STRING;
     //for each thread resource in threads json array of the response
-    json[] jsonThreads = <json[]>sourceThreadListJsonObject.threads;
-    int  i = 0;
-    foreach json thread in jsonThreads {
-        //Create a map with thread Id, snippet and history Id as keys and add it to the array of threads
-        //Assume thread json field always has thread.id and thread.snippet and thread.historyId as its subfields
-        targetThreadListPage.threads[i] = {
-                threadId: thread.id.toString(), snippet: thread.snippet.toString(),
-                                            historyId: thread.historyId.toString() };
-        i = i + 1;
+    json|error jsonThreads = sourceThreadListJsonObject.threads;
+    if (jsonThreads is json) {
+        foreach json thread in <json[]>jsonThreads {
+            //Create a map with thread Id, snippet and history Id as keys and add it to the array of threads
+            //Assume thread json field always has thread.id and thread.snippet and thread.historyId as its subfields
+            json singleThread = {
+                threadId: let var id = thread.id in id is string ? id : EMPTY_STRING,
+                snippet: let var snippet = thread.snippet in snippet is string ? snippet : EMPTY_STRING,
+                historyId: let var historyId = thread.historyId in historyId is string ? historyId : EMPTY_STRING
+            };
+            array:push(targetThreadListPage.threads, singleThread);
+        }
+    } else {
+        log:printError("Error occurred while getting threads", err = jsonThreads);
     }
     return targetThreadListPage;
 }
@@ -232,7 +245,8 @@ isolated function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<st
     map<string> headers = {};
     json[] jsonHeaders = <json[]>jsonMsgPartHeaders;
     foreach json jsonHeader in jsonHeaders {
-        headers[jsonHeader.name.toString()] = jsonHeader.value.toString();
+        string headerName = let var name = jsonHeader.name in name is string ? name : EMPTY_STRING;
+        headers[headerName] = let var value = jsonHeader.value in value is string ? value : EMPTY_STRING;
     }
     return headers;
 }
@@ -346,7 +360,7 @@ isolated function convertJSONToLabelType(json sourceLabelJsonObject) returns Lab
         return targetLabel;
     } else {
         log:printError("Error occurred while converting sourceLabelJsonObject json to map of json. sourceLabelJsonObject: " 
-        + sourceLabelJsonObject.toString(), err = srcLabelJsonObjectMap);
+                + sourceLabelJsonObject.toString(), err = srcLabelJsonObjectMap);
         error err = error(GMAIL_ERROR_CODE, 
         message = "Error occurred while converting sourceLabelJsonObject json to map of json.");
         return err;
@@ -374,16 +388,18 @@ isolated function convertToInt(json jsonVal) returns int {
 isolated function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[]|error {
     Label[] targetLabelList = [];
     //Convert json object to json array object
-    json[] jsonLabelList = <json[]>sourceJsonLabelList.labels;
-    int i = 0;
-    foreach json label in jsonLabelList {
-        Label|error labelResult = convertJSONToLabelType(label);
-        if (labelResult is Label) {
-            targetLabelList[i] = labelResult;
-        } else {
-            return labelResult;
+    json|error jsonLabelList = sourceJsonLabelList.labels;
+    if (jsonLabelList is json) {
+        foreach json label in <json[]>jsonLabelList {
+            Label|error labelResult = convertJSONToLabelType(label);
+            if (labelResult is Label) {
+                array:push(targetLabelList, labelResult);
+            } else {
+                return labelResult;
+            }
         }
-        i = i + 1;
+    } else {
+        log:printError("Error occurred while getting label list", err = jsonLabelList);
     }
     return targetLabelList;
 }
@@ -393,17 +409,19 @@ isolated function convertJSONToLabelTypeList(json sourceJsonLabelList) returns L
 # + return-  Returns MailboxHistoryPage Type object
 function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns @tainted MailboxHistoryPage {
     MailboxHistoryPage targetMailboxHistoryPage = {};
-    targetMailboxHistoryPage.nextPageToken = sourceJsonMailboxHistory.nextPageToken != () ?
-                                                       sourceJsonMailboxHistory.nextPageToken.toString() : EMPTY_STRING;
-    targetMailboxHistoryPage.historyId = sourceJsonMailboxHistory.historyId != () ?
-                                                           sourceJsonMailboxHistory.historyId.toString() : EMPTY_STRING;
-    json[] historyList = <json[]>sourceJsonMailboxHistory.history;
-    int i = 0;
-    foreach json history in historyList {
-        targetMailboxHistoryPage.historyRecords[i] = convertJSONToHistoryType(history);
-        i = i + 1;
-    }
+    targetMailboxHistoryPage.nextPageToken = let var next 
+            = sourceJsonMailboxHistory.nextPageToken in next is string ? next : EMPTY_STRING;
+    targetMailboxHistoryPage.historyId = let var historyId 
+            = sourceJsonMailboxHistory.historyId in historyId is string ? historyId : EMPTY_STRING;
 
+    json|error historyList = sourceJsonMailboxHistory.history;
+    if (historyList is json) {
+        foreach json history in <json[]>historyList {
+            array:push(targetMailboxHistoryPage.historyRecords, convertJSONToHistoryType(history));
+        }
+    } else {
+        log:printError("Error occurred while getting history list", err = historyList);
+    }
     return targetMailboxHistoryPage;
 }
 
@@ -456,32 +474,49 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
         }
         // labelsAdded
         if (elementExists(srcJsonHisMap, "labelsAdded")) {
-            json[] lbls = <json[]>sourceJsonHistory.labelsAdded;
-            int i = 0;
-            foreach json recordData in lbls {
-                json|error message = recordData.message;
-                if(message is json) {
-                    targetHistory.labelsAdded[i] = { "message": convertJSONToMessageType(message) };
-                } else {
-                    log:printError("Error occurred while getting message from recordData.", err = message);        
+            json|error lbls = sourceJsonHistory.labelsAdded;
+            if (lbls is json) {
+                foreach json recordData in <json[]>lbls {
+                    json|error message = recordData.message;
+                    if(message is json) {
+                        array:push(targetHistory.labelsAdded, { "message": convertJSONToMessageType(message) });
+                    } else {
+                        log:printError("Error occurred while getting recordData.", err = message);
+                    }
+                    json|error labelIds = recordData.labelIds;
+                    if (labelIds is json) {
+                        array:push(targetHistory.labelsRemoved, 
+                                { labelIds: convertJSONArrayToStringArray(<json[]>labelIds) });
+                    } else {
+                        log:printError("Error occurred while getting label is from record data.", err = labelIds);
+                    }
                 }
-                targetHistory.labelsAdded[i] = { labelIds: convertJSONArrayToStringArray(<json[]>recordData.labelIds) };
-                i = i + 1;
+            } else {
+                log:printError("Error occurred while getting history", err = lbls);
             }
+
         }
         // labelsRemoved
         if (elementExists(srcJsonHisMap, "labelsRemoved")) {
-            json[] lblsRemoved = <json[]>sourceJsonHistory.labelsRemoved;
-            int j = 0;
-            foreach json recordData in lblsRemoved {
-                json|error message = recordData.message;
-                if(message is json) {
-                    targetHistory.labelsRemoved[j] = { "message": convertJSONToMessageType(message) };
-                } else {
-                    log:printError("Error occurred while getting message from recordData.", err = message);        
+            json|error lblsRemoved = sourceJsonHistory.labelsRemoved;
+            if (lblsRemoved is json) {
+                foreach json recordData in <json[]>lblsRemoved {
+                    json|error message = recordData.message;
+                    if(message is json) {
+                        array:push(targetHistory.labelsRemoved, { "message": convertJSONToMessageType(message) });
+                    } else {
+                        log:printError("Error occurred while getting recordData.", err = message);
+                    }
+                    json|error labelIds = recordData.labelIds;
+                    if (labelIds is json) {
+                        array:push(targetHistory.labelsRemoved, 
+                                { labelIds: convertJSONArrayToStringArray(<json[]>labelIds) });
+                    } else {
+                        log:printError("Error occurred while getting label is from record data.", err = labelIds);
+                    }
                 }
-                targetHistory.labelsRemoved[j] = { labelIds: convertJSONArrayToStringArray(<json[]>recordData.labelIds) };
-                j = j + 1;
+            } else {
+                log:printError("Error occurred while getting labels", err = lblsRemoved);
             }
         }
     }
@@ -493,19 +528,25 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
 # + return - DraftListPage type
 isolated function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
     DraftListPage targetDraftListPage = {};
-    targetDraftListPage.resultSizeEstimate = sourceDraftListJsonObject.resultSizeEstimate != () ?
-                                                 sourceDraftListJsonObject.resultSizeEstimate.toString() : EMPTY_STRING;
-    targetDraftListPage.nextPageToken = sourceDraftListJsonObject.nextPageToken != () ?
-                                                      sourceDraftListJsonObject.nextPageToken.toString() : EMPTY_STRING;
-    json[] drafts = <json[]>sourceDraftListJsonObject.drafts;
+    targetDraftListPage.nextPageToken 
+            = let var next = sourceDraftListJsonObject.nextPageToken in next is string ? next : EMPTY_STRING;
+    targetDraftListPage.resultSizeEstimate = let var estimate 
+            = sourceDraftListJsonObject.estimate in estimate is string ? estimate : EMPTY_STRING;
+
+    json|error drafts = sourceDraftListJsonObject.drafts;
     //for each draft resource in drafts json array of the response
-    int i = 0;
-    foreach json draft in drafts {
-        //Add the draft map with the Id and the message map with message Id and thread Id as keys, to the array
-        targetDraftListPage.drafts[i] = { draftId: draft.id.toString(),
-                                          messageId: draft.message.messageId.toString(),
-                                          threadId: draft.message.threadId.toString() };
-        i = i + 1;
+    if (drafts is json) {
+        foreach json draft in <json[]>drafts {
+            //Add the draft map with the Id and the message map with message Id and thread Id as keys, to the array
+            json singleDraft = { 
+                draftId: let var id = draft.id in id is string ? id : EMPTY_STRING,
+                messageId: let var id = draft.message.messageId in id is string ? id : EMPTY_STRING,
+                threadId: let var id = draft.message.threadId in id is string ? id : EMPTY_STRING
+            };
+            array:push(targetDraftListPage.drafts, singleDraft);
+        }
+    } else {
+        log:printError("Error occurred while getting drafts", err = drafts);
     }
     return targetDraftListPage;
 }
@@ -515,13 +556,13 @@ isolated function convertJSONToDraftListPageType(json sourceDraftListJsonObject)
 # + return - If successful, returns Draft. Else returns error.
 function convertJSONToDraftType(json sourceDraftJsonObject) returns @tainted Draft {
     Draft targetDraft = {};
-    targetDraft.id = sourceDraftJsonObject.id != () ? sourceDraftJsonObject.id.toString() : EMPTY_STRING;
+    targetDraft.id = let var id = sourceDraftJsonObject.id in id is string ? id : EMPTY_STRING;
 
     json|error message = sourceDraftJsonObject.message;
     if(message is json) {
         targetDraft.message = sourceDraftJsonObject.message != () ? convertJSONToMessageType(message) : {};
     } else {
-        log:printError("Error occurred while getting message from sourceDraftJsonObject.", err = message);        
+        log:printError("Error occurred while getting message from sourceDraftJsonObject.", err = message);
     }
     return targetDraft;
 }

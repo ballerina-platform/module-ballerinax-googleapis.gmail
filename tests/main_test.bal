@@ -14,34 +14,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/config;
 import ballerina/log;
+import ballerina/os;
 import ballerina/test;
 
-//Create an endpoint to use Gmail Connector
 GmailConfiguration gmailConfig = {
     oauthClientConfig: {
-        accessToken: config:getAsString("ACCESS_TOKEN"),
-        refreshConfig: {
-            refreshUrl: REFRESH_URL,
-            refreshToken: config:getAsString("REFRESH_TOKEN"),
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET")
-        }
+        refreshUrl: REFRESH_URL,
+        refreshToken: os:getEnv("REFRESH_TOKEN"),
+        clientId: os:getEnv("CLIENT_ID"),
+        clientSecret: os:getEnv("CLIENT_SECRET")
     }
 };
 
-Client gmailClient = new (gmailConfig);
+Client gmailClient = checkpanic new(gmailConfig);
 
 //---------------Provide the following in the conf file before running the tests-------------------//
-string testRecipient = config:getAsString("RECIPIENT"); //Example: "recipient@gmail.com"
-string testSender = config:getAsString("SENDER"); //Example: "sender@gmail.com"
-string testCc = config:getAsString("CC"); //Example: "cc@gmail.com"
-string testAttachmentPath = config:getAsString("ATTACHMENT_PATH"); //Example: "/home/user/hello.txt"
-string attachmentContentType = config:getAsString("ATTACHMENT_CONTENT_TYPE"); //Example: "text/plain"
-string inlineImagePath = config:getAsString("INLINE_IMAGE_PATH"); //Example: "/home/user/Picture2.jpg"
-string inlineImageName = config:getAsString("INLINE_IMAGE_NAME"); //Example: "Picture2.jpg"
-string imageContentType = config:getAsString("IMAGE_CONTENT_TYPE"); //Example: "image/jpeg"
+string testRecipient = os:getEnv("TEST_RECIPIENT");
+string testSender = os:getEnv("TEST_SENDER");
+string testCc = os:getEnv("TEST_CC");
+string testAttachmentPath = os:getEnv("TEST_ATTACHMENT_PATH");
+string attachmentContentType = os:getEnv("TEST_ATTACHMENT_CONTENT_TYPE");
+string inlineImagePath = os:getEnv("IMAGE_PATH");
+string inlineImageName = os:getEnv("IMAGE_NAME");
+string imageContentType = os:getEnv("IMAGE_CONTENT_TYPE");
 
 //---------------Do not change the following variables-----------------------//
 string testUserId = "me";
@@ -125,7 +121,7 @@ function testSendHTMLMessage() {
 }
 
 @test:Config {
-    dependsOn: ["testSendHTMLMessage"],
+    dependsOn: [testSendHTMLMessage],
     groups: ["htmlMessageTestGroup"]
 }
 function testModifyHTMLMessage() {
@@ -160,7 +156,7 @@ function testListMessages() {
 }
 
 @test:Config {
-    dependsOn: ["testSendDraft"],
+    dependsOn: [testSendDraft],
     groups: ["textMessageTestGroup"]
 }
 function testReadTextMessage() {
@@ -176,7 +172,7 @@ function testReadTextMessage() {
 }
 
 @test:Config {
-    dependsOn: ["testModifyHTMLMessage"],
+    dependsOn: [testModifyHTMLMessage],
     groups: ["htmlMessageTestGroup"]
 }
 function testReadHTMLMessageWithAttachment() {
@@ -192,7 +188,7 @@ function testReadHTMLMessageWithAttachment() {
 }
 
 @test:Config {
-    dependsOn: ["testReadHTMLMessageWithAttachment"],
+    dependsOn: [testReadHTMLMessageWithAttachment],
     groups: ["htmlMessageTestGroup"]
 }
 function testgetAttachment() {
@@ -207,7 +203,7 @@ function testgetAttachment() {
 }
 
 @test:Config {
-    dependsOn: ["testgetAttachment"],
+    dependsOn: [testgetAttachment],
     groups: ["htmlMessageTestGroup"]
 }
 function testTrashMessage() {
@@ -221,7 +217,7 @@ function testTrashMessage() {
 }
 
 @test:Config {
-    dependsOn: ["testTrashMessage"],
+    dependsOn: [testTrashMessage],
     groups: ["htmlMessageTestGroup"]
 }
 function testUntrashMessage() {
@@ -235,7 +231,7 @@ function testUntrashMessage() {
 }
 
 @test:Config {
-    dependsOn: ["testUntrashMessage"],
+    dependsOn: [testUntrashMessage],
     groups: ["htmlMessageTestGroup"]
 }
 function testDeleteMessage() {
@@ -260,7 +256,7 @@ function testListThreads() {
 }
 
 @test:Config {
-    dependsOn: ["testReadTextMessage"],
+    dependsOn: [testReadTextMessage],
     groups: ["textMessageTestGroup"]
 }
 function testReadThread() {
@@ -275,7 +271,7 @@ function testReadThread() {
 }
 
 @test:Config {
-    dependsOn: ["testReadThread"],
+    dependsOn: [testReadThread],
     groups: ["textMessageTestGroup"]
 }
 function testModifyThread() {
@@ -297,7 +293,7 @@ function testModifyThread() {
 }
 
 @test:Config {
-    dependsOn: ["testModifyThread"],
+    dependsOn: [testModifyThread],
     groups: ["textMessageTestGroup"]
 }
 function testTrashThread() {
@@ -311,7 +307,7 @@ function testTrashThread() {
 }
 
 @test:Config {
-    dependsOn: ["testTrashThread"],
+    dependsOn: [testTrashThread],
     groups: ["textMessageTestGroup"]
 }
 function testUnTrashThread() {
@@ -326,7 +322,7 @@ function testUnTrashThread() {
 
 @test:Config {
     enable: true,
-    dependsOn: ["testUnTrashThread"],
+    dependsOn: [testUnTrashThread],
     groups: ["textMessageTestGroup"]
 }
 function testDeleteThread() {
@@ -352,7 +348,7 @@ function testgetUserProfile() {
     }
 }
 @test:Config {
-    dependsOn: ["testUpdateLabel"],
+    dependsOn: [testUpdateLabel],
     groups: ["labelTestGroup"]
 }
 function testGetLabel() {
@@ -391,7 +387,7 @@ function testListLabels() {
 }
 
 @test:Config {
-    dependsOn: ["testGetLabel"],
+    dependsOn: [testGetLabel],
     groups: ["labelTestGroup"]
 }
 function testDeleteLabel() {
@@ -405,7 +401,7 @@ function testDeleteLabel() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateLabel"],
+    dependsOn: [testCreateLabel],
     groups: ["labelTestGroup"]
 }
 function testUpdateLabel() {
@@ -425,7 +421,7 @@ function testUpdateLabel() {
 }
 
 @test:Config {
-    dependsOn: ["testReadTextMessage"],
+    dependsOn: [testReadTextMessage],
     groups: ["textMessageTestGroup"]
 }
 function testListHistory() {
@@ -453,7 +449,7 @@ function testListDrafts() {
 }
 
 @test:Config {
-    dependsOn: ["testSendTextMessage"],
+    dependsOn: [testSendTextMessage],
     groups: ["draftTestGroup"]
 }
 function testCreateDraft() {
@@ -475,7 +471,7 @@ function testCreateDraft() {
 }
 
 @test:Config {
-    dependsOn: ["testCreateDraft"],
+    dependsOn: [testCreateDraft],
     groups: ["draftTestGroup"]
 }
 function testUpdateDraft() {
@@ -498,7 +494,7 @@ function testUpdateDraft() {
 }
 
 @test:Config {
-    dependsOn: ["testUpdateDraft"],
+    dependsOn: [testUpdateDraft],
     groups: ["draftTestGroup"]
 }
 function testReadDraft() {
@@ -512,7 +508,7 @@ function testReadDraft() {
 }
 
 @test:Config {
-    dependsOn: ["testReadDraft"],
+    dependsOn: [testReadDraft],
     groups: ["draftTestGroup"]
 }
 function testSendDraft() {

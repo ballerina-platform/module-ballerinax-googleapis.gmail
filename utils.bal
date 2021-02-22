@@ -17,8 +17,8 @@
 import ballerina/encoding;
 import ballerina/http;
 import ballerina/io;
-import ballerina/java;
-import ballerina/jarrays;
+import ballerina/jballerina.java as java;
+import ballerinax/java.arrays as jarrays;
 import ballerina/lang.'string as strings;
 import ballerina/log;
 import ballerina/mime;
@@ -34,7 +34,9 @@ MessageBodyPart[] inlineMessageImages) returns @tainted [MessageBodyPart[], Mess
     MessageBodyPart[] attachmentParts = msgAttachments;
     MessageBodyPart[] inlineImgParts = inlineMessageImages;
     string disposition = getDispostionFromPayload(messagePayload);
-    string messagePayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString() : EMPTY_STRING;
+
+    string messagePayloadMimeType = let var mimeType = messagePayload.mimeType in mimeType is string ? mimeType : 
+            EMPTY_STRING;
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
         //Get the attachment message body part
@@ -73,8 +75,8 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
 {
     MessageBodyPart msgBodyPart = {};
     string disposition = getDispostionFromPayload(messagePayload);
-    string messageBodyPayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString()
-                                                                      : EMPTY_STRING;
+    string messageBodyPayloadMimeType = let var mime = messagePayload.mimeType in mime is string ? mime : EMPTY_STRING;
+
     //If parent mime part is given mime type and not an attachment or an inline part
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
         //Get the message body part.
@@ -219,7 +221,6 @@ function encodeFile(string filePath) returns string | error {
     return <@untainted>strings:fromBytes(readEncodedContent);
 }
 
-
 # Gets the file name from the given file path.
 #
 # + filePath - File path (including the file name and extension at the end)
@@ -240,25 +241,29 @@ function getFileNameFromPath(string filePath) returns string | error {
 #
 # + httpResponse - Http response or error
 # + return - If successful returns `json` response. Else returns error.
-isolated function handleResponse(http:Response |http:PayloadType |error httpResponse) returns @tainted json | error {
-    if (httpResponse is http:Response) {
-        if (httpResponse.statusCode == http:STATUS_NO_CONTENT) {
-            //If status 204, then no response body. So returns json boolean true.
-            return true;
-        }
-        var jsonResponse = httpResponse.getJsonPayload();
-        if (jsonResponse is json) {
-            if (httpResponse.statusCode == http:STATUS_OK) {
-                //If status is 200, request is successful. Returns resulting payload.
-                return jsonResponse;
-            } else {
-                //If status is not 200 or 204, request is unsuccessful. Returns error.
-                string errorMsg = STATUS_CODE + COLON_SYMBOL + jsonResponse.'error.code.toString() + SEMICOLON_SYMBOL
-                + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE + jsonResponse.'error.message.toString();
-                //Iterate the errors array in Gmail API error response and concat the error information to
-                //Gmail error message
-                json[] jsonErrors = <json[]>jsonResponse.'error.errors;
-                foreach json err in jsonErrors {
+isolated function handleResponse(http:Response httpResponse) returns @tainted json | error {
+    if (httpResponse.statusCode == http:STATUS_NO_CONTENT) {
+        //If status 204, then no response body. So returns json boolean true.
+        return true;
+    }
+    var jsonResponse = httpResponse.getJsonPayload();
+    if (jsonResponse is json) {
+        if (httpResponse.statusCode == http:STATUS_OK) {
+            //If status is 200, request is successful. Returns resulting payload.
+            return jsonResponse;
+        } else {
+            //If status is not 200 or 204, request is unsuccessful. Returns error.
+            string errorCode = let var code = jsonResponse.'error.code in code is int ? code.toString() : EMPTY_STRING;
+            string errorMessage = let var message = jsonResponse.'error.message in message is string ? message : 
+                    EMPTY_STRING;
+
+            string errorMsg = STATUS_CODE + COLON_SYMBOL + errorCode + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE 
+                    + COLON_SYMBOL + WHITE_SPACE + errorMessage;
+            //Iterate the errors array in Gmail API error response and concat the error information to
+            //Gmail error message
+            json|error jsonErrors = jsonResponse.'error.errors;
+            if (jsonErrors is json) {
+                foreach json err in <json[]>jsonErrors {
                     string reason = "";
                     string message = "";
                     string location = "";
@@ -267,19 +272,22 @@ isolated function handleResponse(http:Response |http:PayloadType |error httpResp
                     map<json> | error errMap = err.cloneWithType(mapJson);
                     if (errMap is map<json>) {
                         if (errMap.hasKey("reason")) {
-                            reason = err.reason.toString();
+                            reason = let var reasonStr = err.reason in reasonStr is string ? reasonStr : EMPTY_STRING;
                         }
                         if (errMap.hasKey("message")) {
-                            message = err.message.toString();
+                            message = let var messageStr = err.message in messageStr is string ? messageStr : 
+                                    EMPTY_STRING;
                         }
                         if (errMap.hasKey("location")) {
-                            location = err.location.toString();
+                            location = let var locationStr = err.location in locationStr is string ? locationStr : 
+                                    EMPTY_STRING;
                         }
                         if (errMap.hasKey("locationType")) {
-                            locationType = err.locationType.toString();
+                            locationType = let var locationTypeStr = err.locationType in locationTypeStr is string ? 
+                                    locationTypeStr : EMPTY_STRING;
                         }
                         if (errMap.hasKey("domain")) {
-                            domain = err.domain.toString();
+                            domain = let var domainStr = err.domain in domainStr is string ? domainStr : EMPTY_STRING;
                         }
                     }
                     errorMsg = errorMsg + NEW_LINE + ERROR + COLON_SYMBOL + WHITE_SPACE + NEW_LINE + DOMAIN
@@ -290,14 +298,14 @@ isolated function handleResponse(http:Response |http:PayloadType |error httpResp
                 }
                 error err = error(GMAIL_ERROR_CODE, message = errorMsg);
                 return err;
+            } else {
+                error err = error(GMAIL_ERROR_CODE, message = jsonErrors);
             }
-        } else {
-            error err = error(GMAIL_ERROR_CODE,
-            message = "Error occurred while accessing the JSON payload of the response");
-            return err;
+
         }
     } else {
-        error err = error(GMAIL_ERROR_CODE, message = "Error occurred while invoking the REST API");
+        error err = error(GMAIL_ERROR_CODE,
+        message = "Error occurred while accessing the JSON payload of the response");
         return err;
     }
 }
