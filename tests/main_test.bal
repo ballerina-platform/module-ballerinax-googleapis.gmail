@@ -15,8 +15,8 @@
 // under the License.
 
 import ballerina/log;
-import ballerina/os;
 import ballerina/test;
+import ballerina/os;
 
 GmailConfiguration gmailConfig = {
     oauthClientConfig: {
@@ -32,7 +32,7 @@ Client gmailClient = checkpanic new(gmailConfig);
 //---------------Provide the following in the conf file before running the tests-------------------//
 string testRecipient = os:getEnv("TEST_RECIPIENT");
 string testSender = os:getEnv("TEST_SENDER");
-string testCc = os:getEnv("TEST_CC");
+string testCc = os:getEnv("CC");
 string testAttachmentPath = os:getEnv("TEST_ATTACHMENT_PATH");
 string attachmentContentType = os:getEnv("TEST_ATTACHMENT_CONTENT_TYPE");
 string inlineImagePath = os:getEnv("IMAGE_PATH");

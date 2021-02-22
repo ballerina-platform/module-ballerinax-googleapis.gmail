@@ -99,7 +99,8 @@ public client class Client {
         //Return the (messageId, threadId) of the sent message
         // Here the things will be hidden if the thread id or id is not present in the response
         string identity = let var id = jsonSendMessageResponse.id in id is string ? id : EMPTY_STRING;
-        string threadIdFromResponse = let var tid = jsonSendMessageResponse.threadId in tid is string ? tid : EMPTY_STRING;
+        string threadIdFromResponse = let var tid = jsonSendMessageResponse.threadId in tid is string ? tid : 
+                EMPTY_STRING;
         return [identity, threadIdFromResponse];
     }
 
@@ -136,7 +137,8 @@ public client class Client {
                 uriParams = check appendEncodedURIParameter(uriParams, METADATA_HEADERS, metaDataHeader);
             }
         }
-        string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId + uriParams;
+        string readMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId 
+                + uriParams;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(readMessagePath);
         //Get json message response. If unsuccessful, throws and returns error.
         json jsonreadMessageResponse = check handleResponse(httpResponse);

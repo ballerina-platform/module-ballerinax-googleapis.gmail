@@ -36,7 +36,7 @@ MessageBodyPart[] inlineMessageImages) returns @tainted [MessageBodyPart[], Mess
     string disposition = getDispostionFromPayload(messagePayload);
 
     string messagePayloadMimeType = let var mimeType = messagePayload.mimeType in mimeType is string ? mimeType : 
-            EMPTY_STRING;
+        EMPTY_STRING;
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
         //Get the attachment message body part
@@ -54,7 +54,7 @@ MessageBodyPart[] inlineMessageImages) returns @tainted [MessageBodyPart[], Mess
                 foreach json part in messagePartsArr {
                     //Recursively check each ith child mime part
                     [MessageBodyPart[], MessageBodyPart[]] parts = getFilePartsFromPayload(part, attachmentParts,
-                    inlineImgParts);
+                        inlineImgParts);
                     [attachmentParts, inlineImgParts] = parts;
                 }
             }
@@ -255,10 +255,10 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
             //If status is not 200 or 204, request is unsuccessful. Returns error.
             string errorCode = let var code = jsonResponse.'error.code in code is int ? code.toString() : EMPTY_STRING;
             string errorMessage = let var message = jsonResponse.'error.message in message is string ? message : 
-                    EMPTY_STRING;
+                EMPTY_STRING;
 
             string errorMsg = STATUS_CODE + COLON_SYMBOL + errorCode + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE 
-                    + COLON_SYMBOL + WHITE_SPACE + errorMessage;
+                + COLON_SYMBOL + WHITE_SPACE + errorMessage;
             //Iterate the errors array in Gmail API error response and concat the error information to
             //Gmail error message
             json|error jsonErrors = jsonResponse.'error.errors;
@@ -276,15 +276,15 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
                         }
                         if (errMap.hasKey("message")) {
                             message = let var messageStr = err.message in messageStr is string ? messageStr : 
-                                    EMPTY_STRING;
+                                EMPTY_STRING;
                         }
                         if (errMap.hasKey("location")) {
                             location = let var locationStr = err.location in locationStr is string ? locationStr : 
-                                    EMPTY_STRING;
+                                EMPTY_STRING;
                         }
                         if (errMap.hasKey("locationType")) {
                             locationType = let var locationTypeStr = err.locationType in locationTypeStr is string ? 
-                                    locationTypeStr : EMPTY_STRING;
+                                locationTypeStr : EMPTY_STRING;
                         }
                         if (errMap.hasKey("domain")) {
                             domain = let var domainStr = err.domain in domainStr is string ? domainStr : EMPTY_STRING;
