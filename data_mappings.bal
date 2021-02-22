@@ -100,8 +100,8 @@ isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) ret
         targetMessageBodyType.fileId = let var fileId 
                 = sourceMessagePartJsonObject.body.attachmentId in fileId is string ? fileId : EMPTY_STRING;
         // body is an object of MessagePartBody in the docs.
-        targetMessageBodyType.body = let var body = sourceMessagePartJsonObject.body.data in body is map<json> ? body : 
-                EMPTY_STRING;
+        targetMessageBodyType.body = let var body = sourceMessagePartJsonObject.body.data in body is map<json> ? 
+                body.toString() : EMPTY_STRING;
         // In the payload body, "size" is an integer.
         targetMessageBodyType.size = let var size 
                 = sourceMessagePartJsonObject.body.size in size is int ? size.toString() : EMPTY_STRING;
