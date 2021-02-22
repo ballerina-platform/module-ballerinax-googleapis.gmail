@@ -18,10 +18,6 @@ import ballerina/log;
 import ballerina/os;
 import ballerina/test;
 
-configurable string refreshToken = ?;
-configurable string clientId = ?;
-configurable string clientSecret = ?;
-
 GmailConfiguration gmailConfig = {
     oauthClientConfig: {
         refreshUrl: REFRESH_URL,
