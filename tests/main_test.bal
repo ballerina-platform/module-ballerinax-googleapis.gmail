@@ -15,29 +15,54 @@
 // under the License.
 
 import ballerina/log;
-import ballerina/os;
+//import ballerina/os;
 import ballerina/test;
+
+// GmailConfiguration gmailConfig = {
+//     oauthClientConfig: {
+//         refreshUrl: REFRESH_URL,
+//         refreshToken: os:getEnv("REFRESH_TOKEN"),
+//         clientId: os:getEnv("CLIENT_ID"),
+//         clientSecret: os:getEnv("CLIENT_SECRET")
+//     }
+// };
+
+// Client gmailClient = checkpanic new(gmailConfig);
+
+// //---------------Provide the following in the conf file before running the tests-------------------//
+// string testRecipient = os:getEnv("RECIPIENT");
+// string testSender = os:getEnv("SENDER");
+// string testCc = os:getEnv("CC");
+// string testAttachmentPath = os:getEnv("ATTACHMENT_PATH");
+// string attachmentContentType = os:getEnv("ATTACHMENT_CONTENT_TYPE");
+// string inlineImagePath = os:getEnv("INLINE_IMAGE_PATH");
+// string inlineImageName = os:getEnv("INLINE_IMAGE_NAME");
+// string imageContentType = os:getEnv("IMAGE_CONTENT_TYPE");
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
 
 GmailConfiguration gmailConfig = {
     oauthClientConfig: {
         refreshUrl: REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
     }
 };
 
 Client gmailClient = checkpanic new(gmailConfig);
 
 //---------------Provide the following in the conf file before running the tests-------------------//
-string testRecipient = os:getEnv("RECIPIENT");
-string testSender = os:getEnv("SENDER");
-string testCc = os:getEnv("CC");
-string testAttachmentPath = os:getEnv("ATTACHMENT_PATH");
-string attachmentContentType = os:getEnv("ATTACHMENT_CONTENT_TYPE");
-string inlineImagePath = os:getEnv("INLINE_IMAGE_PATH");
-string inlineImageName = os:getEnv("INLINE_IMAGE_NAME");
-string imageContentType = os:getEnv("IMAGE_CONTENT_TYPE");
+configurable string testRecipient = ?; //Example: "recipient@gmail.com"
+configurable string testSender = ?; //Example: "sender@gmail.com"
+configurable string testCc = ?; //Example: "cc@gmail.com"
+configurable string testAttachmentPath = ?; //Example: "/home/user/hello.txt"
+configurable string attachmentContentType = ?; //Example: "text/plain"
+configurable string inlineImagePath = ?; //Example: "/home/user/Picture2.jpg"
+configurable string inlineImageName = ?; //Example: "Picture2.jpg"
+configurable string imageContentType = ?; //Example: "image/jpeg"
 
 //---------------Do not change the following variables-----------------------//
 string testUserId = "me";

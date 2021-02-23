@@ -177,7 +177,6 @@ public client class Client {
         json jsonTrashMessageResponse = check handleResponse(httpResponse);
         //Return status of trashing message
         return let var id = jsonTrashMessageResponse.id in id is string ? id == messageId ? true : false : false;
-        //return jsonTrashMessageResponse.id.toString() == messageId;
     }
 
     # Removes the specified message from the trash.
@@ -194,7 +193,6 @@ public client class Client {
         json jsonUntrashMessageReponse = check handleResponse(httpResponse);
         //Return status of untrashing message
         return let var id = jsonUntrashMessageReponse.id in id is string ? id == messageId ? true : false : false;
-        //return jsonUntrashMessageReponse.id.toString() == messageId;
     }
 
     # Immediately and permanently deletes the specified message. This operation cannot be undone.
@@ -328,7 +326,6 @@ public client class Client {
         json jsonTrashThreadResponse = check handleResponse(httpResponse);
         //Return status of trashing thread
         return let var id = jsonTrashThreadResponse.id in id is string ? id == threadId ? true : false : false;
-        //return jsonTrashThreadResponse.id.toString() == threadId;
     }
 
     # Removes the specified mail thread from the trash.
@@ -345,7 +342,6 @@ public client class Client {
         json jsonUntrashThreadResponse = check handleResponse(httpResponse);
         //Return status of untrashing thread
         return let var id = jsonUntrashThreadResponse.id in id is string ? id == threadId ? true : false : false;
-        //return jsonUntrashThreadResponse.id.toString() == threadId;
     }
 
     # Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
@@ -458,7 +454,6 @@ public client class Client {
         json jsonCreateLabelResponse = check handleResponse(httpResponse);
         //Returns the label id of the created label
         return let var id = jsonCreateLabelResponse.id in id is string ? id : EMPTY_STRING;
-        //return jsonCreateLabelResponse.id.toString();
     }
 
     # Lists all labels in the user's mailbox.
@@ -683,7 +678,6 @@ public client class Client {
         json jsonCreateDraftResponse = check handleResponse(httpResponse);
         //Return draft id of the created draft
         return let var id = jsonCreateDraftResponse.id in id is string ? id : EMPTY_STRING;
-        //return jsonCreateDraftResponse.id.toString();
     }
 
     # Replaces a draft's content.
@@ -714,7 +708,6 @@ public client class Client {
         json jsonUpdateDraftResponse = check handleResponse(httpResponse);
         //Return draft id of the updated draft
         return let var id = jsonUpdateDraftResponse.id in id is string ? id : EMPTY_STRING;
-        //return jsonUpdateDraftResponse.id.toString();
     }
 
     # Sends the specified, existing draft to the recipients in the To, Cc, and Bcc headers.

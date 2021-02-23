@@ -36,7 +36,7 @@ MessageBodyPart[] inlineMessageImages) returns @tainted [MessageBodyPart[], Mess
     string disposition = getDispostionFromPayload(messagePayload);
 
     string messagePayloadMimeType = let var mimeType = messagePayload.mimeType in mimeType is string ? mimeType : 
-        EMPTY_STRING;
+            EMPTY_STRING;
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
         //Get the attachment message body part
@@ -177,7 +177,8 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
     } else {
         if (!equalsIgnoreCase(msgPrimaryType, reqPrimaryType)) {
             return false;
-        } else if ((reqSecondaryType.substring(0, 1) != STAR_SYMBOL) && (msgSecondaryType.substring(0, 1) != STAR_SYMBOL)) {
+        } else if ((reqSecondaryType.substring(0, 1) != STAR_SYMBOL) 
+                && (msgSecondaryType.substring(0, 1) != STAR_SYMBOL)) {
             return equalsIgnoreCase(msgSecondaryType, reqSecondaryType);
         } else {
             return true;
@@ -255,10 +256,10 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
             //If status is not 200 or 204, request is unsuccessful. Returns error.
             string errorCode = let var code = jsonResponse.'error.code in code is int ? code.toString() : EMPTY_STRING;
             string errorMessage = let var message = jsonResponse.'error.message in message is string ? message : 
-                EMPTY_STRING;
+                    EMPTY_STRING;
 
             string errorMsg = STATUS_CODE + COLON_SYMBOL + errorCode + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE 
-                + COLON_SYMBOL + WHITE_SPACE + errorMessage;
+                    + COLON_SYMBOL + WHITE_SPACE + errorMessage;
             //Iterate the errors array in Gmail API error response and concat the error information to
             //Gmail error message
             json|error jsonErrors = jsonResponse.'error.errors;
@@ -291,10 +292,11 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
                         }
                     }
                     errorMsg = errorMsg + NEW_LINE + ERROR + COLON_SYMBOL + WHITE_SPACE + NEW_LINE + DOMAIN
-                    + COLON_SYMBOL + WHITE_SPACE + domain + SEMICOLON_SYMBOL + WHITE_SPACE + REASON + COLON_SYMBOL
-                    + WHITE_SPACE + reason + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE
-                    + message + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION_TYPE + COLON_SYMBOL + WHITE_SPACE
-                    + locationType + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION + COLON_SYMBOL + WHITE_SPACE + location;
+                            + COLON_SYMBOL + WHITE_SPACE + domain + SEMICOLON_SYMBOL + WHITE_SPACE + REASON 
+                            + COLON_SYMBOL + WHITE_SPACE + reason + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE 
+                            + COLON_SYMBOL + WHITE_SPACE + message + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION_TYPE 
+                            + COLON_SYMBOL + WHITE_SPACE + locationType + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION 
+                            + COLON_SYMBOL + WHITE_SPACE + location;
                 }
                 error err = error(GMAIL_ERROR_CODE, message = errorMsg);
                 return err;
@@ -380,25 +382,25 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
 
     //Set the content type header of top level MIME message part
     concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_MIXED + SEMICOLON_SYMBOL + BOUNDARY + EQUAL_SYMBOL
-        + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
+            + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
 
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
 
     //------Start of multipart/related mime part------
     concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_RELATED + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
-        + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
+            + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
 
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
 
     //------Start of multipart/alternative mime part------
-    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE +
-        BOUNDARY + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE 
+            + BOUNDARY + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
 
     //Set the body part : text/plain
     if (msgRequest.contentType == TEXT_PLAIN) {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
         concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_PLAIN + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
-            + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+                + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
         concatRequest += NEW_LINE + msgRequest.messageBody + NEW_LINE;
     }
 
@@ -406,7 +408,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
     if (msgRequest.contentType == TEXT_HTML) {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
         concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_HTML + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
-            + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+                + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
         concatRequest += NEW_LINE + msgRequest.messageBody + NEW_LINE + NEW_LINE;
     }
 
@@ -435,12 +437,13 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
             if (inlineImgFileName is string) {
                 //Set the inline image headers of the message
                 concatRequest += CONTENT_TYPE + COLON_SYMBOL + inlineImage.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE
-                + NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + inlineImgFileName + APOSTROPHE_SYMBOL + NEW_LINE;
+                        + NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + inlineImgFileName + APOSTROPHE_SYMBOL + NEW_LINE;
                 concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + INLINE + SEMICOLON_SYMBOL + WHITE_SPACE
-                + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + inlineImgFileName + APOSTROPHE_SYMBOL + NEW_LINE;
+                        + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + inlineImgFileName + APOSTROPHE_SYMBOL 
+                        + NEW_LINE;
                 concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
                 concatRequest += CONTENT_ID + COLON_SYMBOL + LESS_THAN_SYMBOL + INLINE_IMAGE_CONTENT_ID_PREFIX
-                + inlineImgFileName + GREATER_THAN_SYMBOL + NEW_LINE;
+                        + inlineImgFileName + GREATER_THAN_SYMBOL + NEW_LINE;
                 concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
             } else {
                 return inlineImgFileName;
@@ -478,9 +481,9 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         if (attachmentFileName is string) {
             //Set attachment headers of the messsage
             concatRequest += CONTENT_TYPE + COLON_SYMBOL + attachment.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE + NAME
-            + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + attachmentFileName + APOSTROPHE_SYMBOL + NEW_LINE;
+                    + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + attachmentFileName + APOSTROPHE_SYMBOL + NEW_LINE;
             concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + ATTACHMENT + SEMICOLON_SYMBOL + WHITE_SPACE
-            + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + attachmentFileName + APOSTROPHE_SYMBOL + NEW_LINE;
+                    + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + attachmentFileName + APOSTROPHE_SYMBOL + NEW_LINE;
             concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
             concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
         } else {
