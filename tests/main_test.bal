@@ -27,7 +27,7 @@ GmailConfiguration gmailConfig = {
     }
 };
 
-Client gmailClient = checkpanic new(gmailConfig);
+Client gmailClient = new(gmailConfig);
 
 //---------------Provide the following in the conf file before running the tests-------------------//
 string testRecipient = os:getEnv("RECIPIENT");

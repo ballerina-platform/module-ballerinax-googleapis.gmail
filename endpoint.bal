@@ -23,18 +23,18 @@ import ballerina/io;
 public client class Client {
     http:Client gmailClient;
 
-    public function init(GmailConfiguration gmailConfig) returns error? {
+    public function init(GmailConfiguration gmailConfig) {
         // Create OAuth2 provider.
         http:ClientSecureSocket? socketConfig = gmailConfig?.secureSocketConfig;
 
         // Create gmail http client.
         if (socketConfig is http:ClientSecureSocket) {
-            self.gmailClient = check new (BASE_URL, {
+            self.gmailClient = checkpanic new (BASE_URL, {
                 auth: gmailConfig.oauthClientConfig,
                 secureSocket: socketConfig
             });
         } else {
-            self.gmailClient = check new (BASE_URL, {
+            self.gmailClient = checkpanic new (BASE_URL, {
                 auth: gmailConfig.oauthClientConfig
             });
         }

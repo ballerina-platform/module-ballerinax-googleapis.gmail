@@ -82,13 +82,10 @@ You can now enter the credentials in the Gmail client config.
 ```ballerina
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
-        accessToken: <ACCESS_TOKEN>,
-        refreshConfig: {
-            refreshUrl: gmail:REFRESH_URL,
-            refreshToken: <REFRESH_TOKEN>,
-            clientId: <CLIENT_ID>,
-            clientSecret: <CLIENT_SECRET>
-        }
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: <REFRESH_TOKEN>,
+        clientId: <CLIENT_ID>,
+        clientSecret: <CLIENT_SECRET>
     }
 };
 

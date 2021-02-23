@@ -27,13 +27,10 @@ You can now enter the credentials in the Gmail client config.
 ```ballerina
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
-        accessToken: <ACCESS_TOKEN>,
-        refreshConfig: {
-            refreshUrl: gmail:REFRESH_URL,
-            refreshToken: <REFRESH_TOKEN>,
-            clientId: <CLIENT_ID>,
-            clientSecret: <CLIENT_SECRET>
-        }
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: <REFRESH_TOKEN>,
+        clientId: <CLIENT_ID>,
+        clientSecret: <CLIENT_SECRET>
     }
 };
 
@@ -54,15 +51,13 @@ import ballerinax/googleapis_gmail as gmail;
 
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
-        accessToken: <ACCESS_TOKEN>,
-        refreshConfig: {
-            refreshUrl: gmail:REFRESH_URL,
-            refreshToken: <REFRESH_TOKEN>,
-            clientId: <CLIENT_ID>,
-            clientSecret: <CLIENT_SECRET>
-        }
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: <REFRESH_TOKEN>,
+        clientId: <CLIENT_ID>,
+        clientSecret: <CLIENT_SECRET>
     }
 };
+
 gmail:Client gmailClient = new (gmailConfig);
 public function main(string... args) {
     gmail:MessageRequest messageRequest = {};
