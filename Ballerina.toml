@@ -1,7 +1,7 @@
 [package]
 org = "ballerinax"
 name = "googleapis_gmail"
-version = "0.99.3"
+version = "0.99.4"
 authors = ["Ballerina"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
 keywords = ["gmail","email"]
