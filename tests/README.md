@@ -35,8 +35,8 @@ Visit `main_test.bal` file to find the way of creating Gmail endpoint.
 ### Running Gmail tests
 In order to run the tests, the user will need to have a Gmail account and create a configuration file named `Config.toml` in the project's root directory with the obtained tokens and other parameters.
 
-#### ballerina.conf
-```Config.toml
+#### Config.toml
+```ballerina
 
 [ballerinax.googleapis_gmail]
 //Give the credentials and tokens for the authorized user
@@ -59,7 +59,6 @@ imageContentType = "image/jpeg"
 
 Assign the values for the clientId, clientSecret and refreshToken inside constructed endpoint in 
 main_test.bal
-in either way following,
 
 ```ballerina
 
