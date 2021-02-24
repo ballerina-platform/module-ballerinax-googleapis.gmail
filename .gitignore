@@ -4,8 +4,10 @@
 # Log file
 *.log
 
-#conf file
-ballerina.conf
+#Config file
+Config.toml
+# Modules
+/modules
 
 # BlueJ files
 *.ctxt

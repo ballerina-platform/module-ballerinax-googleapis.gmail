@@ -17,8 +17,8 @@
 import ballerina/encoding;
 import ballerina/http;
 import ballerina/io;
-import ballerina/java;
-import ballerina/jarrays;
+import ballerina/jballerina.java as java;
+import ballerinax/java.arrays as jarrays;
 import ballerina/lang.'string as strings;
 import ballerina/log;
 import ballerina/mime;
@@ -34,7 +34,9 @@ MessageBodyPart[] inlineMessageImages) returns @tainted [MessageBodyPart[], Mess
     MessageBodyPart[] attachmentParts = msgAttachments;
     MessageBodyPart[] inlineImgParts = inlineMessageImages;
     string disposition = getDispostionFromPayload(messagePayload);
-    string messagePayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString() : EMPTY_STRING;
+
+    string messagePayloadMimeType = let var mimeType = messagePayload.mimeType in mimeType is string ? mimeType : 
+            EMPTY_STRING;
     //If parent mime part is an attachment
     if (disposition == ATTACHMENT) {
         //Get the attachment message body part
@@ -52,7 +54,7 @@ MessageBodyPart[] inlineMessageImages) returns @tainted [MessageBodyPart[], Mess
                 foreach json part in messagePartsArr {
                     //Recursively check each ith child mime part
                     [MessageBodyPart[], MessageBodyPart[]] parts = getFilePartsFromPayload(part, attachmentParts,
-                    inlineImgParts);
+                            inlineImgParts);
                     [attachmentParts, inlineImgParts] = parts;
                 }
             }
@@ -73,8 +75,8 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
 {
     MessageBodyPart msgBodyPart = {};
     string disposition = getDispostionFromPayload(messagePayload);
-    string messageBodyPayloadMimeType = messagePayload.mimeType != () ? messagePayload.mimeType.toString()
-                                                                      : EMPTY_STRING;
+    string messageBodyPayloadMimeType = let var mime = messagePayload.mimeType in mime is string ? mime : EMPTY_STRING;
+
     //If parent mime part is given mime type and not an attachment or an inline part
     if (isMimeType(messageBodyPayloadMimeType, mimeType) && (disposition != ATTACHMENT) && (disposition != INLINE)) {
         //Get the message body part.
@@ -175,7 +177,8 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
     } else {
         if (!equalsIgnoreCase(msgPrimaryType, reqPrimaryType)) {
             return false;
-        } else if ((reqSecondaryType.substring(0, 1) != STAR_SYMBOL) && (msgSecondaryType.substring(0, 1) != STAR_SYMBOL)) {
+        } else if ((reqSecondaryType.substring(0, 1) != STAR_SYMBOL) 
+                && (msgSecondaryType.substring(0, 1) != STAR_SYMBOL)) {
             return equalsIgnoreCase(msgSecondaryType, reqSecondaryType);
         } else {
             return true;
@@ -209,16 +212,15 @@ function encodeFile(string filePath) returns string | error {
         }
     } else if (fileChannel is io:GenericError) {
         error err = error(GMAIL_ERROR_CODE, message = "Generic error occurred while reading file from path: "
-        + filePath);
+                + filePath);
         return err;
     } else {
         error err = error(GMAIL_ERROR_CODE,
-        message = "Connection TimedOut error occurred while reading file from path: " + filePath);
+                message = "Connection TimedOut error occurred while reading file from path: " + filePath);
         return err;
     }
     return <@untainted>strings:fromBytes(readEncodedContent);
 }
-
 
 # Gets the file name from the given file path.
 #
@@ -240,25 +242,29 @@ function getFileNameFromPath(string filePath) returns string | error {
 #
 # + httpResponse - Http response or error
 # + return - If successful returns `json` response. Else returns error.
-isolated function handleResponse(http:Response |http:PayloadType |error httpResponse) returns @tainted json | error {
-    if (httpResponse is http:Response) {
-        if (httpResponse.statusCode == http:STATUS_NO_CONTENT) {
-            //If status 204, then no response body. So returns json boolean true.
-            return true;
-        }
-        var jsonResponse = httpResponse.getJsonPayload();
-        if (jsonResponse is json) {
-            if (httpResponse.statusCode == http:STATUS_OK) {
-                //If status is 200, request is successful. Returns resulting payload.
-                return jsonResponse;
-            } else {
-                //If status is not 200 or 204, request is unsuccessful. Returns error.
-                string errorMsg = STATUS_CODE + COLON_SYMBOL + jsonResponse.'error.code.toString() + SEMICOLON_SYMBOL
-                + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE + jsonResponse.'error.message.toString();
-                //Iterate the errors array in Gmail API error response and concat the error information to
-                //Gmail error message
-                json[] jsonErrors = <json[]>jsonResponse.'error.errors;
-                foreach json err in jsonErrors {
+isolated function handleResponse(http:Response httpResponse) returns @tainted json | error {
+    if (httpResponse.statusCode == http:STATUS_NO_CONTENT) {
+        //If status 204, then no response body. So returns json boolean true.
+        return true;
+    }
+    var jsonResponse = httpResponse.getJsonPayload();
+    if (jsonResponse is json) {
+        if (httpResponse.statusCode == http:STATUS_OK) {
+            //If status is 200, request is successful. Returns resulting payload.
+            return jsonResponse;
+        } else {
+            //If status is not 200 or 204, request is unsuccessful. Returns error.
+            string errorCode = let var code = jsonResponse.'error.code in code is int ? code.toString() : EMPTY_STRING;
+            string errorMessage = let var message = jsonResponse.'error.message in message is string ? message : 
+                    EMPTY_STRING;
+
+            string errorMsg = STATUS_CODE + COLON_SYMBOL + errorCode + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE 
+                    + COLON_SYMBOL + WHITE_SPACE + errorMessage;
+            //Iterate the errors array in Gmail API error response and concat the error information to
+            //Gmail error message
+            json|error jsonErrors = jsonResponse.'error.errors;
+            if (jsonErrors is json) {
+                foreach json err in <json[]>jsonErrors {
                     string reason = "";
                     string message = "";
                     string location = "";
@@ -267,37 +273,41 @@ isolated function handleResponse(http:Response |http:PayloadType |error httpResp
                     map<json> | error errMap = err.cloneWithType(mapJson);
                     if (errMap is map<json>) {
                         if (errMap.hasKey("reason")) {
-                            reason = err.reason.toString();
+                            reason = let var reasonStr = err.reason in reasonStr is string ? reasonStr : EMPTY_STRING;
                         }
                         if (errMap.hasKey("message")) {
-                            message = err.message.toString();
+                            message = let var messageStr = err.message in messageStr is string ? messageStr : 
+                                EMPTY_STRING;
                         }
                         if (errMap.hasKey("location")) {
-                            location = err.location.toString();
+                            location = let var locationStr = err.location in locationStr is string ? locationStr : 
+                                EMPTY_STRING;
                         }
                         if (errMap.hasKey("locationType")) {
-                            locationType = err.locationType.toString();
+                            locationType = let var locationTypeStr = err.locationType in locationTypeStr is string ? 
+                                locationTypeStr : EMPTY_STRING;
                         }
                         if (errMap.hasKey("domain")) {
-                            domain = err.domain.toString();
+                            domain = let var domainStr = err.domain in domainStr is string ? domainStr : EMPTY_STRING;
                         }
                     }
                     errorMsg = errorMsg + NEW_LINE + ERROR + COLON_SYMBOL + WHITE_SPACE + NEW_LINE + DOMAIN
-                    + COLON_SYMBOL + WHITE_SPACE + domain + SEMICOLON_SYMBOL + WHITE_SPACE + REASON + COLON_SYMBOL
-                    + WHITE_SPACE + reason + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE + COLON_SYMBOL + WHITE_SPACE
-                    + message + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION_TYPE + COLON_SYMBOL + WHITE_SPACE
-                    + locationType + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION + COLON_SYMBOL + WHITE_SPACE + location;
+                            + COLON_SYMBOL + WHITE_SPACE + domain + SEMICOLON_SYMBOL + WHITE_SPACE + REASON 
+                            + COLON_SYMBOL + WHITE_SPACE + reason + SEMICOLON_SYMBOL + WHITE_SPACE + MESSAGE 
+                            + COLON_SYMBOL + WHITE_SPACE + message + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION_TYPE 
+                            + COLON_SYMBOL + WHITE_SPACE + locationType + SEMICOLON_SYMBOL + WHITE_SPACE + LOCATION 
+                            + COLON_SYMBOL + WHITE_SPACE + location;
                 }
                 error err = error(GMAIL_ERROR_CODE, message = errorMsg);
                 return err;
+            } else {
+                error err = error(GMAIL_ERROR_CODE, message = jsonErrors);
             }
-        } else {
-            error err = error(GMAIL_ERROR_CODE,
-            message = "Error occurred while accessing the JSON payload of the response");
-            return err;
+
         }
     } else {
-        error err = error(GMAIL_ERROR_CODE, message = "Error occurred while invoking the REST API");
+        error err = error(GMAIL_ERROR_CODE, 
+                message = "Error occurred while accessing the JSON payload of the response");
         return err;
     }
 }
@@ -344,7 +354,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
     //The content type should be either TEXT_PLAIN or TEXT_HTML. If not returns an error.
     if (msgRequest.contentType != TEXT_PLAIN && msgRequest.contentType != TEXT_HTML) {
         error err = error(GMAIL_ERROR_CODE, message = "Does not support the given content type: "
-        + msgRequest.contentType + " for the message with subject: " + msgRequest.subject);
+                + msgRequest.contentType + " for the message with subject: " + msgRequest.subject);
         return err;
     }
     //Adding inline images to messages of TEXT_PLAIN content type is not supported.
@@ -372,25 +382,25 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
 
     //Set the content type header of top level MIME message part
     concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_MIXED + SEMICOLON_SYMBOL + BOUNDARY + EQUAL_SYMBOL
-        + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
+            + APOSTROPHE_SYMBOL + BOUNDARY_STRING + APOSTROPHE_SYMBOL + NEW_LINE;
 
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
 
     //------Start of multipart/related mime part------
     concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_RELATED + SEMICOLON_SYMBOL + WHITE_SPACE + BOUNDARY
-        + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
+            + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_1 + APOSTROPHE_SYMBOL + NEW_LINE;
 
     concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
 
     //------Start of multipart/alternative mime part------
-    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE +
-        BOUNDARY + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
+    concatRequest += CONTENT_TYPE + COLON_SYMBOL + mime:MULTIPART_ALTERNATIVE + SEMICOLON_SYMBOL + WHITE_SPACE 
+            + BOUNDARY + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + BOUNDARY_STRING_2 + APOSTROPHE_SYMBOL + NEW_LINE;
 
     //Set the body part : text/plain
     if (msgRequest.contentType == TEXT_PLAIN) {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
         concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_PLAIN + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
-            + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+                + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
         concatRequest += NEW_LINE + msgRequest.messageBody + NEW_LINE;
     }
 
@@ -398,7 +408,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
     if (msgRequest.contentType == TEXT_HTML) {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + NEW_LINE;
         concatRequest += CONTENT_TYPE + COLON_SYMBOL + TEXT_HTML + SEMICOLON_SYMBOL + CHARSET + EQUAL_SYMBOL
-            + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
+                + APOSTROPHE_SYMBOL + UTF_8 + APOSTROPHE_SYMBOL + NEW_LINE;
         concatRequest += NEW_LINE + msgRequest.messageBody + NEW_LINE + NEW_LINE;
     }
 
@@ -410,12 +420,12 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         //The mime type of inline image cannot be empty
         if (inlineImage.mimeType == EMPTY_STRING) {
             error err = error(GMAIL_ERROR_CODE, message = "Image content type cannot be empty for image: "
-                + inlineImage.imagePath);
+                    + inlineImage.imagePath);
             return err;
         } else if (inlineImage.imagePath == EMPTY_STRING) {
             //Inline image path cannot be empty
             error err = error(GMAIL_ERROR_CODE, message = "File path of inline image in message with subject: "
-                + msgRequest.subject + "cannot be empty");
+                    + msgRequest.subject + "cannot be empty");
             return err;
         }
         //If the mime type of the inline image is image/*
@@ -427,12 +437,13 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
             if (inlineImgFileName is string) {
                 //Set the inline image headers of the message
                 concatRequest += CONTENT_TYPE + COLON_SYMBOL + inlineImage.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE
-                + NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + inlineImgFileName + APOSTROPHE_SYMBOL + NEW_LINE;
+                        + NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + inlineImgFileName + APOSTROPHE_SYMBOL + NEW_LINE;
                 concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + INLINE + SEMICOLON_SYMBOL + WHITE_SPACE
-                + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + inlineImgFileName + APOSTROPHE_SYMBOL + NEW_LINE;
+                        + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + inlineImgFileName + APOSTROPHE_SYMBOL 
+                        + NEW_LINE;
                 concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
                 concatRequest += CONTENT_ID + COLON_SYMBOL + LESS_THAN_SYMBOL + INLINE_IMAGE_CONTENT_ID_PREFIX
-                + inlineImgFileName + GREATER_THAN_SYMBOL + NEW_LINE;
+                        + inlineImgFileName + GREATER_THAN_SYMBOL + NEW_LINE;
                 concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
             } else {
                 return inlineImgFileName;
@@ -440,7 +451,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         } else {
             //Return an error if an unsupported content type other than image/* is passed
             error err = error(GMAIL_ERROR_CODE, message = "Unsupported content type:" + inlineImage.mimeType
-            + "for the image:" + inlineImage.imagePath);
+                    + "for the image:" + inlineImage.imagePath);
             return err;
         }
     }
@@ -455,12 +466,12 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         //The mime type of the attachment cannot be empty
         if (attachment.mimeType == EMPTY_STRING) {
             error err = error(GMAIL_ERROR_CODE, message = "Content type of attachment:" + attachment.attachmentPath
-            + "cannot be empty");
+                    + "cannot be empty");
             return err;
         } else if (attachment.attachmentPath == EMPTY_STRING) {
             //The attachment path cannot be empty
             error err = error(GMAIL_ERROR_CODE, message = "File path of attachment in message with subject: "
-            + msgRequest.subject + "cannot be empty");
+                    + msgRequest.subject + "cannot be empty");
             return err;
         }
         //Open and encode the file into base64. Return a error if fails.
@@ -470,9 +481,9 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         if (attachmentFileName is string) {
             //Set attachment headers of the messsage
             concatRequest += CONTENT_TYPE + COLON_SYMBOL + attachment.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE + NAME
-            + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + attachmentFileName + APOSTROPHE_SYMBOL + NEW_LINE;
+                    + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + attachmentFileName + APOSTROPHE_SYMBOL + NEW_LINE;
             concatRequest += CONTENT_DISPOSITION + COLON_SYMBOL + ATTACHMENT + SEMICOLON_SYMBOL + WHITE_SPACE
-            + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + attachmentFileName + APOSTROPHE_SYMBOL + NEW_LINE;
+                    + FILE_NAME + EQUAL_SYMBOL + APOSTROPHE_SYMBOL + attachmentFileName + APOSTROPHE_SYMBOL + NEW_LINE;
             concatRequest += CONTENT_TRANSFER_ENCODING + COLON_SYMBOL + BASE_64 + NEW_LINE;
             concatRequest += NEW_LINE + encodedFile + NEW_LINE + NEW_LINE;
         } else {
