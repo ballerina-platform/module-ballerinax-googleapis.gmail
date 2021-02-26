@@ -347,6 +347,7 @@ function testgetUserProfile() {
         test:assertFail(msg = profile.message());
     }
 }
+
 @test:Config {
     dependsOn: [testUpdateLabel],
     groups: ["labelTestGroup"]
