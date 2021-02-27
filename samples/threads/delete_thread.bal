@@ -36,11 +36,12 @@ public function main(string... args) {
     string userId = "me";
     string sentTextMessageThreadId = "1771425e9e59ea6b";
 
-    var delete = gmailClient->deleteThread(userId, sentTextMessageThreadId);
-    if (delete is error) {
-        log:printError("Failed to delete the message");
+    boolean|error delete = gmailClient->deleteThread(userId, sentTextMessageThreadId);
+ 
+    if (delete == true) {
+        log:print("Successfully deleted the message: ");
     } else {
-        log:print("Successfully deleted the message");
+        log:printError("Failed to delete the message");
     }
 
     log:print("End!");

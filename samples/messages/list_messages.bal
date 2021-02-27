@@ -39,8 +39,9 @@ public function main(string... args) {
     // To exclude messages from spam and trash make set includeSpamTrash to false. Only return messages with labels that 
     // match all of the specified label ID "INBOX"
     gmail:MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: labelsToMatch};
-    var msgList = gmailClient->listMessages(userId, filter = searchFilter);
-    if msgList is gmail:MessageListPage {
+    gmail:MessageListPage|error msgList = gmailClient->listMessages(userId, filter = searchFilter);
+
+    if (msgList is gmail:MessageListPage) {
         error? e = msgList.messages.forEach(function (json message) {
                 log:print(message.toString());
         });

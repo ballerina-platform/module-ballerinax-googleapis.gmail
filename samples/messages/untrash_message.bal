@@ -37,11 +37,12 @@ public function main(string... args) {
     string userId = "me";
     string sentHtmlMessageId = "177dbb1f5fda1bd2";
 
-    var untrash = gmailClient->untrashMessage(userId, sentHtmlMessageId);
-    if (untrash is error) {
-        log:printError("Failed to trash the message");
+    boolean|error untrash = gmailClient->untrashMessage(userId, sentHtmlMessageId);
+
+    if (untrash == true) {
+        log:print("Successfully untrashed the message");
     } else {
-        log:print("Successfully untrashed the message", status = untrash);
-    }
+        log:printError("Failed to untrash the message");
+    } 
     log:print("End!");
 }

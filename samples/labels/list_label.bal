@@ -35,7 +35,8 @@ public function main(string... args) {
     // The user's email address. The special value **me** can be ussed to indicate the authenticated user.
     string userId = "me";
     
-    var listLabelResponse = gmailClient->listLabels(userId);
+    gmail:Label[]|error listLabelResponse = gmailClient->listLabels(userId);
+
     if (listLabelResponse is gmail:Label[]) { 
         error? e = listLabelResponse.forEach(function (gmail:Label label) {
             log:print(label.id);

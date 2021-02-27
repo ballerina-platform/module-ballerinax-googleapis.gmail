@@ -37,11 +37,12 @@ public function main(string... args) {
     string userId = "me";
     string sentHtmlMessageId = "177dbb1f5fda1bd2";
 
-    var trash = gmailClient->trashMessage(userId, sentHtmlMessageId);
-    if (trash is error) {
-        log:printError("Failed to trash the message");
+    boolean|error trash = gmailClient->trashMessage(userId, sentHtmlMessageId);
+
+    if (trash == true) {
+        log:print("Successfully trashed the message");
     } else {
-        log:print("Successfully trashed the message", status = trash);
+        log:printError("Failed to trash the message");
     }
     log:print("End!");
 }

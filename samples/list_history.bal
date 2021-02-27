@@ -46,7 +46,8 @@ public function main(string... args) {
         // History types to be returned by the function
         string[] historyTypes = ["labelAdded", "labelRemoved", "messageAdded", "messageDeleted"];
 
-        var listHistoryResponse = gmailClient->listHistory(userId, startHistoryId, historyTypes = historyTypes);
+        gmail:MailboxHistoryPage|error listHistoryResponse = gmailClient->listHistory(userId, startHistoryId, 
+            historyTypes = historyTypes);
 
         if (listHistoryResponse is gmail:MailboxHistoryPage) {
             error? e = listHistoryResponse.historyRecords.forEach(function (gmail:History history) {

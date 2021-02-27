@@ -35,7 +35,8 @@ public function main(string... args) {
     // The user's email address. The special value **me** can be ussed to indicate the authenticated user.
     string userId = "me";
 
-    var createLabelResponse = gmailClient->createLabel(userId, "Test", "labelShow", "show");
+    string|error createLabelResponse = gmailClient->createLabel(userId, "Test", "labelShow", "show");
+    
     if (createLabelResponse is string) {
         log:print("Successfully created label: ", labelId = createLabelResponse);
     } else {

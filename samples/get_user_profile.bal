@@ -35,7 +35,7 @@ public function main(string... args) {
     // The user's email address. The special value **me** can be ussed to indicate the authenticated user.
     string userId = "me";
     
-    var profile = gmailClient->getUserProfile(userId);
+    gmail:UserProfile|error profile = gmailClient->getUserProfile(userId);
     if (profile is gmail:UserProfile) {
         log:print("Sucessfully received user profile info: ", address = profile.emailAddress);
     } else {

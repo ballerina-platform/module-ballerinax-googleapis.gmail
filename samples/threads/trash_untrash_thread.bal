@@ -37,20 +37,22 @@ public function main(string... args) {
     string sentTextMessageThreadId = "1771425e9e59ea6b";
 
     log:print("Trash thread");
-    var trash = gmailClient->trashThread(userId, sentTextMessageThreadId);
-    if (trash is error) {
-        log:printError("Failed to trash the thread");
+    boolean|error trash = gmailClient->trashThread(userId, sentTextMessageThreadId);
+
+    if (trash == true) {
+        log:print("Successfully trashed the thread");
     } else {
-        log:print("Successfully trashed the message: ", result = trash);
-    }
+        log:printError("Failed to trash the thread");
+    } 
 
     log:print("Untrash thread");
-    var untrash = gmailClient->untrashThread(userId, sentTextMessageThreadId);
-    if (untrash is error) {
-        log:printError("Failed to trash the thread");
+    boolean|error untrash = gmailClient->untrashThread(userId, sentTextMessageThreadId);
+
+    if (untrash == true) {
+        log:print("Successfully untrashed the thread");
     } else {
-        log:print("Successfully untrashed the message: ", result = untrash);
-    }
+        log:printError("Failed to untrash the thread");
+    } 
     
     log:print("End!");
 }

@@ -36,7 +36,8 @@ public function main(string... args) {
     string userId = "me";
     string sentTextMessageId = "177dbb1f5fda1bd2";
     
-    var response = gmailClient->readMessage(userId, sentTextMessageId);
+    gmail:Message|error response = gmailClient->readMessage(userId, sentTextMessageId);
+    
     if (response is gmail:Message) {
         log:print("Is message details available: ", status = response.id == sentTextMessageId);
     } else {

@@ -41,8 +41,9 @@ public function main(string... args) {
     string updateBgColor = "#16a766";
     string updateTxtColor = "#000000";
 
-    var updateLabelResponse = gmailClient->updateLabel(userId, createdLabelId, name = updateName,
+    gmail:Label|error updateLabelResponse = gmailClient->updateLabel(userId, createdLabelId, name = updateName,
         backgroundColor = updateBgColor, textColor = updateTxtColor);
+
     if (updateLabelResponse is gmail:Label) {
         log:print("Sucessfully updated label: ", status = updateLabelResponse.name == updateName &&
             updateLabelResponse.backgroundColor == updateBgColor &&

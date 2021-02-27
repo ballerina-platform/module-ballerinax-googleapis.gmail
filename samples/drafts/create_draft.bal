@@ -45,7 +45,8 @@ public function main(string... args) {
     messageRequest.messageBody = messageBody;
     messageRequest.contentType = gmail:TEXT_PLAIN;
 
-    var draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentTextMessageThreadId);
+    string|error draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentTextMessageThreadId);
+    
     if (draftResponse is string) {
         log:print("Successfully created draft: ", draftId = draftResponse);
     } else {

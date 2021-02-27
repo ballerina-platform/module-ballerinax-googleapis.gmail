@@ -40,7 +40,7 @@ public function main(string... args) {
     string[] labelsToRemove = ["INBOX"];
 
     log:print("Add Labels");
-    var response = gmailClient->modifyMessage(userId, sentMessageId, labelsToAdd, []);
+    gmail:Message|error response = gmailClient->modifyMessage(userId, sentMessageId, labelsToAdd, []);
     if (response is gmail:Message) {
         log:print("Is lablel modified: ", status = response.id == sentMessageId);
     } else {

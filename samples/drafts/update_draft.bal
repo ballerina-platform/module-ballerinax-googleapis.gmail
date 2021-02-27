@@ -53,7 +53,7 @@ public function main(string... args) {
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     newMessageRequest.attachmentPaths = attachments;
 
-    var draftUpdateResponse = gmailClient->updateDraft(userId, createdDraftId, newMessageRequest);
+    string|error draftUpdateResponse = gmailClient->updateDraft(userId, createdDraftId, newMessageRequest);
     if (draftUpdateResponse is string) {
         log:print("Successfully updated the draft: ", result = draftUpdateResponse);
     } else {

@@ -39,7 +39,8 @@ public function main(string... args) {
     // Id of the message to delete. This can be obtained from the response of create message.
     string sentHtmlMessageId = "177dbb1f5fda1bd2"; 
 
-    var delete = gmailClient->deleteMessage(userId, sentHtmlMessageId);
+    boolean|error delete = gmailClient->deleteMessage(userId, sentHtmlMessageId);
+    
     if (delete == true) {
         log:print("Successfully deleted the message");
     } else {

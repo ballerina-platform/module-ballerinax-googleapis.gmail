@@ -38,7 +38,7 @@ public function main(string... args) {
     string readAttachmentFileId;
 
     // To read the attachment you should first obtain the attachment file ID 
-    var readResponse = gmailClient->readMessage(userId, sentHtmlMessageId);
+    gmail:Message|error readResponse = gmailClient->readMessage(userId, sentHtmlMessageId);
     
     if (readResponse is gmail:Message) {
        if (readResponse.msgAttachments.length() >= 1) {
@@ -46,7 +46,8 @@ public function main(string... args) {
             readAttachmentFileId = readResponse.msgAttachments[0]?.fileId;
 
             // Now we can fetch the attachment using the above attachment ID
-            var response = gmailClient->getAttachment(userId, sentHtmlMessageId, readAttachmentFileId);
+            gmail:MessageBodyPart|error response = gmailClient->getAttachment(userId, sentHtmlMessageId, 
+                readAttachmentFileId);
             if (response is gmail:MessageBodyPart) {
                 boolean status = (response.fileId == "" && response.body == "") ? false : true;
                 log:print("Attachment retrived ", status = status);

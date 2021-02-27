@@ -36,7 +36,7 @@ public function main(string... args) {
     string userId = "me";
     string sentHtmlMessageId = "177dbb1f5fda1bd2";
 
-    var response = gmailClient->readMessage(userId, sentHtmlMessageId);
+    gmail:Message|error response = gmailClient->readMessage(userId, sentHtmlMessageId);
     if (response is gmail:Message) {
        if (response.msgAttachments.length() >= 1) {
             log:print("Attachment retrived ", ststus = response.msgAttachments[0]?.fileId);

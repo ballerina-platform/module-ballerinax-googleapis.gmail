@@ -37,9 +37,10 @@ public function main(string... args) {
     // The ID of the existing draft we want to delete
     string createdDraftId = "";
 
-    var deleteResponse = gmailClient->deleteDraft(userId, createdDraftId);
-    if (deleteResponse is boolean) {
-        log:print("Successfully deleted the draft: ", result = deleteResponse);
+    boolean|error deleteResponse = gmailClient->deleteDraft(userId, createdDraftId);
+
+    if (deleteResponse == true) {
+        log:print("Successfully deleted the draft");
     } else {
         log:printError("Failed to delete the draft");
     }

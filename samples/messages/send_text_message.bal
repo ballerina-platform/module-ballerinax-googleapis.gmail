@@ -31,6 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
+    log:print("Send the message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -51,8 +52,7 @@ public function main(string... args) {
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
 
-    log:print("Send the message");
-    var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+    [string, string]|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
     if (sendMessageResponse is [string, string]) {
         // If successful, print the message ID and thread ID.
         [string, string] [messageId, threadId] = sendMessageResponse;

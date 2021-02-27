@@ -37,7 +37,7 @@ public function main(string... args) {
     // The ID of the existing draft we want to read
     string createdDraftId = "";
 
-    var draftReadResponse = gmailClient->readDraft(userId, createdDraftId);
+    gmail:Draft|error draftReadResponse = gmailClient->readDraft(userId, createdDraftId);
     if (draftReadResponse is gmail:Draft) {
         log:print("Succesfully read the draft: ", status = draftReadResponse.id == createdDraftId);
     } else {
