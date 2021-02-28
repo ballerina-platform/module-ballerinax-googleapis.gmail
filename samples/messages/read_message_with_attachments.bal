@@ -32,14 +32,14 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:print("Read a message with an attachment");
-    // The user's email address. The special value **me** can be ussed to indicate the authenticated user.
+    // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     string sentHtmlMessageId = "177dbb1f5fda1bd2";
 
     gmail:Message|error response = gmailClient->readMessage(userId, sentHtmlMessageId);
     if (response is gmail:Message) {
        if (response.msgAttachments.length() >= 1) {
-            log:print("Attachment retrived ", ststus = response.msgAttachments[0]?.fileId);
+            log:print("Attachment retrieved ", status = response.msgAttachments[0]?.fileId);
        } else {
             log:printError("No attachment exists for this message");
        }

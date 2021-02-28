@@ -32,7 +32,7 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     log:print("List drafts");
-    // The user's email address. The special value **me** can be ussed to indicate the authenticated user.
+    // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
     gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: "10"};

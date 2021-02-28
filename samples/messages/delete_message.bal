@@ -34,7 +34,7 @@ public function main(string... args) {
     // This method immediately and permanently deletes the specified message
     log:print("Delete a message");
 
-    // The user's email address. The special value **me** can be ussed to indicate the authenticated user.
+    // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     // Id of the message to delete. This can be obtained from the response of create message.
     string sentHtmlMessageId = "177dbb1f5fda1bd2"; 

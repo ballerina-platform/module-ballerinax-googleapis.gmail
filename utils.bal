@@ -285,8 +285,8 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
                                 EMPTY_STRING;
                         }
                         if (errMap.hasKey("locationType")) {
-                            locationType = let var locationTypeStr = err.locationType in locationTypeStr is string ? 
-                                locationTypeStr : EMPTY_STRING;
+                            locationType = let var locationTypeStr = 
+                                err.locationType in locationTypeStr is string ? locationTypeStr : EMPTY_STRING;
                         }
                         if (errMap.hasKey("domain")) {
                             domain = let var domainStr = err.domain in domainStr is string ? domainStr : EMPTY_STRING;

@@ -32,14 +32,14 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     log:print("Read a draft");
-    // The user's email address. The special value **me** can be ussed to indicate the authenticated user.
+    // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     // The ID of the existing draft we want to read
     string createdDraftId = "";
 
     gmail:Draft|error draftReadResponse = gmailClient->readDraft(userId, createdDraftId);
     if (draftReadResponse is gmail:Draft) {
-        log:print("Succesfully read the draft: ", status = draftReadResponse.id == createdDraftId);
+        log:print("Successfully read the draft: ", status = draftReadResponse.id == createdDraftId);
     } else {
         log:printError("Failed to get draft");
     }

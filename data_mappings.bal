@@ -35,7 +35,6 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
     if (labelIds is json) {
         json[] labelIdsArr = <json[]>labelIds;
         targetMessageType.labelIds = convertJSONArrayToStringArray(labelIdsArr);
-
     } else {
         targetMessageType.labelIds = [];
     }
