@@ -9,7 +9,7 @@ Connects to Gmail from Ballerina.
 # Introduction
 
 ## What is Gmail?
-[Gmail] (https://blog.google/products/gmail/), short for Google Mail is a free email service developed by Google LLC. It
+[Gmail](https://blog.google/products/gmail/), short for Google Mail is a free email service developed by Google LLC. It
 enables users to send and receive emails over the Internet. They provide several gigabytes of email data for the users
 of the service. Google's mail servers provide several capabilities for the users free of charge including filtering of
 spam mail and malware detection. Gmail like any other email service available, provides capability to send and receive 
@@ -334,7 +334,7 @@ of this operation is extracting the attachment and that can be accessed inside t
 string userId = "me";
 
 // ID of the message to read
-string sentMessageId = "<MESSAGE_ID>"; .
+string sentMessageId = "<MESSAGE_ID>";
 
 gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
 
@@ -363,7 +363,7 @@ string userId = "me";
 string sentMessageId = "<MESSAGE_ID>"; // ID of the message where attachment belongs to.
 
 // ID of the attachment
-string readAttachmentFileId = "<ATTACHMENT_ID>"; .
+string readAttachmentFileId = "<ATTACHMENT_ID>";
 
 gmail:MessageBodyPart|error response = gmailClient->getAttachment(userId, sentMessageId, readAttachmentFileId);
 
@@ -457,8 +457,8 @@ string userId = "me";
 string sentMessageThreadId = "<THREAD_ID";
 
 // When given and format is METADATA, only include headers specified. Here, it will specify "Subject"
-gmail:MailThread|error thread = gmailClient->readThread(userId, sentMessageThreadId, 
-    format = gmail:FORMAT_METADATA, metadataHeaders = ["Subject"]);
+gmail:MailThread|error thread = gmailClient->readThread(userId, sentMessageThreadId, format = gmail:FORMAT_METADATA, 
+    metadataHeaders = ["Subject"]);
     
 if (thread is gmail:MailThread) {
     log:print("Thread obtained: ", status = thread.id == sentTextMessageThreadId);
@@ -485,6 +485,7 @@ string sentMessageThreadId = "<THREAD_ID";
 
 log:print("Add labels to a thread");
 gmail:MailThread|error response = gmailClient->modifyThread(userId, sentMessageThreadId, ["INBOX"], []);
+
 if (response is gmail:MailThread) {
     log:print("Add labels to thread successfully: ", status = response.id == sentMessageThreadId);
 } else {
@@ -514,7 +515,8 @@ string userId = "me";
 // Make includeSpamTrash false to exclude threads from SPAM and TRASH in the results.
 gmail:ThreadListPage|error threadList = gmailClient->listThreads(userId, filter = {includeSpamTrash: false, 
     labelIds: ["INBOX"]});
-if (threadList is gmail:ThreadListPage) {  
+
+if (threadList is gmail:ThreadListPage) {
     error? e = threadList.threads.forEach(function (json thread) {
         log:print(thread.toString());
     }); 
@@ -647,6 +649,7 @@ gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeT
 newMessageRequest.attachmentPaths = attachments;
 
 string|error draftUpdateResponse = gmailClient->updateDraft(userId, createdDraftId, newMessageRequest);
+
 if (draftUpdateResponse is string) {
     log:print("Successfully updated the draft: ", result = draftUpdateResponse);
 } else {
@@ -668,6 +671,7 @@ string userId = "me";
 string createdDraftId = "<DRAFT_ID>"; 
 
 gmail:Draft|error draftReadResponse = gmailClient->readDraft(userId, createdDraftId);
+
 if (draftReadResponse is gmail:Draft) {
     log:print("Successfully read the draft: ", status = draftReadResponse.id == createdDraftId);
 } else {
@@ -887,15 +891,15 @@ The operation needs to give a starting history ID from where the list of history
 onwards. 
 
 ```ballerina
-
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
 string userId = "me";
-string sentTextMessageId = "17766ec1db9596e7";
+// TO get the history ID we have to get the history ID referring to message response.
+string sentMessageId = "<MESSAGE_ID>";
 
 // This operation returns history records after the specified `startHistoryId`. The supplied startHistoryId should be 
 // obtained from the historyId of a message, thread, or previous list response.
 string startHistoryId;
-var response = gmailClient->readMessage(userId, sentTextMessageId);
+var response = gmailClient->readMessage(userId, sentMessageId);
 
 if (response is gmail:Message) {
 
@@ -917,7 +921,6 @@ if (response is gmail:Message) {
 } else {
     log:printError("Failed to read message");
 }
-
 ```
 Notes: Optionally you can provide `historyTypes` which represent the types of histories to acquire, `labelId` which 
 represent the label ID to limit the history only to that label and `maxResults` which represent the item count to limit 

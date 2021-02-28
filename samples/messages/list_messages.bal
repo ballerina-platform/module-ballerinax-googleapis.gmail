@@ -39,6 +39,7 @@ public function main(string... args) {
     // To exclude messages from spam and trash make set includeSpamTrash to false. Only return messages with labels that 
     // match all of the specified label ID "INBOX"
     gmail:MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: labelsToMatch};
+    
     gmail:MessageListPage|error msgList = gmailClient->listMessages(userId, filter = searchFilter);
 
     if (msgList is gmail:MessageListPage) {

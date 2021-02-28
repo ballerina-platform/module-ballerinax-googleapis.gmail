@@ -41,6 +41,7 @@ public function main(string... args) {
     // Modify labels of the thread with thread id which was sent in testSendTextMessage
     log:print("Add labels to a thread");
     gmail:MailThread|error response = gmailClient->modifyThread(userId, sentMessageThreadId, ["INBOX"], []);
+
     if (response is gmail:MailThread) {
         log:print("Add labels to thread successfully: ", status = response.id == sentMessageThreadId);
     } else {
@@ -49,6 +50,7 @@ public function main(string... args) {
 
     log:print("Remove labels from a thread");
     response = gmailClient->modifyThread(userId, sentMessageThreadId, [], ["INBOX"]);
+    
     if (response is gmail:MailThread) {
         log:print("Removed labels from thread successfully: ", status = response.id == sentMessageThreadId);
     } else {

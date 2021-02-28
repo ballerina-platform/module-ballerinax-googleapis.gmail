@@ -43,6 +43,7 @@ public function main(string... args) {
 
     log:print("Add Labels");
     gmail:Message|error response = gmailClient->modifyMessage(userId, sentMessageId, labelsToAdd, []);
+
     if (response is gmail:Message) {
         log:print("Is lablel modified: ", status = response.id == sentMessageId);
     } else {
@@ -51,6 +52,7 @@ public function main(string... args) {
 
     log:print("Remove Labels");
     response = gmailClient->modifyMessage(userId, sentMessageId, [], labelsToRemove);
+    
     if (response is gmail:Message) {
         log:print("Is lablel modified: ", ststus = response.id == sentMessageId);
     } else {

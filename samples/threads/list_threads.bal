@@ -38,6 +38,7 @@ public function main(string... args) {
     // Make includeSpamTrash false to exclude threads from SPAM and TRASH in the results.
     gmail:ThreadListPage|error threadList = gmailClient->listThreads(userId, filter = {includeSpamTrash: false, 
         labelIds: ["INBOX"]});
+        
     if (threadList is gmail:ThreadListPage) {  
         error? e = threadList.threads.forEach(function (json thread) {
             log:print(thread.toString());

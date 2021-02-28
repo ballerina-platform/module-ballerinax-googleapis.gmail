@@ -34,15 +34,18 @@ public function main(string... args) {
     log:print("List the profile history");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    string sentTextMessageId = "17766ec1db9596e7";
+    // TO get the history ID we have to get the history ID referring to message response.
+    string sentMessageId = "<MESSAGE_ID>";
 
-    // This operation returns history records after the specified startHistoryId. The supplied startHistoryId should be 
+    // This operation returns history records after the specified `startHistoryId`. The supplied startHistoryId should be 
     // obtained from the historyId of a message, thread, or previous list response.
     string startHistoryId;
-    var response = gmailClient->readMessage(userId, sentTextMessageId);
+    var response = gmailClient->readMessage(userId, sentMessageId);
 
     if (response is gmail:Message) {
+
         startHistoryId = response.historyId;
+        
         // History types to be returned by the function
         string[] historyTypes = ["labelAdded", "labelRemoved", "messageAdded", "messageDeleted"];
 
