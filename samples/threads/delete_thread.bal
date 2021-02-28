@@ -34,14 +34,16 @@ public function main(string... args) {
     log:print("Delete thread");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    string sentTextMessageThreadId = "1771425e9e59ea6b";
 
-    boolean|error delete = gmailClient->deleteThread(userId, sentTextMessageThreadId);
+    // ID of the thread to delete.
+    string sentMessageThreadId = "<THREAD_ID"; 
+
+    boolean|error delete = gmailClient->deleteThread(userId, sentMessageThreadId);
  
     if (delete == true) {
-        log:print("Successfully deleted the message: ");
+        log:print("Successfully deleted the thread");
     } else {
-        log:printError("Failed to delete the message");
+        log:printError("Failed to delete the thread");
     }
 
     log:print("End!");

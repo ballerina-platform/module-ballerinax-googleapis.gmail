@@ -34,7 +34,9 @@ public function main(string... args) {
     log:print("Modify labels of a HTML message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    string sentMessageId = "177dbb1f5fda1bd2";
+
+    // ID of the message to modify.
+    string sentMessageId = "<MESSAGE_ID>"; 
 
     string[] labelsToAdd = ["INBOX"];
     string[] labelsToRemove = ["INBOX"];

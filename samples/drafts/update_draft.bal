@@ -34,10 +34,9 @@ public function main(string... args) {
     log:print("Update draft"); // New update will be to update the darft subject, body and attchments.
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    // The ID of the thread the draft should sent to. this is optional.
-    string sentTextMessageThreadId = "1771425e9e59ea6b";
+
     // The ID of the draft to update. This will be returned when a draft is created. 
-    string createdDraftId = "";
+    string createdDraftId = "<DRAFT_ID>";
 
     string updatedMessageBody = "Updated Draft Text Message Body";
     gmail:MessageRequest newMessageRequest = {};

@@ -36,10 +36,11 @@ public function main(string... args) {
 
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
+    
     // Id of the message to delete. This can be obtained from the response of create message.
-    string sentHtmlMessageId = "177dbb1f5fda1bd2"; 
+    string sentMessageId = "<MESSAGE_ID>"; 
 
-    boolean|error delete = gmailClient->deleteMessage(userId, sentHtmlMessageId);
+    boolean|error delete = gmailClient->deleteMessage(userId, sentMessageId);
     
     if (delete == true) {
         log:print("Successfully deleted the message");

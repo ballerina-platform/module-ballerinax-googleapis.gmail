@@ -34,8 +34,9 @@ public function main(string... args) {
     log:print("Send draft");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    // The ID of the existing draft we want to send
-    string createdDraftId = "";
+    
+    // The ID of the existing draft we want to send.
+    string createdDraftId = "<DRAFT_ID>"; 
 
     [string, string]|error sendDraftResponse = gmailClient->sendDraft(userId, createdDraftId);
     

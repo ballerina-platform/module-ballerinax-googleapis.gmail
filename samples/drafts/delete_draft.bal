@@ -34,8 +34,9 @@ public function main(string... args) {
     log:print("Delete a draft");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    // The ID of the existing draft we want to delete
-    string createdDraftId = "";
+    
+    // The ID of the existing draft we want to delete.
+    string createdDraftId = "<DRAFT_ID>"; 
 
     boolean|error deleteResponse = gmailClient->deleteDraft(userId, createdDraftId);
 

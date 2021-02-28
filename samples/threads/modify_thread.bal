@@ -34,21 +34,23 @@ public function main(string... args) {
     log:print("Modify labels in a thread");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    string sentTextMessageThreadId = "1771425e9e59ea6b";
+
+    // ID of the thread to modify.
+    string sentMessageThreadId = "<THREAD_ID";
 
     // Modify labels of the thread with thread id which was sent in testSendTextMessage
     log:print("Add labels to a thread");
-    gmail:MailThread|error response = gmailClient->modifyThread(userId, sentTextMessageThreadId, ["INBOX"], []);
+    gmail:MailThread|error response = gmailClient->modifyThread(userId, sentMessageThreadId, ["INBOX"], []);
     if (response is gmail:MailThread) {
-        log:print("Add labels to thread successfully: ", status = response.id == sentTextMessageThreadId);
+        log:print("Add labels to thread successfully: ", status = response.id == sentMessageThreadId);
     } else {
         log:print("Failed to modify thread");
     }
 
     log:print("Remove labels from a thread");
-    response = gmailClient->modifyThread(userId, sentTextMessageThreadId, [], ["INBOX"]);
+    response = gmailClient->modifyThread(userId, sentMessageThreadId, [], ["INBOX"]);
     if (response is gmail:MailThread) {
-        log:print("Removed labels from thread successfully: ", status = response.id == sentTextMessageThreadId);
+        log:print("Removed labels from thread successfully: ", status = response.id == sentMessageThreadId);
     } else {
         log:print("Failed to modify thread");
     }

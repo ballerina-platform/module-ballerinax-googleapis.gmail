@@ -34,8 +34,9 @@ public function main(string... args) {
     log:print("Read a draft");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    // The ID of the existing draft we want to read
-    string createdDraftId = "";
+    
+    // The ID of the existing draft we want to read.
+    string createdDraftId = "<DRAFT_ID>"; 
 
     gmail:Draft|error draftReadResponse = gmailClient->readDraft(userId, createdDraftId);
     if (draftReadResponse is gmail:Draft) {

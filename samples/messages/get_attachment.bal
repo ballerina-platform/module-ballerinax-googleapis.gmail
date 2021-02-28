@@ -34,7 +34,9 @@ public function main(string... args) {
     log:print("Get an attachment in a sent message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    string sentHtmlMessageId = "177dbb1f5fda1bd2";
+
+    // ID of the message where the attachment belongs to.
+    string sentHtmlMessageId = "<MESSAGE_ID>"; 
     string readAttachmentFileId;
 
     // To read the attachment you should first obtain the attachment file ID 

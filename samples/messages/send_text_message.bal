@@ -16,6 +16,7 @@
 
 import ballerina/log;
 import ballerina/os;
+//import ballerina/io;
 import ballerinax/googleapis_gmail as gmail;
 
 gmail:GmailConfiguration gmailConfig = {
@@ -42,7 +43,7 @@ public function main(string... args) {
     messageRequest.subject = "Email-Subject";
     messageRequest.messageBody = "Email Message Body Text";
 
-    string testAttachmentPath = "resources/test_document.txt";
+    string testAttachmentPath = "../resources/test_document.txt";
     string attachmentContentType = "text/plain";
 
     // Set the content type of the mail as TEXT_PLAIN.
@@ -52,7 +53,7 @@ public function main(string... args) {
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
 
-    [string, string]|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+    [string, string]|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId, messageRequest);
     if (sendMessageResponse is [string, string]) {
         // If successful, print the message ID and thread ID.
         [string, string] [messageId, threadId] = sendMessageResponse;
@@ -63,4 +64,5 @@ public function main(string... args) {
         log:printError(sendMessageResponse.message());
     }
     log:print("End!");
+
 }

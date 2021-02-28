@@ -36,6 +36,7 @@ public function main(string... args) {
     string userId = "me";
     
     gmail:UserProfile|error profile = gmailClient->getUserProfile(userId);
+    
     if (profile is gmail:UserProfile) {
         log:print("Successfully received user profile info: ", address = profile.emailAddress);
     } else {

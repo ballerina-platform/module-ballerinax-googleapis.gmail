@@ -35,9 +35,11 @@ public function main(string... args) {
     log:print("Unrash a message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    string sentHtmlMessageId = "177dbb1f5fda1bd2";
 
-    boolean|error untrash = gmailClient->untrashMessage(userId, sentHtmlMessageId);
+    // ID of the message to untrash.
+    string sentMessageId = "<MESSAGE_ID>"; 
+
+    boolean|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
 
     if (untrash == true) {
         log:print("Successfully untrashed the message");

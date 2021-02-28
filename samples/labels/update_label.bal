@@ -34,8 +34,9 @@ public function main(string... args) {
     log:print("Update label");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
+    
     // The ID of an already created label that we want to update
-    string createdLabelId = "";
+    string createdLabelId = "Label_20";
 
     string updateName = "updateTest";
     string updateBgColor = "#16a766";

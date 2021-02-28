@@ -34,12 +34,14 @@ public function main(string... args) {
     log:print("Read a message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    string sentTextMessageId = "177dbb1f5fda1bd2";
+
+    // ID of the message to read.
+    string sentMessageId = "<MESSAGE_ID>"; 
     
-    gmail:Message|error response = gmailClient->readMessage(userId, sentTextMessageId);
+    gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
     
     if (response is gmail:Message) {
-        log:print("Is message details available: ", status = response.id == sentTextMessageId);
+        log:print("Is message details available: ", status = response.id == sentMessageId);
     } else {
         log:printError("Failed to read message");
     }

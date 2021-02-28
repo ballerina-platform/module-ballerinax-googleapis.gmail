@@ -34,10 +34,12 @@ public function main(string... args) {
     log:print("Trash and Untrash thread");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
-    string sentTextMessageThreadId = "1771425e9e59ea6b";
+
+    // ID of the thread to trash or untrash.
+    string sentMessageThreadId = "<THREAD_ID"; 
 
     log:print("Trash thread");
-    boolean|error trash = gmailClient->trashThread(userId, sentTextMessageThreadId);
+    boolean|error trash = gmailClient->trashThread(userId, sentMessageThreadId);
 
     if (trash == true) {
         log:print("Successfully trashed the thread");
@@ -46,7 +48,7 @@ public function main(string... args) {
     } 
 
     log:print("Untrash thread");
-    boolean|error untrash = gmailClient->untrashThread(userId, sentTextMessageThreadId);
+    boolean|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
 
     if (untrash == true) {
         log:print("Successfully untrashed the thread");

@@ -461,7 +461,7 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns an array of Label type objects with values for a set of main fields only. (Use
-    #          `getLabel` to get all the details for a specific label) If not successful, returns error.
+    #            `getLabel` to get all the details for a specific label) If not successful, returns error.
     remote function listLabels(string userId) returns @tainted Label[] | error {
         string listLabelsPath = USER_RESOURCE + userId + LABEL_RESOURCE;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(listLabelsPath);

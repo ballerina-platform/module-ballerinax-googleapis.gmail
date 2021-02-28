@@ -35,7 +35,7 @@ public function main(string... args) {
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     // The ID of the thread the draft should sent to. this is optional.
-    string sentTextMessageThreadId = "1771425e9e59ea6b";
+    string sentMessageThreadId = "<THREAD_ID>";
 
     string messageBody = "Draft Text Message Body";
     gmail:MessageRequest messageRequest = {};
@@ -45,7 +45,7 @@ public function main(string... args) {
     messageRequest.messageBody = messageBody;
     messageRequest.contentType = gmail:TEXT_PLAIN;
 
-    string|error draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentTextMessageThreadId);
+    string|error draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentMessageThreadId);
     
     if (draftResponse is string) {
         log:print("Successfully created draft: ", draftId = draftResponse);
