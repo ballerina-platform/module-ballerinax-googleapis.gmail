@@ -233,7 +233,7 @@ if (sendMessageResponse is [string, string]) {
     log:printError(sendMessageResponse.message());
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/send_text_message.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/send_text_message.bal
 
 ### Send a message containing html payload
 This sample shows how to send a simple email that contain an html page as the payload to a specific recipient. The 
@@ -292,7 +292,7 @@ string attachmentContentType = "text/plain";
 gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
 messageRequest.attachmentPaths = attachments;
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/send_html_message.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/send_html_message.bal
 
 ### Read message
 This sample shows how to read an email that is available in the authorized user's account. For this, the ID of the 
@@ -315,7 +315,7 @@ if (response is gmail:Message) {
     log:printError("Failed to read message");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/read_text_message.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/read_text_message.bal
 
 ### Read a message which contain an attachment
 This sample shows how to read an email that is available in the authorized user's account. Specifically, this email 
@@ -345,7 +345,7 @@ if (response is gmail:Message) {
 }
 
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/read_message_with_attachments.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/read_message_with_attachments.bal
 
 ### Get attachment
 This sample shows how to read an attachment that is available in the authorized user's account.Similar to above sample, 
@@ -373,7 +373,7 @@ if (response is gmail:MessageBodyPart) {
 }
 
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/get_attachment.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/get_attachment.bal
 
 ### Trash or un-trash message
 This sample shows how to trash or un-trash an email that is available in the authorized user's account. When you trash a 
@@ -406,8 +406,8 @@ if (untrash == true) {
     log:printError("Failed to un-trash the message");
 } 
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/trash_message.bal <br/>
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/untrash_message.bal
+Sample for trashing is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/trash_message.bal <br/>
+Sample is un-trashing is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/untrash_message.bal
 
 ### Delete message
 This sample shows how to delete an email that is available in the authorized user's account.In contrast to trashing a 
@@ -429,7 +429,7 @@ if (delete == true) {
     log:printError("Failed to delete the message");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/delete_message.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/delete_message.bal
 
 ## Working with Threads
 A thread is a collection of messages that represents a conversation. Gmail creates threads automatically as users send 
@@ -461,7 +461,7 @@ if (thread is gmail:MailThread) {
     log:print("Failed to get thread");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/threads/read_one_thread.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/threads/read_one_thread.bal
 
 ### Modify a thread
 This sample shows how to modify a single thread present in the authorized user's account. The ballerina connector only 
@@ -495,7 +495,7 @@ if (response is gmail:MailThread) {
     log:print("Failed to modify thread");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/threads/modify_thread.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/threads/modify_thread.bal
 
 ### List threads
 This sample shows how to list the available threads in authorized user's mailbox. You must specify the 
@@ -522,7 +522,7 @@ if (threadList is gmail:ThreadListPage) {
 Notes: Optionally we can provide `MsgSearchFilter` to specifically give optional parameters for this operation including
 **Whether to include SPAM or TRASH**, **maximum item count**, **specific label IDs**, **Page token** and **query**.
 
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/threads/list_threads.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/threads/list_threads.bal
 
 ### Trash or un-trash threads
 This sample shows how to trash or un-trash an email thread that is available in the authorized user's account. When you 
@@ -556,7 +556,7 @@ if (untrash == true) {
     log:printError("Failed to un-trash the thread");
 } 
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/threads/trash_untrash_thread.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/threads/trash_untrash_thread.bal
 
 ### Delete thread
 This sample shows how to delete an email thread that is available in the authorized user's account.In contrast to 
@@ -578,7 +578,7 @@ if (delete == true) {
     log:printError("Failed to delete the thread");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/threads/delete_thread.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/threads/delete_thread.bal
 
 ## Working with Drafts
 A Draft is an unsent message that with the label DRAFT. When sent, it’s automatically replaced with a matching message 
@@ -613,7 +613,7 @@ if (draftResponse is string) {
     log:printError("Failed to create draft");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/drafts/create_draft.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/drafts/create_draft.bal
 
 ### Update draft
 This sample shows how to update an existing draft in the authorized user's account. It contains how the draft created in 
@@ -651,7 +651,7 @@ if (draftUpdateResponse is string) {
     log:printError("Failed to update the draft");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/drafts/update_draft.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/drafts/update_draft.bal
 
 ### Read draft
 This sample shows how to retrieve a single draft present in the authorized user's account. For this operation in the 
@@ -673,7 +673,7 @@ if (draftReadResponse is gmail:Draft) {
     log:printError("Failed to get draft");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/drafts/read_draft.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/drafts/read_draft.bal
 
 ### List drafts
 This sample shows how to list the available drafts in authorized user's mailbox. You must specify the 
@@ -699,7 +699,7 @@ if (msgList is gmail:DraftListPage) {
 Notes: Optionally we can provide `DraftSearchFilter` to specifically give optional parameters for this operation including
 **Whether to include SPAM or TRASH**, **maximum item count**, **Page token** and **query**.
 
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/drafts/list_drafts.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/drafts/list_drafts.bal
 
 ### Delete draft
 This sample shows how to delete a draft that is available in the authorized user's account. In contrast to previous 
@@ -721,7 +721,7 @@ if (deleteResponse == true) {
     log:printError("Failed to delete the draft");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/drafts/delete_draft.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/drafts/delete_draft.bal
 
 ### Send draft
 This sample shows how to send an existing draft to the recipients in the `recipient` and  `cc` fields. Here, you have to 
@@ -746,7 +746,7 @@ if (sendDraftResponse is [string, string]) {
     log:printError("Failed to send the draft");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/drafts/send_draft.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/drafts/send_draft.bal
 
 ## Working with Labels
 Labels are used to categorize and organize messages and threads in a Gmail account. A label has a many-to-many 
@@ -782,7 +782,7 @@ if (createLabelResponse is string) {
 Note: Optionally, this new label can be given additional properties like background colour and text colour by providing 
 a **hex string in the format #RRGGBB** for the function parameters `backgroundColor` and `textColor` respectively.
 
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/labels/create_label.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/labels/create_label.bal
 
 ### Update label
 This sample shows how we can update the already existing label in a Gmail account. Here if we consider the previous 
@@ -811,7 +811,7 @@ if (updateLabelResponse is gmail:Label) {
     log:printError("Failed to update label");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/labels/update_label.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/labels/update_label.bal
 
 ### List labels
 This sample shows how to list the available labels in authorized user's mailbox. You must specify the 
@@ -832,7 +832,7 @@ if (listLabelResponse is gmail:Label[]) {
     log:printError("Failed to list labels");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/labels/list_label.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/labels/list_label.bal
 
 ### Delete label
 This sample shows how to delete a label that is available in the authorized user's account. Delete of a label immediately 
@@ -854,7 +854,7 @@ if (deleteLabelResponse == true) {
     log:print("Failed to delete the message");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/labels/delete_label.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/labels/delete_label.bal
 
 ## Working with User Profiles
 Gmail API can be used to get the information about a Gmail profile of a user. The `ballerinax/googleapis_gmail` module 
@@ -873,7 +873,7 @@ if (profile is gmail:UserProfile) {
     log:printError("Failed to get user profile information");
 }
 ```
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/get_user_profile.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/get_user_profile.bal
 
 ## Working with Mailbox History
 Gmail API provide capability to list the history of all changes to the given mailbox. History results are returned in 
@@ -918,7 +918,7 @@ Notes: Optionally you can provide `historyTypes` which represent the types of hi
 represent the label ID to limit the history only to that label and `maxResults` which represent the item count to limit 
 the count of items in the history list.
 
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/list_history.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/list_history.bal
 
 ## Building from the Source
 
