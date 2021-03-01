@@ -16,7 +16,6 @@ jobs:
                       build 
               env:
                   JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
-                  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
                   CLIENT_ID: ${{ secrets.CLIENT_ID }} 
                   CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }} 
                   REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}

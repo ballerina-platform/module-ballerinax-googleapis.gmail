@@ -2,18 +2,14 @@
 
 | Ballerina Language Version | Gmail API Version |  
 |:--------------------------:|:-----------------:|
-| Swan Lake Preview8-SNAPSHOT|   v1              |
+| Swan Lake Alpha 2          |   v1              |
 
 ### Prerequisites
 
 * To use Gmail endpoint, you need to provide the following:
     * Client Id
     * Client Secret
-    * Access Token
     * Refresh Token
-    
-    *Please note that, providing Client Id, Client Secret, Refresh Token are optional if you are only providing a
-valid Access Token vise versa.*
 
 * Go through the following steps to obtain client id, client secret, refresh token and access token for Gmail API.
     *   Go to [Google API Console](https://console.developers.google.com) to create a project and an app for the project to connect with Gmail API.
@@ -37,43 +33,45 @@ In order to use the Gmail connector, first you need to create a Gmail endpoint b
 Visit `main_test.bal` file to find the way of creating Gmail endpoint.
 
 ### Running Gmail tests
-In order to run the tests, the user will need to have a Gmail account and create a configuration file named `ballerina.conf` in the project's root directory with the obtained tokens and other parameters.
+In order to run the tests, the user will need to have a Gmail account and create a configuration file named `Config.toml` in the project's root directory with the obtained tokens and other parameters.
 
-#### ballerina.conf
-```ballerina.conf
+#### Config.toml
+```ballerina
+
+[ballerinax.googleapis_gmail]
 //Give the credentials and tokens for the authorized user
-ACCESS_TOKEN="enter your access token here"
-CLIENT_ID="enter your client id here"
-CLIENT_SECRET="enter your client secret here"
-REFRESH_TOKEN="enter your refresh token here"
-TRUST_STORE_PATH = "enter a truststore path if required"
-TRUST_STORE_PASSWORD = "enter a truststore password if required"
+refreshToken = "enter your refresh token here"
+clientId = "enter your client id here"
+clientSecret = "enter your client secret here"
+trustStorePath = "enter a truststore path if required"
+trustStorePassword = "enter a truststore password if required"
 
 //Give values for the following to run the tests
-RECIPIENT="recipient@gmail.com"
-SENDER="sender@gmail.com"
-CC="cc@gmail.com"
-ATTACHMENT_PATH="src/gmail/tests/resources/hello.txt"
-ATTACHMENT_CONTENT_TYPE="text/plain"
-INLINE_IMAGE_PATH="src/gmail/tests/resources/workplace.jpg"
-INLINE_IMAGE_NAME="workplace.jpg"
-IMAGE_CONTENT_TYPE="image/jpeg"
+testRecipient = "name@gmail.com"
+testSender = "recipient@gmail.com"
+testCc = "anothername@gmail.com"
+testAttachmentPath = "tests/resources/test.txt"
+attachmentContentType = "text/plain"
+inlineImagePath = "tests/resources/Test_image.jpg"
+inlineImageName = "Test_image.jpg"
+imageContentType = "image/jpeg"
 ```
 
-Assign the values for the accessToken, clientId, clientSecret and refreshToken inside constructed endpoint in 
+Assign the values for the clientId, clientSecret and refreshToken inside constructed endpoint in 
 main_test.bal
-in either way following,
 
 ```ballerina
-GmailConfiguration gmailConfig = {
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+
+gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
-        accessToken: config:getAsString("ACCESS_TOKEN"),
-        refreshConfig: {
-            refreshUrl: REFRESH_URL,
-            refreshToken: config:getAsString("REFRESH_TOKEN"),
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET")
-        }
+        refreshUrl: REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
     }
 };
 
@@ -82,17 +80,17 @@ Client gmailClient = new(gmailConfig);
 
 Assign values for other necessary parameters to perform api operations in test.bal as follows.
 ```ballerina
-string recipient = config:getAsString("RECIPIENT"); 
-string sender = config:getAsString("SENDER"); 
-string cc = config:getAsString("CC"); 
-string attachmentPath = config:getAsString("ATTACHMENT_PATH"); 
-string attachmentContentType = config:getAsString("ATTACHMENT_CONTENT_TYPE"); 
-string inlineImagePath = config:getAsString("INLINE_IMAGE_PATH"); 
-string inlineImageName = config:getAsString("INLINE_IMAGE_NAME"); 
-string imageContentType = config:getAsString("IMAGE_CONTENT_TYPE"); 
+configurable string testRecipient = ?; //Example: "recipient@gmail.com"
+configurable string testSender = ?; //Example: "sender@gmail.com"
+configurable string testCc = ?; //Example: "cc@gmail.com"
+configurable string testAttachmentPath = ?; //Example: "/home/user/hello.txt"
+configurable string attachmentContentType = ?; //Example: "text/plain"
+configurable string inlineImagePath = ?; //Example: "/home/user/Picture2.jpg"
+configurable string inlineImageName = ?; //Example: "Picture2.jpg"
+configurable string imageContentType = ?; //Example: "image/jpeg"
 ```
 Run tests :
 
 ```
-ballerina test gmail
+bal test
 ```
