@@ -137,7 +137,7 @@ isolated function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObjec
 
 # Transforms mail thread JSON object into MailThread type.
 # + sourceThreadJsonObject - `json` message thread object.
-# + return - Returns MailThread type.
+# + return - Returns MailThread type
 function convertJSONToThreadType(json sourceThreadJsonObject) returns @tainted MailThread {
     return {
         id: let var id = sourceThreadJsonObject.id in id is string ? id : EMPTY_STRING,
@@ -294,8 +294,8 @@ isolated function convertJSONToLabelType(json sourceLabelJsonObject) returns Lab
             if (messagesTotal is int) {
                 targetLabel.messagesTotal = messagesTotal;
             } else {
-                error err = error(GMAIL_ERROR_CODE, 
-                    message = "Error occurred while converting messagesTotal json to int.");
+                error err = error(GMAIL_ERROR_CODE, message = 
+                    "Error occurred while converting messagesTotal json to int.");
                 return err;
             }
         } else {
@@ -361,8 +361,8 @@ isolated function convertJSONToLabelType(json sourceLabelJsonObject) returns Lab
     } else {
         log:printError("Error occurred while converting sourceLabelJsonObject json to map of json. sourceLabelJsonObject: " 
             + sourceLabelJsonObject.toString(), err = srcLabelJsonObjectMap);
-        error err = error(GMAIL_ERROR_CODE, 
-            message = "Error occurred while converting sourceLabelJsonObject json to map of json.");
+        error err = error(GMAIL_ERROR_CODE, message = 
+            "Error occurred while converting sourceLabelJsonObject json to map of json.");
         return err;
     }
 }
@@ -370,7 +370,7 @@ isolated function convertJSONToLabelType(json sourceLabelJsonObject) returns Lab
 isolated function convertToInt(json jsonVal) returns int {
     string stringVal = jsonVal.toString();
     if (stringVal != "") {
-        int | error intVal = 'int:fromString(stringVal);
+        int|error intVal = 'int:fromString(stringVal);
         if (intVal is int) {
             return intVal;
         } else {
@@ -486,7 +486,7 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                     json|error labelIds = recordData.labelIds;
                     if (labelIds is json) {
                         array:push(targetHistory.labelsRemoved, 
-                                { labelIds: convertJSONArrayToStringArray(<json[]>labelIds) });
+                            { labelIds: convertJSONArrayToStringArray(<json[]>labelIds) });
                     } else {
                         log:printError("Error occurred while getting label is from record data.", err = labelIds);
                     }

@@ -42,7 +42,6 @@ underneath it's implementation. Gmail uses OAuth 2.0 to authenticate and authori
 minimally instantiated in the Gmail client config using the Access Token or by using the Client ID, Client Secret and 
 Refresh Token.
 
-
 # Prerequisites
 
 * A Gmail Account with access <br/> https://support.google.com/mail/answer/56256?hl=en
@@ -67,11 +66,9 @@ Refresh Token.
 
         ![OAuth2 authorization code flow](docs/images/tokens.png)
 
-
 * Java 11 Installed <br/> Java Development Kit (JDK) with version 11 is required.
 
 * Ballerina SLAlpha2 Installed <br/> Ballerina Swan Lake Alpha 2 is required.
-
 
 # Supported Versions & Limitations
 
@@ -209,7 +206,7 @@ emails.
 This sample shows how to send a simple email that contain only text content to a specific recipient. The necessary data 
 to create an email in this connector is represented in a type called `MessageRequest`. User can decide what to send as 
 data for an email. As the content type is text, the user must specify the `contentType` in `MessageRequest` as 
-**text/plain**. This operation returns a tuple which contain the **message ID** and **thread ID** of the newly sent 
+**text/plain**. This operation returns a `tuple` which contain the **message ID** and **thread ID** of the newly sent 
 email. Else an `error`
 
 ```ballerina
@@ -242,7 +239,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 This sample shows how to send a simple email that contain an html page as the payload to a specific recipient. The 
 necessary data to create an email in this connector is represented in a type called `MessageRequest`. User can decide 
 what to send as data for an email. As the content type is HTML, the user must specify the `contentType` in 
-`MessageRequest` as **text/html**. This operation returns a tuple which contain the **message ID** and **thread ID** of 
+`MessageRequest` as **text/html**. This operation returns a `tuple` which contain the **message ID** and **thread ID** of 
 the newly sent email. Else an `error`
 
 ```ballerina
@@ -266,7 +263,7 @@ messageRequest.contentType = gmail:TEXT_HTML;
 if (sendMessageResponse is [string, string]) {
     // If successful, print the message ID and thread ID.
     [string, string] [messageId, threadId] = sendMessageResponse;
-    log:print("Sent Message ID: ", messageid = messageId);
+    log:print("Sent Message ID: ", messageId = messageId);
     log:print("Sent Thread ID: ", threadId = threadId);
 } else {
     // If unsuccessful, print the error returned.
@@ -295,7 +292,6 @@ string attachmentContentType = "text/plain";
 gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
 messageRequest.attachmentPaths = attachments;
 ```
-
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/send_html_message.bal
 
 ### Read message
@@ -360,7 +356,9 @@ successful. Else returns `error`.
 
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
 string userId = "me";
-string sentMessageId = "<MESSAGE_ID>"; // ID of the message where attachment belongs to.
+
+// ID of the message where attachment belongs to.
+string sentMessageId = "<MESSAGE_ID>"; 
 
 // ID of the attachment
 string readAttachmentFileId = "<ATTACHMENT_ID>";
@@ -375,7 +373,6 @@ if (response is gmail:MessageBodyPart) {
 }
 
 ```
-
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/get_attachment.bal
 
 ### Trash or un-trash message
@@ -404,13 +401,12 @@ if (trash == true) {
 boolean|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
 
 if (untrash == true) {
-    log:print("Successfully untrashed the message");
+    log:print("Successfully un-trashed the message");
 } else {
-    log:printError("Failed to untrash the message");
+    log:printError("Failed to un-trash the message");
 } 
 ```
-
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/trash_message.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/trash_message.bal <br/>
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/messages/untrash_message.bal
 
 ### Delete message
@@ -421,9 +417,8 @@ a boolean `true` if successful. Else returns `error`.
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
 string userId = "me";
-// Id of the message to delete. This can be obtained from the response of create message.
 
-// ID of the message to delete.
+// Id of the message to delete. This can be obtained from the response of create message.
 string sentMessageId = "<MESSAGE_ID>"; 
 
 boolean|error delete = gmailClient->deleteMessage(userId, sentMessageId);
@@ -540,7 +535,7 @@ returns `error`.
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
 string userId = "me";
 
-// ID of the thread to trash or untrash.
+// ID of the thread to trash or un-trash.
 string sentMessageThreadId = "<THREAD_ID";
 
 log:print("Trash thread");
@@ -552,13 +547,13 @@ if (trash == true) {
     log:printError("Failed to trash the thread");
 } 
 
-log:print("Untrash thread");
+log:print("Un-trash thread");
 boolean|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
 
 if (untrash == true) {
-    log:print("Successfully untrashed the thread");
+    log:print("Successfully un-trashed the thread");
 } else {
-    log:printError("Failed to untrash the thread");
+    log:printError("Failed to un-trash the thread");
 } 
 ```
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/threads/trash_untrash_thread.bal
@@ -594,7 +589,7 @@ update and send drafts in Gmail.
 This sample shows how to create a draft in the authorized user's account. Creating drafts is similar to creating 
 messages in Gmail. But, the message will not be sent to the mentioned recipients until it is specifically sent. 
 This draft will be represented as an unsent messages with the DRAFT system label applied. If successful it returns a
-`string` representing the draft IF. Else returns `error`.
+`string` representing the draft ID. Else returns `error`.
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -837,7 +832,6 @@ if (listLabelResponse is gmail:Label[]) {
     log:printError("Failed to list labels");
 }
 ```
-
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/labels/list_label.bal
 
 ### Delete label
@@ -860,7 +854,6 @@ if (deleteLabelResponse == true) {
     log:print("Failed to delete the message");
 }
 ```
-
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/labels/delete_label.bal
 
 ## Working with User Profiles
@@ -880,7 +873,6 @@ if (profile is gmail:UserProfile) {
     log:printError("Failed to get user profile information");
 }
 ```
-
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/main/samples/get_user_profile.bal
 
 ## Working with Mailbox History

@@ -47,13 +47,13 @@ public function main(string... args) {
         log:printError("Failed to trash the thread");
     } 
 
-    log:print("Untrash thread");
+    log:print("Un-trash thread");
     boolean|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
 
     if (untrash == true) {
-        log:print("Successfully untrashed the thread");
+        log:print("Successfully un-trashed the thread");
     } else {
-        log:printError("Failed to untrash the thread");
+        log:printError("Failed to un-trash the thread");
     } 
     
     log:print("End!");

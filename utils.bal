@@ -47,7 +47,7 @@ function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttac
         inlineImgParts[inlineImgParts.length()] = convertJSONToMsgBodyType(messagePayload);
     } //Else if is any multipart/*
     else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
-        json | error messageParts = messagePayload.parts;
+        json|error messageParts = messagePayload.parts;
         if (messageParts is json) {
             json[] messagePartsArr = <json[]>messageParts;
             if (messagePartsArr.length() != 0) {
@@ -84,7 +84,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
         msgBodyPart = convertJSONToMsgBodyType(messagePayload);
     }    //Else if is any multipart/*
     else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
-        json | error messageParts = messagePayload.parts;
+        json|error messageParts = messagePayload.parts;
         if (messageParts is json) {
             json[] messagePartsArr = <json[]>messageParts;
             if (messagePartsArr.length() != 0) {
@@ -110,7 +110,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
 # + return - Returns disposition of the message body part
 function getDispostionFromPayload(json messagePayload) returns string {
     string disposition = "";
-    json | error payloadHeaders = messagePayload.headers;
+    json|error payloadHeaders = messagePayload.headers;
     if (payloadHeaders is json) {
         if (payloadHeaders != ()) {
             //If no key name CONTENT_DISPOSITION in the payload, disposition is an empty string.
@@ -166,12 +166,12 @@ isolated function convertStringArrayToJSONArray(string[] sourceStringObject) ret
 # + return - Boolean status of mime type match
 function isMimeType(string msgMimeType, string mType) returns boolean {
     handle msgTypes = split(java:fromString(msgMimeType), java:fromString(FORWARD_SLASH_SYMBOL));
-    string | () msgPrimaryType = java:toString(jarrays:get(msgTypes, 0));
-    string | () msgSecondaryType = java:toString(jarrays:get(msgTypes, 1));
+    string|() msgPrimaryType = java:toString(jarrays:get(msgTypes, 0));
+    string|() msgSecondaryType = java:toString(jarrays:get(msgTypes, 1));
 
     handle requestmTypes = split(java:fromString(mType), java:fromString(FORWARD_SLASH_SYMBOL));
-    string | () reqPrimaryType = java:toString(jarrays:get(requestmTypes, 0));
-    string | () reqSecondaryType = java:toString(jarrays:get(requestmTypes, 1));
+    string|() reqPrimaryType = java:toString(jarrays:get(requestmTypes, 0));
+    string|() reqSecondaryType = java:toString(jarrays:get(requestmTypes, 1));
 
     if (msgPrimaryType is () || msgSecondaryType is () || reqPrimaryType is () || reqSecondaryType is ()) {
         return false;
@@ -191,8 +191,8 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 #
 # + filePath - File path
 # + return - If successful returns encoded file. Else returns error.
-function encodeFile(string filePath) returns string | error {
-    io:ReadableByteChannel | io:Error fileChannel = io:openReadableFile(filePath);
+function encodeFile(string filePath) returns string|error {
+    io:ReadableByteChannel|io:Error fileChannel = io:openReadableFile(filePath);
     int bytesChunk = BYTES_CHUNK;
     byte[] readEncodedContent = [];
 
@@ -227,7 +227,7 @@ function encodeFile(string filePath) returns string | error {
 #
 # + filePath - File path (including the file name and extension at the end)
 # + return - Returns the file name extracted from the file path
-function getFileNameFromPath(string filePath) returns string | error {
+function getFileNameFromPath(string filePath) returns string|error {
     handle pathParts = split(java:fromString(filePath), java:fromString("/"));
     int pathPartsLength = jarrays:getLength(pathParts);
     string? fileName = java:toString(jarrays:get(pathParts, (pathPartsLength - 1)));
@@ -243,7 +243,7 @@ function getFileNameFromPath(string filePath) returns string | error {
 #
 # + httpResponse - Http response or error
 # + return - If successful returns `json` response. Else returns error.
-isolated function handleResponse(http:Response httpResponse) returns @tainted json | error {
+isolated function handleResponse(http:Response httpResponse) returns @tainted json|error {
     if (httpResponse.statusCode == http:STATUS_NO_CONTENT) {
         //If status 204, then no response body. So returns json boolean true.
         return true;
@@ -271,7 +271,7 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
                     string location = "";
                     string locationType = "";
                     string domain = "";
-                    map<json> | error errMap = err.cloneWithType(mapJson);
+                    map<json>|error errMap = err.cloneWithType(mapJson);
                     if (errMap is map<json>) {
                         if (errMap.hasKey("reason")) {
                             reason = let var reasonStr = err.reason in reasonStr is string ? reasonStr : EMPTY_STRING;
@@ -319,7 +319,7 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
 # + key - Key of the form value parameter
 # + value - Value of the form value parameter
 # + return - If successful, returns created request path as an encoded string. Else returns error.
-isolated function appendEncodedURIParameter(string requestPath, string key, string value) returns string | error {
+isolated function appendEncodedURIParameter(string requestPath, string key, string value) returns string|error {
     var encodedVar = encoding:encodeUriComponent(value, "UTF-8");
     string encodedString = "";
     string path = "";
@@ -351,7 +351,7 @@ isolated function getValueForMapKey(map<string> targetMap, string key) returns s
 #
 # + msgRequest - MessageRequest to create the message
 # + return - If successful, returns the encoded raw string. Else returns error.
-function createEncodedRawMessage(MessageRequest msgRequest) returns string | error {
+function createEncodedRawMessage(MessageRequest msgRequest) returns string|error {
     //The content type should be either TEXT_PLAIN or TEXT_HTML. If not returns an error.
     if (msgRequest.contentType != TEXT_PLAIN && msgRequest.contentType != TEXT_HTML) {
         error err = error(GMAIL_ERROR_CODE, message = "Does not support the given content type: "
@@ -435,7 +435,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
             //Open and encode the image file into base64. Return a GmailError if fails.
             string encodedFile = check encodeFile(inlineImage.imagePath);
             //Get inline image file name from path
-            string | error inlineImgFileName = getFileNameFromPath(inlineImage.imagePath);
+            string|error inlineImgFileName = getFileNameFromPath(inlineImage.imagePath);
             if (inlineImgFileName is string) {
                 //Set the inline image headers of the message
                 concatRequest += CONTENT_TYPE + COLON_SYMBOL + inlineImage.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE
@@ -479,7 +479,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string | err
         //Open and encode the file into base64. Return a error if fails.
         string encodedFile = check encodeFile(attachment.attachmentPath);
         //Get attachment file name from path
-        string | error attachmentFileName = getFileNameFromPath(attachment.attachmentPath);
+        string|error attachmentFileName = getFileNameFromPath(attachment.attachmentPath);
         if (attachmentFileName is string) {
             //Set attachment headers of the messsage
             concatRequest += CONTENT_TYPE + COLON_SYMBOL + attachment.mimeType + SEMICOLON_SYMBOL + WHITE_SPACE + NAME

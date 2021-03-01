@@ -37,6 +37,8 @@ public function main(string... args) {
 
     // ID of the message where the attachment belongs to.
     string sentHtmlMessageId = "<MESSAGE_ID>"; 
+
+    // ID of the attachment
     string readAttachmentFileId;
 
     // To read the attachment you should first obtain the attachment file ID 

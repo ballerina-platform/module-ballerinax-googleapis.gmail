@@ -63,11 +63,11 @@ public function main(string... args) {
     messageRequest.attachmentPaths = attachments;
 
     [string, string]|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
-    
+
     if (sendMessageResponse is [string, string]) {
         // If successful, print the message ID and thread ID.
         [string, string] [messageId, threadId] = sendMessageResponse;
-        log:print("Sent Message ID: ", messageid = messageId);
+        log:print("Sent Message ID: ", messageId = messageId);
         log:print("Sent Thread ID: ", threadId = threadId);
     } else {
         // If unsuccessful, print the error returned.
