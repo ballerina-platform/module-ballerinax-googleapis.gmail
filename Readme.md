@@ -64,8 +64,6 @@ Refresh Token.
     - When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh 
     token and access token.
 
-        ![OAuth2 authorization code flow](docs/images/tokens.png)
-
 * Java 11 Installed <br/> Java Development Kit (JDK) with version 11 is required.
 
 * Ballerina SLAlpha2 Installed <br/> Ballerina Swan Lake Alpha 2 is required.
