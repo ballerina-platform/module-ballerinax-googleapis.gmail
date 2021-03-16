@@ -20,13 +20,13 @@ import ballerina/io;
 # Gmail Client object.
 #
 # + gmailClient - The HTTP Client
+@display {label: "Gmail Client"}
 public client class Client {
     http:Client gmailClient;
 
     public function init(GmailConfiguration gmailConfig) {
         // Create OAuth2 provider.
         http:ClientSecureSocket? socketConfig = gmailConfig?.secureSocketConfig;
-
         // Create gmail http client.
         if (socketConfig is http:ClientSecureSocket) {
             self.gmailClient = checkpanic new (BASE_URL, {
@@ -45,7 +45,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + filter - Optional. MsgSearchFilter with optional query parameters to search messages.
     # + return - If successful, returns MessageListPage. Else returns error.
-    remote function listMessages(string userId, MsgSearchFilter? filter = ()) returns @tainted MessageListPage|error {
+    @display {label: "List messages"} 
+    remote function listMessages(@display {label: "User's email address"} string userId,
+                                 @display {label: "Message search filter (optional)"} MsgSearchFilter? filter = ()) 
+                                 returns @tainted @display {label: "Message list page"} MessageListPage|error {
         string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
         if (filter is MsgSearchFilter) {
             string uriParams = "";
@@ -80,8 +83,11 @@ public client class Client {
     # + threadId - Optional. Required if message is expected to be send The ID of the thread the message belongs to.
     # (The Subject headers must match)
     # + return - If successful, return(message id, thread id) of the successfully sent message. Else return error.
-    remote function sendMessage(string userId, MessageRequest message, string? threadId = ())
-                                returns @tainted [string, string]|error {
+    @display {label: "Send mail"} 
+    remote function sendMessage(@display {label: "User's email address"} string userId, 
+                                @display {label: "Email"} MessageRequest message, 
+                                @display {label: "Thread id (optional)"} string? threadId = ())
+                                returns @tainted @display {label: "Mail id and thread id"} [string, string]|error {
         //Create the whole message as an encoded raw string. If unsuccessful throws and returns error.
         string encodedRequest = check createEncodedRawMessage(message);
         http:Request request = new;
@@ -125,8 +131,12 @@ public client class Client {
     # + metadataHeaders - Optional. The meta data headers array to include in the response when the format is given
     #                       as *FORMAT_METADATA*.
     # + return - If successful, returns Message type object of the specified mail. Else returns error.
-    remote function readMessage(string userId, string messageId, string? format = (), 
-                                string[]? metadataHeaders = ()) returns @tainted Message|error {
+    @display {label: "Read mail"} 
+    remote function readMessage(@display {label: "User's email address"} string userId, 
+                                @display {label: "Mail id"} string messageId, 
+                                @display {label: "Mail format (optional)"} string? format = (), 
+                                @display {label: "Metadata headers (optional)"} string[]? metadataHeaders = ()) 
+                                returns @tainted @display {label: "Mail"} Message|error {
         string uriParams = "";
         //Append format query parameter
         if (format is string) {
@@ -152,8 +162,11 @@ public client class Client {
     # + messageId - The id of the message to retrieve
     # + attachmentId - The id of the attachment to retrieve
     # + return - If successful, returns MessageBodyPart type object of the specified attachment. Else returns error.
-    remote function getAttachment(string userId, string messageId, string attachmentId)
-                                  returns @tainted MessageBodyPart|error {
+    @display {label: "Get attachment"} 
+    remote function getAttachment(@display {label: "User's email address"} string userId, 
+                                  @display {label: "Mail id"} string messageId, 
+                                  @display {label: "Attachment id"} string attachmentId) returns 
+                                  @tainted @display {label: "Message body part"} MessageBodyPart|error {
         string getAttachmentPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
             + ATTACHMENT_RESOURCE + attachmentId;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getAttachmentPath);
@@ -168,7 +181,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to trash
     # + return - If successful, returns boolean specifying the status of trashing. Else returns error.
-    remote function trashMessage(string userId, string messageId) returns @tainted boolean|error {
+    @display {label: "Trash a mail"} 
+    remote function trashMessage(@display {label: "User's email address"} string userId, 
+                                 @display {label: "Mail id"} string messageId) returns 
+                                 @tainted @display {label: "Status"} boolean|error {
         http:Request request = new;
         string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
             + FORWARD_SLASH_SYMBOL + TRASH;
@@ -184,7 +200,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to untrash
     # + return - If successful, returns boolean specifying the status of untrashing. Else returns error.
-    remote function untrashMessage(string userId, string messageId) returns @tainted boolean|error {
+    @display {label: "Untrash a mail"} 
+    remote function untrashMessage(@display {label: "User's email address"} string userId, 
+                                   @display {label: "Mail id"} string messageId) returns 
+                                   @tainted @display {label: "Status"} boolean|error {
         http:Request request = new;
         string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
             + FORWARD_SLASH_SYMBOL + UNTRASH;
@@ -200,7 +219,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to delete
     # + return - If successful, returns boolean status of deletion. Else returns error.
-    remote function deleteMessage(string userId, string messageId) returns @tainted boolean|error {
+    @display {label: "Delete a mail"} 
+    remote function deleteMessage(@display {label: "User's email address"} string userId, 
+                                  @display {label: "Mail id"} string messageId) returns 
+                                  @tainted @display {label: "Status"} boolean|error {
         http:Request request = new;
         string deleteMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
         http:Response httpResponse = <http:Response> check self.gmailClient->delete(deleteMessagePath, request);
@@ -215,8 +237,12 @@ public client class Client {
     # + addLabelIds - A list of Ids of labels to add to this message
     # + removeLabelIds - A list Ids of labels to remove from this message
     # + return - If successful, returns modified Message type object in **minimal** format. Else returns error.
-    remote function modifyMessage(string userId, string messageId, string[] addLabelIds, string[] removeLabelIds)
-                                  returns @tainted Message|error {
+    @display {label: "Modify labels of mail"} 
+    remote function modifyMessage(@display {label: "User's email address"} string userId, 
+                                  @display {label: "Mail id"} string messageId, 
+                                  @display {label: "Lables to add"} string[] addLabelIds, 
+                                  @display {label: "Lables to remove"} string[] removeLabelIds) returns 
+                                  @tainted @display {label: "Mail"} Message|error {
         string modifyMsgPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
             + MODIFY_RESOURCE;
         // When modifying message labels, at least one of the arrays from addLabelIds and removeLabelIds should not be 
@@ -244,8 +270,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + filter - Optional. The MsgSearchFilter with optional query parameters to search a thread.
     # + return - If successful, returns ThreadListPage type. Else returns error.
-    remote function listThreads(string userId, MsgSearchFilter? filter = ()) returns 
-                                @tainted ThreadListPage|error {
+    @display {label: "List threads"} 
+    remote function listThreads(@display {label: "User's email address"} string userId, 
+                                @display {label: "Message search filter (optional)"} MsgSearchFilter? filter = ()) returns 
+                                @tainted @display {label: "Thread list page"} ThreadListPage|error {
         string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
         if (filter is MsgSearchFilter) {
             string uriParams = "";
@@ -293,8 +321,12 @@ public client class Client {
     # + metadataHeaders - Optional. The meta data headers array to include in the reponse when the format is given
     #                           as `FORMAT_METADATA`.
     # + return - If successful, returns MailThread type of the specified mail thread. Else returns error.
-    remote function readThread(string userId, string threadId, string? format = (),
-                               string[]? metadataHeaders = ()) returns @tainted MailThread|error {
+    @display {label: "Read thread"} 
+    remote function readThread(@display {label: "User's email address"} string userId, 
+                               @display {label: "Thread id"} string threadId, 
+                               @display {label: "Mail format (optional)"} string? format = (),
+                               @display {label: "Metadata headers (optional)"} string[]? metadataHeaders = ()) returns 
+                               @tainted @display {label: "Mail thread"} MailThread|error {
         string uriParams = "";
         if (format is string) {
             uriParams = check appendEncodedURIParameter(uriParams, FORMAT, format);
@@ -318,7 +350,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to trash
     # + return - If successful, returns boolean status of trashing. Else returns error.
-    remote function trashThread(string userId, string threadId) returns @tainted boolean|error {
+    @display {label: "Trash thread"} 
+    remote function trashThread(@display {label: "User's email address"} string userId, 
+                                @display {label: "Thread id"} string threadId) returns 
+                                @tainted @display {label: "Status"} boolean|error {
         http:Request request = new;
         string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
             + FORWARD_SLASH_SYMBOL + TRASH;
@@ -334,7 +369,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to untrash
     # + return - If successful, returns boolean status of untrashing. Else returns error.
-    remote function untrashThread(string userId, string threadId) returns @tainted boolean|error {
+    @display {label: "Untrash thread"} 
+    remote function untrashThread(@display {label: "User's email address"} string userId, 
+                                  @display {label: "Thread id"} string threadId) returns 
+                                  @tainted @display {label: "Status"} boolean|error {
         http:Request request = new;
         string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
             + FORWARD_SLASH_SYMBOL + UNTRASH;
@@ -350,7 +388,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to delete
     # + return - If successful, returns boolean status of deletion. Else returns error.
-    remote function deleteThread(string userId, string threadId) returns @tainted boolean|error {
+    @display {label: "Delete thread"} 
+    remote function deleteThread(@display {label: "User's email address"} string userId, 
+                                 @display {label: "Thread id"} string threadId) returns 
+                                 @tainted @display {label: "Status"} boolean|error {
         http:Request request = new;
         string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
         http:Response httpResponse = <http:Response> check self.gmailClient->delete(deleteThreadPath, request);
@@ -359,13 +400,18 @@ public client class Client {
     }
 
     # Modifies the labels on the specified thread.
+    # 
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to modify
     # + addLabelIds - A list of IDs of labels to add to this thread
     # + removeLabelIds - A list IDs of labels to remove from this thread
     # + return - If successful, returns modified MailThread type object. Else returns error.
-    remote function modifyThread(string userId, string threadId, string[] addLabelIds, string[] removeLabelIds)
-                                 returns @tainted MailThread|error {
+    @display {label: "Modify labels on thread"} 
+    remote function modifyThread(@display {label: "User's email address"} string userId, 
+                                 @display {label: "Thread id"} string threadId, 
+                                 @display {label: "Lables to add"} string[] addLabelIds, 
+                                 @display {label: "Lables to remove"} string[] removeLabelIds) returns 
+                                 @tainted @display {label: "Mail thread"} MailThread|error {
         string modifyThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
             + MODIFY_RESOURCE;
         if (addLabelIds.length() == 0 && removeLabelIds.length() == 0) {
@@ -389,7 +435,9 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns UserProfile type. Else returns error.
-    remote function getUserProfile(string userId) returns @tainted UserProfile|error {
+    @display {label: "Get user profile"} 
+    remote function getUserProfile(@display {label: "User's email address"} string userId) returns 
+                                   @tainted UserProfile|error {
         string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getProfilePath);
         //Get json user profile response. If unsuccessful, throws and returns error.
@@ -403,7 +451,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + labelId - The label Id
     # + return - If successful, returns Label type. Else returns error.
-    remote function getLabel(string userId, string labelId) returns @tainted Label|error {
+    @display {label: "Get label"} 
+    remote function getLabel(@display {label: "User's email address"} string userId, 
+                             @display {label: "Label id"} string labelId) returns 
+                             @tainted @display {label: "Label"} Label|error {
         string getLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getLabelPath);
         //Get json label response. If unsuccessful, throws and returns error.
@@ -432,9 +483,14 @@ public client class Client {
     # + textColor - Optional. The text color of the label, represented as hex string. This field is required in order
     #                   to set the color of a label.
     # + return - If successful, returns id of the created label. If not, returns error.
-    remote function createLabel(string userId, string name, string labelListVisibility,
-                                string messageListVisibility, string? backgroundColor = (), string? textColor = ())
-                                returns @tainted string|error {
+    @display {label: "Create lable"} 
+    remote function createLabel(@display {label: "User's email address"} string userId, 
+                                @display {label: "Display name"} string name, 
+                                @display {label: "Label visibility"} string labelListVisibility,
+                                @display {label: "Mail list visibility"} string messageListVisibility, 
+                                @display {label: "Background colour (optional)"} string? backgroundColor = (), 
+                                @display {label: "Text colour (optional)"} string? textColor = ()) returns 
+                                @tainted @display {label: "Label id"} string|error {
         string createLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE;
         map<json> jsonPayload = {
             labelListVisibility: labelListVisibility,
@@ -462,7 +518,9 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns an array of Label type objects with values for a set of main fields only. (Use
     #            `getLabel` to get all the details for a specific label) If not successful, returns error.
-    remote function listLabels(string userId) returns @tainted Label[]|error {
+    @display {label: "List labels"} 
+    remote function listLabels(@display {label: "User's email address"} string userId) returns 
+                               @tainted @display {label: "Labels"} Label[]|error {
         string listLabelsPath = USER_RESOURCE + userId + LABEL_RESOURCE;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(listLabelsPath);
         //Get list labels json response. If unsuccessful, throws and returns error.
@@ -475,7 +533,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + labelId - The id of the label to delete
     # + return - If successful, returns boolean status of deletion. Else returns error.
-    remote function deleteLabel(string userId, string labelId) returns @tainted boolean|error {
+    @display {label: "Delete label"} 
+    remote function deleteLabel(@display {label: "User's email address"} string userId, 
+                                @display {label: "Label id"} string labelId) returns 
+                                @tainted @display {label: "Status"} boolean|error {
         http:Request request = new;
         string deleteLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
         http:Response httpResponse = <http:Response> check self.gmailClient->delete(deleteLabelPath, request);
@@ -503,9 +564,15 @@ public client class Client {
     # + backgroundColor - Optional. The background color represented as hex string #RRGGBB (ex #000000).
     # + textColor - Optional. The text color of the label, represented as hex string.
     # + return - If successful, returns updated Label type object. Else returns error.
-    remote function updateLabel(string userId, string labelId, string? name = (),
-                                string? messageListVisibility = (), string? labelListVisibility = (), 
-                                string? backgroundColor = (), string? textColor = ()) returns @tainted Label|error {
+    @display {label: "Update label"} 
+    remote function updateLabel(@display {label: "User's email address"} string userId, 
+                                @display {label: "Label id"} string labelId, 
+                                @display {label: "Label name (optional)"} string? name = (),
+                                @display {label: "Message list visibility (optional)"} string? messageListVisibility = (), 
+                                @display {label: "Label list visibility (optional)"} string? labelListVisibility = (), 
+                                @display {label: "Background colour (optional)"} string? backgroundColor = (), 
+                                @display {label: "Text colour (optional)"} string? textColor = ()) returns 
+                                @tainted @display {label: "Label"} Label|error {
         string updateLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
 
         map<json> jsonPayload = {
@@ -555,9 +622,14 @@ public client class Client {
     # + maxResults - Optional. The maximum number of history records to return
     # + pageToken - Optional. Page token to retrieve a specific page of results in the list
     # + return - If successful, returns MailboxHistoryPage. Else returns error.
-    remote function listHistory(string userId, string startHistoryId, string[]? historyTypes = (),
-                                string? labelId = (), string? maxResults = (), string? pageToken = ()) 
-                                returns @tainted MailboxHistoryPage|error {
+    @display {label: "List history"} 
+    remote function listHistory(@display {label: "User's email address"} string userId, 
+                                @display {label: "History id"} string startHistoryId, 
+                                @display {label: "History type (optional)"} string[]? historyTypes = (),
+                                @display {label: "Label id (optional)"} string? labelId = (), 
+                                @display {label: "Max records (optional)"} string? maxResults = (), 
+                                @display {label: "Page token (optional)"} string? pageToken = ()) returns 
+                                @tainted @display {label: "Mail box history page"} MailboxHistoryPage|error {
         string uriParams = "";
         uriParams = check appendEncodedURIParameter(uriParams, START_HISTORY_ID, startHistoryId);
         if (historyTypes is string[]) {
@@ -588,7 +660,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + filter - Optional. DraftSearchFilter with optional query parameters to search drafts.
     # + return - If successful, returns DraftListPage. Else returns error.
-    remote function listDrafts(string userId, DraftSearchFilter? filter = ()) returns @tainted DraftListPage|error {
+    @display {label: "List drafts"} 
+    remote function listDrafts(@display {label: "User's email address"} string userId, 
+                               @display {label: "Drafts search filter (optional)"} DraftSearchFilter? filter = ()) 
+                               returns @tainted @display {label: "Drafts list page"} DraftListPage|error {
         string getListDraftsPath = USER_RESOURCE + userId + DRAFT_RESOURCE;
         if (filter is DraftSearchFilter) {
             string uriParams = "";
@@ -626,7 +701,11 @@ public client class Client {
     #                `FORMAT_RAW` : Returns the full email message data with body content in the raw field as a
     #                               base64url encoded string. (the payload field is not included in the response)
     # + return - If successful, returns Draft type of the specified draft. Else returns error.
-    remote function readDraft(string userId, string draftId, string? format = ()) returns @tainted Draft|error {
+    @display {label: "Read draft"} 
+    remote function readDraft(@display {label: "User's email address"} string userId, 
+                              @display {label: "Draft id"} string draftId, 
+                              @display {label: "Draft format (optional)"} string? format = ()) returns 
+                              @tainted @display {label: "Draft"} Draft|error {
         string uriParams = "";
         //Append format query parameter
         if (format is string) {
@@ -645,7 +724,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + draftId - The id of the draft to delete
     # + return - If successful, returns boolean status of deletion. Else returns error.
-    remote function deleteDraft(string userId, string draftId) returns @tainted boolean|error {
+    @display {label: "Delete draft"} 
+    remote function deleteDraft(@display {label: "User's email address"} string userId, 
+                                @display {label: "Draft id"} string draftId) returns 
+                                @tainted @display {label: "Status"} boolean|error {
         http:Request request = new;
         string deleteDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE + FORWARD_SLASH_SYMBOL + draftId;
         http:Response httpResponse = <http:Response> check self.gmailClient->delete(deleteDraftPath, request);
@@ -659,8 +741,11 @@ public client class Client {
     # + message - MessageRequest to create a draft
     # + threadId - Optional. Thread Id of the draft to reply
     # + return - If successful, returns the draft Id of the created Draft. Else returns error.
-    remote function createDraft(string userId, MessageRequest message, string? threadId = ())
-                                returns @tainted string|error {
+    @display {label: "Create draft"} 
+    remote function createDraft(@display {label: "User's email address"} string userId, 
+                                @display {label: "Message request"} MessageRequest message, 
+                                @display {label: "Thread id (optional)"} string? threadId = ()) returns 
+                                @tainted @display {label: "Draft id"} string|error {
         string encodedRequest = check createEncodedRawMessage(message);
         http:Request request = new;
 
@@ -689,8 +774,12 @@ public client class Client {
     # + message - MessageRequest to update a draft
     # + threadId - Optional. Thread Id of the draft to reply
     # + return - If successful, returns the draft Id of the updated Draft. Else returns error.
-    remote function updateDraft(string userId, string draftId, MessageRequest message, string? threadId = ())
-                                returns @tainted string|error {
+    @display {label: "Update draft"} 
+    remote function updateDraft(@display {label: "User's email address"} string userId, 
+                                @display {label: "Draft id"} string draftId, 
+                                @display {label: "Message request"} MessageRequest message, 
+                                @display {label: "Thread id (optional)"} string? threadId = ())
+                                returns @tainted @display {label: "Draft id"} string|error {
         string encodedRequest = check createEncodedRawMessage(message);
         http:Request request = new;
 
@@ -717,7 +806,10 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + draftId - The draft Id to send
     # + return - If successful, returns the message Id and thread Id of the sent Draft. Else returns error.
-    remote function sendDraft(string userId, string draftId) returns @tainted [string, string]|error {
+    @display {label: "Send draft"} 
+    remote function sendDraft(@display {label: "User's email address"} string userId, 
+                              @display {label: "Draft id"} string draftId) returns 
+                              @tainted @display {label: "Mail id and thread id"} [string, string]|error {
         http:Request request = new;
         json jsonPayload = {id: draftId};
         string updateDraftPath = USER_RESOURCE + userId + DRAFT_SEND_RESOURCE;
