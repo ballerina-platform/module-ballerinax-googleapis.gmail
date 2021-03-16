@@ -98,7 +98,7 @@ public type AttachmentPath record {
 # + internalDate - The internal message creation timestamp(epoch ms)
 # + sizeEstimate - Estimated size of the message in bytes
 # + headers - The map of headers in the top level message part representing the entire message payload in a
-#   standard RFC 2822 message. The key of the map is the header name and the value is the header value.
+#             standard RFC 2822 message. The key of the map is the header name and the value is the header value.
 # + headerTo - Email header **To**
 # + headerFrom - Email header **From**
 # + headerBcc - Email header **Bcc**

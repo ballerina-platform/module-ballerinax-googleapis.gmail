@@ -43,8 +43,8 @@ gmail:Client gmailClient = new (gmailConfig);
 |:----------------------------:|:-----------------:|
 |  Swan Lake Alpha 2           |   v1              |
 
-## Sample
-
+## Example Code
+This code sample represents sending a new text message from one Gmail user to another one. Here, the receiver which needs to receive carbon copy is also mentioned.
 ```ballerina
 import ballerina/io;
 import ballerinax/googleapis_gmail as gmail;
@@ -59,16 +59,20 @@ gmail:GmailConfiguration gmailConfig = {
 };
 
 gmail:Client gmailClient = new (gmailConfig);
+
 public function main(string... args) {
+    
     gmail:MessageRequest messageRequest = {};
     messageRequest.recipient = "aa@gmail.com";
     messageRequest.sender = "bb@gmail.com";
     messageRequest.cc = "cc@gmail.com";
     messageRequest.subject = "Email-Subject";
     messageRequest.messageBody = "Email Message Body Text";
+
     // Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
     messageRequest.contentType = gmail:TEXT_PLAIN;
     string userId = "me";
+
     // Send the message.
     var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
     if (sendMessageResponse is [string, string]) {
