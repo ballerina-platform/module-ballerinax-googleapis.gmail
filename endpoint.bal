@@ -45,7 +45,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + filter - Optional. MsgSearchFilter with optional query parameters to search messages.
     # + return - If successful, returns MessageListPage. Else returns error.
-    @display {label: "List messages"} 
+    @display {label: "List mails"} 
     remote function listMessages(@display {label: "User's email address"} string userId,
                                  @display {label: "Message search filter (optional)"} MsgSearchFilter? filter = ()) 
                                  returns @tainted @display {label: "Message list page"} MessageListPage|error {
@@ -240,8 +240,8 @@ public client class Client {
     @display {label: "Modify labels of mail"} 
     remote function modifyMessage(@display {label: "User's email address"} string userId, 
                                   @display {label: "Mail id"} string messageId, 
-                                  @display {label: "Lables to add"} string[] addLabelIds, 
-                                  @display {label: "Lables to remove"} string[] removeLabelIds) returns 
+                                  @display {label: "Labels to add"} string[] addLabelIds, 
+                                  @display {label: "Labels to remove"} string[] removeLabelIds) returns 
                                   @tainted @display {label: "Mail"} Message|error {
         string modifyMsgPath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
             + MODIFY_RESOURCE;
@@ -409,8 +409,8 @@ public client class Client {
     @display {label: "Modify labels on thread"} 
     remote function modifyThread(@display {label: "User's email address"} string userId, 
                                  @display {label: "Thread id"} string threadId, 
-                                 @display {label: "Lables to add"} string[] addLabelIds, 
-                                 @display {label: "Lables to remove"} string[] removeLabelIds) returns 
+                                 @display {label: "Labels to add"} string[] addLabelIds, 
+                                 @display {label: "Labels to remove"} string[] removeLabelIds) returns 
                                  @tainted @display {label: "Mail thread"} MailThread|error {
         string modifyThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
             + MODIFY_RESOURCE;
@@ -483,7 +483,7 @@ public client class Client {
     # + textColor - Optional. The text color of the label, represented as hex string. This field is required in order
     #                   to set the color of a label.
     # + return - If successful, returns id of the created label. If not, returns error.
-    @display {label: "Create lable"} 
+    @display {label: "Create label"} 
     remote function createLabel(@display {label: "User's email address"} string userId, 
                                 @display {label: "Display name"} string name, 
                                 @display {label: "Label visibility"} string labelListVisibility,
