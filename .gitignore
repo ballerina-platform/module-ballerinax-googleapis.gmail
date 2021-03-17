@@ -7,7 +7,7 @@
 #Config file
 Config.toml
 # Modules
-/modules
+/modules/googleapis_gmail
 
 # BlueJ files
 *.ctxt

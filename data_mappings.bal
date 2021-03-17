@@ -460,64 +460,75 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
         }
         // messagesAdded
         if (elementExists(srcJsonHisMap, "messagesAdded")) {
-            targetHistory.messagesAdded = 
-                convertJSONToMsgTypeList(<json[]>srcJsonHisMap["messagesAdded"], targetHistory.messages);
+            var addedMessages = srcJsonHisMap["messagesAdded"];
+            if(addedMessages is json[]) {
+                foreach var addedMessage in addedMessages {
+                    var historyChange = addedMessage.cloneWithType(HistoryChange);
+                    if(historyChange is HistoryChange) {
+                        array:push(targetHistory.messagesAdded,historyChange);
+                    } else {
+                        log:printError("Error occured while converting to HistoryChange type", err = historyChange);
+                    }
+                }                
+            } else {
+                log:printError("History change related 'messagesAdded' is not in the format of json[]");
+            }
         } else {
             targetHistory.messagesAdded = [];
         }
         // messagesDeleted
         if (elementExists(srcJsonHisMap, "messagesDeleted")) {
-            targetHistory.messagesDeleted = 
-                convertJSONToMsgTypeList(<json[]>srcJsonHisMap["messagesDeleted"], targetHistory.messages);
+            var deletedMessages = srcJsonHisMap["messagesDeleted"];
+            if(deletedMessages is json[]) {
+                foreach var deletedMessage in deletedMessages {
+                    var historyChange = deletedMessage.cloneWithType(HistoryChange);
+                    if(historyChange is HistoryChange) {
+                        array:push(targetHistory.messagesDeleted,historyChange);
+                    } else {
+                        log:printError("Error occured while converting to HistoryChange type", err = historyChange);
+                    }
+                }                
+            } else {
+                log:printError("History change related 'messagesDeleted' is not in the format of json[]");
+            }
         } else {
             targetHistory.messagesDeleted = [];
         }
         // labelsAdded
         if (elementExists(srcJsonHisMap, "labelsAdded")) {
-            json|error lbls = sourceJsonHistory.labelsAdded;
-            if (lbls is json) {
-                foreach json recordData in <json[]>lbls {
-                    json|error message = recordData.message;
-                    if(message is json) {
-                        array:push(targetHistory.labelsAdded, { "message": convertJSONToMessageType(message) });
+            var addedLabels = srcJsonHisMap["labelsAdded"];
+            if(addedLabels is json[]) {
+                foreach var addedLabel in addedLabels {
+                    var historyChange = addedLabel.cloneWithType(HistoryChange);
+                    if(historyChange is HistoryChange) {
+                        array:push(targetHistory.labelsAdded,historyChange);
                     } else {
-                        log:printError("Error occurred while getting recordData.", err = message);
+                        log:printError("Error occured while converting to HistoryChange type", err = historyChange);
                     }
-                    json|error labelIds = recordData.labelIds;
-                    if (labelIds is json) {
-                        array:push(targetHistory.labelsRemoved, 
-                            { labelIds: convertJSONArrayToStringArray(<json[]>labelIds) });
-                    } else {
-                        log:printError("Error occurred while getting label is from record data.", err = labelIds);
-                    }
-                }
+                }                
             } else {
-                log:printError("Error occurred while getting history", err = lbls);
+                log:printError("History change related 'labelsAdded' is not in the format of json[]");
             }
-
+        } else {
+            targetHistory.labelsAdded = [];
         }
         // labelsRemoved
         if (elementExists(srcJsonHisMap, "labelsRemoved")) {
-            json|error lblsRemoved = sourceJsonHistory.labelsRemoved;
-            if (lblsRemoved is json) {
-                foreach json recordData in <json[]>lblsRemoved {
-                    json|error message = recordData.message;
-                    if(message is json) {
-                        array:push(targetHistory.labelsRemoved, { "message": convertJSONToMessageType(message) });
+            var removedLabels = srcJsonHisMap["labelsRemoved"];
+            if(removedLabels is json[]) {
+                foreach var removedLabel in removedLabels {
+                    var historyChange = removedLabel.cloneWithType(HistoryChange);
+                    if(historyChange is HistoryChange) {
+                        array:push(targetHistory.labelsRemoved,historyChange);
                     } else {
-                        log:printError("Error occurred while getting recordData.", err = message);
+                        log:printError("Error occured while converting to HistoryChange type", err = historyChange);
                     }
-                    json|error labelIds = recordData.labelIds;
-                    if (labelIds is json) {
-                        array:push(targetHistory.labelsRemoved, 
-                            { labelIds: convertJSONArrayToStringArray(<json[]>labelIds) });
-                    } else {
-                        log:printError("Error occurred while getting label is from record data.", err = labelIds);
-                    }
-                }
+                }                
             } else {
-                log:printError("Error occurred while getting labels", err = lblsRemoved);
+                log:printError("History change related 'labelsRemoved' is not in the format of json[]");
             }
+        } else {
+            targetHistory.labelsRemoved = [];
         }
     }
     return targetHistory;

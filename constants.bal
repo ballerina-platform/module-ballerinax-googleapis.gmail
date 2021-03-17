@@ -43,6 +43,10 @@ const string HISTORY_RESOURCE = "/history";
 const string DRAFT_RESOURCE = "/drafts";
 # Holds the value for send draft resource.
 const string DRAFT_SEND_RESOURCE = "/drafts/send";
+# Holds the value for watch mailbox resource path.
+public const string WATCH = "/watch";
+# Holds the value for stop watch mailbox resource path.
+public const string STOP = "/stop";
 
 # Holds the value for empty string.
 const string EMPTY_STRING = "";

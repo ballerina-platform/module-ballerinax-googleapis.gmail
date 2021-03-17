@@ -729,6 +729,38 @@ public client class Client {
         string threadId = let var tid = jsonSendDraftResponse.threadId in tid is string ? tid : EMPTY_STRING;
         return [identity, threadId];
     }
+
+    # Set up or update a push notification watch on the given user mailbox.
+    #
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + requestBody - The request body contains data with the following structure of JSON representation:
+    #                   `{`
+    #                   `   "labelIds": [`
+    #                   `       string`
+    #                   `    ],`
+    #                   `    "labelFilterAction": enum (LabelFilterAction),`
+    #                   `    "topicName": string`
+    #                   `       }`
+    # + return - If successful, returns WatchResponse. Else returns error.
+    remote function watch(string userId, json requestBody) returns WatchResponse | error {
+        http:Request request = new;
+        string watchPath = USER_RESOURCE+userId+WATCH;
+        request.setJsonPayload(requestBody);
+        http:Response httpResponse = <http:Response> check self.gmailClient->post(watchPath, request);
+        json jsonWatchResponse = check handleResponse(httpResponse);
+        WatchResponse watchResponse = check jsonWatchResponse.cloneWithType(WatchResponse);
+        return watchResponse;
+    }
+
+    # Set up or update a push notification watch on the given user mailbox.
+    #
+    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
+    # + return - If successful, nothing will be returned. Else returns error.
+    remote function stop(string userId) returns error? {
+        http:Request request = new;
+        string stopPath = USER_RESOURCE+userId+STOP;
+        http:Response httpResponse = <http:Response> check self.gmailClient->post(stopPath, request);
+    }    
 }
 
 # Object for Spreadsheet configuration.
