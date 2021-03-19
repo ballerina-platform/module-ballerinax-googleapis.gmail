@@ -283,17 +283,17 @@ public type MailboxHistoryPage record {
 public type History record {
     string id = "";
     Message[] messages = [];
-    HistoryChange[] messagesAdded = [];
-    HistoryChange[] messagesDeleted = [];
-    HistoryChange[] labelsAdded = [];
-    HistoryChange[] labelsRemoved = [];
+    HistoryEvent[] messagesAdded = [];
+    HistoryEvent[] messagesDeleted = [];
+    HistoryEvent[] labelsAdded = [];
+    HistoryEvent[] labelsRemoved = [];
 };
 
 # Represents changes of messages in history record.
 # 
 # + message - The message changed  
 # + labelIds - The label ids of the message  
-public type HistoryChange record {
+public type HistoryEvent record {
     Message message = {};
     string [] labelIds = [];
 };

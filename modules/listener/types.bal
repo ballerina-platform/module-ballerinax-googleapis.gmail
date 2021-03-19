@@ -20,7 +20,7 @@ import ballerinax/googleapis_gmail as gmail;
 #
 # + message - The message which affected by label change  
 # + changedLabelId - The changed label id of the message
-public type LabelChange record {
+public type ChangedLabel record {
     gmail:Message message;
     string[] changedLabelId;
 };

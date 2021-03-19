@@ -14,8 +14,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-# Holds the types of changes occured in Mailbox..
+#Represents available triggers
+public enum Trigger {
+    ON_NEW_EMAIL,
+    ON_NEW_THREAD,
+    ON_NEW_LABELED,
+    ON_NEW_STARED,
+    ON_LABEL_REMOVED,
+    ON_STAR_REMOVED,
+    ON_NEW_ATTACHMENT
+}
+
+# Holds the value of label Id "STARRED".
 const string STARRED = "STARRED";
+#Holds the value of label Id "INBOX".
+const string INBOX = "INBOX";
 
 # Holds the value "me". Used as current authenticated userId.
 const string ME = "me";

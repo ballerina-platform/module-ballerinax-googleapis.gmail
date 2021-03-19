@@ -131,7 +131,7 @@ isolated function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObjec
     return {
         fileId: let var fileId = sourceMessageBodyJsonObject.attachmentId in fileId is string ? fileId : EMPTY_STRING,
         body: let var body = sourceMessageBodyJsonObject.data in body is string ? body : EMPTY_STRING,
-        size: let var size = sourceMessageBodyJsonObject.body.size in size is int ? size.toString() : EMPTY_STRING
+        size: let var size = sourceMessageBodyJsonObject.size in size is int ? size.toString() : EMPTY_STRING
     };
 }
 
@@ -463,11 +463,11 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
             var addedMessages = srcJsonHisMap["messagesAdded"];
             if(addedMessages is json[]) {
                 foreach var addedMessage in addedMessages {
-                    var historyChange = addedMessage.cloneWithType(HistoryChange);
-                    if(historyChange is HistoryChange) {
-                        array:push(targetHistory.messagesAdded,historyChange);
+                    var historyEvent = addedMessage.cloneWithType(HistoryEvent);
+                    if(historyEvent is HistoryEvent) {
+                        array:push(targetHistory.messagesAdded,historyEvent);
                     } else {
-                        log:printError("Error occured while converting to HistoryChange type", err = historyChange);
+                        log:printError("Error occured while converting to HistoryEvent type", err = historyEvent);
                     }
                 }                
             } else {
@@ -481,11 +481,11 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
             var deletedMessages = srcJsonHisMap["messagesDeleted"];
             if(deletedMessages is json[]) {
                 foreach var deletedMessage in deletedMessages {
-                    var historyChange = deletedMessage.cloneWithType(HistoryChange);
-                    if(historyChange is HistoryChange) {
-                        array:push(targetHistory.messagesDeleted,historyChange);
+                    var historyEvent = deletedMessage.cloneWithType(HistoryEvent);
+                    if(historyEvent is HistoryEvent) {
+                        array:push(targetHistory.messagesDeleted,historyEvent);
                     } else {
-                        log:printError("Error occured while converting to HistoryChange type", err = historyChange);
+                        log:printError("Error occured while converting to HistoryEvent type", err = historyEvent);
                     }
                 }                
             } else {
@@ -499,11 +499,11 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
             var addedLabels = srcJsonHisMap["labelsAdded"];
             if(addedLabels is json[]) {
                 foreach var addedLabel in addedLabels {
-                    var historyChange = addedLabel.cloneWithType(HistoryChange);
-                    if(historyChange is HistoryChange) {
-                        array:push(targetHistory.labelsAdded,historyChange);
+                    var historyEvent = addedLabel.cloneWithType(HistoryEvent);
+                    if(historyEvent is HistoryEvent) {
+                        array:push(targetHistory.labelsAdded,historyEvent);
                     } else {
-                        log:printError("Error occured while converting to HistoryChange type", err = historyChange);
+                        log:printError("Error occured while converting to HistoryEvent type", err = historyEvent);
                     }
                 }                
             } else {
@@ -517,11 +517,11 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
             var removedLabels = srcJsonHisMap["labelsRemoved"];
             if(removedLabels is json[]) {
                 foreach var removedLabel in removedLabels {
-                    var historyChange = removedLabel.cloneWithType(HistoryChange);
-                    if(historyChange is HistoryChange) {
-                        array:push(targetHistory.labelsRemoved,historyChange);
+                    var historyEvent = removedLabel.cloneWithType(HistoryEvent);
+                    if(historyEvent is HistoryEvent) {
+                        array:push(targetHistory.labelsRemoved,historyEvent);
                     } else {
-                        log:printError("Error occured while converting to HistoryChange type", err = historyChange);
+                        log:printError("Error occured while converting to HistoryEvent type", err = historyEvent);
                     }
                 }                
             } else {

@@ -27,10 +27,10 @@ public class Listener {
     private gmail:Client gmailClient;
     private http:Listener httpListener;
 
-    public isolated function init(int port, gmail:Client gmailClient, json requestBody) {
+    public isolated function init(int port, gmail:Client gmailClient, string topicName) {
         self.httpListener = checkpanic new (port);
         self.gmailClient = gmailClient;
-        self.requestBody = requestBody;
+        self.requestBody = { labelIds: [INBOX], topicName:topicName};
     }
 
     public function attach(service object {} s, string[]|string? name = ()) returns error? {
@@ -58,7 +58,8 @@ public class Listener {
         return self.httpListener.immediateStop();
     }
 
-    public function getMailboxChanges(http:Caller caller, http:Request request) returns gmail:MailboxHistoryPage| error {
+    public function onMailboxChanges(http:Caller caller, http:Request request) 
+                                        returns gmail:MailboxHistoryPage| error {
         var payload = request.getJsonPayload();
         var response = caller->respond(http:STATUS_OK);
         var  mailboxHistoryPage =  self.gmailClient->listHistory(self.userId, self.startHistoryId);
@@ -71,10 +72,10 @@ public class Listener {
         return mailboxHistoryPage;
     }
 
-    public function getNewEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
+    public function onNewEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
-            gmail:HistoryChange[] messagesAdded = history.messagesAdded;
+            gmail:HistoryEvent[] messagesAdded = history.messagesAdded;
             if(messagesAdded.length()>0) {
                 foreach var messageAdded in messagesAdded {                    
                     gmail:Message message = check self.gmailClient->readMessage(ME, messageAdded.message.id);
@@ -85,10 +86,10 @@ public class Listener {
         return messages;
     }
 
-    public function getNewThread(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:MailThread[] | error {
+    public function onNewThread(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:MailThread[] | error {
         gmail:MailThread[] threads = [];
         foreach var history in mailboxHistoryPage.historyRecords {
-            gmail:HistoryChange[] messagesAdded = history.messagesAdded;
+            gmail:HistoryEvent[] messagesAdded = history.messagesAdded;
             if(messagesAdded.length()>0) {
                 foreach var messageAdded in messagesAdded {    
                     if(messageAdded.message.id == messageAdded.message.threadId) {               
@@ -101,27 +102,27 @@ public class Listener {
         return threads;
     }
 
-    public function getNewLabeledEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns LabelChange[] | error {
-        LabelChange[] labelchanges = [];
+    public function onNewLabeledEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns ChangedLabel[] | error {
+        ChangedLabel[] changedLabels = [];
         foreach var history in mailboxHistoryPage.historyRecords {
-            gmail:HistoryChange[] labelsAdded = history.labelsAdded;
+            gmail:HistoryEvent[] labelsAdded = history.labelsAdded;
             if(labelsAdded.length()>0) {
                 foreach var labelAdded in labelsAdded {
-                    LabelChange labelChangedMsg ={ message: {},changedLabelId: []};
-                    labelChangedMsg.changedLabelId = labelAdded.labelIds;
+                    ChangedLabel changedLabeldMsg ={ message: {},changedLabelId: []};
+                    changedLabeldMsg.changedLabelId = labelAdded.labelIds;
                     gmail:Message message = check self.gmailClient->readMessage(ME, labelAdded.message.id);
-                    labelChangedMsg.message = message;
-                    array:push(labelchanges, labelChangedMsg);
+                    changedLabeldMsg.message = message;
+                    array:push(changedLabels, changedLabeldMsg);
                 }
             }            
         }
-        return labelchanges;
+        return changedLabels;
     }
 
-    public function getNewStaredEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
+    public function onNewStaredEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
-            gmail:HistoryChange[] labelsAdded = history.labelsAdded;
+            gmail:HistoryEvent[] labelsAdded = history.labelsAdded;
             if(labelsAdded.length()>0) {
                 foreach var labelAdded in labelsAdded {
                     foreach var label in labelAdded.labelIds {
@@ -138,27 +139,27 @@ public class Listener {
         return messages;
     }
 
-    public function getLabelRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns LabelChange[] | error {
-        LabelChange[] labelchanges = [];
+    public function onLabelRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns ChangedLabel[] | error {
+        ChangedLabel[] changedLabels = [];
         foreach var history in mailboxHistoryPage.historyRecords {
-            gmail:HistoryChange[] labelsRemoved = history.labelsRemoved;
+            gmail:HistoryEvent[] labelsRemoved = history.labelsRemoved;
             if(labelsRemoved.length()>0) {
                 foreach var labelRemoved in labelsRemoved {
-                    LabelChange labelChangedMsg ={ message: {},changedLabelId: []};
-                    labelChangedMsg.changedLabelId = labelRemoved.labelIds;
+                    ChangedLabel changedLabeldMsg ={ message: {},changedLabelId: []};
+                    changedLabeldMsg.changedLabelId = labelRemoved.labelIds;
                     gmail:Message message = check self.gmailClient->readMessage(ME, labelRemoved.message.id);
-                    labelChangedMsg.message = message;
-                    array:push(labelchanges, labelChangedMsg);
+                    changedLabeldMsg.message = message;
+                    array:push(changedLabels, changedLabeldMsg);
                 }
             }            
         }
-        return labelchanges;
+        return changedLabels;
     }    
 
-    public function getStarRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
+    public function onStarRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
-            gmail:HistoryChange[] labelsRemoved = history.labelsRemoved;
+            gmail:HistoryEvent[] labelsRemoved = history.labelsRemoved;
             if(labelsRemoved.length()>0) {
                 foreach var labelRemoved in labelsRemoved {
                     foreach var label in labelRemoved.labelIds {
@@ -173,6 +174,22 @@ public class Listener {
             }            
         }
         return messages;
+    }
+
+    public function onNewAttachment(gmail:MailboxHistoryPage mailboxHistoryPage) 
+                                        returns gmail:MessageBodyPart[] |error {
+        gmail:MessageBodyPart[] attachments = [];                                  
+        var messages = self.onNewEmail(mailboxHistoryPage);        
+        if(messages is gmail: Message[]) {
+            foreach var message in messages {
+                foreach var msgAttachment in message.msgAttachments {
+                    gmail:MessageBodyPart attachment = check self.gmailClient->getAttachment(self.userId, message.id,
+                        msgAttachment.fileId);
+                    array:push(attachments, attachment);
+                }
+            }
+        }
+        return attachments;
     }
     
 }
