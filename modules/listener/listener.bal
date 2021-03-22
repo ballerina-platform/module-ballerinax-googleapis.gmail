@@ -19,7 +19,7 @@ import ballerina/log;
 import ballerina/lang.array;
 import ballerinax/googleapis_gmail as gmail;
 
-# Listener to observe changes in mailbox.   
+# Listener for Gmail Connector.   
 public class Listener {
     private string startHistoryId = "";
     private string userId = ME;
@@ -58,6 +58,11 @@ public class Listener {
         return self.httpListener.immediateStop();
     }
 
+    # Returns MailboxHistoryPage when a change happens in Gmail mailbox.
+    # 
+    # + caller - http:Caller for acknowleding to the request received
+    # + request - http:Request that contains event related data
+    # + return - If success, returns MailboxHistoryPage record, else error
     public function onMailboxChanges(http:Caller caller, http:Request request) 
                                         returns gmail:MailboxHistoryPage| error {
         var payload = request.getJsonPayload();
@@ -72,6 +77,10 @@ public class Listener {
         return mailboxHistoryPage;
     }
 
+    # Returns new messages which are received in Gmail mailbox.
+    #
+    # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
+    # + return - If success, returns array of gmail:Message record, else error
     public function onNewEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
@@ -86,6 +95,10 @@ public class Listener {
         return messages;
     }
 
+    # Returns new mail threads which are received in Gmail mailbox.
+    #
+    # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
+    # + return - If success, returns array of gmail:MailThread record, else error
     public function onNewThread(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:MailThread[] | error {
         gmail:MailThread[] threads = [];
         foreach var history in mailboxHistoryPage.historyRecords {
@@ -102,6 +115,10 @@ public class Listener {
         return threads;
     }
 
+    # Returns messages when a new label is added to messages.
+    #
+    # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
+    # + return - If success, returns array of ChangedLabel record, else error
     public function onNewLabeledEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns ChangedLabel[] | error {
         ChangedLabel[] changedLabels = [];
         foreach var history in mailboxHistoryPage.historyRecords {
@@ -119,6 +136,10 @@ public class Listener {
         return changedLabels;
     }
 
+    # Returns messages when a new star is added to messages.
+    #
+    # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
+    # + return - If success, returns array of gmail:Message record, else error
     public function onNewStaredEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
@@ -139,6 +160,10 @@ public class Listener {
         return messages;
     }
 
+    # Returns messages when a label is removed from messages.
+    #
+    # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
+    # + return - If success, returns array of ChangedLabel record, else error
     public function onLabelRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns ChangedLabel[] | error {
         ChangedLabel[] changedLabels = [];
         foreach var history in mailboxHistoryPage.historyRecords {
@@ -156,6 +181,10 @@ public class Listener {
         return changedLabels;
     }    
 
+    # Returns messages when a star is removed from messages.
+    #
+    # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
+    # + return - If success, returns array of gmail:Message record, else error
     public function onStarRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
@@ -176,6 +205,10 @@ public class Listener {
         return messages;
     }
 
+    # Returns Attchment details when a new attachment is recieved to mailbox.
+    #
+    # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
+    # + return - If success, returns array of gmail:MessageBodyPart record, else error
     public function onNewAttachment(gmail:MailboxHistoryPage mailboxHistoryPage) 
                                         returns gmail:MessageBodyPart[] |error {
         gmail:MessageBodyPart[] attachments = [];                                  

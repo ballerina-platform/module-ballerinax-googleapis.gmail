@@ -64,6 +64,16 @@ Refresh Token.
     - When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh 
     token and access token.
 
+* Create push topic and subscription
+To use Gmail Listener connector, a topic and a subscription should be configured.
+
+    1. Enable Cloud Pub/Sub API for your project which is created in [Google API Console](https://console.developers.google.com).
+    2. Go to [Google Cloud Pub/Sub API management console](https://console.cloud.google.com/cloudpubsub/topic/list)  and create a topic([You can follow the instructions here](https://cloud.google.com/pubsub/docs/quickstart-console) and a subscription to that topic. The subscription should be a pull subscription in this case ([Find mode details here](https://cloud.google.com/pubsub/docs/subscriber))).
+    3. For the push subscription , an endpoint URL should be given to push the notification. This URL is the URL where the gmail listener service runs. This should be in `https`  format. (If the service runs in localhost, then ngrok can be used to get an `https` URL).
+    4. Grant publish right on your topic. [To do this, see the instructions here](https://developers.google.com/gmail/api/guides/push#grant_publish_rights_on_your_topic).
+
+    5. Once you have done the above steps, get your topic name (It will be in the format of `projects/<YOUR_PROJECT_NAME>topics/<YOUR_TOPIC_NAME>`) from your console and give it to the `Config.toml` file as `topicName`.
+
 * Java 11 Installed <br/> Java Development Kit (JDK) with version 11 is required.
 
 * Ballerina SLAlpha2 Installed <br/> Ballerina Swan Lake Alpha 2 is required.
@@ -917,6 +927,397 @@ represent the label ID to limit the history only to that label and `maxResults` 
 the count of items in the history list.
 
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/list_history.bal
+
+# Listener
+
+## Quickstart(s):
+
+### Step 1: Import Gmail and Gmail Listener Ballerina Library
+First, import the ballerinax/googleapis_gmail and ballerinax/googleapis_gmail.'listener module into the Ballerina project.
+
+```ballerina
+    import ballerinax/googleapis_gmail as gmail;
+    import ballerinax/googleapis_gmail.'listener as gmailListener;
+```
+
+### Step 2: Initialize the Gmail Client and Gmail Listener
+In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Client endpoint and a Gmail Listener endpoint.
+```ballerina
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string topicName = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmail:Client gmailClient = new (gmailConfig);
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName);
+
+```
+* Then the endpoint triggers can be invoked as `var response = gmailEventListener->triggerName(arguments)`.
+
+## Samples
+Folowing are the available samples for Gmail Listener connector.
+
+### Trigger for new email
+
+This sample shows how to create a trigger on new email in the mailbox. This will be triggered when you receive a new email.
+
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_new_email.bal
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis_gmail.'listener as gmailListener;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string topicName = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmail:Client gmailClient = new (gmailConfig);
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName);
+
+service / on gmailEventListener {
+    resource function post web(http:Caller caller, http:Request req) {
+        var payload = req.getJsonPayload();
+        var response = gmailEventListener.onMailboxChanges(caller , req);
+        if(response is gmail:MailboxHistoryPage) {
+            var triggerResponse = gmailEventListener.onNewEmail(response);
+            if(triggerResponse is gmail:Message[]) {
+                if (triggerResponse.length()>0){
+                    //Write your logic here.....
+                    foreach var msg in triggerResponse {
+                        log:print("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
+                    }
+                }
+            }
+        }
+    }     
+}
+```
+
+### Trigger for new thread
+
+This sample shows how to create a trigger on new thread in the mailbox. This will be triggered when you receive a new thread.
+
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_new_thread.bal
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis_gmail.'listener as gmailListener;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string topicName = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmail:Client gmailClient = new (gmailConfig);
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName);
+
+service / on gmailEventListener {
+    resource function post web(http:Caller caller, http:Request req) {
+        var payload = req.getJsonPayload();
+        var response = gmailEventListener.onMailboxChanges(caller , req);
+        if(response is gmail:MailboxHistoryPage) {
+            var triggerResponse = gmailEventListener.onNewThread(response);
+            if(triggerResponse is gmail:MailThread[]) {
+                if (triggerResponse.length()>0){
+                    //Write your logic here.....
+                    foreach var thread in triggerResponse {
+                        log:print("Thread ID: "+ thread.id);
+                    }
+                }
+            }
+        }
+    }     
+}
+```
+
+### Trigger for new labeled email
+
+This sample shows how to create a trigger on new labeled email in the mailbox. This will be triggered when you add a label to an email.
+
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_new_labeled_email.bal
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis_gmail.'listener as gmailListener;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string topicName = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmail:Client gmailClient = new (gmailConfig);
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName);
+
+service / on gmailEventListener {
+    resource function post web(http:Caller caller, http:Request req) {
+        var payload = req.getJsonPayload();
+        var response = gmailEventListener.onMailboxChanges(caller , req);
+        if(response is gmail:MailboxHistoryPage) {
+            var triggerResponse = gmailEventListener.onNewLabeledEmail(response);
+            if(triggerResponse is gmailListener:ChangedLabel[]) {
+                if (triggerResponse.length()>0){
+                    //Write your logic here.....
+                    foreach var changedLabel in triggerResponse {
+                        log:print("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
+                            +changedLabel.changedLabelId[0]);
+                    }
+                }
+            }
+        }
+    }     
+}
+```
+### Trigger for new stared email
+
+This sample shows how to create a trigger on new stared email in the mailbox. This will be triggered when you star an email.
+
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_new_stared_email.bal
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis_gmail.'listener as gmailListener;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string topicName = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmail:Client gmailClient = new (gmailConfig);
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName);
+
+service / on gmailEventListener {
+    resource function post web(http:Caller caller, http:Request req) {
+        var payload = req.getJsonPayload();
+        var response = gmailEventListener.onMailboxChanges(caller , req);
+        if(response is gmail:MailboxHistoryPage) {
+            var triggerResponse = gmailEventListener.onNewStaredEmail(response);
+            if(triggerResponse is gmail:Message[]) {
+                if (triggerResponse.length()>0){
+                    //Write your logic here.....
+                    foreach var msg in triggerResponse {
+                        log:print("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
+                    }
+                }
+            }
+        }
+    }     
+}
+```
+
+### Trigger for label removed email
+
+This sample shows how to create a trigger on label removed email in the mailbox. This will be triggered when a label removed in an email.
+
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_label_removed_email.bal
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis_gmail.'listener as gmailListener;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string topicName = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmail:Client gmailClient = new (gmailConfig);
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName);
+
+service / on gmailEventListener {
+    resource function post web(http:Caller caller, http:Request req) {
+        var payload = req.getJsonPayload();
+        var response = gmailEventListener.onMailboxChanges(caller , req);
+        if(response is gmail:MailboxHistoryPage) {
+            var triggerResponse = gmailEventListener.onLabelRemovedEmail(response);
+            if(triggerResponse is gmailListener:ChangedLabel[]) {
+                if (triggerResponse.length()>0){
+                    //Write your logic here.....
+                    foreach var changedLabel in triggerResponse {
+                        log:print("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
+                            +changedLabel.changedLabelId[0]);
+                    }
+                }
+            }
+        }
+    }     
+}
+```
+
+### Trigger for star removed email
+
+This sample shows how to create a trigger on new email in the mailbox. This will be triggered when you remove star from an email.
+
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_star_removed_email.bal
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis_gmail.'listener as gmailListener;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string topicName = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmail:Client gmailClient = new (gmailConfig);
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName);
+
+service / on gmailEventListener {
+    resource function post web(http:Caller caller, http:Request req) {
+        var payload = req.getJsonPayload();
+        var response = gmailEventListener.onMailboxChanges(caller , req);
+        if(response is gmail:MailboxHistoryPage) {
+            var triggerResponse = gmailEventListener.onStarRemovedEmail(response);
+            if(triggerResponse is gmail:Message[]) {
+                if (triggerResponse.length()>0){
+                    //Write your logic here.....
+                    foreach var msg in triggerResponse {
+                        log:print("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
+                    }
+                }
+            }
+        }
+    }     
+}
+```
+
+### Trigger for new attachment
+
+This sample shows how to create a trigger on new email in the mailbox. This will be triggered when you receive a new attachment via email.
+
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_new_attachment.bal
+
+```ballerina
+import ballerina/http;
+import ballerina/log;
+import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis_gmail.'listener as gmailListener;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string topicName = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmail:Client gmailClient = new (gmailConfig);
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName);
+
+service / on gmailEventListener {
+    resource function post web(http:Caller caller, http:Request req) {
+        var payload = req.getJsonPayload();
+        var response = gmailEventListener.onMailboxChanges(caller , req);
+        if(response is gmail:MailboxHistoryPage) {
+            var triggerResponse = gmailEventListener.onNewAttachment(response);
+            if(triggerResponse is gmail:MessageBodyPart[]) {
+                if (triggerResponse.length()>0){
+                    //Write your logic here.....
+                    foreach var attachment in triggerResponse {
+                        log:print("Attachment Size: "+attachment.size);
+                    }
+                }
+            }
+        }
+    }     
+}
+```
 
 ## Building from the Source
 
