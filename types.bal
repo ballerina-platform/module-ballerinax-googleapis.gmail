@@ -283,10 +283,19 @@ public type MailboxHistoryPage record {
 public type History record {
     string id = "";
     Message[] messages = [];
-    Message[] messagesAdded = [];
-    Message[] messagesDeleted = [];
-    Message[] labelsAdded = [];
-    Message[] labelsRemoved = [];
+    HistoryEvent[] messagesAdded = [];
+    HistoryEvent[] messagesDeleted = [];
+    HistoryEvent[] labelsAdded = [];
+    HistoryEvent[] labelsRemoved = [];
+};
+
+# Represents changes of messages in history record.
+# 
+# + message - The message changed  
+# + labelIds - The label ids of the message  
+public type HistoryEvent record {
+    Message message = {};
+    string [] labelIds = [];
 };
 
 # Represents a draft email in user's mailbox.
@@ -296,4 +305,13 @@ public type History record {
 public type Draft record {
     string id = "";
     Message message = {};
+};
+
+# Represents a watch response.
+#
+# + historyId - The ID of the mailbox's current history record.
+# + expiration - When Gmail will stop sending notifications for mailbox updates (epoch millis) - (int64 format). 
+public type WatchResponse record {
+    string historyId = "";
+    string expiration = "";
 };

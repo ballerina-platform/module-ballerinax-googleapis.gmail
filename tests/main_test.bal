@@ -18,26 +18,29 @@ import ballerina/log;
 import ballerina/os;
 import ballerina/test;
 
+configurable string testRecipient = os:getEnv("RECIPIENT");
+configurable string testSender = os:getEnv("SENDER");
+configurable string testCc = os:getEnv("CC");
+configurable string testAttachmentPath = os:getEnv("ATTACHMENT_PATH");
+configurable string attachmentContentType = os:getEnv("ATTACHMENT_CONTENT_TYPE");
+configurable string inlineImagePath = os:getEnv("INLINE_IMAGE_PATH");
+configurable string inlineImageName = os:getEnv("INLINE_IMAGE_NAME");
+configurable string imageContentType = os:getEnv("IMAGE_CONTENT_TYPE");
+configurable string refreshToken = os:getEnv("REFRESH_TOKEN");
+configurable string clientId = os:getEnv("CLIENT_ID");
+configurable string clientSecret = os:getEnv("CLIENT_SECRET");
+
 GmailConfiguration gmailConfig = {
     oauthClientConfig: {
         refreshUrl: REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret 
     }
 };
 
 Client gmailClient = new(gmailConfig);
 
-//---------------Provide the following in the conf file before running the tests-------------------//
-string testRecipient = os:getEnv("RECIPIENT");
-string testSender = os:getEnv("SENDER");
-string testCc = os:getEnv("CC");
-string testAttachmentPath = os:getEnv("ATTACHMENT_PATH");
-string attachmentContentType = os:getEnv("ATTACHMENT_CONTENT_TYPE");
-string inlineImagePath = os:getEnv("INLINE_IMAGE_PATH");
-string inlineImageName = os:getEnv("INLINE_IMAGE_NAME");
-string imageContentType = os:getEnv("IMAGE_CONTENT_TYPE");
 
 //---------------Do not change the following variables-----------------------//
 string testUserId = "me";
