@@ -19,7 +19,8 @@ import ballerina/log;
 import ballerina/lang.array;
 import ballerinax/googleapis_gmail as gmail;
 
-# Listener for Gmail Connector.   
+# Listener for Gmail Connector.  
+@display {label: "Gmail Listener"} 
 public class Listener {
     private string startHistoryId = "";
     private string userId = ME;
@@ -64,7 +65,7 @@ public class Listener {
     # + request - http:Request that contains event related data
     # + return - If success, returns MailboxHistoryPage record, else error
     public function onMailboxChanges(http:Caller caller, http:Request request) 
-                                        returns gmail:MailboxHistoryPage| error {
+                                        returns gmail:MailboxHistoryPage|error {
         var payload = request.getJsonPayload();
         var response = caller->respond(http:STATUS_OK);
         var  mailboxHistoryPage =  self.gmailClient->listHistory(self.userId, self.startHistoryId);
@@ -81,7 +82,7 @@ public class Listener {
     #
     # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
     # + return - If success, returns array of gmail:Message record, else error
-    public function onNewEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
+    public function onNewEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[]|error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
             gmail:HistoryEvent[] messagesAdded = history.messagesAdded;
@@ -99,7 +100,7 @@ public class Listener {
     #
     # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
     # + return - If success, returns array of gmail:MailThread record, else error
-    public function onNewThread(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:MailThread[] | error {
+    public function onNewThread(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:MailThread[]|error {
         gmail:MailThread[] threads = [];
         foreach var history in mailboxHistoryPage.historyRecords {
             gmail:HistoryEvent[] messagesAdded = history.messagesAdded;
@@ -119,7 +120,7 @@ public class Listener {
     #
     # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
     # + return - If success, returns array of ChangedLabel record, else error
-    public function onNewLabeledEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns ChangedLabel[] | error {
+    public function onNewLabeledEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns ChangedLabel[]|error {
         ChangedLabel[] changedLabels = [];
         foreach var history in mailboxHistoryPage.historyRecords {
             gmail:HistoryEvent[] labelsAdded = history.labelsAdded;
@@ -140,7 +141,7 @@ public class Listener {
     #
     # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
     # + return - If success, returns array of gmail:Message record, else error
-    public function onNewStaredEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
+    public function onNewStaredEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[]|error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
             gmail:HistoryEvent[] labelsAdded = history.labelsAdded;
@@ -164,7 +165,7 @@ public class Listener {
     #
     # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
     # + return - If success, returns array of ChangedLabel record, else error
-    public function onLabelRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns ChangedLabel[] | error {
+    public function onLabelRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns ChangedLabel[]|error {
         ChangedLabel[] changedLabels = [];
         foreach var history in mailboxHistoryPage.historyRecords {
             gmail:HistoryEvent[] labelsRemoved = history.labelsRemoved;
@@ -185,7 +186,7 @@ public class Listener {
     #
     # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
     # + return - If success, returns array of gmail:Message record, else error
-    public function onStarRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[] | error {
+    public function onStarRemovedEmail(gmail:MailboxHistoryPage mailboxHistoryPage) returns gmail:Message[]|error {
         gmail:Message[] messages = [];
         foreach var history in mailboxHistoryPage.historyRecords {
             gmail:HistoryEvent[] labelsRemoved = history.labelsRemoved;
@@ -210,7 +211,7 @@ public class Listener {
     # + mailboxHistoryPage - MailboxHistoryPage record which is returened in a mailbox change
     # + return - If success, returns array of gmail:MessageBodyPart record, else error
     public function onNewAttachment(gmail:MailboxHistoryPage mailboxHistoryPage) 
-                                        returns gmail:MessageBodyPart[] |error {
+                                        returns gmail:MessageBodyPart[]|error {
         gmail:MessageBodyPart[] attachments = [];                                  
         var messages = self.onNewEmail(mailboxHistoryPage);        
         if(messages is gmail: Message[]) {
@@ -223,6 +224,5 @@ public class Listener {
             }
         }
         return attachments;
-    }
-    
+    }    
 }

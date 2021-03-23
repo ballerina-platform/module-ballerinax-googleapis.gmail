@@ -20,7 +20,7 @@ import ballerina/io;
 # Gmail Client object.
 #
 # + gmailClient - The HTTP Client
-@display {label: "Gmail Client"}
+@display {label: "Gmail Client", iconPath: "GmailLogo.png"}
 public client class Client {
     http:Client gmailClient;
 
@@ -834,7 +834,10 @@ public client class Client {
     #                   `    "topicName": string`
     #                   `       }`
     # + return - If successful, returns WatchResponse. Else returns error.
-    remote function watch(string userId, json requestBody) returns WatchResponse | error {
+    @display {label: "Setup notification subscription"}
+    remote function watch(@display {label: "User's email address"} string userId, 
+                          @display {label: "The request body for subscription"} json requestBody) 
+                          returns @display {label: "Subscription result"} WatchResponse|error {
         http:Request request = new;
         string watchPath = USER_RESOURCE+userId+WATCH;
         request.setJsonPayload(requestBody);
@@ -848,7 +851,9 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, nothing will be returned. Else returns error.
-    remote function stop(string userId) returns error? {
+    @display {label: "Stop channel from subscription"}
+    remote function stop(@display {label: "User's email address"} string userId) returns 
+                         @display {label: "Result"} error? {
         http:Request request = new;
         string stopPath = USER_RESOURCE+userId+STOP;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(stopPath, request);

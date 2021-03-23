@@ -6,6 +6,21 @@
 
 Connects to Gmail from Ballerina.
 
+- [Gmail Connecter](#markdown-navigation)
+    - [Introduction](#introduction)
+        - [What is Gmail](#what-is-gmail-?)
+        - [Key features of Gmail](#key-features-of-gmail)
+        - [Connector Overview](#connector-overview)
+    - [Prerequisites](#prerequisites)
+    - [Supported versions & limitations](#supported-versions-&-limitations)
+    - [Quickstarts](#quickstarts)
+    - [Samples](#samples)
+    - [Listener](#listener)
+    - [Building from the Source](#building-from-the-source)
+    - [Contributing to Ballerina](#contributing-to-ballerina)
+    - [Code of Conduct](#code-of-conduct)
+    - [Useful Links](#useful-links)
+
 # Introduction
 
 ## What is Gmail?
@@ -88,7 +103,7 @@ To use Gmail Listener connector, a topic and a subscription should be configured
 | Ballerina Language                | Swan Lake Alpha 2     |
 | Java Development Kit (JDK)        | 11                    |
 
-# Limitations
+## Limitations
 * Connector does not support several operations exposed by the Gmail API related to account settings.
 * Supports only **OAuth authorization code flow** for authentication.
 
@@ -929,9 +944,7 @@ the count of items in the history list.
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/list_history.bal
 
 # Listener
-
 ## Quickstart(s):
-
 ### Step 1: Import Gmail and Gmail Listener Ballerina Library
 First, import the ballerinax/googleapis_gmail and ballerinax/googleapis_gmail.'listener module into the Ballerina project.
 
@@ -1319,7 +1332,7 @@ service / on gmailEventListener {
 }
 ```
 
-## Building from the Source
+# Building from the Source
 
 ### Setting Up the Prerequisites
 
@@ -1347,17 +1360,17 @@ Execute the commands below to build from the source after installing Ballerina S
     ballerina build --skip-tests
 ```
 
-## Contributing to Ballerina
+# Contributing to Ballerina
 
 As an open source project, Ballerina welcomes contributions from the community. 
 
 For more information, go to the [contribution guidelines](https://github.com/ballerina-platform/ballerina-lang/blob/master/CONTRIBUTING.md).
 
-## Code of Conduct
+# Code of Conduct
 
 All the contributors are encouraged to read the [Ballerina Code of Conduct](https://ballerina.io/code-of-conduct).
 
-## Useful Links
+# Useful Links
 
 * Discuss the code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
 * Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).
