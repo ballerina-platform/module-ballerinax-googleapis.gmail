@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
 
-    log:print("List threads");
+    log:printInfo("List threads");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -41,10 +41,10 @@ public function main(string... args) {
         
     if (threadList is gmail:ThreadListPage) {  
         error? e = threadList.threads.forEach(function (json thread) {
-            log:print(thread.toString());
+            log:printInfo(thread.toString());
         }); 
     } else {
         log:printError("Failed to list threads");
     }
-    log:print("End!");
+    log:printInfo("End!");
 }

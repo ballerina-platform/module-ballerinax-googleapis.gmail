@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("List the profile history");
+    log:printInfo("List the profile history");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     // TO get the history ID we have to get the history ID referring to message response.
@@ -54,7 +54,7 @@ public function main(string... args) {
 
         if (listHistoryResponse is gmail:MailboxHistoryPage) {
             error? e = listHistoryResponse.historyRecords.forEach(function (gmail:History history) {
-                log:print(history.id);
+                log:printInfo(history.id);
             });
         } else {
             log:printError("Failed to list user profile history");
@@ -63,5 +63,5 @@ public function main(string... args) {
         log:printError("Failed to read message");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

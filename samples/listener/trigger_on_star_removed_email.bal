@@ -48,7 +48,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var msg in triggerResponse {
-                        log:print("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
+                        log:printInfo("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
                     }
                 }
             }

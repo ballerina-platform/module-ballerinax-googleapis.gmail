@@ -115,10 +115,10 @@ isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) ret
         if(srcMssgPartHeaders is json) {
             // Headers is an object of type headers
             targetMessageBodyType.bodyHeaders = 
-                sourceMessagePartJsonObject.headers != () ? convertJSONToHeaderMap(srcMssgPartHeaders) : 
+                sourceMessagePartJsonObject.headers !== () ? convertJSONToHeaderMap(srcMssgPartHeaders) : 
                 targetMessageBodyType.bodyHeaders;
         } else {
-            log:printError("Error occurred while getting headers from src message part.", err = srcMssgPartHeaders);
+            log:printError("Error occurred while getting headers from src message part.", 'error = srcMssgPartHeaders);
         }
     }
     return targetMessageBodyType;
@@ -204,7 +204,7 @@ isolated function convertJSONToMessageListPageType(json sourceMsgListJsonObject)
             array:push(targetMsgListPage.messages, singleMsg);
         }
     } else {
-        log:printError("Error occurred while getting messages", err = messages);
+        log:printError("Error occurred while getting messages", 'error = messages);
     }
     return targetMsgListPage;
 }
@@ -233,7 +233,7 @@ isolated function convertJSONToThreadListPageType(json sourceThreadListJsonObjec
             array:push(targetThreadListPage.threads, singleThread);
         }
     } else {
-        log:printError("Error occurred while getting threads", err = jsonThreads);
+        log:printError("Error occurred while getting threads", 'error = jsonThreads);
     }
     return targetThreadListPage;
 }
@@ -360,7 +360,7 @@ isolated function convertJSONToLabelType(json sourceLabelJsonObject) returns Lab
         return targetLabel;
     } else {
         log:printError("Error occurred while converting sourceLabelJsonObject json to map of json. sourceLabelJsonObject: " 
-            + sourceLabelJsonObject.toString(), err = srcLabelJsonObjectMap);
+            + sourceLabelJsonObject.toString(), 'error = srcLabelJsonObjectMap);
         error err = error(GMAIL_ERROR_CODE, message = 
             "Error occurred while converting sourceLabelJsonObject json to map of json.");
         return err;
@@ -399,7 +399,7 @@ isolated function convertJSONToLabelTypeList(json sourceJsonLabelList) returns L
             }
         }
     } else {
-        log:printError("Error occurred while getting label list", err = jsonLabelList);
+        log:printError("Error occurred while getting label list", 'error = jsonLabelList);
     }
     return targetLabelList;
 }
@@ -420,7 +420,7 @@ function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns
             array:push(targetMailboxHistoryPage.historyRecords, convertJSONToHistoryType(history));
         }
     } else {
-        log:printError("Error occurred while getting history list", err = historyList);
+        log:printError("Error occurred while getting history list", 'error = historyList);
     }
     return targetMailboxHistoryPage;
 }
@@ -467,7 +467,7 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                     if(historyEvent is HistoryEvent) {
                         array:push(targetHistory.messagesAdded,historyEvent);
                     } else {
-                        log:printError("Error occured while converting to HistoryEvent type", err = historyEvent);
+                        log:printError("Error occured while converting to HistoryEvent type", 'error = historyEvent);
                     }
                 }                
             } else {
@@ -485,7 +485,7 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                     if(historyEvent is HistoryEvent) {
                         array:push(targetHistory.messagesDeleted,historyEvent);
                     } else {
-                        log:printError("Error occured while converting to HistoryEvent type", err = historyEvent);
+                        log:printError("Error occured while converting to HistoryEvent type", 'error = historyEvent);
                     }
                 }                
             } else {
@@ -503,7 +503,7 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                     if(historyEvent is HistoryEvent) {
                         array:push(targetHistory.labelsAdded,historyEvent);
                     } else {
-                        log:printError("Error occured while converting to HistoryEvent type", err = historyEvent);
+                        log:printError("Error occured while converting to HistoryEvent type", 'error = historyEvent);
                     }
                 }                
             } else {
@@ -521,7 +521,7 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                     if(historyEvent is HistoryEvent) {
                         array:push(targetHistory.labelsRemoved,historyEvent);
                     } else {
-                        log:printError("Error occured while converting to HistoryEvent type", err = historyEvent);
+                        log:printError("Error occured while converting to HistoryEvent type", 'error = historyEvent);
                     }
                 }                
             } else {
@@ -557,7 +557,7 @@ isolated function convertJSONToDraftListPageType(json sourceDraftListJsonObject)
             array:push(targetDraftListPage.drafts, singleDraft);
         }
     } else {
-        log:printError("Error occurred while getting drafts", err = drafts);
+        log:printError("Error occurred while getting drafts", 'error = drafts);
     }
     return targetDraftListPage;
 }
@@ -571,9 +571,9 @@ function convertJSONToDraftType(json sourceDraftJsonObject) returns @tainted Dra
 
     json|error message = sourceDraftJsonObject.message;
     if(message is json) {
-        targetDraft.message = sourceDraftJsonObject.message != () ? convertJSONToMessageType(message) : {};
+        targetDraft.message = sourceDraftJsonObject.message !== () ? convertJSONToMessageType(message) : {};
     } else {
-        log:printError("Error occurred while getting message from sourceDraftJsonObject.", err = message);
+        log:printError("Error occurred while getting message from sourceDraftJsonObject.", 'error = message);
     }
     return targetDraft;
 }

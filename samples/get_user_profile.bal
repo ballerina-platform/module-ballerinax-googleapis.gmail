@@ -31,16 +31,16 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
 
-    log:print("Get user profile information");
+    log:printInfo("Get user profile information");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     
     gmail:UserProfile|error profile = gmailClient->getUserProfile(userId);
     
     if (profile is gmail:UserProfile) {
-        log:print("Successfully received user profile info: ", address = profile.emailAddress);
+        log:printInfo("Successfully received user profile info: ", address = profile.emailAddress);
     } else {
         log:printError("Failed to get user profile information");
     }
-    log:print("End!");
+    log:printInfo("End!");
 }

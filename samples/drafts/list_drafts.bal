@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("List drafts");
+    log:printInfo("List drafts");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -40,11 +40,11 @@ public function main(string... args) {
     gmail:DraftListPage|error msgList = gmailClient->listDrafts(userId, filter = searchFilter);
     if (msgList is gmail:DraftListPage) {
         error? e = msgList.drafts.forEach(function (json draft) {
-            log:print(draft.toString());
+            log:printInfo(draft.toString());
         });   
     } else {
         log:printError("Failed to list drafts");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

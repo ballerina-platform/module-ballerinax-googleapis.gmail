@@ -76,7 +76,7 @@ To use Gmail Listener connector, a topic and a subscription should be configured
 
 * Java 11 Installed <br/> Java Development Kit (JDK) with version 11 is required.
 
-* Ballerina SLAlpha2 Installed <br/> Ballerina Swan Lake Alpha 2 is required.
+* Ballerina SLAlpha2 Installed <br/> Ballerina Swan Lake Alpha 3 is required.
 
 # Supported Versions & Limitations
 
@@ -85,7 +85,7 @@ To use Gmail Listener connector, a topic and a subscription should be configured
 |                                   | Version               |
 |-----------------------------------|-----------------------|
 | Gmail API Version                 | v1                    |
-| Ballerina Language                | Swan Lake Alpha 2     |
+| Ballerina Language                | Swan Lake Alpha 3     |
 | Java Development Kit (JDK)        | 11                    |
 
 # Limitations
@@ -182,7 +182,7 @@ is trashed successfully. Else returns an `error`.
 boolean|error trash = gmailClient->trashMessage(userId, sentHtmlMessageId);
 
 if (trash == true) {
-    log:print("Successfully trashed the message");
+    log:printInfo("Successfully trashed the message");
 } else {
     log:printError("Failed to trash the message");
 }
@@ -234,8 +234,8 @@ messageRequest.contentType = gmail:TEXT_PLAIN;
 if (sendMessageResponse is [string, string]) {
     // If successful, print the message ID and thread ID.
     [string, string] [messageId, threadId] = sendMessageResponse;
-    log:print("Sent Message ID: ", messageId = messageId);
-    log:print("Sent Thread ID: ", threadId = threadId);
+    log:printInfo("Sent Message ID: ", messageId = messageId);
+    log:printInfo("Sent Thread ID: ", threadId = threadId);
 } else {
     // If unsuccessful, print the error returned.
     log:printError(sendMessageResponse.message());
@@ -271,8 +271,8 @@ messageRequest.contentType = gmail:TEXT_HTML;
 if (sendMessageResponse is [string, string]) {
     // If successful, print the message ID and thread ID.
     [string, string] [messageId, threadId] = sendMessageResponse;
-    log:print("Sent Message ID: ", messageId = messageId);
-    log:print("Sent Thread ID: ", threadId = threadId);
+    log:printInfo("Sent Message ID: ", messageId = messageId);
+    log:printInfo("Sent Thread ID: ", threadId = threadId);
 } else {
     // If unsuccessful, print the error returned.
     log:printError("Error: ", err = sendMessageResponse);
@@ -318,7 +318,7 @@ string sentMessageId = "<MESSAGE_ID>";
 gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
 
 if (response is gmail:Message) {
-    log:print("Is message details available: ", status = response.id == sentMessageId);
+    log:printInfo("Is message details available: ", status = response.id == sentMessageId);
 } else {
     log:printError("Failed to read message");
 }
@@ -344,7 +344,7 @@ gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
 
 if (response is gmail:Message) {
     if (response.msgAttachments.length() >= 1) {
-        log:print("Attachment retrieved ", status = response.msgAttachments[0]?.fileId);
+        log:printInfo("Attachment retrieved ", status = response.msgAttachments[0]?.fileId);
     } else {
         log:printError("No attachment exists for this message");
     }
@@ -375,7 +375,7 @@ gmail:MessageBodyPart|error response = gmailClient->getAttachment(userId, sentMe
 
 if (response is gmail:MessageBodyPart) {
     boolean status = (response.fileId == "" && response.body == "") ? false : true;
-    log:print("Attachment retrieved ", status = status);
+    log:printInfo("Attachment retrieved ", status = status);
 } else {
     log:printError("Failed to get the attachments");
 }
@@ -401,7 +401,7 @@ string sentMessageId = "<MESSAGE_ID>";
 boolean|error trash = gmailClient->trashMessage(userId, sentMessageId);
 
 if (trash == true) {
-    log:print("Successfully trashed the message");
+    log:printInfo("Successfully trashed the message");
 } else {
     log:printError("Failed to trash the message");
 }
@@ -409,7 +409,7 @@ if (trash == true) {
 boolean|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
 
 if (untrash == true) {
-    log:print("Successfully un-trashed the message");
+    log:printInfo("Successfully un-trashed the message");
 } else {
     log:printError("Failed to un-trash the message");
 } 
@@ -432,7 +432,7 @@ string sentMessageId = "<MESSAGE_ID>";
 boolean|error delete = gmailClient->deleteMessage(userId, sentMessageId);
 
 if (delete == true) {
-    log:print("Successfully deleted the message");
+    log:printInfo("Successfully deleted the message");
 } else {
     log:printError("Failed to delete the message");
 }
@@ -464,9 +464,9 @@ gmail:MailThread|error thread = gmailClient->readThread(userId, sentMessageThrea
     metadataHeaders = ["Subject"]);
     
 if (thread is gmail:MailThread) {
-    log:print("Thread obtained: ", status = thread.id == sentTextMessageThreadId);
+    log:printInfo("Thread obtained: ", status = thread.id == sentTextMessageThreadId);
 } else {
-    log:print("Failed to get thread");
+    log:printInfo("Failed to get thread");
 }
 ```
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/threads/read_one_thread.bal
@@ -486,21 +486,21 @@ string sentMessageThreadId = "<THREAD_ID";
 
 // Modify labels of the thread with thread id which was sent in testSendTextMessage
 
-log:print("Add labels to a thread");
+log:printInfo("Add labels to a thread");
 gmail:MailThread|error response = gmailClient->modifyThread(userId, sentMessageThreadId, ["INBOX"], []);
 
 if (response is gmail:MailThread) {
-    log:print("Add labels to thread successfully: ", status = response.id == sentMessageThreadId);
+    log:printInfo("Add labels to thread successfully: ", status = response.id == sentMessageThreadId);
 } else {
-    log:print("Failed to modify thread");
+    log:printInfo("Failed to modify thread");
 }
 
-log:print("Remove labels from a thread");
+log:printInfo("Remove labels from a thread");
 response = gmailClient->modifyThread(userId, sentMessageThreadId, [], ["INBOX"]);
 if (response is gmail:MailThread) {
-    log:print("Removed labels from thread successfully: ", status = response.id == sentMessageThreadId);
+    log:printInfo("Removed labels from thread successfully: ", status = response.id == sentMessageThreadId);
 } else {
-    log:print("Failed to modify thread");
+    log:printInfo("Failed to modify thread");
 }
 ```
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/threads/modify_thread.bal
@@ -521,7 +521,7 @@ gmail:ThreadListPage|error threadList = gmailClient->listThreads(userId, filter 
 
 if (threadList is gmail:ThreadListPage) {
     error? e = threadList.threads.forEach(function (json thread) {
-        log:print(thread.toString());
+        log:printInfo(thread.toString());
     }); 
 } else {
     log:printError("Failed to list threads");
@@ -546,20 +546,20 @@ string userId = "me";
 // ID of the thread to trash or un-trash.
 string sentMessageThreadId = "<THREAD_ID";
 
-log:print("Trash thread");
+log:printInfo("Trash thread");
 boolean|error trash = gmailClient->trashThread(userId, sentMessageThreadId);
 
 if (trash == true) {
-    log:print("Successfully trashed the thread");
+    log:printInfo("Successfully trashed the thread");
 } else {
     log:printError("Failed to trash the thread");
 } 
 
-log:print("Un-trash thread");
+log:printInfo("Un-trash thread");
 boolean|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
 
 if (untrash == true) {
-    log:print("Successfully un-trashed the thread");
+    log:printInfo("Successfully un-trashed the thread");
 } else {
     log:printError("Failed to un-trash the thread");
 } 
@@ -581,7 +581,7 @@ string sentMessageThreadId = "<THREAD_ID";
 boolean|error delete = gmailClient->deleteThread(userId, sentMessageThreadId);
 
 if (delete == true) {
-    log:print("Successfully deleted the thread");
+    log:printInfo("Successfully deleted the thread");
 } else {
     log:printError("Failed to delete the thread");
 }
@@ -616,7 +616,7 @@ messageRequest.contentType = gmail:TEXT_PLAIN;
 string|error draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentMessageThreadId);
 
 if (draftResponse is string) {
-    log:print("Successfully created draft: ", draftId = draftResponse);
+    log:printInfo("Successfully created draft: ", draftId = draftResponse);
 } else {
     log:printError("Failed to create draft");
 }
@@ -654,7 +654,7 @@ newMessageRequest.attachmentPaths = attachments;
 string|error draftUpdateResponse = gmailClient->updateDraft(userId, createdDraftId, newMessageRequest);
 
 if (draftUpdateResponse is string) {
-    log:print("Successfully updated the draft: ", result = draftUpdateResponse);
+    log:printInfo("Successfully updated the draft: ", result = draftUpdateResponse);
 } else {
     log:printError("Failed to update the draft");
 }
@@ -676,7 +676,7 @@ string createdDraftId = "<DRAFT_ID>";
 gmail:Draft|error draftReadResponse = gmailClient->readDraft(userId, createdDraftId);
 
 if (draftReadResponse is gmail:Draft) {
-    log:print("Successfully read the draft: ", status = draftReadResponse.id == createdDraftId);
+    log:printInfo("Successfully read the draft: ", status = draftReadResponse.id == createdDraftId);
 } else {
     log:printError("Failed to get draft");
 }
@@ -698,7 +698,7 @@ gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: "10
 gmail:DraftListPage|error msgList = gmailClient->listDrafts(userId, filter = searchFilter);
 if (msgList is gmail:DraftListPage) {
     error? e = msgList.drafts.forEach(function (json draft) {
-        log:print(draft.toString());
+        log:printInfo(draft.toString());
     });   
 } else {
     log:printError("Failed to list drafts");
@@ -724,7 +724,7 @@ string createdDraftId = "<DRAFT_ID>";
 boolean|error deleteResponse = gmailClient->deleteDraft(userId, createdDraftId);
 
 if (deleteResponse == true) {
-    log:print("Successfully deleted the draft");
+    log:printInfo("Successfully deleted the draft");
 } else {
     log:printError("Failed to delete the draft");
 }
@@ -749,7 +749,7 @@ string createdDraftId = "<DRAFT_ID>";
 
 if (sendDraftResponse is [string, string]) {
     [string, string][messageId, threadId] = sendDraftResponse;
-    log:print("Sent the draft successfully: ", status =  messageId != "null" && threadId != "null");
+    log:printInfo("Sent the draft successfully: ", status =  messageId != "null" && threadId != "null");
 } else {
     log:printError("Failed to send the draft");
 }
@@ -782,7 +782,7 @@ string|error createLabelResponse = gmailClient->createLabel(userId, displayName,
     messageListVisibility);
 
 if (createLabelResponse is string) {
-    log:print("Successfully created label: ", labelId = createLabelResponse);
+    log:printInfo("Successfully created label: ", labelId = createLabelResponse);
 } else {
     log:printError("Failed to create label");
 } 
@@ -812,7 +812,7 @@ gmail:Label|error updateLabelResponse = gmailClient->updateLabel(userId, created
     backgroundColor = updateBgColor, textColor = updateTxtColor);
 
 if (updateLabelResponse is gmail:Label) {
-    log:print("Successfully updated label: ", status = updateLabelResponse.name == updateName &&
+    log:printInfo("Successfully updated label: ", status = updateLabelResponse.name == updateName &&
         updateLabelResponse.backgroundColor == updateBgColor &&
         updateLabelResponse.textColor == updateTxtColor);
 } else {
@@ -834,7 +834,7 @@ gmail:Label[]|error listLabelResponse = gmailClient->listLabels(userId);
 
 if (listLabelResponse is gmail:Label[]) { 
     error? e = listLabelResponse.forEach(function (gmail:Label label) {
-        log:print(label.id);
+        log:printInfo(label.id);
     }); 
 } else {
     log:printError("Failed to list labels");
@@ -859,7 +859,7 @@ boolean|error deleteLabelResponse = gmailClient->deleteLabel(userId, createdLabe
 if (deleteLabelResponse == true) {
     log:printError("Successfully deleted the message");
 } else {
-    log:print("Failed to delete the message");
+    log:printInfo("Failed to delete the message");
 }
 ```
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/labels/delete_label.bal
@@ -876,7 +876,7 @@ string userId = "me";
 gmail:UserProfile|error profile = gmailClient->getUserProfile(userId);
 
 if (profile is gmail:UserProfile) {
-    log:print("Successfully received user profile info: ", address = profile.emailAddress);
+    log:printInfo("Successfully received user profile info: ", address = profile.emailAddress);
 } else {
     log:printError("Failed to get user profile information");
 }
@@ -913,7 +913,7 @@ if (response is gmail:Message) {
 
     if (listHistoryResponse is gmail:MailboxHistoryPage) {
         error? e = listHistoryResponse.historyRecords.forEach(function (gmail:History history) {
-            log:print(history.id);
+            log:printInfo(history.id);
         });
     } else {
         log:printError("Failed to list user profile history");
@@ -1009,7 +1009,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var msg in triggerResponse {
-                        log:print("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
+                        log:printInfo("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
                     }
                 }
             }
@@ -1059,7 +1059,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var thread in triggerResponse {
-                        log:print("Thread ID: "+ thread.id);
+                        log:printInfo("Thread ID: "+ thread.id);
                     }
                 }
             }
@@ -1109,7 +1109,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var changedLabel in triggerResponse {
-                        log:print("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
+                        log:printInfo("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
                             +changedLabel.changedLabelId[0]);
                     }
                 }
@@ -1159,7 +1159,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var msg in triggerResponse {
-                        log:print("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
+                        log:printInfo("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
                     }
                 }
             }
@@ -1209,7 +1209,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var changedLabel in triggerResponse {
-                        log:print("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
+                        log:printInfo("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
                             +changedLabel.changedLabelId[0]);
                     }
                 }
@@ -1260,7 +1260,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var msg in triggerResponse {
-                        log:print("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
+                        log:printInfo("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
                     }
                 }
             }
@@ -1310,7 +1310,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var attachment in triggerResponse {
-                        log:print("Attachment Size: "+attachment.size);
+                        log:printInfo("Attachment Size: "+attachment.size);
                     }
                 }
             }
@@ -1331,7 +1331,7 @@ service / on gmailEventListener {
 
         > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
 
-2. Download and install [Ballerina Swann Lake Alpha2](https://ballerina.io/). 
+2. Download and install [Ballerina Swann Lake Alpha3](https://ballerina.io/). 
 
 ### Building the Source
 

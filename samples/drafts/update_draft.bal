@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("Update draft"); // New update will be to update the darft subject, body and attchments.
+    log:printInfo("Update draft"); // New update will be to update the darft subject, body and attchments.
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -54,10 +54,10 @@ public function main(string... args) {
 
     string|error draftUpdateResponse = gmailClient->updateDraft(userId, createdDraftId, newMessageRequest);
     if (draftUpdateResponse is string) {
-        log:print("Successfully updated the draft: ", result = draftUpdateResponse);
+        log:printInfo("Successfully updated the draft: ", result = draftUpdateResponse);
     } else {
         log:printError("Failed to update the draft");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

@@ -41,7 +41,7 @@ gmail:Client gmailClient = new (gmailConfig);
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 2           |   v1              |
+|  Swan Lake Alpha 3           |   v1              |
 
 ## Example Code
 This code sample represents sending a new text message from one Gmail user to another one. Here, the receiver which needs to receive carbon copy is also mentioned.
@@ -101,7 +101,7 @@ The Gmail Listener Ballerina Connector provides the capability to listen the pus
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 2 is required.
+Ballerina Swan Lake Alpha 3 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
     * Client ID
@@ -151,7 +151,7 @@ topicName = "enter your push topic name"
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 2           |   v1              |
+|  Swan Lake Alpha 3           |   v1              |
 
 # Quickstart(s):
 
@@ -231,7 +231,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var msg in triggerResponse {
-                        log:print("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
+                        log:printInfo("Message ID: "+msg.id + " Thread ID: "+ msg.threadId+ " Snippet: "+msg.snippet);
                     }
                 }
             }
@@ -279,7 +279,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var changedLabel in triggerResponse {
-                        log:print("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
+                        log:printInfo("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
                             +changedLabel.changedLabelId[0]);
                     }
                 }

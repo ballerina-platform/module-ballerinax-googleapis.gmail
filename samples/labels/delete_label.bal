@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("Delete label");
+    log:printInfo("Delete label");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     
@@ -43,8 +43,8 @@ public function main(string... args) {
     if (deleteLabelResponse == true) {
         log:printError("Successfully deleted the message");
     } else {
-        log:print("Failed to delete the message");
+        log:printInfo("Failed to delete the message");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

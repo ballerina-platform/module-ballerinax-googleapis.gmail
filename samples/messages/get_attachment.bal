@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
 
-    log:print("Get an attachment in a sent message");
+    log:printInfo("Get an attachment in a sent message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -46,7 +46,7 @@ public function main(string... args) {
     
     if (readResponse is gmail:Message) {
        if (readResponse.msgAttachments.length() >= 1) {
-            log:print("Meesage information retrieved");
+            log:printInfo("Meesage information retrieved");
             readAttachmentFileId = readResponse.msgAttachments[0]?.fileId;
 
             // Now we can fetch the attachment using the above attachment ID
@@ -54,17 +54,17 @@ public function main(string... args) {
                 readAttachmentFileId);
             if (response is gmail:MessageBodyPart) {
                 boolean status = (response.fileId == "" && response.body == "") ? false : true;
-                log:print("Attachment retrieved ", status = status);
+                log:printInfo("Attachment retrieved ", status = status);
             } else {
                 log:printError("Failed to get the attachments");
             }
        } else {
-            log:print("No attachment exists for this message");
+            log:printInfo("No attachment exists for this message");
        }
     } else {
-        log:print("Failed to get the message");
+        log:printInfo("Failed to get the message");
     }
 
     
-    log:print("End!");
+    log:printInfo("End!");
 }

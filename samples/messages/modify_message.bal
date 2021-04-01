@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
 
-    log:print("Modify labels of a HTML message");
+    log:printInfo("Modify labels of a HTML message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -41,22 +41,22 @@ public function main(string... args) {
     string[] labelsToAdd = ["INBOX"];
     string[] labelsToRemove = ["INBOX"];
 
-    log:print("Add Labels");
+    log:printInfo("Add Labels");
     gmail:Message|error response = gmailClient->modifyMessage(userId, sentMessageId, labelsToAdd, []);
 
     if (response is gmail:Message) {
-        log:print("Is lablel modified: ", status = response.id == sentMessageId);
+        log:printInfo("Is lablel modified: ", status = response.id == sentMessageId);
     } else {
         log:printError("Failed to modify the labels");
     }
 
-    log:print("Remove Labels");
+    log:printInfo("Remove Labels");
     response = gmailClient->modifyMessage(userId, sentMessageId, [], labelsToRemove);
     
     if (response is gmail:Message) {
-        log:print("Is lablel modified: ", ststus = response.id == sentMessageId);
+        log:printInfo("Is lablel modified: ", ststus = response.id == sentMessageId);
     } else {
         log:printError("Failed to modify the labels");
     }
-    log:print("End!");
+    log:printInfo("End!");
 }

@@ -32,7 +32,7 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     // Moves the specified message to the trash.
-    log:print("Trash a message");
+    log:printInfo("Trash a message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -42,9 +42,9 @@ public function main(string... args) {
     boolean|error trash = gmailClient->trashMessage(userId, sentMessageId);
 
     if (trash == true) {
-        log:print("Successfully trashed the message");
+        log:printInfo("Successfully trashed the message");
     } else {
         log:printError("Failed to trash the message");
     }
-    log:print("End!");
+    log:printInfo("End!");
 }

@@ -48,7 +48,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var attachment in triggerResponse {
-                        log:print("Attachment Size: "+attachment.size);
+                        log:printInfo("Attachment Size: "+attachment.size);
                     }
                 }
             }

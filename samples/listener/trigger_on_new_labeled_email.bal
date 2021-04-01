@@ -48,7 +48,7 @@ service / on gmailEventListener {
                 if (triggerResponse.length()>0){
                     //Write your logic here.....
                     foreach var changedLabel in triggerResponse {
-                        log:print("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
+                        log:printInfo("Message ID: "+ changedLabel.message.id + " Changed Label ID: "
                             +changedLabel.changedLabelId[0]);
                     }
                 }

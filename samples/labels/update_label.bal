@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("Update label");
+    log:printInfo("Update label");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     
@@ -46,12 +46,12 @@ public function main(string... args) {
         backgroundColor = updateBgColor, textColor = updateTxtColor);
 
     if (updateLabelResponse is gmail:Label) {
-        log:print("Successfully updated label: ", status = updateLabelResponse.name == updateName &&
+        log:printInfo("Successfully updated label: ", status = updateLabelResponse.name == updateName &&
             updateLabelResponse.backgroundColor == updateBgColor &&
             updateLabelResponse.textColor == updateTxtColor);
     } else {
         log:printError("Failed to update label");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

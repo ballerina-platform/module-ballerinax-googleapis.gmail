@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("List labels");
+    log:printInfo("List labels");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     
@@ -39,11 +39,11 @@ public function main(string... args) {
 
     if (listLabelResponse is gmail:Label[]) { 
         error? e = listLabelResponse.forEach(function (gmail:Label label) {
-            log:print(label.id);
+            log:printInfo(label.id);
         }); 
     } else {
         log:printError("Failed to list labels");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }
