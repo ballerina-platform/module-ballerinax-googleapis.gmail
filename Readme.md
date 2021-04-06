@@ -76,7 +76,7 @@ To use Gmail Listener connector, a topic and a subscription should be configured
 
 * Java 11 Installed <br/> Java Development Kit (JDK) with version 11 is required.
 
-* Ballerina SLAlpha2 Installed <br/> Ballerina Swan Lake Alpha 3 is required.
+* Ballerina SLAlpha4 Installed <br/> Ballerina Swan Lake Alpha 4 is required.
 
 # Supported Versions & Limitations
 
@@ -85,7 +85,7 @@ To use Gmail Listener connector, a topic and a subscription should be configured
 |                                   | Version               |
 |-----------------------------------|-----------------------|
 | Gmail API Version                 | v1                    |
-| Ballerina Language                | Swan Lake Alpha 3     |
+| Ballerina Language                | Swan Lake Alpha 4     |
 | Java Development Kit (JDK)        | 11                    |
 
 # Limitations
@@ -1001,7 +1001,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewEmail(response);
@@ -1051,7 +1050,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewThread(response);
@@ -1101,7 +1099,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewLabeledEmail(response);
@@ -1151,7 +1148,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewStaredEmail(response);
@@ -1201,7 +1197,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onLabelRemovedEmail(response);
@@ -1252,7 +1247,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onStarRemovedEmail(response);
@@ -1302,7 +1296,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewAttachment(response);
@@ -1331,7 +1324,7 @@ service / on gmailEventListener {
 
         > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
 
-2. Download and install [Ballerina Swann Lake Alpha3](https://ballerina.io/). 
+2. Download and install [Ballerina Swann Lake Alpha4](https://ballerina.io/). 
 
 ### Building the Source
 

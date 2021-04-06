@@ -41,7 +41,7 @@ gmail:Client gmailClient = new (gmailConfig);
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 3           |   v1              |
+|  Swan Lake Alpha 4           |   v1              |
 
 ## Example Code
 This code sample represents sending a new text message from one Gmail user to another one. Here, the receiver which needs to receive carbon copy is also mentioned.
@@ -151,7 +151,7 @@ topicName = "enter your push topic name"
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 3           |   v1              |
+|  Swan Lake Alpha 4           |   v1              |
 
 # Quickstart(s):
 
@@ -223,7 +223,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewEmail(response);
@@ -271,7 +270,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewLabeledEmail(response);

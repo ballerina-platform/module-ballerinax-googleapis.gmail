@@ -22,7 +22,7 @@ import ballerina/jballerina.java as java;
 import ballerina/lang.'string as strings;
 import ballerina/log;
 import ballerina/mime;
-import ballerinax/java.arrays as jarrays;
+import ballerina/jballerina.java.arrays as jarrays;
 
 # Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
 #

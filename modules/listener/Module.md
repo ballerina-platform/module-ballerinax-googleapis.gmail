@@ -13,7 +13,7 @@ The Gmail Listener Ballerina Connector provides the capability to listen the pus
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 3 is required.
+Ballerina Swan Lake Alpha 4 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
     * Client ID
@@ -63,7 +63,7 @@ topicName = "enter your push topic name"
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 3           |   v1              |
+|  Swan Lake Alpha 4           |   v1              |
 
 # Quickstart(s):
 
@@ -135,7 +135,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewEmail(response);
@@ -183,7 +182,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewLabeledEmail(response);

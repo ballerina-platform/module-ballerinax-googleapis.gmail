@@ -65,8 +65,7 @@ public class Listener {
     # + return - If success, returns MailboxHistoryPage record, else error
     public function onMailboxChanges(http:Caller caller, http:Request request) 
                                         returns @tainted gmail:MailboxHistoryPage| error {
-        var payload = request.getJsonPayload();
-        var response = caller->respond(http:STATUS_OK);
+        check caller->respond(http:STATUS_OK);
         var  mailboxHistoryPage =  self.gmailClient->listHistory(self.userId, self.startHistoryId);
         if(mailboxHistoryPage is gmail:MailboxHistoryPage) {
             self.startHistoryId = mailboxHistoryPage.historyId;

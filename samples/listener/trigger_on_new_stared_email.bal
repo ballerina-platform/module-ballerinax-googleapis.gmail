@@ -40,7 +40,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topi
 
 service / on gmailEventListener {
     resource function post web(http:Caller caller, http:Request req) {
-        var payload = req.getJsonPayload();
         var response = gmailEventListener.onMailboxChanges(caller , req);
         if(response is gmail:MailboxHistoryPage) {
             var triggerResponse = gmailEventListener.onNewStaredEmail(response);
