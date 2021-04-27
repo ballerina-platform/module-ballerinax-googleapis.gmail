@@ -2,12 +2,12 @@ import ballerina/log;
 import ballerinax/googleapis_gmail as gmail;
 
 isolated function createTopic(gmail:Client gmailClient, string topicName, string subscriptionName, 
-                                  string project, string pushEndpoint) returns [string,string] | error {
+                                  string project, string pushEndpoint) returns @tainted [string,string] | error {
     gmail:Topic topic = check  gmailClient->createPubsubTopic(project,topicName);
     string topicResource = topic.name;
     log:printInfo(topicResource + " is created");
     if (topicResource !== "") {
-        gmail:Policy existingPolicy = check gmailClient->getPubsubTopicIamPolicy(topicResource);
+        gmail:Policy existingPolicy = check gmailClient->getPubsubTopicIamPolicy(<@untainted>topicResource);
         string etag = existingPolicy.etag;
         if (etag !== "") {
             gmail:Policy newPolicy = {
@@ -25,7 +25,7 @@ isolated function createTopic(gmail:Client gmailClient, string topicName, string
             json newPolicyRequestbody = {
                                             "policy": newPolicy.toJson()
                                         };
-            gmail:Policy createdPolicy = check gmailClient->setPubsubTopicIamPolicy(topicResource,
+            gmail:Policy createdPolicy = check gmailClient->setPubsubTopicIamPolicy(<@untainted>topicResource,
                                                                                     newPolicyRequestbody);               
             string subscriptionResource = check createSubscription(gmailClient, subscriptionName, project, pushEndpoint,
                                                                    topicResource);
@@ -38,7 +38,7 @@ isolated function createTopic(gmail:Client gmailClient, string topicName, string
 }
 
 isolated function createSubscription(gmail:Client gmailClient, string subscriptionName, string project, 
-                                     string pushEndpoint, string topicResource) returns string | error {
+                                     string pushEndpoint, string topicResource) returns @tainted string | error {
     gmail:SubscriptionRequest subscriptionRequestbody  = {
                                     topic: topicResource,
                                     pushConfig: {

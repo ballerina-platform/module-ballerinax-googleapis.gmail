@@ -18,7 +18,8 @@ import ballerina/http;
 import ballerina/log;
 import ballerinax/googleapis_gmail as gmail;
 
-# Listener for Gmail Connector.   
+# Listener for Gmail Connector.
+@display {label: "Gmail Listener"} 
 public class Listener {
     private string startHistoryId = "";
     private decimal expirationTime = 0;
@@ -37,7 +38,7 @@ public class Listener {
 
 
     public isolated function init(int port, gmail:Client gmailClient, string topicName, string subscriptionName, 
-                                  string project, string pushEndpoint) returns error? {
+                                  string project, string pushEndpoint) returns @tainted error? {
         self.httpListener = check new (port);
         self.gmailClient = gmailClient;
         self.topicName = topicName;
@@ -83,7 +84,7 @@ public class Listener {
         return self.httpListener.immediateStop();
     }
 
-    public isolated function watchMailbox() returns error? {
+    public isolated function watchMailbox() returns @tainted error? {
         gmail:WatchResponse  response = check self.gmailClient->watch(self.userId, self.requestBody);
         self.startHistoryId = response.historyId;
         log:printInfo("New History ID: "+ self.startHistoryId);

@@ -58,9 +58,9 @@ service class HttpService {
         }
     }
 
-    resource function post mailboxChanges(http:Caller caller, http:Request request) returns error? {
+    resource function post mailboxChanges(http:Caller caller, http:Request request) returns @tainted error? {
         check caller->respond(http:STATUS_OK);
-        var  mailboxHistoryPage =  self.gmailClient->listHistory(self.userId, self.startHistoryId);
+        var  mailboxHistoryPage =  self.gmailClient->listHistory(<@untainted>self.userId, self.startHistoryId);
         
         if (mailboxHistoryPage is gmail:MailboxHistoryPage) {
             self.startHistoryId = mailboxHistoryPage.historyId;
@@ -73,12 +73,12 @@ service class HttpService {
                 gmail:HistoryEvent[] newMessages = history.messagesAdded;
                 if (newMessages.length()>0) {
                     foreach var newMessage in newMessages {                    
-                        gmail:Message message = check self.gmailClient->readMessage(ME,newMessage.message.id);
+                        gmail:Message message = check self.gmailClient->readMessage(ME,<@untainted>newMessage.message.id);
                         if (self.isOnNewEmail) {
                             check callOnNewEmail(self.httpService, message);
                         }
                         foreach var msgAttachment in message.msgAttachments {
-                            gmail:MessageBodyPart attachment = check self.gmailClient->getAttachment(self.userId, 
+                            gmail:MessageBodyPart attachment = check self.gmailClient->getAttachment(<@untainted>self.userId, 
                                                                 <@untainted>message.id, <@untainted>msgAttachment.fileId);
                             if (self.isOnNewAttachment) {
                                 check callOnNewAttachment(self.httpService, attachment);
@@ -93,7 +93,7 @@ service class HttpService {
                 if (newMessages.length()>0) {
                     foreach var newMessage in newMessages {    
                         if(newMessage.message.id == newMessage.message.threadId) {               
-                            gmail:MailThread thread = check self.gmailClient->readThread(ME, newMessage.message.threadId);
+                            gmail:MailThread thread = check self.gmailClient->readThread(ME, <@untainted>newMessage.message.threadId);
                             if (self.isOnNewThread) {
                                 check callOnNewThread(self.httpService, thread);
                             }
@@ -108,7 +108,7 @@ service class HttpService {
                     foreach var addedlabel in addedlabels {
                         ChangedLabel changedLabeldMsg ={ message: {},changedLabelId: []};
                         changedLabeldMsg.changedLabelId = addedlabel.labelIds;
-                        gmail:Message message = check self.gmailClient->readMessage(ME, addedlabel.message.id);
+                        gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>addedlabel.message.id);
                         changedLabeldMsg.message = message;
                         if (self.isOnNewLabeledEmail) {
                             check callOnNewLabeledEmail(self.httpService, changedLabeldMsg);
@@ -124,7 +124,7 @@ service class HttpService {
                         foreach var label in addedlabel.labelIds {
                             match label{
                                 STARRED =>{
-                                    gmail:Message message = check self.gmailClient->readMessage(ME, addedlabel.message.id);
+                                    gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>addedlabel.message.id);
                                     if (self.isOnNewStaredEmail) {
                                         check callOnNewStaredEmail(self.httpService, message);
                                     }
@@ -141,7 +141,7 @@ service class HttpService {
                     foreach var removedLabel in removedLabels {
                         ChangedLabel changedLabeldMsg ={ message: {},changedLabelId: []};
                         changedLabeldMsg.changedLabelId = removedLabel.labelIds;
-                        gmail:Message message = check self.gmailClient->readMessage(ME, removedLabel.message.id);
+                        gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>removedLabel.message.id);
                         changedLabeldMsg.message = message;
                         if (self.isOnLabelRemovedEmail) {
                             check callOnLabelRemovedEmail(self.httpService, changedLabeldMsg);
@@ -157,7 +157,7 @@ service class HttpService {
                         foreach var label in removedLabel.labelIds {
                             match label{
                                 STARRED =>{
-                                    gmail:Message message = check self.gmailClient->readMessage(ME, removedLabel.message.id);
+                                    gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>removedLabel.message.id);
                                     if (self.isOnStarRemovedEmail) {
                                         check callOnStarRemovedEmail(self.httpService, message);
                                     }
