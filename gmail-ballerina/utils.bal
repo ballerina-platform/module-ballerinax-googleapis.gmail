@@ -254,6 +254,16 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
         if (httpResponse.statusCode == http:STATUS_OK) {
             //If status is 200, request is successful. Returns resulting payload.
             return jsonResponse;
+        } else if (httpResponse.statusCode == http:STATUS_CONFLICT) {
+            //If status is 409, request has conflict. Returns error message.
+            json conflictResponseJson = check httpResponse.getJsonPayload();
+            map<json> conflictResponse = <map<json>>conflictResponseJson;
+            if (conflictResponse.hasKey("error")) {
+                PubSubError pubSubError = check conflictResponse["error"].cloneWithType(PubSubError);
+                error err = error(PUBSUB_ERROR_CODE, message = pubSubError?.message);
+                return err;
+            }           
+            return error(PUBSUB_ERROR_CODE, message = conflictResponseJson);        
         } else {
             //If status is not 200 or 204, request is unsuccessful. Returns error.
             string errorCode = let var code = jsonResponse.'error.code in code is int ? code.toString() : EMPTY_STRING;

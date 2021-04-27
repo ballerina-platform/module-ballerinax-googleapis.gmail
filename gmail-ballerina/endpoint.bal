@@ -21,6 +21,7 @@ import ballerina/http;
 # + gmailClient - The HTTP Client
 public client class Client {
     http:Client gmailClient;
+    http:Client pubSubClient;
 
     public isolated  function init(GmailConfiguration gmailConfig) {
         // Create OAuth2 provider.
@@ -32,8 +33,15 @@ public client class Client {
                 auth: gmailConfig.oauthClientConfig,
                 secureSocket: socketConfig
             });
+            self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
+                auth: gmailConfig.oauthClientConfig,
+                secureSocket: socketConfig
+            }); 
         } else {
             self.gmailClient = checkpanic new (BASE_URL, {
+                auth: gmailConfig.oauthClientConfig
+            });
+            self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
                 auth: gmailConfig.oauthClientConfig
             });
         }
@@ -743,7 +751,7 @@ public client class Client {
     # + return - If successful, returns WatchResponse. Else returns error.
     remote isolated function watch(string userId, json requestBody) returns @tainted WatchResponse | error {
         http:Request request = new;
-        string watchPath = USER_RESOURCE+userId+WATCH;
+        string watchPath = USER_RESOURCE + userId + WATCH;
         request.setJsonPayload(requestBody);
         http:Response httpResponse = <http:Response> check self.gmailClient->post(watchPath, request);
         json jsonWatchResponse = check handleResponse(httpResponse);
@@ -757,9 +765,54 @@ public client class Client {
     # + return - If successful, nothing will be returned. Else returns error.
     remote isolated function stop(string userId) returns @tainted error? {
         http:Request request = new;
-        string stopPath = USER_RESOURCE+userId+STOP;
+        string stopPath = USER_RESOURCE + userId + STOP;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(stopPath, request);
-    }    
+    }
+
+    remote isolated function createPubsubTopic(string project, string topic, TopicRequestBody? requestBody = {}) 
+                                                  returns Topic | error {
+        string path = PROJECTS + project + TOPICS + topic;
+        http:Response httpResponse = <http:Response> check self.pubSubClient->put(path, requestBody.toJson());
+        json jsonResponse = check handleResponse(httpResponse);
+        return jsonResponse.cloneWithType(Topic);
+    }
+
+    remote isolated function getPubsubTopicIamPolicy(string resourceName) returns Policy | error {
+        string path = FORWARD_SLASH_SYMBOL + resourceName + GETIAMPOLICY;
+        http:Response httpResponse = <http:Response> check self.pubSubClient->get(path);
+        json jsonResponse = check handleResponse(httpResponse);
+        return jsonResponse.cloneWithType(Policy);
+    }
+
+    remote isolated function setPubsubTopicIamPolicy(string resourceName, json requestBody)
+                                                  returns Policy | error {
+        string path = FORWARD_SLASH_SYMBOL + resourceName + SETIAMPOLICY;
+        http:Response httpResponse = <http:Response> check self.pubSubClient->post(path, requestBody);
+        json jsonResponse = check handleResponse(httpResponse);
+        return jsonResponse.cloneWithType(Policy);
+    }        
+
+    remote isolated function subscribePubsubTopic(string project, string subscription, SubscriptionRequest requestBody) 
+                                                  returns Subscription | error {
+        string path = PROJECTS + project + SUBSCRIPTIONS + subscription;
+        http:Response httpResponse = <http:Response> check self.pubSubClient->put(path, requestBody.toJson());
+        json jsonResponse = check handleResponse(httpResponse);
+        return jsonResponse.cloneWithType(Subscription);
+    }
+
+    remote isolated function deletePubsubTopic(string topic) returns json | error {
+        string path = FORWARD_SLASH_SYMBOL + topic;
+        http:Response httpResponse = <http:Response> check self.pubSubClient->delete(path);
+        json jsonResponse = check handleResponse(httpResponse);
+        return jsonResponse;
+    }
+
+    remote isolated function deletePubsubSubscription(string subscription) returns json | error {
+        string path = FORWARD_SLASH_SYMBOL + subscription;
+        http:Response httpResponse = <http:Response> check self.pubSubClient->delete(path);
+        json jsonResponse = check handleResponse(httpResponse);
+        return jsonResponse;
+    }        
 }
 
 # Holds the parameters used to create a `Client`.

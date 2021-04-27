@@ -32,3 +32,11 @@ const string INBOX = "INBOX";
 
 # Holds the value "me". Used as current authenticated userId.
 const string ME = "me";
+
+const string ROLE = "roles/pubsub.publisher";
+const string IAM_POLICY_BINDING_MEMBER = "serviceAccount:gmail-api-push@system.gserviceaccount.com";
+const string LISTENER_PATH = "/mailboxChanges";
+const int ACK_DEADLINE_SECONDS = 10;
+const boolean RETAIN_ACKED_MESSAGES = false;
+const string MESSAGE_RETENTION_DURATION = "604800s";
+

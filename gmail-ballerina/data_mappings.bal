@@ -414,14 +414,17 @@ function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns
     targetMailboxHistoryPage.historyId = let var historyId = 
         sourceJsonMailboxHistory.historyId in historyId is string ? historyId : EMPTY_STRING;
 
-    json|error historyList = sourceJsonMailboxHistory.history;
-    if (historyList is json) {
-        foreach json history in <json[]>historyList {
-            array:push(targetMailboxHistoryPage.historyRecords, convertJSONToHistoryType(history));
+    if (elementExists(<map<json>>sourceJsonMailboxHistory,"history")) {
+        json|error historyList = sourceJsonMailboxHistory.history;
+        if (historyList is json) {
+            foreach json history in <json[]>historyList {
+                array:push(targetMailboxHistoryPage.historyRecords, convertJSONToHistoryType(history));
+            }
+        } else {
+            log:printError("Error occurred while getting history list", 'error = historyList);
         }
-    } else {
-        log:printError("Error occurred while getting history list", 'error = historyList);
     }
+    
     return targetMailboxHistoryPage;
 }
 

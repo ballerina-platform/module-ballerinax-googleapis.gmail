@@ -43,3 +43,10 @@ temp.bal.ballerina/
 target/
 .DS_Store
 *Ballerina.lock
+gmail-ballerina/resources
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build

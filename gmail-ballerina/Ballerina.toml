@@ -1,7 +1,7 @@
 [package]
 org = "ballerinax"
 name = "googleapis_gmail"
-version = "0.99.5"
+version = "0.99.6"
 authors = ["Ballerina"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
 keywords = ["gmail","email"]
@@ -10,3 +10,8 @@ license = ["Apache-2.0"]
 [build-options]
 observabilityIncluded = true
 
+[[platform.java11.dependency]]
+path = "../gmail-native/build/libs/gmail-native-0.99.6.jar"
+groupId = "org.ballerinalang.googleapis.gmail"
+artifactId = "gmail-native"
+version = "0.99.6"
