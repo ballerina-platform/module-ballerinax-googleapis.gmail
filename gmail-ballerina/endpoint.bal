@@ -868,6 +868,12 @@ public client class Client {
         http:Response httpResponse = <http:Response> check self.gmailClient->post(stopPath, request);
     }
 
+    # Create a pubsub topic to receive mailbox changes.
+    #
+    # + project - The project where the topic will be created.
+    # + topic - The topic name to create.
+    # + requestBody - Optional. The requestbody which contains additional properties of topic.
+    # + return - If successful, returns created Topic. Else returns error.
     @display {label: "Create pubsub topic"}
     remote isolated function createPubsubTopic(@display {label: "Project"} string project,
                                                @display {label: "Topic"} string topic,
@@ -879,6 +885,10 @@ public client class Client {
         return jsonResponse.cloneWithType(Topic);
     }
 
+    # Get pubsub topic IAM policy.
+    #
+    # + resourceName - Resource name.
+    # + return - If successful, returns Policy. Else returns error.
     @display {label: "Get pubsub topic IAM policy"}
     remote isolated function getPubsubTopicIamPolicy(@display {label: "Resource name"} string resourceName)
                                                      returns @tainted @display {label: "IAM policy"} Policy | error {
@@ -888,6 +898,11 @@ public client class Client {
         return jsonResponse.cloneWithType(Policy);
     }
 
+    # Set pubsub topic IAM policy.
+    #
+    # + resourceName - Resource name.
+    # + requestBody -  The requestbody which contains IAM policy.
+    # + return - If successful, returns Policy. Else returns error.
     @display {label: "Set pubsub topic IAM policy"}
     remote isolated function setPubsubTopicIamPolicy(@display {label: "Resource name"} string resourceName, 
                                                      @display {label: "Request body for IAM policy"}json requestBody)
@@ -898,6 +913,12 @@ public client class Client {
         return jsonResponse.cloneWithType(Policy);
     }        
 
+    # Subscribe a pubsub topic to receive mailbox changes.
+    #
+    # + project - The project where the subscription will be created.
+    # + subscription - The subscription name to create.
+    # + requestBody - The request body for new subscription.
+    # + return - If successful, returns created Subscription. Else returns error.
     @display {label: "Subscribe pubsub topic"}
     remote isolated function subscribePubsubTopic(@display {label: "Project"} string project, 
                                                   @display {label: "Subscription"}string subscription, 
@@ -910,6 +931,10 @@ public client class Client {
         return jsonResponse.cloneWithType(Subscription);
     }
 
+    # Delete a Pubsub Topic.
+    #
+    # + topic - The name of the topic.  Format is: `projects/{project}/topics/{topic}`.
+    # + return - If successful, returns json form of true . Else returns error.
     @display {label: "Delete pubsub topic"}
     remote isolated function deletePubsubTopic(@display {label: "Topic resource"} string topic) 
                                                returns @tainted @display {label: "Result"} json | error {
@@ -919,6 +944,10 @@ public client class Client {
         return jsonResponse;
     }
 
+    # Delete a Pubsub Subscription.
+    #
+    # + subscription - The name of the topic.  Format is: `projects/{project}/subscriptions/{subscription}`.
+    # + return - If successful, returns json form of true . Else returns error.
     @display {label: "Delete pubsub subscription"}
     remote isolated function deletePubsubSubscription(@display {label: "Subscription resource"} string subscription) 
                                                       returns @tainted @display {label: "Result"} json | error {

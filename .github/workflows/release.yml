@@ -26,13 +26,16 @@ jobs:
               uses: ballerina-platform/ballerina-action/@master
               with:
                   args:
-                      build -c --skip-tests ./gmail-ballerina
+                      build -c
+              env:
+                  WORKING_DIR: ./gmail-ballerina        
             - name: Ballerina Push
               uses: ballerina-platform/ballerina-action/@master
               with:
                   args:
                       push 
               env:
+                  WORKING_DIR: ./gmail-ballerina
                   JAVA_HOME: /usr/lib/jvm/default-jvm
                   JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
                   BALLERINA_CENTRAL_ACCESS_TOKEN: ${{ secrets.BALLERINA_CENTRAL_ACCESS_TOKEN }}
