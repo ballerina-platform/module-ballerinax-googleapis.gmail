@@ -4,7 +4,7 @@ Connects to Gmail Listener using Ballerina.
 
 # Module Overview
 
-The Gmail Listener Ballerina Connector provides the capability to listen the push notification for changes to Gmail mailboxes. The Gmail Listener Ballerina Connector supports to listen the changes of Gmail mailboxes such as receiving new message, receiving new thread, adding new label to a message, adding star to a message, removing label to a message, removing star to a message and receiving a new attachment with following trigger methods: `onMailboxChanges`, `onNewEmail`, `onNewThread`, `onNewLabeledEmail`, `onNewStaredEmail`, `onLabelRemovedEmail`,`onStarRemovedEmail`, `onNewAttachment`.
+The Gmail Listener Ballerina Connector provides the capability to listen the push notification for changes to Gmail mailboxes. The Gmail Listener Ballerina Connector supports to listen the changes of Gmail mailboxes such as receiving new message, receiving new thread, adding new label to a message, adding star to a message, removing label to a message, removing star to a message and receiving a new attachment with following trigger methods: `onNewEmail`, `onNewThread`, `onNewLabeledEmail`, `onNewStarredEmail`, `onLabelRemovedEmail`,`onStarRemovedEmail`, `onNewAttachment`.
 
 
 # Prerequisites:
@@ -70,15 +70,13 @@ First, import the ballerinax/googleapis_gmail and ballerinax/googleapis_gmail.'l
     import ballerinax/googleapis_gmail.'listener as gmailListener;
 ```
 
-### Step 2: Initialize the Gmail Client and Gmail Listener
-In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Client endpoint and a Gmail Listener endpoint.
+### Step 2: Initialize the Gmail Listener
+In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Listener endpoint.
 ```ballerina
 configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -90,10 +88,8 @@ gmail:GmailConfiguration gmailConfig = {
         clientSecret: clientSecret
         }
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 
 
 ```
@@ -123,8 +119,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -137,10 +131,8 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
    remote function onNewEmail(gmail:Message message) returns error? {
            log:printInfo("New Email : " , message);
@@ -162,8 +154,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -176,10 +166,8 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
    remote function onNewLabeledEmail(gmailListener:ChangedLabel changedLabeldMsg) returns error? {
            log:printInfo("Labeled : " , changedLabeldMsg);

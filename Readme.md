@@ -6,6 +6,21 @@
 
 Connects to Gmail from Ballerina.
 
+- [Gmail Connector](#Ballerina-Gmail-Connector)
+    - [Introduction](#introduction)
+        - [What is Gmail](#what-is-gmail-?)
+        - [Key features of Gmail](#key-features-of-gmail)
+        - [Connector Overview](#connector-overview)
+    - [Prerequisites](#prerequisites)
+    - [Supported versions & limitations](#supported-versions-&-limitations)
+    - [Quickstarts](#quickstarts)
+    - [Samples](#samples)
+    - [Listener](#listener)
+    - [Building from the Source](#building-from-the-source)
+    - [Contributing to Ballerina](#contributing-to-ballerina)
+    - [Code of Conduct](#code-of-conduct)
+    - [Useful Links](#useful-links)
+
 # Introduction
 
 ## What is Gmail?
@@ -934,15 +949,13 @@ First, import the ballerinax/googleapis_gmail and ballerinax/googleapis_gmail.'l
     import ballerinax/googleapis_gmail.'listener as gmailListener;
 ```
 
-### Step 2: Initialize the Gmail Client and Gmail Listener
-In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Client endpoint and a Gmail Listener endpoint.
+### Step 2: Initialize the Gmail Listener
+In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Listener endpoint.
 ```ballerina
 configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -955,10 +968,8 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 
 ```
 ### Step 3: Write service with required trigger 
@@ -989,8 +1000,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -1003,10 +1012,8 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
    remote function onNewEmail(gmail:Message message) returns error? {
            log:printInfo("New Email : " , message);
@@ -1030,8 +1037,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -1044,10 +1049,8 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
    remote function onNewThread(gmail:MailThread thread) returns error? {
            log:printInfo("New Thread : " , thread);
@@ -1071,8 +1074,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -1085,10 +1086,8 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
    remote function onNewLabeledEmail(gmailListener:ChangedLabel changedLabeldMsg) returns error? {
            log:printInfo("Labeled : " , changedLabeldMsg);
@@ -1096,11 +1095,11 @@ service / on gmailEventListener {
 }
 
 ```
-### Trigger for new stared email
+### Trigger for new starred email
 
-This sample shows how to create a trigger on new stared email in the mailbox. This will be triggered when you star an email.
+This sample shows how to create a trigger on new starred email in the mailbox. This will be triggered when you star an email.
 
-Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_new_stared_email.bal
+Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/listener/trigger_on_new_starred_email.bal
 
 ```ballerina
 import ballerina/log;
@@ -1111,8 +1110,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -1125,13 +1122,11 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
-   remote function onNewStaredEmail(gmail:Message message) returns error? {
-           log:printInfo("Stared : " , message);
+   remote function onNewStarredEmail(gmail:Message message) returns error? {
+           log:printInfo("Starred : " , message);
    }   
 }
 
@@ -1152,8 +1147,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -1166,10 +1159,8 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
    remote function onLabelRemovedEmail(gmailListener:ChangedLabel changedLabeldMsg) returns error? {
            log:printInfo("Label Removed Mail : " , changedLabeldMsg);
@@ -1193,8 +1184,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -1207,10 +1196,8 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
    remote function onStarRemovedEmail(gmail:Message message) returns error? {
            log:printInfo("Star Removed : " , message);
@@ -1234,8 +1221,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -1248,12 +1233,10 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
-   remote function onNewAttachment(gmail:MessageBodyPart attachment) returns error? {
+   remote function onNewAttachment(gmailListener:MailAttachment attachment) returns error? {
            log:printInfo("New Attachment : " , attachment);
    }   
 }
@@ -1301,25 +1284,25 @@ Execute the commands below to build from the source after installing Ballerina S
 
 1. To build the library:
 ```shell script
-    bal build -c ./gmail-ballerina
+    bal build -c ./gmail
 ```
 
 2. To build the module without the tests:
 ```shell script
-    bal build -c --skip-tests ./gmail-ballerina
+    bal build -c --skip-tests ./gmail
 ```
 
-## Contributing to Ballerina
+# Contributing to Ballerina
 
 As an open source project, Ballerina welcomes contributions from the community. 
 
 For more information, go to the [contribution guidelines](https://github.com/ballerina-platform/ballerina-lang/blob/master/CONTRIBUTING.md).
 
-## Code of Conduct
+# Code of Conduct
 
 All the contributors are encouraged to read the [Ballerina Code of Conduct](https://ballerina.io/code-of-conduct).
 
-## Useful Links
+# Useful Links
 
 * Discuss the code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
 * Chat live with us via our [Slack channel](https://ballerina.io/community/slack/).

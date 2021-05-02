@@ -17,8 +17,6 @@
 //API urls
 # Holds the value for URL of gmail.
 const string BASE_URL = "https://www.googleapis.com/gmail";
-# Holds the value for URL of pubsub.
-const string PUBSUB_BASE_URL = "https://pubsub.googleapis.com/v1";
 # Holds the value for URL of refresh token end point.
 public const string REFRESH_URL = "https://oauth2.googleapis.com/token";
 # Holds the value for oauth scheme.
@@ -198,17 +196,3 @@ public const string TEXT_HTML = "text/html";
 
 // Error Codes
 const string GMAIL_ERROR_CODE = "(ballerinax/googleapis_gmail)GmailError";
-
-// Constants for pubsub
-const string PROJECTS = "/projects/";
-const string SUBSCRIPTIONS = "/subscriptions/";
-const string TOPICS = "/topics/";
-const string GETIAMPOLICY = ":getIamPolicy";
-const string SETIAMPOLICY = ":setIamPolicy";
-const string PUBSUB_ERROR_CODE = "(ballerinax/googleapis_gmail) PubSubError";
-
-public enum Encoding {
-    ENCODING_UNSPECIFIED,
-    JSON,
-    BINARY
-}

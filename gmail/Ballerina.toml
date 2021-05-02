@@ -11,7 +11,7 @@ license = ["Apache-2.0"]
 observabilityIncluded = true
 
 [[platform.java11.dependency]]
-path = "../gmail-native/build/libs/gmail-native-0.99.6.jar"
+path = "../java-wrapper/build/libs/java-wrapper-0.99.6.jar"
 groupId = "org.ballerinalang.googleapis.gmail"
-artifactId = "gmail-native"
+artifactId = "java-wrapper"
 version = "0.99.6"

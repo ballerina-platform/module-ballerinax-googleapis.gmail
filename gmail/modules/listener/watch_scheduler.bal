@@ -32,8 +32,7 @@ class Job {
 
     isolated function scheduleNextWatchRenewal() returns error? {
         time:Utc currentUtc = time:utcNow();
-        decimal timeDifference = (self.'listener.getExpirationTime()/1000) - (<decimal>currentUtc[0]) - 60;
-        time:Utc scheduledUtcTime = time:utcAddSeconds(currentUtc, timeDifference);
+        time:Utc scheduledUtcTime = time:utcAddSeconds(currentUtc, INTERVAL_TO_WATCH);
         time:Civil scheduledTime = time:utcToCivil(scheduledUtcTime);
         task:JobId result = check task:scheduleOneTimeJob(self, scheduledTime);
     }

@@ -22,8 +22,6 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 configurable int port = ?;
-configurable string topicName = ?;
-configurable string subscriptionName = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
@@ -36,12 +34,10 @@ gmail:GmailConfiguration gmailConfig = {
         }
 };
 
-gmail:Client gmailClient = new (gmailConfig);
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-listener gmailListener:Listener gmailEventListener = new(port, gmailClient, topicName, subscriptionName, project,
-                                                        pushEndpoint);
 service / on gmailEventListener {
-   remote function onNewStaredEmail(gmail:Message message) returns error? {
-           log:printInfo("Stared : " , message);
+   remote function onNewStarredEmail(gmail:Message message) returns error? {
+           log:printInfo("Starred : " , message);
    }   
 }

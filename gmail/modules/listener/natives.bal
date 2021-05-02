@@ -17,11 +17,6 @@
 import ballerina/jballerina.java;
 import ballerinax/googleapis_gmail as gmail;
 
-isolated function callOnMailboxChanges(SimpleHttpService httpService, gmail:MailboxHistoryPage mailboxHistoryPage) returns error?
-    = @java:Method {
-    'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
-} external;
-
 isolated function callOnNewEmail(SimpleHttpService httpService, gmail:Message message) returns error?
     = @java:Method {
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
@@ -37,7 +32,7 @@ isolated function callOnNewLabeledEmail(SimpleHttpService httpService, ChangedLa
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;
 
-isolated function callOnNewStaredEmail(SimpleHttpService httpService, gmail:Message message) returns error?
+isolated function callOnNewStarredEmail(SimpleHttpService httpService, gmail:Message message) returns error?
     = @java:Method {
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;
@@ -52,7 +47,7 @@ isolated function callOnStarRemovedEmail(SimpleHttpService httpService, gmail:Me
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;
 
-isolated function callOnNewAttachment(SimpleHttpService httpService, gmail:MessageBodyPart attachment) returns error?
+isolated function callOnNewAttachment(SimpleHttpService httpService, MailAttachment attachment) returns error?
     = @java:Method {
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;

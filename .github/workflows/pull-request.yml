@@ -28,7 +28,7 @@ jobs:
                   args:
                       build -c
               env:
-                  WORKING_DIR: ./gmail-ballerina
+                  WORKING_DIR: ./gmail
                   JAVA_HOME: /usr/lib/jvm/default-jvm
                   JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
                   CLIENT_ID: ${{ secrets.CLIENT_ID }} 

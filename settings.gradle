@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'module-ballerinax-googleapis.gmail'
-include ':gmail-ballerina', ':gmail-native'
+include ':gmail', ':java-wrapper'

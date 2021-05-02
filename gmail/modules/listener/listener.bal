@@ -22,37 +22,44 @@ import ballerinax/googleapis_gmail as gmail;
 @display {label: "Gmail Listener"} 
 public class Listener {
     private string startHistoryId = "";
-    private decimal expirationTime = 0;
     private string topicResource = "";
     private string subscriptionResource = "";    
     private string userId = ME;
     private gmail:Client gmailClient;
     private http:Listener httpListener;
-    private string topicName;
-    private string subscriptionName;
     private string project;
     private string pushEndpoint;
 
     private json requestBody;
     private HttpService httpService;
+    http:Client pubSubClient;
 
 
-    public isolated function init(int port, gmail:Client gmailClient, string topicName, string subscriptionName, 
-                                  string project, string pushEndpoint) returns @tainted error? {
+    public isolated function init(int port, gmail:GmailConfiguration gmailConfig, string project, string pushEndpoint) 
+                                  returns @tainted error? {
+
+        http:ClientSecureSocket? socketConfig = gmailConfig?.secureSocketConfig;
+        // Create pubsub http client.
+        if (socketConfig is http:ClientSecureSocket) {
+            self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
+                auth: gmailConfig.oauthClientConfig,
+                secureSocket: socketConfig
+            }); 
+        } else {
+            self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
+                auth: gmailConfig.oauthClientConfig
+            });
+        }                                  
+        
         self.httpListener = check new (port);
-        self.gmailClient = gmailClient;
-        self.topicName = topicName;
-        self.subscriptionName = subscriptionName;
+        //Create gmail client.
+        self.gmailClient = new (gmailConfig);     
         self.project = project;
         self.pushEndpoint = pushEndpoint;
 
-        string topicResource;
-        string subscriptionResource;
-        [topicResource, subscriptionResource] = check createTopic(gmailClient, topicName, subscriptionName, project, 
-                                                                  pushEndpoint);
-        
-        self.topicResource = topicResource;
-        self.subscriptionResource = subscriptionResource;
+        TopicSubscriptionDetail topicSubscriptionDetail = check createTopic(self.pubSubClient, project, pushEndpoint);        
+        self.topicResource = topicSubscriptionDetail.topicResource;
+        self.subscriptionResource = topicSubscriptionDetail.subscriptionResource;
         self.requestBody = { labelIds: [INBOX], topicName:self.topicResource};
     }
 
@@ -73,8 +80,8 @@ public class Listener {
     }
 
     public isolated function gracefulStop() returns @tainted error? {
-        json deleteSubscription = check self.gmailClient->deletePubsubTopic(self.subscriptionResource);
-        json deleteTopic = check self.gmailClient->deletePubsubTopic(self.topicResource);
+        json deleteSubscription = check deletePubsubTopic(self.pubSubClient,self.subscriptionResource);
+        json deleteTopic = check deletePubsubTopic(self.pubSubClient, self.topicResource);
         var response = check self.gmailClient->stop(self.userId);
         log:printInfo("Watch Stopped = "+response.toString());
         return self.httpListener.gracefulStop();
@@ -89,9 +96,5 @@ public class Listener {
         self.startHistoryId = response.historyId;
         log:printInfo("New History ID: "+ self.startHistoryId);
         self.httpService.startHistoryId = self.startHistoryId;
-        self.expirationTime = check decimal:fromString(response.expiration);
     }    
-    public isolated function getExpirationTime() returns decimal {
-        return self.expirationTime;
-    }
 }

@@ -22,7 +22,6 @@ import ballerina/http;
 @display {label: "Gmail Client", iconPath: "GmailLogo.png"}
 public client class Client {
     http:Client gmailClient;
-    http:Client pubSubClient;
 
     public isolated  function init(GmailConfiguration gmailConfig) {
         // Create OAuth2 provider.
@@ -34,15 +33,8 @@ public client class Client {
                 auth: gmailConfig.oauthClientConfig,
                 secureSocket: socketConfig
             });
-            self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
-                auth: gmailConfig.oauthClientConfig,
-                secureSocket: socketConfig
-            }); 
         } else {
             self.gmailClient = checkpanic new (BASE_URL, {
-                auth: gmailConfig.oauthClientConfig
-            });
-            self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
                 auth: gmailConfig.oauthClientConfig
             });
         }
@@ -867,95 +859,6 @@ public client class Client {
         string stopPath = USER_RESOURCE + userId + STOP;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(stopPath, request);
     }
-
-    # Create a pubsub topic to receive mailbox changes.
-    #
-    # + project - The project where the topic will be created.
-    # + topic - The topic name to create.
-    # + requestBody - Optional. The requestbody which contains additional properties of topic.
-    # + return - If successful, returns created Topic. Else returns error.
-    @display {label: "Create pubsub topic"}
-    remote isolated function createPubsubTopic(@display {label: "Project"} string project,
-                                               @display {label: "Topic"} string topic,
-                                               @display {label: "Request body for new topic"} TopicRequestBody? requestBody ={}) 
-                                               returns @tainted @display {label: "Topic"} Topic | error {
-        string path = PROJECTS + project + TOPICS + topic;
-        http:Response httpResponse = <http:Response> check self.pubSubClient->put(path, requestBody.toJson());
-        json jsonResponse = check handleResponse(httpResponse);
-        return jsonResponse.cloneWithType(Topic);
-    }
-
-    # Get pubsub topic IAM policy.
-    #
-    # + resourceName - Resource name.
-    # + return - If successful, returns Policy. Else returns error.
-    @display {label: "Get pubsub topic IAM policy"}
-    remote isolated function getPubsubTopicIamPolicy(@display {label: "Resource name"} string resourceName)
-                                                     returns @tainted @display {label: "IAM policy"} Policy | error {
-        string path = FORWARD_SLASH_SYMBOL + resourceName + GETIAMPOLICY;
-        http:Response httpResponse = <http:Response> check self.pubSubClient->get(path);
-        json jsonResponse = check handleResponse(httpResponse);
-        return jsonResponse.cloneWithType(Policy);
-    }
-
-    # Set pubsub topic IAM policy.
-    #
-    # + resourceName - Resource name.
-    # + requestBody -  The requestbody which contains IAM policy.
-    # + return - If successful, returns Policy. Else returns error.
-    @display {label: "Set pubsub topic IAM policy"}
-    remote isolated function setPubsubTopicIamPolicy(@display {label: "Resource name"} string resourceName, 
-                                                     @display {label: "Request body for IAM policy"}json requestBody)
-                                                     returns @tainted @display {label: "IAM policy"} Policy | error {
-        string path = FORWARD_SLASH_SYMBOL + resourceName + SETIAMPOLICY;
-        http:Response httpResponse = <http:Response> check self.pubSubClient->post(path, requestBody);
-        json jsonResponse = check handleResponse(httpResponse);
-        return jsonResponse.cloneWithType(Policy);
-    }        
-
-    # Subscribe a pubsub topic to receive mailbox changes.
-    #
-    # + project - The project where the subscription will be created.
-    # + subscription - The subscription name to create.
-    # + requestBody - The request body for new subscription.
-    # + return - If successful, returns created Subscription. Else returns error.
-    @display {label: "Subscribe pubsub topic"}
-    remote isolated function subscribePubsubTopic(@display {label: "Project"} string project, 
-                                                  @display {label: "Subscription"}string subscription, 
-                                                  @display {label: "Request body for new subscription "} 
-                                                  SubscriptionRequest requestBody) 
-                                                  returns @tainted @display {label: "Subscription"} Subscription | error {
-        string path = PROJECTS + project + SUBSCRIPTIONS + subscription;
-        http:Response httpResponse = <http:Response> check self.pubSubClient->put(path, requestBody.toJson());
-        json jsonResponse = check handleResponse(httpResponse);
-        return jsonResponse.cloneWithType(Subscription);
-    }
-
-    # Delete a Pubsub Topic.
-    #
-    # + topic - The name of the topic.  Format is: `projects/{project}/topics/{topic}`.
-    # + return - If successful, returns json form of true . Else returns error.
-    @display {label: "Delete pubsub topic"}
-    remote isolated function deletePubsubTopic(@display {label: "Topic resource"} string topic) 
-                                               returns @tainted @display {label: "Result"} json | error {
-        string path = FORWARD_SLASH_SYMBOL + topic;
-        http:Response httpResponse = <http:Response> check self.pubSubClient->delete(path);
-        json jsonResponse = check handleResponse(httpResponse);
-        return jsonResponse;
-    }
-
-    # Delete a Pubsub Subscription.
-    #
-    # + subscription - The name of the topic.  Format is: `projects/{project}/subscriptions/{subscription}`.
-    # + return - If successful, returns json form of true . Else returns error.
-    @display {label: "Delete pubsub subscription"}
-    remote isolated function deletePubsubSubscription(@display {label: "Subscription resource"} string subscription) 
-                                                      returns @tainted @display {label: "Result"} json | error {
-        string path = FORWARD_SLASH_SYMBOL + subscription;
-        http:Response httpResponse = <http:Response> check self.pubSubClient->delete(path);
-        json jsonResponse = check handleResponse(httpResponse);
-        return jsonResponse;
-    }        
 }
 
 # Holds the parameters used to create a `Client`.
