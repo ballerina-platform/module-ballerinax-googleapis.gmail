@@ -32,7 +32,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("Send the message");
+    log:printInfo("Send the message");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -58,12 +58,12 @@ public function main(string... args) {
     if (sendMessageResponse is [string, string]) {
         // If successful, print the message ID and thread ID.
         [string, string] [messageId, threadId] = sendMessageResponse;
-        log:print("Sent Message ID: ", messageId = messageId);
-        log:print("Sent Thread ID: ", threadId = threadId);
+        log:printInfo("Sent Message ID: ", messageId = messageId);
+        log:printInfo("Sent Thread ID: ", threadId = threadId);
     } else {
         // If unsuccessful, print the error returned.
         log:printError(sendMessageResponse.message());
     }
-    log:print("End!");
+    log:printInfo("End!");
 
 }

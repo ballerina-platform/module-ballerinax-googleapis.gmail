@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("Read a draft");
+    log:printInfo("Read a draft");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     
@@ -40,10 +40,10 @@ public function main(string... args) {
 
     gmail:Draft|error draftReadResponse = gmailClient->readDraft(userId, createdDraftId);
     if (draftReadResponse is gmail:Draft) {
-        log:print("Successfully read the draft: ", status = draftReadResponse.id == createdDraftId);
+        log:printInfo("Successfully read the draft: ", status = draftReadResponse.id == createdDraftId);
     } else {
         log:printError("Failed to get draft");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

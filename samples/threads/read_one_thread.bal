@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
 
-    log:print("Read one thread");
+    log:printInfo("Read one thread");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
@@ -43,10 +43,10 @@ public function main(string... args) {
         metadataHeaders = ["Subject"]);
         
     if (thread is gmail:MailThread) {
-        log:print("Thread obtained: ", status = thread.id == sentMessageThreadId);
+        log:printInfo("Thread obtained: ", status = thread.id == sentMessageThreadId);
     } else {
-        log:print("Failed to get thread");
+        log:printInfo("Failed to get thread");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

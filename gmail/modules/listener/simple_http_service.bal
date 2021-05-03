@@ -14,13 +14,5 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerinax/googleapis_gmail as gmail;
-
-# Represents label changed message.
-#
-# + message - The message which affected by label change  
-# + changedLabelId - The changed label id of the message
-public type ChangedLabel record {
-    gmail:Message message;
-    string[] changedLabelId;
-};
+# SimpleHttpService for Listener. 
+public type SimpleHttpService service object {};

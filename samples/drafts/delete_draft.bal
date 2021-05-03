@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("Delete a draft");
+    log:printInfo("Delete a draft");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     
@@ -41,10 +41,10 @@ public function main(string... args) {
     boolean|error deleteResponse = gmailClient->deleteDraft(userId, createdDraftId);
 
     if (deleteResponse == true) {
-        log:print("Successfully deleted the draft");
+        log:printInfo("Successfully deleted the draft");
     } else {
         log:printError("Failed to delete the draft");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

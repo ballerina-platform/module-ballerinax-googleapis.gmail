@@ -32,7 +32,7 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     // This method immediately and permanently deletes the specified message
-    log:print("Delete a message");
+    log:printInfo("Delete a message");
 
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
@@ -43,9 +43,9 @@ public function main(string... args) {
     boolean|error delete = gmailClient->deleteMessage(userId, sentMessageId);
     
     if (delete == true) {
-        log:print("Successfully deleted the message");
+        log:printInfo("Successfully deleted the message");
     } else {
         log:printError("Failed to delete the message");
     }
-    log:print("End!");
+    log:printInfo("End!");
 }

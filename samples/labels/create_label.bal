@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("Create label");
+    log:printInfo("Create label");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     string displayName = "Test";
@@ -44,10 +44,10 @@ public function main(string... args) {
         messageListVisibility);
     
     if (createLabelResponse is string) {
-        log:print("Successfully created label: ", labelId = createLabelResponse);
+        log:printInfo("Successfully created label: ", labelId = createLabelResponse);
     } else {
         log:printError("Failed to create label");
     }
     
-    log:print("End!");
+    log:printInfo("End!");
 }

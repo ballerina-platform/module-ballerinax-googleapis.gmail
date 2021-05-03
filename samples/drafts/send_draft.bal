@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
     
-    log:print("Send draft");
+    log:printInfo("Send draft");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     
@@ -42,10 +42,10 @@ public function main(string... args) {
     
     if (sendDraftResponse is [string, string]) {
         [string, string][messageId, threadId] = sendDraftResponse;
-        log:print("Sent the draft successfully: ", status =  messageId != "null" && threadId != "null");
+        log:printInfo("Sent the draft successfully: ", status =  messageId != "null" && threadId != "null");
     } else {
         log:printError("Failed to send the draft");
     }
 
-    log:print("End!");
+    log:printInfo("End!");
 }

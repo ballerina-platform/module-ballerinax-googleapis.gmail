@@ -31,7 +31,7 @@ gmail:Client gmailClient = new(gmailConfig);
 
 public function main(string... args) {
 
-    log:print("List all messages");
+    log:printInfo("List all messages");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
     string[] labelsToMatch = ["INBOX"];
@@ -44,10 +44,10 @@ public function main(string... args) {
 
     if (msgList is gmail:MessageListPage) {
         error? e = msgList.messages.forEach(function (json message) {
-                log:print(message.toString());
+                log:printInfo(message.toString());
         });
     } else {
         log:printError("Failed to list messages");
     }
-    log:print("End!");
+    log:printInfo("End!");
 }

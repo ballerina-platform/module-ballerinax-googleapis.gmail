@@ -14,14 +14,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/encoding;
+import ballerina/url;
+import ballerina/lang.array;
 import ballerina/http;
 import ballerina/io;
 import ballerina/jballerina.java as java;
 import ballerina/lang.'string as strings;
 import ballerina/log;
 import ballerina/mime;
-import ballerinax/java.arrays as jarrays;
+import ballerina/jballerina.java.arrays as jarrays;
 
 # Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
 #
@@ -46,7 +47,7 @@ function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttac
         //Get the inline message body part
         inlineImgParts[inlineImgParts.length()] = convertJSONToMsgBodyType(messagePayload);
     } //Else if is any multipart/*
-    else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
+    else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts !== ())) {
         json|error messageParts = messagePayload.parts;
         if (messageParts is json) {
             json[] messagePartsArr = <json[]>messageParts;
@@ -83,7 +84,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
         //Get the message body part.
         msgBodyPart = convertJSONToMsgBodyType(messagePayload);
     }    //Else if is any multipart/*
-    else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts != ())) {
+    else if (isMimeType(messageBodyPayloadMimeType, MULTIPART_ANY) && (messagePayload.parts !== ())) {
         json|error messageParts = messagePayload.parts;
         if (messageParts is json) {
             json[] messagePartsArr = <json[]>messageParts;
@@ -121,11 +122,11 @@ function getDispostionFromPayload(json messagePayload) returns string {
             if (dispositionStr is string) {
                 disposition = dispositionStr;
             } else {
-                log:print("disposition is ()");
+                log:printInfo("disposition is ()");
             }
         }
     } else {
-        log:printError("Error occurred while getting hedaers from messagePayload.", err = payloadHeaders);
+        log:printError("Error occurred while getting hedaers from messagePayload.", 'error = payloadHeaders);
     }
     return disposition;
 }
@@ -191,7 +192,7 @@ function isMimeType(string msgMimeType, string mType) returns boolean {
 #
 # + filePath - File path
 # + return - If successful returns encoded file. Else returns error.
-function encodeFile(string filePath) returns string|error {
+isolated function encodeFile(string filePath) returns string|error {
     io:ReadableByteChannel|io:Error fileChannel = io:openReadableFile(filePath);
     int bytesChunk = BYTES_CHUNK;
     byte[] readEncodedContent = [];
@@ -320,7 +321,7 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
 # + value - Value of the form value parameter
 # + return - If successful, returns created request path as an encoded string. Else returns error.
 isolated function appendEncodedURIParameter(string requestPath, string key, string value) returns string|error {
-    var encodedVar = encoding:encodeUriComponent(value, "UTF-8");
+    var encodedVar = url:encode(value, "UTF-8");
     string encodedString = "";
     string path = "";
     if (encodedVar is string) {
@@ -497,7 +498,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
     }
     //------End of multipart/mixed mime part------
     byte[] concatRequestByte = concatRequest.toBytes();
-    string encodedRequest = encoding:encodeBase64Url(concatRequestByte);
+    string encodedRequest = array:toBase64(concatRequestByte);
     string? encodedRequestReplacePlus = java:toString(replace(java:fromString(encodedRequest),
         java:fromString(PLUS_SYMBOL), java:fromString(DASH_SYMBOL)));
     if (encodedRequestReplacePlus is string) {

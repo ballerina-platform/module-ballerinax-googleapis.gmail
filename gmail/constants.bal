@@ -15,6 +15,7 @@
 // under the License.
 
 //API urls
+# Holds the value for URL of gmail.
 const string BASE_URL = "https://www.googleapis.com/gmail";
 # Holds the value for URL of refresh token end point.
 public const string REFRESH_URL = "https://oauth2.googleapis.com/token";
