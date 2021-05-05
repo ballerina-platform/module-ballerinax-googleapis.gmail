@@ -15,8 +15,8 @@
 // under the License.
 
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;

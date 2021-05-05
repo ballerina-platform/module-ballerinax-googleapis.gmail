@@ -3,7 +3,7 @@
         "name":"gmail",
         "displayName":"Gmail",
         "organization":"ballerinax",
-        "module":"googleapis_gmail",
+        "module":"googleapis.gmail",
         "icon":"gmail.png",
         "clients":[
             {
