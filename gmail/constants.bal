@@ -195,4 +195,4 @@ public const string TEXT_PLAIN = "text/plain";
 public const string TEXT_HTML = "text/html";
 
 // Error Codes
-const string GMAIL_ERROR_CODE = "(ballerinax/googleapis_gmail)GmailError";
+const string GMAIL_ERROR_CODE = "(ballerinax/googleapis.gmail)GmailError";

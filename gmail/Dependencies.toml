@@ -1,52 +1,52 @@
 [[dependency]]
 org = "ballerina"
 name = "io"
-version = "0.6.0-alpha7"
+version = "0.6.0-alpha8"
 
 [[dependency]]
 org = "ballerina"
 name = "jballerina.java.arrays"
-version = "0.10.0-alpha7"
+version = "0.10.0-alpha8"
 
 [[dependency]]
 org = "ballerina"
 name = "log"
-version = "1.1.0-alpha7"
+version = "1.1.0-alpha8"
 
 [[dependency]]
 org = "ballerina"
 name = "url"
-version = "1.1.0-alpha7"
+version = "1.1.0-alpha8"
 
 [[dependency]]
 org = "ballerina"
 name = "mime"
-version = "1.1.0-alpha7"
+version = "1.1.0-alpha8"
 
 [[dependency]]
 org = "ballerina"
 name = "http"
-version = "1.1.0-alpha7"
+version = "1.1.0-alpha8"
 
 [[dependency]]
 org = "ballerina"
 name = "uuid"
-version = "0.10.0-alpha7"
+version = "0.10.0-alpha8"
 
 [[dependency]]
 org = "ballerina"
 name = "time"
-version = "2.0.0-alpha8"
+version = "2.0.0-alpha9"
 
 [[dependency]]
 org = "ballerina"
 name = "task"
-version = "2.0.0-alpha8"
+version = "2.0.0-alpha9"
 
 [[dependency]]
 org = "ballerina"
 name = "os"
-version = "0.8.0-alpha7"
+version = "0.8.0-alpha8"
 
 [[dependency]]
 org = "ballerina"

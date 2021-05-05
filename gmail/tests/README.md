@@ -2,7 +2,7 @@
 
 | Ballerina Language Version | Gmail API Version |  
 |:--------------------------:|:-----------------:|
-| Swan Lake Alpha 4          |   v1              |
+| Swan Lake Alpha 5          |   v1              |
 
 ### Prerequisites
 
@@ -38,7 +38,7 @@ In order to run the tests, the user will need to have a Gmail account and create
 #### Config.toml
 ```ballerina
 
-[ballerinax.googleapis_gmail]
+[ballerinax.googleapis.gmail]
 //Give the credentials and tokens for the authorized user
 refreshToken = "enter your refresh token here"
 clientId = "enter your client id here"

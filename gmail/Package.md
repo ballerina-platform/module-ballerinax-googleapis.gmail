@@ -41,13 +41,13 @@ gmail:Client gmailClient = new (gmailConfig);
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 4           |   v1              |
+|  Swan Lake Alpha 5           |   v1              |
 
 ## Example Code
 This code sample represents sending a new text message from one Gmail user to another one. Here, the receiver which needs to receive carbon copy is also mentioned.
 ```ballerina
 import ballerina/io;
-import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis.gmail as gmail;
 
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
@@ -101,7 +101,7 @@ The Gmail Listener Ballerina Connector provides the capability to listen the pus
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 4 is required.
+Ballerina Swan Lake Alpha 5 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
     * Client ID
@@ -128,7 +128,7 @@ Add the project configuration file by creating a `Config.toml` file under the ro
 This file should have following configurations. Add the token obtained in the previous step to the `Config.toml` file.
 
 ```
-[ballerinax.googleapis_gmail]
+[ballerinax.googleapis.gmail]
 refreshToken = "enter your refresh token here"
 clientId = "enter your client id here"
 clientSecret = "enter your client secret here"
@@ -144,17 +144,17 @@ pushEndpoint = "Listener endpoint"
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 4           |   v1              |
+|  Swan Lake Alpha 5           |   v1              |
 
 # Quickstart(s):
 
 ## Working with Gmail Listener
 
 ### Step 1: Import Gmail and Gmail Listener Ballerina Library
-First, import the ballerinax/googleapis_gmail and ballerinax/googleapis_gmail.'listener module into the Ballerina project.
+First, import the ballerinax/googleapis.gmail and ballerinax/googleapis.gmail.'listener module into the Ballerina project.
 ```ballerina
-    import ballerinax/googleapis_gmail as gmail;
-    import ballerinax/googleapis_gmail.'listener as gmailListener;
+    import ballerinax/googleapis.gmail as gmail;
+    import ballerinax/googleapis.gmail.'listener as gmailListener;
 ```
 
 ### Step 2: Initialize the Gmail Listener
@@ -199,8 +199,8 @@ Triggers when a new e-mail appears in the mail inbox.
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -234,8 +234,8 @@ Triggers when you label an email.
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;

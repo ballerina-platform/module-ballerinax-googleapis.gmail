@@ -16,7 +16,7 @@
 
 import ballerina/log;
 import ballerina/os;
-import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis.gmail as gmail;
 
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {

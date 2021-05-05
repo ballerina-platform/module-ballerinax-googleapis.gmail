@@ -7,7 +7,7 @@
 #Config file
 Config.toml
 # Modules
-/modules/googleapis_gmail
+/modules/googleapis.gmail
 
 # BlueJ files
 *.ctxt
@@ -42,6 +42,7 @@ temp.bal.ballerina/
 target/
 .DS_Store
 *Ballerina.lock
+gmail/modules/gmail/resources
 gmail/resources
 
 # Ignore Gradle project-specific cache directory

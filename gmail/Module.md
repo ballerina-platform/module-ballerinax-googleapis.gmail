@@ -41,13 +41,13 @@ gmail:Client gmailClient = new (gmailConfig);
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 4           |   v1              |
+|  Swan Lake Alpha 5           |   v1              |
 
 ## Sample
 
 ```ballerina
 import ballerina/io;
-import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis.gmail as gmail;
 
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {

@@ -84,7 +84,7 @@ Refresh Token.
 
 * Java 11 Installed <br/> Java Development Kit (JDK) with version 11 is required.
 
-* Ballerina SLAlpha4 Installed <br/> Ballerina Swan Lake Alpha 4 is required.
+* Ballerina SLAlpha5 Installed <br/> Ballerina Swan Lake Alpha 5 is required.
 
 # Supported Versions & Limitations
 
@@ -93,8 +93,8 @@ Refresh Token.
 |                                   | Version               |
 |-----------------------------------|-----------------------|
 | Gmail API Version                 | v1                    |
-| Google Cloud Pub/Sub API Version                 | v1                    |
-| Ballerina Language                | Swan Lake Alpha 4     |
+| Google Cloud Pub/Sub API Version  | v1                    |
+| Ballerina Language                | Swan Lake Alpha 5     |
 | Java Development Kit (JDK)        | 11                    |
 
 # Limitations
@@ -105,9 +105,9 @@ Refresh Token.
 
 ## Send a text message
 ### Step 1: Import the Gmail module
-First, import the `ballerinax/googleapis_gmail` module into the Ballerina project.
+First, import the `ballerinax/googleapis.gmail` module into the Ballerina project.
 ```ballerina
-import ballerinax/googleapis_gmail;
+import ballerinax/googleapis.gmail;
 ```
 
 
@@ -214,7 +214,7 @@ if (delete is error) {
 # Samples
 ## Messages/Emails
 Message in a Gmail account represents a single email. With the Gmail API, you can only create and delete messages, and 
-apply labels to them, all other data is immutable and can’t be changed. The `ballerinax/googleapis_gmail` module 
+apply labels to them, all other data is immutable and can’t be changed. The `ballerinax/googleapis.gmail` module 
 contains operations to send emails in Text and HTML formats with attachments and inline images. It supports searching 
 and reading emails in Gmail using Gmail filters. The module also supports trashing, un-trashing, deleting, and modifying 
 emails.
@@ -451,7 +451,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ## Working with Threads
 A thread is a collection of messages that represents a conversation. Gmail creates threads automatically as users send 
 and receive emails. With the Gmail API, you can delete threads and insert messages into existing threads. The 
-`ballerinax/googleapis_gmail` module contains operations to read, search, trash, un-trash, modify and delete 
+`ballerinax/googleapis.gmail` module contains operations to read, search, trash, un-trash, modify and delete 
 email threads in Gmail. Unlike messages, threads cannot be created, only deleted. Messages can, however, be inserted 
 into a thread.
 
@@ -599,7 +599,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ## Working with Drafts
 A Draft is an unsent message that with the label DRAFT. When sent, it’s automatically replaced with a matching message 
-that has the label SENT. The `ballerinax/googleapis_gmail` module contains operations to search, read, delete, create, 
+that has the label SENT. The `ballerinax/googleapis.gmail` module contains operations to search, read, delete, create, 
 update and send drafts in Gmail.
 
 ### Create draft
@@ -770,7 +770,7 @@ Labels are used to categorize and organize messages and threads in a Gmail accou
 relationship with messages and threads, meaning that a message or thread can have any number of labels applied to it, 
 and a label can be applied to any number of messages and threads. Gmail account itself provide a set of pre defined 
 labels that you can use including INBOX, SPAM, DRAFT, STARRED, and IMPORTANT. But you can create custom labels too.
-The `ballerinax/googleapis_gmail` module contains operations to list, read, create, update and delete labels in Gmail. 
+The `ballerinax/googleapis.gmail` module contains operations to list, read, create, update and delete labels in Gmail. 
 
 ### Create label
 Labels are used to categorize messages and threads within the user's mailbox. This sample shows how to create a new 
@@ -874,7 +874,7 @@ if (deleteLabelResponse == true) {
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/labels/delete_label.bal
 
 ## Working with User Profiles
-Gmail API can be used to get the information about a Gmail profile of a user. The `ballerinax/googleapis_gmail` module 
+Gmail API can be used to get the information about a Gmail profile of a user. The `ballerinax/googleapis.gmail` module 
 supports this operation. This sample shows how you can get information about the profile of the authorized user using the
 ballerina connector. 
 
@@ -894,7 +894,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ## Working with Mailbox History
 Gmail API provide capability to list the history of all changes to the given mailbox. History results are returned in 
-chronological order. The `ballerinax/googleapis_gmail` module supports this by providing operations to lists the history 
+chronological order. The `ballerinax/googleapis.gmail` module supports this by providing operations to lists the history 
 of changes to the user's mailbox. This sample shows how you can get the mailbox history of the authorized user as a list.
 The operation needs to give a starting history ID from where the list of history will be obtained from that point
 onwards. 
@@ -942,11 +942,11 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ## Quickstart(s):
 
 ### Step 1: Import Gmail and Gmail Listener Ballerina Library
-First, import the ballerinax/googleapis_gmail and ballerinax/googleapis_gmail.'listener module into the Ballerina project.
+First, import the ballerinax/googleapis.gmail and ballerinax/googleapis.gmail.'listener module into the Ballerina project.
 
 ```ballerina
-    import ballerinax/googleapis_gmail as gmail;
-    import ballerinax/googleapis_gmail.'listener as gmailListener;
+    import ballerinax/googleapis.gmail as gmail;
+    import ballerinax/googleapis.gmail.'listener as gmailListener;
 ```
 
 ### Step 2: Initialize the Gmail Listener
@@ -993,8 +993,8 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -1030,8 +1030,8 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -1067,8 +1067,8 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -1103,8 +1103,8 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -1140,8 +1140,8 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -1177,8 +1177,8 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -1214,8 +1214,8 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ```ballerina
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
-import ballerinax/googleapis_gmail.'listener as gmailListener;
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
 
 configurable string refreshToken = ?;
 configurable string clientId = ?;
@@ -1255,7 +1255,7 @@ service / on gmailEventListener {
 
         > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
 
-2. Download and install [Ballerina Swan Lake Alpha4](https://ballerina.io/). 
+2. Download and install [Ballerina Swan Lake Alpha5](https://ballerina.io/). 
 
 3. Download and install gradle.
 
@@ -1280,7 +1280,7 @@ To build java libraries execute the following command.
 
 ### Build ballerina connector.
 
-Execute the commands below to build from the source after installing Ballerina Swan Lake Alpha4.
+Execute the commands below to build from the source after installing Ballerina Swan Lake Alpha5.
 
 1. To build the library:
 ```shell script

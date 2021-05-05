@@ -16,7 +16,7 @@
 
 import ballerina/http;
 import ballerina/log;
-import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis.gmail as gmail;
 
 # Listener for Gmail Connector.
 @display {label: "Gmail Listener"} 

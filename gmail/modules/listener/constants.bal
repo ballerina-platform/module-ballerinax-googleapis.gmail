@@ -74,7 +74,7 @@ const string GETIAMPOLICY = ":getIamPolicy";
 # Holds the value for :setIamPolicy resource path.
 const string SETIAMPOLICY = ":setIamPolicy";
 # Holds the value Error code in listener.
-const string GMAIL_LISTENER_ERROR_CODE = "(ballerinax/googleapis_gmail) GmailListenerError";
+const string GMAIL_LISTENER_ERROR_CODE = "(ballerinax/googleapis.gmail) GmailListenerError";
 
 public enum Encoding {
     ENCODING_UNSPECIFIED,

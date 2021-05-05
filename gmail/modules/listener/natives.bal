@@ -15,7 +15,7 @@
 // under the License.
 
 import ballerina/jballerina.java;
-import ballerinax/googleapis_gmail as gmail;
+import ballerinax/googleapis.gmail as gmail;
 
 isolated function callOnNewEmail(SimpleHttpService httpService, gmail:Message message) returns error?
     = @java:Method {
