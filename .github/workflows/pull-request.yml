@@ -1,4 +1,4 @@
-name: CI
+name: Pull_Request
 
 on: [pull_request]
 
