@@ -107,9 +107,9 @@ public type AttachmentPath record {
 # + headerDate - Email header **Date**
 # + headerContentType - Email header **ContentType**
 # + mimeType - MIME type of the top level message part
-# + plainTextBodyPart - MIME Message Part with text/plain content type
-# + htmlBodyPart - MIME Message Part with text/html content type
-# + inlineImgParts - MIME Message Parts with inline images with the image/* content type
+# + emailBodyInText - MIME Message Part with text/plain content type
+# + emailBodyInHTML - MIME Message Part with text/html content type
+# + emailInlineImages - MIME Message Parts with inline images with the image/* content type
 # + msgAttachments - MIME Message Parts of the message consisting the attachments
 public type Message record {
     string threadId = "";
@@ -129,9 +129,9 @@ public type Message record {
     string headerDate = "";
     string headerContentType = "";
     string mimeType = "";
-    MessageBodyPart plainTextBodyPart = {};
-    MessageBodyPart htmlBodyPart = {};
-    MessageBodyPart[] inlineImgParts = [];
+    MessageBodyPart emailBodyInText = {};
+    MessageBodyPart emailBodyInHTML = {};
+    MessageBodyPart[] emailInlineImages = [];
     MessageBodyPart[] msgAttachments = [];
 };
 
