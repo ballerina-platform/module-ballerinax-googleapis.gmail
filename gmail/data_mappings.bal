@@ -45,8 +45,10 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
         sourceMessageJsonObject.historyId in historyId is string ? historyId : EMPTY_STRING;
     targetMessageType.internalDate = let var internalDate = 
         sourceMessageJsonObject.internalDate in internalDate is string ? internalDate : EMPTY_STRING;
-    targetMessageType.sizeEstimate = let var sizeEstimate = 
-        sourceMessageJsonObject.sizeEstimate in sizeEstimate is string ? sizeEstimate : EMPTY_STRING;
+    json|error sizeEstimate = sourceMessageJsonObject.sizeEstimate;
+    if(sizeEstimate is json) {
+        targetMessageType.sizeEstimate = sizeEstimate.toString();
+    }
 
     json|error srcMssgHeaders = sourceMessageJsonObject.payload.headers;
     if(srcMssgHeaders is json) {
@@ -71,20 +73,20 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
     //Recursively go through the payload and get relevant message body part from content type
     json|error srcMssgJsonPayload = sourceMessageJsonObject.payload;
     if (srcMssgJsonPayload is json){
-        targetMessageType.plainTextBodyPart = getMessageBodyPartFromPayloadByMimeType(srcMssgJsonPayload, TEXT_PLAIN);
-        targetMessageType.htmlBodyPart = getMessageBodyPartFromPayloadByMimeType(srcMssgJsonPayload, TEXT_HTML);
+        targetMessageType.emailBodyInText = getMessageBodyPartFromPayloadByMimeType(srcMssgJsonPayload, TEXT_PLAIN);
+        targetMessageType.emailBodyInHTML = getMessageBodyPartFromPayloadByMimeType(srcMssgJsonPayload, TEXT_HTML);
         //Recursively go through the payload and get message attachment and inline image parts
         [MessageBodyPart[], MessageBodyPart[]] parts = getFilePartsFromPayload(srcMssgJsonPayload, [], []);
         MessageBodyPart[] attachments;
         MessageBodyPart[] imageParts;
         [attachments, imageParts] = parts;
         targetMessageType.msgAttachments = attachments;
-        targetMessageType.inlineImgParts = imageParts;
+        targetMessageType.emailInlineImages = imageParts;
     } else {
-        targetMessageType.plainTextBodyPart = {};
-        targetMessageType.htmlBodyPart = {};
+        targetMessageType.emailBodyInText = {};
+        targetMessageType.emailBodyInHTML = {};
         targetMessageType.msgAttachments = [];
-        targetMessageType.inlineImgParts = [];
+        targetMessageType.emailInlineImages = [];
     }
 
     return targetMessageType;
@@ -109,7 +111,7 @@ isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) ret
         targetMessageBodyType.partId = let var partId = 
             sourceMessagePartJsonObject.partId in partId is string ? partId : EMPTY_STRING;
         targetMessageBodyType.fileName = let var fileName = 
-            sourceMessagePartJsonObject.fileName in fileName is string ? fileName : EMPTY_STRING;
+            sourceMessagePartJsonObject.filename in fileName is string ? fileName : EMPTY_STRING;
 
         json|error srcMssgPartHeaders = sourceMessagePartJsonObject.headers;
         if(srcMssgPartHeaders is json) {
