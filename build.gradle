@@ -62,7 +62,61 @@ subprojects {
     }
 }
 
+def artifactCacheParent = file("${project.projectDir}/build/cache_parent/")
+def packageName = "googleapis.gmail"
+def packageOrg = "ballerinax"
+def pathToBala = file("${project.projectDir}/gmail/target/bala")
+def platform = "java11"
+
+task createBalaDirectory {
+    mkdir "${project.projectDir}/gmail/target/bala"
+}
 
 task build {
     dependsOn('gmail:build')
 }
+
+task copyDistribution {
+    inputs.dir file(project.projectDir)
+
+    pathToBala.eachFileMatch(~/.*.bala/) { balaFile ->
+        copy {
+            from zipTree(balaFile)
+            into file("${artifactCacheParent}/bala/${packageOrg}/${packageName}/${project.version}/${platform}")
+        }
+    }
+    copy {
+        from file("${project.projectDir}/gmail/target/cache")
+        exclude '**/*-testable.jar'
+        exclude '**/tests_cache/'
+        into file("${artifactCacheParent}/cache/")
+    }
+    outputs.dir artifactCacheParent
+}
+
+task createArtifactZip(type: Zip) {
+   from "${buildDir}/cache_parent"
+   archiveName 'distribution.zip'
+   destinationDir(file("${buildDir}/distribution"))
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact source: createArtifactZip, extension: 'zip'
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ballerina-platform/module-ballerinax-googleapis.gmail")
+            credentials {
+                username = System.getenv("publishUser")
+                password = System.getenv("publishPAT")
+            }
+        }
+    }
+}
+
+publish.dependsOn copyDistribution
