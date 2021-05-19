@@ -34,7 +34,7 @@ function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttac
                                  MessageBodyPart[] inlineMessageImages) returns 
                                  @tainted [MessageBodyPart[], MessageBodyPart[]] {
     MessageBodyPart[] attachmentParts = msgAttachments;
-    MessageBodyPart[] inlineImgParts = inlineMessageImages;
+    MessageBodyPart[] emailInlineImages = inlineMessageImages;
     string disposition = getDispostionFromPayload(messagePayload);
 
     string messagePayloadMimeType = let var mimeType = messagePayload.mimeType in mimeType is string ? mimeType : 
@@ -45,7 +45,7 @@ function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttac
         attachmentParts[attachmentParts.length()] = convertJSONToMsgBodyType(messagePayload);
     } else if (isMimeType(messagePayloadMimeType, IMAGE_ANY) && (disposition == INLINE)) {
         //Get the inline message body part
-        inlineImgParts[inlineImgParts.length()] = convertJSONToMsgBodyType(messagePayload);
+        emailInlineImages[emailInlineImages.length()] = convertJSONToMsgBodyType(messagePayload);
     } //Else if is any multipart/*
     else if (isMimeType(messagePayloadMimeType, MULTIPART_ANY) && (messagePayload.parts !== ())) {
         json|error messageParts = messagePayload.parts;
@@ -56,13 +56,13 @@ function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttac
                 foreach json part in messagePartsArr {
                     //Recursively check each ith child mime part
                     [MessageBodyPart[], MessageBodyPart[]] parts = getFilePartsFromPayload(part, attachmentParts,
-                        inlineImgParts);
-                    [attachmentParts, inlineImgParts] = parts;
+                        emailInlineImages);
+                    [attachmentParts, emailInlineImages] = parts;
                 }
             }
         }
     }
-    return [attachmentParts, inlineImgParts];
+    return [attachmentParts, emailInlineImages];
 }
 
 # Gets the body MIME messagePart with the specified content type (excluding attachments and inline images)
