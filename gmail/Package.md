@@ -119,9 +119,8 @@ Ballerina Swan Lake Alpha 5 is required.
 [OAuth 2.0 playground](https://developers.google.com/oauthplayground) to receive the authorization code and obtain the refresh token). 
 6. Click **Create**. Your client ID and client secret appear. 
 7. In a separate browser window or tab, visit [OAuth 2.0 playground](https://developers.google.com/oauthplayground), select the required Gmail scopes and `https://www.googleapis.com/auth/pubsub` scope of `Cloud Pub/Sub API v1`, and then click **Authorize APIs**.
-
+If you want to use only Gmail scopes token then you can use service account configurations without  `Cloud Pub/Sub API v1` scope. [Create a service account](https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount) with pubsub admin and download the p12 key file.
 8. When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh token.
-
 
 ## Add project configurations file
 Add the project configuration file by creating a `Config.toml` file under the root path of the project structure.
@@ -133,8 +132,6 @@ refreshToken = "enter your refresh token here"
 clientId = "enter your client id here"
 clientSecret = "enter your client secret here"
 port = "enter the port where your listener runs"
-topicName = "enter your push topic name"
-subscriptionName = "enter your subscription name"
 project = "enter your project name"
 pushEndpoint = "Listener endpoint"
 
@@ -150,14 +147,17 @@ pushEndpoint = "Listener endpoint"
 
 ## Working with Gmail Listener
 
-### Step 1: Import Gmail and Gmail Listener Ballerina Library
+### Using Google pubsub scope authorization.
+If you are able to authorize the pubsub scope, the you can follow all these steps to create a listener.
+
+#### Step 1: Import Gmail and Gmail Listener Ballerina Library
 First, import the ballerinax/googleapis.gmail and ballerinax/googleapis.gmail.'listener module into the Ballerina project.
 ```ballerina
     import ballerinax/googleapis.gmail as gmail;
     import ballerinax/googleapis.gmail.'listener as gmailListener;
 ```
 
-### Step 2: Initialize the Gmail Listener
+#### Step 2: Initialize the Gmail Listener
 In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Listener endpoint.
 ```ballerina
 configurable string refreshToken = ?;
@@ -177,10 +177,8 @@ gmail:GmailConfiguration gmailConfig = {
 
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
-
-
 ```
-### Step 3: Write service with required trigger 
+#### Step 3: Write service with required trigger 
 The Listener triggers can be invoked by using a service.
 ```ballerina
 service / on gmailEventListener {
@@ -190,6 +188,53 @@ service / on gmailEventListener {
 }
 ```
 
+### Using Google service account
+If you prefer to use only gmail scopes in your tokens, then you can use a service account to do listener operations along with your gmail tokens. For that you need to do the **step 2** as following method
+
+##### Step 2: Initialize the Gmail Listener
+In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Listener endpoint.
+```ballerina
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string project = ?;
+configurable string pushEndpoint = ?;
+
+configurable string issuer = ?;
+configurable string aud = ?;
+configurable string keyId = ?;
+configurable string path = ?;
+configurable string password = ?;
+configurable string keyAlias = ?;
+configurable string keyPassword = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmailListener:GmailListenerConfiguration listenerConfig = {authConfig: {
+        issuer: issuer,
+        audience: aud,
+        customClaims: {"sub": issuer},
+        keyId: keyId,
+        signatureConfig: {config: {
+                keyStore: {
+                    path: path,
+                    password: password
+                },
+                keyAlias: keyAlias,
+                keyPassword: keyPassword
+            }}
+    }};
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint, listenerConfig);
+```
 
 # Samples
 

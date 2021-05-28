@@ -61,7 +61,7 @@ Refresh Token.
 
 * A Gmail Account with access <br/> https://support.google.com/mail/answer/56256?hl=en
 
-* New project with `Gmail API` enabled on the API Console. If you want to use **`Listener`**, then enable `Cloud Pub/Sub API` too.
+* New project with `Gmail API` enabled on the API Console. If you want to use **`Listener`**, then enable `Cloud Pub/Sub API` or user setup service account with pubsub admin role.
     - Visit [Google API Console](https://console.developers.google.com), click **Create Project**, and follow the wizard 
     to create a new project.
 
@@ -81,6 +81,7 @@ Refresh Token.
     - When you receive your authorization code, click **Exchange authorization code for tokens** to obtain the refresh 
     token and access token.
 
+* If you want to user service account in listener authorization. [Create a service account](https://developers.google.com/identity/protocols/oauth2/service-account#creatinganaccount) with pubsub admin and download the p12 key file.
 
 * Java 11 Installed <br/> Java Development Kit (JDK) with version 11 is required.
 
@@ -941,7 +942,10 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 
 ## Quickstart(s):
 
-### Step 1: Import Gmail and Gmail Listener Ballerina Library
+### Using Google pubsub scope authorization.
+If you are able to authorize the pubsub scope, the you can follow all these steps to create a listener.
+
+#### Step 1: Import Gmail and Gmail Listener Ballerina Library
 First, import the ballerinax/googleapis.gmail and ballerinax/googleapis.gmail.'listener module into the Ballerina project.
 
 ```ballerina
@@ -949,7 +953,7 @@ First, import the ballerinax/googleapis.gmail and ballerinax/googleapis.gmail.'l
     import ballerinax/googleapis.gmail.'listener as gmailListener;
 ```
 
-### Step 2: Initialize the Gmail Listener
+#### Step 2: Initialize the Gmail Listener
 In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Listener endpoint.
 ```ballerina
 configurable string refreshToken = ?;
@@ -972,7 +976,7 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  pro
 
 
 ```
-### Step 3: Write service with required trigger 
+#### Step 3: Write service with required trigger 
 The Listener triggers can be invoked by using a service.
 ```ballerina
 service / on gmailEventListener {
@@ -981,9 +985,56 @@ service / on gmailEventListener {
    }   
 }
 ```
+### Using Google service account
+If you prefer to use only gmail scopes in your tokens, then you can use a service account to do listener operations along with your gmail tokens. For that you need to do the **step 2** as following method
+
+#### Step 2: Initialize the Gmail Listener
+In order for you to use the Gmail Listener Endpoint, first you need to create a Gmail Listener endpoint.
+```ballerina
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string project = ?;
+configurable string pushEndpoint = ?;
+
+configurable string issuer = ?;
+configurable string aud = ?;
+configurable string keyId = ?;
+configurable string path = ?;
+configurable string password = ?;
+configurable string keyAlias = ?;
+configurable string keyPassword = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+gmailListener:GmailListenerConfiguration listenerConfig = {authConfig: {
+        issuer: issuer,
+        audience: aud,
+        customClaims: {"sub": issuer},
+        keyId: keyId,
+        signatureConfig: {config: {
+                keyStore: {
+                    path: path,
+                    password: password
+                },
+                keyAlias: keyAlias,
+                keyPassword: keyPassword
+            }}
+    }};
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint, listenerConfig);
+```
 
 ## Samples
-Folowing are the available samples for Gmail Listener connector.
+Following are the available samples for Gmail Listener connector.
 
 ### Trigger for new email
 
