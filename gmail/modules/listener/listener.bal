@@ -34,23 +34,18 @@ public class Listener {
     private HttpService httpService;
     http:Client pubSubClient;
 
+    public isolated function init(int port, gmail:GmailConfiguration gmailConfig, string pushEndpoint, string project, 
+                                    GmailListenerConfiguration? listenerConfig = ()) returns @tainted error? {
 
-    public isolated function init(int port, gmail:GmailConfiguration gmailConfig, string project, string pushEndpoint) 
-                                  returns @tainted error? {
-
-        http:ClientSecureSocket? socketConfig = gmailConfig?.secureSocketConfig;
+        http:ClientSecureSocket? socketConfig = (listenerConfig is GmailListenerConfiguration) ? (listenerConfig
+                                                    ?.secureSocketConfig) : (gmailConfig?.secureSocketConfig);
         // Create pubsub http client.
-        if (socketConfig is http:ClientSecureSocket) {
-            self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
-                auth: gmailConfig.oauthClientConfig,
-                secureSocket: socketConfig
-            }); 
-        } else {
-            self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
-                auth: gmailConfig.oauthClientConfig
-            });
-        }                                  
-        
+        self.pubSubClient = checkpanic new (PUBSUB_BASE_URL, {
+            auth: (listenerConfig is GmailListenerConfiguration) ? (listenerConfig.authConfig) 
+                    : (gmailConfig.oauthClientConfig),
+            secureSocket: socketConfig
+        }); 
+
         self.httpListener = check new (port);
         //Create gmail client.
         self.gmailClient = new (gmailConfig);     
@@ -60,11 +55,11 @@ public class Listener {
         TopicSubscriptionDetail topicSubscriptionDetail = check createTopic(self.pubSubClient, project, pushEndpoint);        
         self.topicResource = topicSubscriptionDetail.topicResource;
         self.subscriptionResource = topicSubscriptionDetail.subscriptionResource;
-        self.requestBody = { labelIds: [INBOX], topicName:self.topicResource};
+        self.requestBody = { labelIds: [INBOX], topicName: self.topicResource};
     }
 
     public isolated function attach(service object {} s, string[]|string? name = ()) returns @tainted error? {
-        self.httpService = new HttpService(s,  self.gmailClient,  self.startHistoryId);
+        self.httpService = new HttpService(s, self.gmailClient, self.startHistoryId);
         check self.watchMailbox();
         check self.httpListener.attach(self.httpService, name);
         Job job = new (self);
@@ -80,10 +75,10 @@ public class Listener {
     }
 
     public isolated function gracefulStop() returns @tainted error? {
-        json deleteSubscription = check deletePubsubTopic(self.pubSubClient,self.subscriptionResource);
+        json deleteSubscription = check deletePubsubSubscription(self.pubSubClient, self.subscriptionResource);
         json deleteTopic = check deletePubsubTopic(self.pubSubClient, self.topicResource);
         var response = check self.gmailClient->stop(self.userId);
-        log:printInfo("Watch Stopped = "+response.toString());
+        log:printInfo("Watch Stopped = " + response.toString());
         return self.httpListener.gracefulStop();
     }
 
@@ -94,7 +89,16 @@ public class Listener {
     public isolated function watchMailbox() returns @tainted error? {
         gmail:WatchResponse  response = check self.gmailClient->watch(self.userId, self.requestBody);
         self.startHistoryId = response.historyId;
-        log:printInfo("New History ID: "+ self.startHistoryId);
+        log:printInfo("New History ID: " + self.startHistoryId);
         self.httpService.startHistoryId = self.startHistoryId;
     }    
 }
+
+# Holds the parameters used to create a `Client`.
+#
+# + authConfig - Auth client configuration
+# + secureSocketConfig - Secure socket configuration
+public type GmailListenerConfiguration record {
+    http:JwtIssuerConfig authConfig;
+    http:ClientSecureSocket secureSocketConfig?;
+};
