@@ -16,6 +16,7 @@
 
 import ballerina/lang.array;
 import ballerina/lang.'int;
+import ballerina/regex;
 import ballerina/log;
 
 type mapJson map<json>;
@@ -132,9 +133,18 @@ isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) ret
 isolated function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
     return {
         fileId: let var fileId = sourceMessageBodyJsonObject.attachmentId in fileId is string ? fileId : EMPTY_STRING,
-        body: let var body = sourceMessageBodyJsonObject.data in body is string ? body : EMPTY_STRING,
+        body: getFormattedBase64Body(sourceMessageBodyJsonObject),
         size: let var size = sourceMessageBodyJsonObject.size in size is int ? size.toString() : EMPTY_STRING
     };
+}
+
+# Format received base64 data string to the valid format.
+# + sourceMessageBodyJsonObject - `json` message body object
+# + return - Returns attachment body with valid Base64 encoded
+isolated function getFormattedBase64Body(json sourceMessageBodyJsonObject)  returns string {
+    string formattedBody = let var body = sourceMessageBodyJsonObject.data in body is string ? body : EMPTY_STRING;
+    formattedBody = regex:replaceAll(formattedBody, DASH_SYMBOL, PLUS_SYMBOL);
+    return regex:replaceAll(formattedBody, UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL);
 }
 
 # Transforms mail thread JSON object into MailThread type.
