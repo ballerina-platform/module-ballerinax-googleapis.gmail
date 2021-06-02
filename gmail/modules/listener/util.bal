@@ -196,7 +196,7 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
         }
     } else {
         error err = error(GMAIL_LISTENER_ERROR_CODE, message = 
-            "Error occurred while accessing the JSON payload of the response");
+            "Error occurred while accessing the JSON payload of the response", 'error= jsonResponse);
         return err;
     }
 }
