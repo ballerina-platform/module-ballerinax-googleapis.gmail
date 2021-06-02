@@ -34,7 +34,7 @@ public class Listener {
     private HttpService httpService;
     http:Client pubSubClient;
 
-    public isolated function init(int port, gmail:GmailConfiguration gmailConfig, string pushEndpoint, string project, 
+    public isolated function init(int port, gmail:GmailConfiguration gmailConfig, string project, string pushEndpoint,
                                     GmailListenerConfiguration? listenerConfig = ()) returns @tainted error? {
 
         http:ClientSecureSocket? socketConfig = (listenerConfig is GmailListenerConfiguration) ? (listenerConfig

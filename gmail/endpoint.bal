@@ -72,7 +72,7 @@ public client class Client {
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getListMessagesPath);
         //Get json msg list reponse. If unsuccessful throws and returns error.
         json jsonlistMsgResponse = check handleResponse(httpResponse);
-        return convertJSONToMessageListPageType(jsonlistMsgResponse);
+        return check jsonlistMsgResponse.cloneWithType(MessageListPage);
     }
 
     # Create the raw base 64 encoded string of the whole message and send it as an email from the user's
@@ -82,12 +82,12 @@ public client class Client {
     # + message - MessageRequest to send
     # + threadId - Optional. Required if message is expected to be send The ID of the thread the message belongs to.
     # (The Subject headers must match)
-    # + return - If successful, return(message id, thread id) of the successfully sent message. Else return error.
+    # + return - If successful, returns MessageResponse record of the successfully sent message. Else return error.
     @display {label: "Send message"} 
     remote function sendMessage(@display {label: "Mail address of user"} string userId,
                                 @display {label: "Message request to send"} MessageRequest message,
                                 @display {label: "Thread id"} string? threadId = ())
-                                returns @tainted @display {label: "Message id and Thread id"} MessageResponse|error {
+                                returns @tainted @display {label: "Sent Message Response"} MessageResponse|error {
         //Create the whole message as an encoded raw string. If unsuccessful throws and returns error.
         string encodedRequest = check createEncodedRawMessage(message);
         http:Request request = new;
@@ -293,7 +293,7 @@ public client class Client {
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getListThreadPath);
         //Get json thread list reponse. If unsuccessful throws and returns error.
         json jsonListThreadResponse = check handleResponse(httpResponse);
-        return convertJSONToThreadListPageType(jsonListThreadResponse);
+        return jsonListThreadResponse.cloneWithType(ThreadListPage);
     }
 
     # Read the specified mail thread from users mailbox.
@@ -675,7 +675,7 @@ public client class Client {
         }
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getListDraftsPath);
         json jsonListDraftResponse = check handleResponse(httpResponse);
-        return convertJSONToDraftListPageType(jsonListDraftResponse);
+        return jsonListDraftResponse.cloneWithType(DraftListPage);
     }
 
     # Read the specified draft from users mailbox.
@@ -800,11 +800,11 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + draftId - The draft Id to send
-    # + return - If successful, returns the message Id and thread Id of the sent Draft. Else returns error.
+    # + return - If successful, returns MessageResponse record of the sent Draft. Else returns error.
     @display {label: "Send draft"} 
     remote isolated function sendDraft(@display {label: "Mail address of user"} string userId,
                                        @display {label: "Draft id"} string draftId) 
-                                       returns @tainted @display {label: "Message id and Thread id"} MessageResponse |
+                                       returns @tainted @display {label: "Sent Message Response"} MessageResponse |
                                        error {
         http:Request request = new;
         json jsonPayload = {id: draftId};

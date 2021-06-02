@@ -62,16 +62,15 @@ public function main(string... args) {
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
 
-    [string, string]|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+    gmail:MessageResponse|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
 
-    if (sendMessageResponse is [string, string]) {
+    if (sendMessageResponse is gmail:MessageResponse) {
         // If successful, print the message ID and thread ID.
-        [string, string] [messageId, threadId] = sendMessageResponse;
-        log:printInfo("Sent Message ID: ", messageId = messageId);
-        log:printInfo("Sent Thread ID: ", threadId = threadId);
+        log:printInfo("Sent Message ID: " + sendMessageResponse.id);
+        log:printInfo("Sent Thread ID: " + sendMessageResponse.threadId);
     } else {
         // If unsuccessful, print the error returned.
-        log:printError("Error: ", err = sendMessageResponse);
+        log:printError("Error: ", 'error = sendMessageResponse);
     }
     log:printInfo("End!");
 }
