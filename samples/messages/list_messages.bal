@@ -43,7 +43,7 @@ public function main(string... args) {
     gmail:MessageListPage|error msgList = gmailClient->listMessages(userId, filter = searchFilter);
 
     if (msgList is gmail:MessageListPage) {
-        error? e = msgList.messages.forEach(function (json message) {
+        error? e = msgList.messages.forEach(function (gmail:MessageResponse message) {
                 log:printInfo(message.toString());
         });
     } else {

@@ -191,65 +191,6 @@ isolated function convertJSONToUserProfileType(json sourceUserProfileJsonObject)
     };
 }
 
-# Transforms message list JSON object into MessageListPage.
-# + sourceMsgListJsonObject - `json` Messsage List object
-# + return - MessageListPage type
-isolated function convertJSONToMessageListPageType(json sourceMsgListJsonObject) returns MessageListPage {
-    MessageListPage targetMsgListPage = {};
-    targetMsgListPage.resultSizeEstimate = let var resultSizeEstimate = 
-        sourceMsgListJsonObject.resultSizeEstimate in resultSizeEstimate is int ? resultSizeEstimate.toString() : 
-        EMPTY_STRING;
-    targetMsgListPage.nextPageToken = let var nextPageToken = 
-        sourceMsgListJsonObject.nextPageToken in nextPageToken is string ? nextPageToken : EMPTY_STRING;
-
-    //Convert json object to json array object
-    //for each message resource in messages json array of the response
-    json|error messages = sourceMsgListJsonObject.messages;
-    if (messages is json) {
-        foreach json message in <json[]>messages {
-            //Create a map with message Id and thread Id as keys and add it to the array of messages
-            //Assume message json field always has id and threadId as its subfields
-            json singleMsg = { 
-                messageId: let var id = message.id in id is string ? id : EMPTY_STRING,
-                threadId: let var id = message.threadId in id is string ? id : EMPTY_STRING 
-            };
-            array:push(targetMsgListPage.messages, singleMsg);
-        }
-    } else {
-        log:printError("Error occurred while getting messages", 'error = messages);
-    }
-    return targetMsgListPage;
-}
-
-# Transforms thread list JSON object into ThreadListPage.
-# + sourceThreadListJsonObject - `json` Thead List object
-# + return - ThreadListPage type
-isolated function convertJSONToThreadListPageType(json sourceThreadListJsonObject) returns ThreadListPage {
-    ThreadListPage targetThreadListPage = {};
-    targetThreadListPage.resultSizeEstimate = let var resultSizeEstimate = 
-        sourceThreadListJsonObject.resultSizeEstimate in resultSizeEstimate is int ? resultSizeEstimate.toString() : 
-        EMPTY_STRING;
-    targetThreadListPage.nextPageToken = let var nextPageToken = 
-        sourceThreadListJsonObject.nextPageToken in nextPageToken is string ? nextPageToken : EMPTY_STRING;
-    //for each thread resource in threads json array of the response
-    json|error jsonThreads = sourceThreadListJsonObject.threads;
-    if (jsonThreads is json) {
-        foreach json thread in <json[]>jsonThreads {
-            //Create a map with thread Id, snippet and history Id as keys and add it to the array of threads
-            //Assume thread json field always has thread.id and thread.snippet and thread.historyId as its subfields
-            json singleThread = {
-                threadId: let var id = thread.id in id is string ? id : EMPTY_STRING,
-                snippet: let var snippet = thread.snippet in snippet is string ? snippet : EMPTY_STRING,
-                historyId: let var historyId = thread.historyId in historyId is string ? historyId : EMPTY_STRING
-            };
-            array:push(targetThreadListPage.threads, singleThread);
-        }
-    } else {
-        log:printError("Error occurred while getting threads", 'error = jsonThreads);
-    }
-    return targetThreadListPage;
-}
-
 # Converts the message part header JSON array to headers.
 # + jsonMsgPartHeaders - `json` array of message part headers
 # + return - Map of headers
@@ -547,34 +488,6 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
         }
     }
     return targetHistory;
-}
-
-# Transforms drafts list JSON object into DraftListPage.
-# + sourceDraftListJsonObject - `json` Draft List object
-# + return - DraftListPage type
-isolated function convertJSONToDraftListPageType(json sourceDraftListJsonObject) returns DraftListPage {
-    DraftListPage targetDraftListPage = {};
-    targetDraftListPage.nextPageToken = let var next = 
-        sourceDraftListJsonObject.nextPageToken in next is string ? next : EMPTY_STRING;
-    targetDraftListPage.resultSizeEstimate = let var estimate = 
-        sourceDraftListJsonObject.estimate in estimate is string ? estimate : EMPTY_STRING;
-
-    json|error drafts = sourceDraftListJsonObject.drafts;
-    //for each draft resource in drafts json array of the response
-    if (drafts is json) {
-        foreach json draft in <json[]>drafts {
-            //Add the draft map with the Id and the message map with message Id and thread Id as keys, to the array
-            json singleDraft = { 
-                draftId: let var id = draft.id in id is string ? id : EMPTY_STRING,
-                messageId: let var id = draft.message.messageId in id is string ? id : EMPTY_STRING,
-                threadId: let var id = draft.message.threadId in id is string ? id : EMPTY_STRING
-            };
-            array:push(targetDraftListPage.drafts, singleDraft);
-        }
-    } else {
-        log:printError("Error occurred while getting drafts", 'error = drafts);
-    }
-    return targetDraftListPage;
 }
 
 # Transform draft JSON object into Draft Type Object.

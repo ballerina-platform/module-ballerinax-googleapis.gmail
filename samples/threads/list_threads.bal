@@ -40,7 +40,7 @@ public function main(string... args) {
         labelIds: ["INBOX"]});
         
     if (threadList is gmail:ThreadListPage) {  
-        error? e = threadList.threads.forEach(function (json thread) {
+        error? e = threadList.threads.forEach(function (gmail:MailThread thread) {
             log:printInfo(thread.toString());
         }); 
     } else {
