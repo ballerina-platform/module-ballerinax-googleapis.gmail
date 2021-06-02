@@ -65,6 +65,17 @@ public type MessageRequest record {
     AttachmentPath[] attachmentPaths = [];
 };
 
+# Represents MessageResponse.
+#
+# + id - Message Id
+# + threadId - Thread ID which the message belongs to
+# + labelIds - The label ids of the message
+public type MessageResponse record {
+    string id;
+    string threadId;
+    string[] labelIds?;
+};
+
 # Represents image file path and mime type of an inline image in a message request.
 #
 # + imagePath - The file path of the image

@@ -87,7 +87,7 @@ public client class Client {
     remote function sendMessage(@display {label: "Mail address of user"} string userId,
                                 @display {label: "Message request to send"} MessageRequest message,
                                 @display {label: "Thread id"} string? threadId = ())
-                                returns @tainted @display {label: "Message id and Thread id"} [string, string]|error {
+                                returns @tainted @display {label: "Message id and Thread id"} MessageResponse|error {
         //Create the whole message as an encoded raw string. If unsuccessful throws and returns error.
         string encodedRequest = check createEncodedRawMessage(message);
         http:Request request = new;
@@ -102,12 +102,7 @@ public client class Client {
         http:Response httpResponse = <http:Response> check self.gmailClient->post(sendMessagePath, request);
         //Get json sent msg response. If unsuccessful throws and returns error.
         json jsonSendMessageResponse = check handleResponse(httpResponse);
-        //Return the (messageId, threadId) of the sent message
-        // Here the things will be hidden if the thread id or id is not present in the response
-        string identity = let var id = jsonSendMessageResponse.id in id is string ? id : EMPTY_STRING;
-        string threadIdFromResponse = let var tid = jsonSendMessageResponse.threadId in tid is string ? tid : 
-            EMPTY_STRING;
-        return [identity, threadIdFromResponse];
+        return check jsonSendMessageResponse.cloneWithType(MessageResponse);
     }
 
     # Read the specified mail from users mailbox.
@@ -809,7 +804,7 @@ public client class Client {
     @display {label: "Send draft"} 
     remote isolated function sendDraft(@display {label: "Mail address of user"} string userId,
                                        @display {label: "Draft id"} string draftId) 
-                                       returns @tainted @display {label: "Message id and Thread id"} [string, string]|
+                                       returns @tainted @display {label: "Message id and Thread id"} MessageResponse |
                                        error {
         http:Request request = new;
         json jsonPayload = {id: draftId};
@@ -817,10 +812,7 @@ public client class Client {
         request.setJsonPayload(jsonPayload);
         http:Response httpResponse = <http:Response> check self.gmailClient->post(updateDraftPath, request);        
         json jsonSendDraftResponse = check handleResponse(httpResponse);
-        //Return tuple of sent draft message id and thread id
-        string identity = let var id = jsonSendDraftResponse.id in id is string ? id : EMPTY_STRING;
-        string threadId = let var tid = jsonSendDraftResponse.threadId in tid is string ? tid : EMPTY_STRING;
-        return [identity, threadId];
+        return check jsonSendDraftResponse.cloneWithType(MessageResponse);
     }
 
     # Set up or update a push notification watch on the given user mailbox.
