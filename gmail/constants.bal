@@ -196,3 +196,9 @@ public const string TEXT_HTML = "text/html";
 
 // Error Codes
 const string GMAIL_ERROR_CODE = "(ballerinax/googleapis.gmail)GmailError";
+
+#Holds values fro LabelFilterAction for watch request.
+public enum LabelFilterAction{
+    INCLUDE = "include",
+    EXCLUDE = "exclude"
+}
