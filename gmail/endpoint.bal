@@ -837,11 +837,11 @@ public client class Client {
     # + return - If successful, returns WatchResponse. Else returns error.
     @display {label: "Watch mailbox changes"}
     remote isolated function watch(@display {label: "Mail address of user"} string userId, 
-                                   @display {label: "The request body for subscription"} json requestBody) 
+                                   @display {label: "The request body for subscription"} WatchRequestBody requestBody) 
                                    returns @tainted @display {label: "Watch result"} WatchResponse | error {
         http:Request request = new;
         string watchPath = USER_RESOURCE + userId + WATCH;
-        request.setJsonPayload(requestBody);
+        request.setJsonPayload(requestBody.toJson());
         http:Response httpResponse = <http:Response> check self.gmailClient->post(watchPath, request);
         json jsonWatchResponse = check handleResponse(httpResponse);
         WatchResponse watchResponse = check jsonWatchResponse.cloneWithType(WatchResponse);

@@ -30,7 +30,7 @@ public class Listener {
     private string project;
     private string pushEndpoint;
 
-    private json requestBody;
+    private gmail:WatchRequestBody requestBody={topicName:""};
     private HttpService httpService;
     http:Client pubSubClient;
 
@@ -55,7 +55,7 @@ public class Listener {
         TopicSubscriptionDetail topicSubscriptionDetail = check createTopic(self.pubSubClient, project, pushEndpoint);        
         self.topicResource = topicSubscriptionDetail.topicResource;
         self.subscriptionResource = topicSubscriptionDetail.subscriptionResource;
-        self.requestBody = { labelIds: [INBOX], topicName: self.topicResource};
+        self.requestBody = {topicName: self.topicResource, labelIds: [INBOX], labelFilterAction : gmail:INCLUDE};
     }
 
     public isolated function attach(service object {} s, string[]|string? name = ()) returns @tainted error? {

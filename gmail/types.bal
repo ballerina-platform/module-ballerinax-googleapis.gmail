@@ -315,3 +315,15 @@ public type WatchResponse record {
     string historyId = "";
     string expiration = "";
 };
+
+# Represents a watch request body.
+#
+# + topicName - A fully qualified Google Cloud Pub/Sub API topic name to publish the events to. This topic name must
+#               already exist in Cloud Pub/Sub and you must have already granted gmail "publish" permission on it. 
+# + labelIds - Array of labelIds of gmail to restrict notifications about
+# + labelFilterAction - Filtering behavior of labelIds list specified.
+public type WatchRequestBody record {
+    string topicName;
+    string[] labelIds?;
+    LabelFilterAction labelFilterAction?;
+};
