@@ -150,21 +150,19 @@ messageRequest.contentType = gmail:TEXT_PLAIN;
 ```
 
 ### Step 4: Send the message
-The response from `sendMessage` is either a string tuple with the message ID and thread ID 
-(if the message was sent successfully) or an `error` (if sending the message was unsuccessful).
+The response from `sendMessage` is either a MessageResponse record or an `error` (if sending the message was unsuccessful).
 
 ```ballerina
 //Send the message.
-[string, string]|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+gmail:MessageResponse|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId,messageRequest);
 
-if (sendMessageResponse is [string, string]) {
+if (sendMessageResponse is gmail:MessageResponse) {
     // If successful, print the message ID and thread ID.
-    [string, string][messageId, threadId] = sendMessageResponse;
-    io:println("Sent Message ID: " + messageId);
-    io:println("Sent Thread ID: " + threadId);
+    log:printInfo("Sent Message ID: "+ sendMessageResponse.id);
+    log:printInfo("Sent Thread ID: "+ sendMessageResponse.threadId);
 } else {
     // If unsuccessful, print the error returned.
-    io:println("Error: ", sendMessageResponse);
+    log:printError(sendMessageResponse.message());
 }
 ```
 
@@ -224,8 +222,7 @@ emails.
 This sample shows how to send a simple email that contain only text content to a specific recipient. The necessary data 
 to create an email in this connector is represented in a type called `MessageRequest`. User can decide what to send as 
 data for an email. As the content type is text, the user must specify the `contentType` in `MessageRequest` as 
-**text/plain**. This operation returns a `tuple` which contain the **message ID** and **thread ID** of the newly sent 
-email. Else an `error`
+**text/plain**. This operation returns a MessageResponse record of the newly sent email. Else an `error`
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -240,12 +237,12 @@ messageRequest.messageBody = "Email Message Body Text";
 
 messageRequest.contentType = gmail:TEXT_PLAIN;
 
-[string, string]|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
-if (sendMessageResponse is [string, string]) {
+gmail:MessageResponse|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId,messageRequest);
+
+if (sendMessageResponse is gmail:MessageResponse) {
     // If successful, print the message ID and thread ID.
-    [string, string] [messageId, threadId] = sendMessageResponse;
-    log:printInfo("Sent Message ID: ", messageId = messageId);
-    log:printInfo("Sent Thread ID: ", threadId = threadId);
+    log:printInfo("Sent Message ID: "+ sendMessageResponse.id);
+    log:printInfo("Sent Thread ID: "+ sendMessageResponse.threadId);
 } else {
     // If unsuccessful, print the error returned.
     log:printError(sendMessageResponse.message());
@@ -257,8 +254,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 This sample shows how to send a simple email that contain an html page as the payload to a specific recipient. The 
 necessary data to create an email in this connector is represented in a type called `MessageRequest`. User can decide 
 what to send as data for an email. As the content type is HTML, the user must specify the `contentType` in 
-`MessageRequest` as **text/html**. This operation returns a `tuple` which contain the **message ID** and **thread ID** of 
-the newly sent email. Else an `error`
+`MessageRequest` as **text/html**. This operation returns a MessageResponse record of the newly sent email. Else an `error`
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -277,15 +273,14 @@ messageRequest.messageBody = htmlBody;
 // Set the content type of the mail as TEXT_HTML.
 messageRequest.contentType = gmail:TEXT_HTML;
 
-[string, string]|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
-if (sendMessageResponse is [string, string]) {
+gmail:MessageResponse|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+if (sendMessageResponse is gmail:MessageResponse) {
     // If successful, print the message ID and thread ID.
-    [string, string] [messageId, threadId] = sendMessageResponse;
-    log:printInfo("Sent Message ID: ", messageId = messageId);
-    log:printInfo("Sent Thread ID: ", threadId = threadId);
+    log:printInfo("Sent Message ID: " + sendMessageResponse.id);
+    log:printInfo("Sent Thread ID: " + sendMessageResponse.threadId);
 } else {
     // If unsuccessful, print the error returned.
-    log:printError("Error: ", err = sendMessageResponse);
+    log:printError("Error: ", 'error = sendMessageResponse);
 }
 ```
 
@@ -518,7 +513,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### List threads
 This sample shows how to list the available threads in authorized user's mailbox. You must specify the 
 **ID/email of the authorized user** as a parameter for this operation. In the connector implementation the 
-result contains a `ThreadListPage` which inside it contains an array of `json` objects, each represent data about a 
+result contains a `ThreadListPage` which inside it contains an array of `MailThread` records, each represent data about a 
 thread if operation is successful. Else returns an `error`.
 
 ```ballerina
@@ -530,7 +525,7 @@ gmail:ThreadListPage|error threadList = gmailClient->listThreads(userId, filter 
     labelIds: ["INBOX"]});
 
 if (threadList is gmail:ThreadListPage) {
-    error? e = threadList.threads.forEach(function (json thread) {
+    error? e = threadList.threads.forEach(function (gmail:MailThread thread) {
         log:printInfo(thread.toString());
     }); 
 } else {
@@ -696,7 +691,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### List drafts
 This sample shows how to list the available drafts in authorized user's mailbox. You must specify the 
 **ID/email of the authorized user** as a parameter for this operation. In the connector implementation the 
-result contains a `DraftListPage` which inside it contains an array of `json` objects, each represent data about a 
+result contains a `DraftListPage` which inside it contains an array of `DraftList` record, each represent data about a 
 draft if operation is successful. Else returns an `error`.
 
 ```ballerina
@@ -707,7 +702,7 @@ gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: "10
 
 gmail:DraftListPage|error msgList = gmailClient->listDrafts(userId, filter = searchFilter);
 if (msgList is gmail:DraftListPage) {
-    error? e = msgList.drafts.forEach(function (json draft) {
+    error? e = msgList.drafts.forEach(function (gmail:DraftList draft) {
         log:printInfo(draft.toString());
     });   
 } else {
@@ -744,7 +739,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### Send draft
 This sample shows how to send an existing draft to the recipients in the `recipient` and  `cc` fields. Here, you have to 
 provide the **ID of the authorized user** and the **ID of the draft** existing in the account. Sending a draft gives 
-similar return types as sending a message. It will return a tuple `[string,string]` if the operation is successful. Else
+similar return types as sending a message. It will return `MessageResponse` record if the operation is successful. Else
 return `error`. This is because, when the draft is sent, the draft is automatically deleted and a new message with an 
 updated ID is created with the SENT system label.
  
@@ -755,11 +750,11 @@ string userId = "me";
 // The ID of the existing draft we want to send.
 string createdDraftId = "<DRAFT_ID>"; 
 
-[string, string]|error sendDraftResponse = gmailClient->sendDraft(userId, createdDraftId);
+gmail:MessageResponse |error sendDraftResponse = gmailClient->sendDraft(userId, createdDraftId);
 
-if (sendDraftResponse is [string, string]) {
-    [string, string][messageId, threadId] = sendDraftResponse;
-    log:printInfo("Sent the draft successfully: ", status =  messageId != "null" && threadId != "null");
+if (sendDraftResponse is gmail:MessageResponse) {
+    log:printInfo("Sent the draft successfully: ",
+                  status =  sendDraftResponse.id !== "" && sendDraftResponse.threadId !== "");
 } else {
     log:printError("Failed to send the draft");
 }

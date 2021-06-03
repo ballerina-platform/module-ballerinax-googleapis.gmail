@@ -39,7 +39,7 @@ public function main(string... args) {
     
     gmail:DraftListPage|error msgList = gmailClient->listDrafts(userId, filter = searchFilter);
     if (msgList is gmail:DraftListPage) {
-        error? e = msgList.drafts.forEach(function (json draft) {
+        error? e = msgList.drafts.forEach(function (gmail:DraftList draft) {
             log:printInfo(draft.toString());
         });   
     } else {
