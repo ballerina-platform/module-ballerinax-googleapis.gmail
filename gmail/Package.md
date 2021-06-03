@@ -75,11 +75,10 @@ public function main(string... args) {
 
     // Send the message.
     var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
-    if (sendMessageResponse is [string, string]) {
+    if (sendMessageResponse is gmail:MessageResponse) {
         // If successful, print the message ID and thread ID.
-        [string, string] [messageId, threadId] = sendMessageResponse;
-        io:println("Sent Message ID: " + messageId);
-        io:println("Sent Thread ID: " + threadId);
+        log:printInfo("Sent Message ID: "+ sendMessageResponse.id);
+        log:printInfo("Sent Thread ID: "+ sendMessageResponse.threadId);
     } else {
         // If unsuccessful, print the error returned.
         io:println("Error: ", sendMessageResponse);

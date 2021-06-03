@@ -38,11 +38,11 @@ public function main(string... args) {
     // The ID of the existing draft we want to send.
     string createdDraftId = "<DRAFT_ID>"; 
 
-    [string, string]|error sendDraftResponse = gmailClient->sendDraft(userId, createdDraftId);
+    gmail:MessageResponse |error sendDraftResponse = gmailClient->sendDraft(userId, createdDraftId);
     
-    if (sendDraftResponse is [string, string]) {
-        [string, string][messageId, threadId] = sendDraftResponse;
-        log:printInfo("Sent the draft successfully: ", status =  messageId != "null" && threadId != "null");
+    if (sendDraftResponse is gmail:MessageResponse) {
+        log:printInfo("Sent the draft successfully: ",
+                      status =  sendDraftResponse.id !== "" && sendDraftResponse.threadId !== "");
     } else {
         log:printError("Failed to send the draft");
     }

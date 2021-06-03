@@ -34,10 +34,10 @@ public type UserProfile record {
 # + historyId - The ID of the last history record that modified this thread
 # + messages - The list of messages in the thread
 public type MailThread record {
-    string id = "";
-    string snippet = "";
-    string historyId = "";
-    Message[] messages = [];
+    string id ;
+    string historyId;
+    string snippet?;
+    Message[] messages?;
 };
 
 # Represents message request to send a mail.
@@ -63,6 +63,17 @@ public type MessageRequest record {
     string bcc = "";
     InlineImagePath[] inlineImagePaths = [];
     AttachmentPath[] attachmentPaths = [];
+};
+
+# Represents MessageResponse.
+#
+# + id - Message Id
+# + threadId - Thread ID which the message belongs to
+# + labelIds - The label ids of the message
+public type MessageResponse record {
+    string id;
+    string threadId;
+    string[] labelIds?;
 };
 
 # Represents image file path and mime type of an inline image in a message request.
@@ -193,9 +204,9 @@ public type DraftSearchFilter record {
 # + resultSizeEstimate - Estimated size of the whole list
 # + nextPageToken - Token for next page of message list
 public type MessageListPage record {
-    json[] messages = [];
-    string resultSizeEstimate = "";
-    string nextPageToken = "";
+    MessageResponse[] messages?;
+    int resultSizeEstimate;
+    string nextPageToken?;
 };
 
 # Represents a page of the mail thread list received as response for list threads api call.
@@ -204,9 +215,9 @@ public type MessageListPage record {
 # + resultSizeEstimate - Estimated size of the whole list
 # + nextPageToken - Token for next page of mail thread list
 public type ThreadListPage record {
-    json[] threads = [];
-    string resultSizeEstimate = "";
-    string nextPageToken = "";
+    MailThread[] threads?;
+    int resultSizeEstimate;
+    string nextPageToken?;
 };
 
 # Represents a page of the drafts list received as response for list drafts api call.
@@ -215,9 +226,9 @@ public type ThreadListPage record {
 # + resultSizeEstimate - Estimated size of the whole list
 # + nextPageToken - Token for next page of mail drafts list
 public type DraftListPage record {
-    json[] drafts = [];
-    string resultSizeEstimate = "";
-    string nextPageToken = "";
+    DraftList[] drafts?;
+    int resultSizeEstimate;
+    string nextPageToken?;
 };
 
 # Represents a Label which is used to categorize messaages and threads within the user's mailbox.
@@ -305,6 +316,15 @@ public type HistoryEvent record {
 public type Draft record {
     string id = "";
     Message message = {};
+};
+
+# Represents a draft email of darft List in user's mailbox .
+#
+# + id - The immutable id of the draft
+# + message - The message content of the draft
+public type DraftList record {
+    string id;
+    MessageResponse message;
 };
 
 # Represents a watch response.
