@@ -65,47 +65,56 @@ class Dispatcher {
     }
 
     function dispatch(gmail:MailboxHistoryPage mailboxHistoryPage) returns @tainted error? {
-        foreach var history in mailboxHistoryPage.historyRecords {
-            gmail:HistoryEvent[] newMessages = history.messagesAdded;
-            gmail:HistoryEvent[] addedlabels = history.labelsAdded;
-            gmail:HistoryEvent[] removedLabels = history.labelsRemoved;
-            if ((newMessages.length()>0) && (self.isOnNewEmail || self.isOnNewAttachment || self.isOnNewThread)) {
-                foreach var newMessage in newMessages {
-                    foreach var labelId in newMessage.message.labelIds {
-                        match labelId{
-                            INBOX =>{
-                                check self.dispatchNewMessage(newMessage);
-                                if (self.isOnNewThread) {
-                                    check self.dispatchNewThread(newMessage);
-                                }
+        if (mailboxHistoryPage?.historyRecords is gmail:History[]) {
+            foreach var history in <gmail:History[]>mailboxHistoryPage?.historyRecords {
+                if (history?.messagesAdded is gmail:HistoryEvent[] ) {
+                    gmail:HistoryEvent[] newMessages = <gmail:HistoryEvent[]>history?.messagesAdded;
+                    if ((newMessages.length()>0) && (self.isOnNewEmail || self.isOnNewAttachment || self.isOnNewThread)) {
+                        foreach var newMessage in newMessages {
+                            if (newMessage.message?.labelIds is string[]) {
+                                foreach var labelId in <string[]>newMessage.message?.labelIds {
+                                    match labelId{
+                                        INBOX =>{
+                                            check self.dispatchNewMessage(newMessage);
+                                            if (self.isOnNewThread) {
+                                                check self.dispatchNewThread(newMessage);
+                                            }
+                                        }
+                                    }
+                                }  
+                            }        
+                        }
+                    }
+                }
+                if (history?.labelsAdded is gmail:HistoryEvent[] ) {
+                    gmail:HistoryEvent[] addedlabels = <gmail:HistoryEvent[]>history?.labelsAdded;
+                    if ((addedlabels.length()>0) && (self.isOnNewLabeledEmail || self.isOnNewStarredEmail)) {
+                        foreach var addedlabel in addedlabels {
+                            if (self.isOnNewLabeledEmail) {
+                                check self.dispatchNewLabeled(addedlabel);
+                            }
+                            if (self.isOnNewStarredEmail) {
+                                check self.dispatchStarredEmail(addedlabel);
                             }
                         }
-                    }                    
-                }
-            }
-
-            if ((addedlabels.length()>0) && (self.isOnNewLabeledEmail || self.isOnNewStarredEmail)) {
-                foreach var addedlabel in addedlabels {
-                    if (self.isOnNewLabeledEmail) {
-                        check self.dispatchNewLabeled(addedlabel);
-                    }
-                    if (self.isOnNewStarredEmail) {
-                        check self.dispatchStarredEmail(addedlabel);
                     }
                 }
-            }
-
-            if ((removedLabels.length()>0) && (self.isOnLabelRemovedEmail || self.isOnStarRemovedEmail)) {
-                foreach var removedLabel in removedLabels {
-                    if (self.isOnLabelRemovedEmail) {
-                        check self.dispatchRemovedLabels(removedLabel);
-                    }
-                    if (self.isOnStarRemovedEmail) {
-                        check self.dispatchRemovedStar(removedLabel);
+                if (history?.labelsRemoved is gmail:HistoryEvent[] ) {
+                    gmail:HistoryEvent[] removedLabels = <gmail:HistoryEvent[]>history?.labelsRemoved;
+                    if ((removedLabels.length()>0) && (self.isOnLabelRemovedEmail || self.isOnStarRemovedEmail)) {
+                        foreach var removedLabel in removedLabels {
+                            if (self.isOnLabelRemovedEmail) {
+                                check self.dispatchRemovedLabels(removedLabel);
+                            }
+                            if (self.isOnStarRemovedEmail) {
+                                check self.dispatchRemovedStar(removedLabel);
+                            }
+                        }
                     }
                 }
             }
         }
+
     }
 
     function dispatchNewMessage(gmail:HistoryEvent newMessage) returns @tainted error? {
@@ -114,8 +123,11 @@ class Dispatcher {
             check callOnNewEmail(self.httpService, message);
         }
         if (self.isOnNewAttachment) {
-            if (message.msgAttachments.length()>0) {
-                check self.dispatchNewAttachment(message.msgAttachments, message);
+            if (message?.msgAttachments is gmail:MessageBodyPart[]) {
+                gmail:MessageBodyPart[] msgAttachments = <gmail:MessageBodyPart[]>message?.msgAttachments;
+                if (msgAttachments.length()>0) {
+                    check self.dispatchNewAttachment(msgAttachments, message);
+                }
             }
         }        
     }
@@ -136,40 +148,48 @@ class Dispatcher {
     }
 
     function dispatchNewLabeled(gmail:HistoryEvent addedlabel) returns @tainted error? {
-        ChangedLabel changedLabeldMsg ={ message: {},changedLabelId: []};
-        changedLabeldMsg.changedLabelId = addedlabel.labelIds;
+        ChangedLabel changedLabeldMsg = { message: {id : "", threadId : ""}, changedLabelId: []};
+        if (addedlabel?.labelIds is string []) {
+            changedLabeldMsg.changedLabelId = <string []>addedlabel?.labelIds;
+        }
         gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>addedlabel.message.id);
         changedLabeldMsg.message = message;
         check callOnNewLabeledEmail(self.httpService, changedLabeldMsg);
     }
 
     function dispatchStarredEmail(gmail:HistoryEvent addedlabel) returns @tainted error? {
-        foreach var label in addedlabel.labelIds {
-            match label{
-                STARRED =>{
-                    gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>addedlabel.message.id);
-                    check callOnNewStarredEmail(self.httpService, message);
+        if (addedlabel?.labelIds is string[]) {
+            foreach var label in <string[]>addedlabel?.labelIds {
+                match label{
+                    STARRED =>{
+                        gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>addedlabel.message.id);
+                        check callOnNewStarredEmail(self.httpService, message);
+                    }
                 }
             }
-        }
+        }        
     }
 
     function dispatchRemovedLabels(gmail:HistoryEvent removedLabel) returns @tainted error?{
-        ChangedLabel changedLabeldMsg ={ message: {},changedLabelId: []};
-        changedLabeldMsg.changedLabelId = removedLabel.labelIds;
+        ChangedLabel changedLabeldMsg = { message: {id : "", threadId : ""}, changedLabelId: []};
+        if (removedLabel?.labelIds is string[]) {
+            changedLabeldMsg.changedLabelId = <string[]>removedLabel?.labelIds;
+        }
         gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>removedLabel.message.id);
         changedLabeldMsg.message = message;
         check callOnLabelRemovedEmail(self.httpService, changedLabeldMsg);
     }
 
     function dispatchRemovedStar(gmail:HistoryEvent removedLabel) returns @tainted error? {
-        foreach var label in removedLabel.labelIds {
-            match label{
-                STARRED =>{
-                    gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>removedLabel.message.id);
-                    check callOnStarRemovedEmail(self.httpService, message);
+        if (removedLabel?.labelIds is string[]) {
+            foreach var label in <string[]>removedLabel?.labelIds {
+                match label{
+                    STARRED =>{
+                        gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>removedLabel.message.id);
+                        check callOnStarRemovedEmail(self.httpService, message);
+                    }
                 }
             }
-        }
+        }        
     }
 }

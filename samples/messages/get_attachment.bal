@@ -45,22 +45,21 @@ public function main(string... args) {
     gmail:Message|error readResponse = gmailClient->readMessage(userId, sentHtmlMessageId);
     
     if (readResponse is gmail:Message) {
-       if (readResponse.msgAttachments.length() >= 1) {
-            log:printInfo("Meesage information retrieved");
-            readAttachmentFileId = readResponse.msgAttachments[0]?.fileId;
-
-            // Now we can fetch the attachment using the above attachment ID
+        log:printInfo("Meesage information retrieved");
+        if (readResponse?.msgAttachments is gmail:MessageBodyPart[]) {
+            gmail:MessageBodyPart[] msgAttachments = <gmail:MessageBodyPart[]>readResponse?.msgAttachments;
+            readAttachmentFileId = msgAttachments[0]?.fileId is string ? <@untainted>(<string>msgAttachments[0]?.fileId)
+                                    : readAttachmentFileId;
             gmail:MessageBodyPart|error response = gmailClient->getAttachment(userId, sentHtmlMessageId, 
                 readAttachmentFileId);
             if (response is gmail:MessageBodyPart) {
-                boolean status = (response.fileId == "" && response.body == "") ? false : true;
-                log:printInfo("Attachment retrieved ", status = status);
+                log:printInfo("Attachment " + response.toString());
             } else {
-                log:printError("Failed to get the attachments");
+                log:printError("Failed to get the attachments : "+ response.message());
             }
-       } else {
+        } else {
             log:printInfo("No attachment exists for this message");
-       }
+        }
     } else {
         log:printInfo("Failed to get the message");
     }

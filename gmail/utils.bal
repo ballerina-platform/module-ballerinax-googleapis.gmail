@@ -95,8 +95,11 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
                     msgBodyPart = getMessageBodyPartFromPayloadByMimeType(part, mimeType);
                     //If the returned msg body is a match for given mime type, stop iterating over the other
                     //child parts.
-                    if (msgBodyPart.mimeType != EMPTY_STRING && isMimeType(msgBodyPart.mimeType, mimeType)) {
-                        break;
+                    if (msgBodyPart?.mimeType is string) {
+                        string msgBodyPartMimeType = <string>msgBodyPart?.mimeType;
+                        if (msgBodyPartMimeType != EMPTY_STRING && isMimeType(msgBodyPartMimeType, mimeType)) {
+                            break;
+                        }
                     }
                 }
             }
@@ -354,16 +357,27 @@ isolated function getValueForMapKey(map<string> targetMap, string key) returns s
 # + return - If successful, returns the encoded raw string. Else returns error.
 function createEncodedRawMessage(MessageRequest msgRequest) returns string|error {
     //The content type should be either TEXT_PLAIN or TEXT_HTML. If not returns an error.
+    string subject = EMPTY_STRING;
+    if (msgRequest?.subject is string) {
+        subject = <string>msgRequest?.subject;
+    }
     if (msgRequest.contentType != TEXT_PLAIN && msgRequest.contentType != TEXT_HTML) {
         error err = error(GMAIL_ERROR_CODE, message = "Does not support the given content type: "
-            + msgRequest.contentType + " for the message with subject: " + msgRequest.subject);
+            + msgRequest.contentType + " for the message with subject: " + subject);
         return err;
     }
     //Adding inline images to messages of TEXT_PLAIN content type is not supported.
-    if (msgRequest.contentType == TEXT_PLAIN && (msgRequest.inlineImagePaths.length() != 0)) {
+    InlineImagePath[] inlineImagePaths = [];
+    AttachmentPath[] attachmentPaths = [];
+    if (msgRequest?.inlineImagePaths is InlineImagePath[]) {
+        inlineImagePaths = <InlineImagePath[]>msgRequest?.inlineImagePaths;
+    }
+    if (msgRequest?.attachmentPaths is AttachmentPath[]) {
+        attachmentPaths = <AttachmentPath[]>msgRequest?.attachmentPaths;
+    }    
+    if (msgRequest.contentType == TEXT_PLAIN && (inlineImagePaths.length() != 0)) {
         error err = error(GMAIL_ERROR_CODE, message =
-            "Does not support adding inline images to text/plain body of the message with subject: " 
-            + msgRequest.subject);
+            "Does not support adding inline images to text/plain body of the message with subject: " + subject);
         return err;
     }
     //Raw string of message
@@ -371,15 +385,18 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
 
     //Set the general headers of the message
     concatRequest += TO + COLON_SYMBOL + msgRequest.recipient + NEW_LINE;
-    concatRequest += SUBJECT + COLON_SYMBOL + msgRequest.subject + NEW_LINE;
+    if (msgRequest?.subject is string) {
+        concatRequest += SUBJECT + COLON_SYMBOL + <string>msgRequest?.subject + NEW_LINE;
+    }
+    
     if (msgRequest.sender != EMPTY_STRING) {
         concatRequest += FROM + COLON_SYMBOL + msgRequest.sender + NEW_LINE;
     }
-    if (msgRequest.cc != EMPTY_STRING) {
-        concatRequest += CC + COLON_SYMBOL + msgRequest.cc + NEW_LINE;
+    if (msgRequest?.cc is string) {
+        concatRequest += CC + COLON_SYMBOL + <string>msgRequest?.cc + NEW_LINE;
     }
-    if (msgRequest.bcc != EMPTY_STRING) {
-        concatRequest += BCC + COLON_SYMBOL + msgRequest.bcc + NEW_LINE;
+    if (msgRequest?.bcc is string) {
+        concatRequest += BCC + COLON_SYMBOL + <string>msgRequest?.bcc + NEW_LINE;
     }
     //------Start of multipart/mixed mime part (parent mime part)------
 
@@ -418,7 +435,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
     concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_2 + DASH_SYMBOL + DASH_SYMBOL;
     //------End of multipart/alternative mime part------
     //Set inline Images as body parts
-    foreach InlineImagePath inlineImage in msgRequest.inlineImagePaths {
+    foreach InlineImagePath inlineImage in inlineImagePaths {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + NEW_LINE;
         //The mime type of inline image cannot be empty
         if (inlineImage.mimeType == EMPTY_STRING) {
@@ -428,7 +445,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
         } else if (inlineImage.imagePath == EMPTY_STRING) {
             //Inline image path cannot be empty
             error err = error(GMAIL_ERROR_CODE, message = "File path of inline image in message with subject: "
-                + msgRequest.subject + "cannot be empty");
+                + subject + "cannot be empty");
             return err;
         }
         //If the mime type of the inline image is image/*
@@ -458,13 +475,13 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
             return err;
         }
     }
-    if (msgRequest.inlineImagePaths.length() != 0) {
+    if (inlineImagePaths.length() != 0) {
         concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING_1 + DASH_SYMBOL + DASH_SYMBOL + NEW_LINE;
     }
     //------End of multipart/related mime part------
 
     //Set attachments
-    foreach AttachmentPath attachment in msgRequest.attachmentPaths {
+    foreach AttachmentPath attachment in attachmentPaths {
         concatRequest += NEW_LINE + DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + NEW_LINE;
         //The mime type of the attachment cannot be empty
         if (attachment.mimeType == EMPTY_STRING) {
@@ -474,7 +491,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
         } else if (attachment.attachmentPath == EMPTY_STRING) {
             //The attachment path cannot be empty
             error err = error(GMAIL_ERROR_CODE, message = "File path of attachment in message with subject: "
-                + msgRequest.subject + "cannot be empty");
+                + subject + "cannot be empty");
             return err;
         }
         //Open and encode the file into base64. Return a error if fails.
@@ -493,7 +510,7 @@ function createEncodedRawMessage(MessageRequest msgRequest) returns string|error
             return attachmentFileName;
         }
     }
-    if (msgRequest.attachmentPaths.length() != 0) {
+    if (attachmentPaths.length() != 0) {
         concatRequest += DASH_SYMBOL + DASH_SYMBOL + BOUNDARY_STRING + DASH_SYMBOL + DASH_SYMBOL;
     }
     //------End of multipart/mixed mime part------
