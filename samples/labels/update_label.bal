@@ -47,8 +47,8 @@ public function main(string... args) {
 
     if (updateLabelResponse is gmail:Label) {
         log:printInfo("Successfully updated label: ", status = updateLabelResponse.name == updateName &&
-            updateLabelResponse.backgroundColor == updateBgColor &&
-            updateLabelResponse.textColor == updateTxtColor);
+                       updateLabelResponse?.color?.backgroundColor == updateBgColor &&
+                       updateLabelResponse?.color?.textColor == updateTxtColor);
     } else {
         log:printError("Failed to update label");
     }

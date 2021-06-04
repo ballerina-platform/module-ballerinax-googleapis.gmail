@@ -54,18 +54,20 @@ public client class Client {
             string uriParams = "";
             //The default value for include spam trash query parameter of the api call is false
             //If append unsuccessful throws and returns error
-            uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
-                string `${filter.includeSpamTrash}`);
+            uriParams = filter?.includeSpamTrash is boolean ? check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
+                string `${<boolean>filter?.includeSpamTrash}`) : uriParams;
             //---Append other optional URI query parameters---
-            foreach string labelId in filter.labelIds {
-                uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
+            if (filter?.labelIds is string[]) {
+                foreach string labelId in <string[]>filter?.labelIds {
+                    uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
+                }
             }
             //Empty check is done since these parameters are optional to be filled in MsgSearchFilter Type object
-            uriParams = filter.maxResults != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
-                filter.maxResults) : uriParams;
-            uriParams = filter.pageToken != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
-                filter.pageToken) : uriParams;
-            uriParams = filter.q != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, QUERY, filter.q) : 
+            uriParams = filter?.maxResults is int ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
+                filter?.maxResults.toString()) : uriParams;
+            uriParams = filter?.pageToken is string ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
+                <string>filter?.pageToken) : uriParams;
+            uriParams = filter?.q is string ? check appendEncodedURIParameter(uriParams, QUERY, <string>filter?.q) : 
                 uriParams;
             getListMessagesPath = getListMessagesPath + <@untainted>uriParams;
         }
@@ -82,12 +84,12 @@ public client class Client {
     # + message - MessageRequest to send
     # + threadId - Optional. Required if message is expected to be send The ID of the thread the message belongs to.
     # (The Subject headers must match)
-    # + return - If successful, returns MessageResponse record of the successfully sent message. Else return error.
+    # + return - If successful, returns Message record of the successfully sent message. Else return error.
     @display {label: "Send message"} 
     remote function sendMessage(@display {label: "Mail address of user"} string userId,
                                 @display {label: "Message request to send"} MessageRequest message,
                                 @display {label: "Thread id"} string? threadId = ())
-                                returns @tainted @display {label: "Sent Message Response"} MessageResponse|error {
+                                returns @tainted @display {label: "Sent Message Response"} Message|error {
         //Create the whole message as an encoded raw string. If unsuccessful throws and returns error.
         string encodedRequest = check createEncodedRawMessage(message);
         http:Request request = new;
@@ -102,7 +104,7 @@ public client class Client {
         http:Response httpResponse = <http:Response> check self.gmailClient->post(sendMessagePath, request);
         //Get json sent msg response. If unsuccessful throws and returns error.
         json jsonSendMessageResponse = check handleResponse(httpResponse);
-        return check jsonSendMessageResponse.cloneWithType(MessageResponse);
+        return check jsonSendMessageResponse.cloneWithType(Message);
     }
 
     # Read the specified mail from users mailbox.
@@ -169,7 +171,7 @@ public client class Client {
         //Get json attachment response. If unsuccessful, throws and returns error.
         json jsonAttachment = check handleResponse(httpResponse);
         //Transform the json attachment message body response from Gmail API to MessageBodyPart type.
-        return convertJSONToMsgBodyAttachment(jsonAttachment);
+        return check jsonAttachment.cloneWithType(MessageBodyPart);
     }
 
     # Move the specified message to the trash.
@@ -275,18 +277,20 @@ public client class Client {
             string uriParams = "";
             //The default value for include spam trash query parameter of the api call is false
             //If append unsuccessful throws and returns error
-            uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
-                string `${filter.includeSpamTrash}`);
+            uriParams = filter?.includeSpamTrash is boolean ? check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
+                string `${<boolean>filter?.includeSpamTrash}`) : uriParams;
             //---Append other optional URI query parameters---
-            foreach string labelId in filter.labelIds {
-                uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
+            if (filter?.labelIds is string[]){
+                foreach string labelId in <string[]>filter?.labelIds {
+                    uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
+                }
             }
             //Empty check is done since these parameters are optional to be filled in MsgSearchFilter Type object
-            uriParams = filter.maxResults != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
-                filter.maxResults) : uriParams;
-            uriParams = filter.pageToken != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
-                filter.pageToken) : uriParams;
-            uriParams = filter.q != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, QUERY, filter.q) : 
+            uriParams = filter?.maxResults is int ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
+                filter?.maxResults.toString()) : uriParams;
+            uriParams = filter?.pageToken is string ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
+                <string>filter?.pageToken) : uriParams;
+            uriParams = filter?.q is string ? check appendEncodedURIParameter(uriParams, QUERY, <string>filter?.q) : 
                 uriParams;
             getListThreadPath = getListThreadPath + <@untainted>uriParams;
         }
@@ -438,7 +442,7 @@ public client class Client {
         //Get json user profile response. If unsuccessful, throws and returns error.
         json jsonProfileResponse = check handleResponse(httpResponse);
         //Transform the json profile response from Gmail API to User Profile type.
-        return convertJSONToUserProfileType(jsonProfileResponse);
+        return jsonProfileResponse.cloneWithType(UserProfile);
     }
 
     # Get the label.
@@ -455,7 +459,7 @@ public client class Client {
         //Get json label response. If unsuccessful, throws and returns error.
         json jsonGetLabelResponse = check handleResponse(httpResponse);
         //Transform the json label response from Gmail API to Label type.
-        return convertJSONToLabelType(jsonGetLabelResponse);
+        return jsonGetLabelResponse.cloneWithType(Label);
     }
 
     # Create a new label.
@@ -485,7 +489,7 @@ public client class Client {
                                          @display {label: "Message list visibility"} string messageListVisibility, 
                                          @display {label: "Background colour"} string? backgroundColor = (), 
                                          @display {label: "Text colour"} string? textColor = ())
-                                         returns @tainted @display {label: "Label id"} string|error {
+                                         returns @tainted @display {label: "Label id"} Label|error {
         string createLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE;
         map<json> jsonPayload = {
             labelListVisibility: labelListVisibility,
@@ -505,7 +509,7 @@ public client class Client {
         //Get create label json response. If unsuccessful, throws and returns error.
         json jsonCreateLabelResponse = check handleResponse(httpResponse);
         //Returns the label id of the created label
-        return let var id = jsonCreateLabelResponse.id in id is string ? id : EMPTY_STRING;
+        return jsonCreateLabelResponse.cloneWithType(Label);
     }
 
     # Lists all labels in the user's mailbox.
@@ -515,12 +519,12 @@ public client class Client {
     #            `getLabel` to get all the details for a specific label) If not successful, returns error.
     @display {label: "List labels"}
     remote isolated function listLabels(@display {label: "Mail address of user"} string userId)
-                                        returns @tainted @display {label: "Labels"} Label[]|error {
+                                        returns @tainted @display {label: "Labels"} LabelList|error {
         string listLabelsPath = USER_RESOURCE + userId + LABEL_RESOURCE;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(listLabelsPath);
         //Get list labels json response. If unsuccessful, throws and returns error.
         json jsonLabelListResponse = check handleResponse(httpResponse);
-        return convertJSONToLabelTypeList(jsonLabelListResponse);
+        return jsonLabelListResponse.cloneWithType(LabelList);
     }
 
     # Delete a label.
@@ -598,7 +602,7 @@ public client class Client {
         http:Response httpResponse = <http:Response> check self.gmailClient->patch(updateLabelPath, request);
 
         json jsonUpdateResponse = check handleResponse(httpResponse);
-        return convertJSONToLabelType(jsonUpdateResponse);
+        return jsonUpdateResponse.cloneWithType(Label);
     }
 
     # Lists the history of all changes to the given mailbox. History results are returned in chronological order
@@ -663,13 +667,13 @@ public client class Client {
         if (filter is DraftSearchFilter) {
             string uriParams = "";
             //The default value for include spam trash query parameter of the api call is false
-            uriParams = check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
-                string `${filter.includeSpamTrash}`);
-            uriParams = filter.maxResults != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
-                filter.maxResults) : uriParams;
-            uriParams = filter.pageToken != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
-                filter.pageToken) : uriParams;
-            uriParams = filter.q != EMPTY_STRING ? check appendEncodedURIParameter(uriParams, QUERY, filter.q) : 
+            uriParams = filter?.includeSpamTrash is boolean ? check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
+                string `${<boolean>filter?.includeSpamTrash}`) : uriParams;
+            uriParams = filter?.maxResults is int ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
+                filter?.maxResults.toString()) : uriParams;
+            uriParams = filter?.pageToken is string ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
+                <string>filter?.pageToken) : uriParams;
+            uriParams = filter?.q is string ? check appendEncodedURIParameter(uriParams, QUERY, <string>filter?.q) : 
                 uriParams;
             getListDraftsPath += <@untainted>uriParams;
         }
@@ -800,11 +804,11 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + draftId - The draft Id to send
-    # + return - If successful, returns MessageResponse record of the sent Draft. Else returns error.
+    # + return - If successful, returns Message record of the sent Draft. Else returns error.
     @display {label: "Send draft"} 
     remote isolated function sendDraft(@display {label: "Mail address of user"} string userId,
                                        @display {label: "Draft id"} string draftId) 
-                                       returns @tainted @display {label: "Sent Message Response"} MessageResponse |
+                                       returns @tainted @display {label: "Sent Message Response"} Message |
                                        error {
         http:Request request = new;
         json jsonPayload = {id: draftId};
@@ -812,7 +816,7 @@ public client class Client {
         request.setJsonPayload(jsonPayload);
         http:Response httpResponse = <http:Response> check self.gmailClient->post(updateDraftPath, request);        
         json jsonSendDraftResponse = check handleResponse(httpResponse);
-        return check jsonSendDraftResponse.cloneWithType(MessageResponse);
+        return check jsonSendDraftResponse.cloneWithType(Message);
     }
 
     # Set up or update a push notification watch on the given user mailbox.

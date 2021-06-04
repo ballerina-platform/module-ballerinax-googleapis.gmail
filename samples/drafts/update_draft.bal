@@ -39,12 +39,13 @@ public function main(string... args) {
     string createdDraftId = "<DRAFT_ID>";
 
     string updatedMessageBody = "Updated Draft Text Message Body";
-    gmail:MessageRequest newMessageRequest = {};
-    newMessageRequest.recipient = os:getEnv("RECIPIENT"); // Recipient's email address
-    newMessageRequest.sender = os:getEnv("SENDER"); // Sender's email address
-    newMessageRequest.messageBody = updatedMessageBody;
-    newMessageRequest.subject = "Update Draft Subject";
-    newMessageRequest.contentType = gmail:TEXT_PLAIN;
+    gmail:MessageRequest newMessageRequest = {
+        recipient : os:getEnv("RECIPIENT"), // Recipient's email address
+        sender : os:getEnv("SENDER"), // Sender's email address
+        messageBody : updatedMessageBody,
+        subject : "Update Draft Subject",
+        contentType : gmail:TEXT_PLAIN
+    };
 
     string testAttachmentPath = "../resources/test_document.txt";
     string attachmentContentType = "text/plain";

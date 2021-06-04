@@ -53,9 +53,12 @@ public function main(string... args) {
             historyTypes = historyTypes);
 
         if (listHistoryResponse is gmail:MailboxHistoryPage) {
-            error? e = listHistoryResponse.historyRecords.forEach(function (gmail:History history) {
-                log:printInfo(history.id);
-            });
+            if (listHistoryResponse?.historyRecords is gmail:History[]) {
+                gmail:History[] historyRecords = <gmail:History[]> listHistoryResponse?.historyRecords;
+                error? e = historyRecords.forEach(function (gmail:History history) {
+                    log:printInfo(history.id);
+                });
+            }            
         } else {
             log:printError("Failed to list user profile history");
         }

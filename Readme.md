@@ -137,26 +137,25 @@ to send an email. The `userId` represents the authenticated user and can be a Gm
 
 ```ballerina
 string userId = "me";
-
-gmail:MessageRequest messageRequest = {};
-messageRequest.recipient = "recipient@mail.com";
-messageRequest.sender = "sender@mail.com";
-messageRequest.cc = "cc@mail.com";
-messageRequest.subject = "Email-Subject";
-messageRequest.messageBody = "Email Message Body Text";
-
-//Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
-messageRequest.contentType = gmail:TEXT_PLAIN;
+gmail:MessageRequest messageRequest = {
+    recipient : "aa@gmail.com",
+    sender : "bb@gmail.com",
+    cc : "cc@gmail.com",
+    subject : "Email-Subject",
+    messageBody : "Email Message Body Text",
+    // Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
+    contentType : gmail:TEXT_PLAIN
+};
 ```
 
 ### Step 4: Send the message
-The response from `sendMessage` is either a MessageResponse record or an `error` (if sending the message was unsuccessful).
+The response from `sendMessage` is either a Message record or an `error` (if sending the message was unsuccessful).
 
 ```ballerina
 //Send the message.
-gmail:MessageResponse|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId,messageRequest);
+gmail:Message|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId,messageRequest);
 
-if (sendMessageResponse is gmail:MessageResponse) {
+if (sendMessageResponse is gmail:Message) {
     // If successful, print the message ID and thread ID.
     log:printInfo("Sent Message ID: "+ sendMessageResponse.id);
     log:printInfo("Sent Thread ID: "+ sendMessageResponse.threadId);
@@ -222,24 +221,24 @@ emails.
 This sample shows how to send a simple email that contain only text content to a specific recipient. The necessary data 
 to create an email in this connector is represented in a type called `MessageRequest`. User can decide what to send as 
 data for an email. As the content type is text, the user must specify the `contentType` in `MessageRequest` as 
-**text/plain**. This operation returns a MessageResponse record of the newly sent email. Else an `error`
+**text/plain**. This operation returns a Message record of the newly sent email. Else an `error`
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
 string userId = "me";
+gmail:MessageRequest messageRequest = {
+    recipient : os:getEnv("RECIPIENT"), // Recipient's email address
+    sender : os:getEnv("SENDER"), // Sender's email address
+    cc : os:getEnv("CC"), // Email address to carbon copy
+    subject : "Email-Subject",
+    messageBody : "Email Message Body Text",
+    // Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
+    contentType : gmail:TEXT_PLAIN
+};
 
-gmail:MessageRequest messageRequest = {};
-messageRequest.recipient = os:getEnv("RECIPIENT"); // Recipient's email address
-messageRequest.sender = os:getEnv("SENDER"); // Sender's email address
-messageRequest.cc = os:getEnv("CC"); // Email address to carbon copy
-messageRequest.subject = "Email-Subject";
-messageRequest.messageBody = "Email Message Body Text";
+gmail:Message|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId,messageRequest);
 
-messageRequest.contentType = gmail:TEXT_PLAIN;
-
-gmail:MessageResponse|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId,messageRequest);
-
-if (sendMessageResponse is gmail:MessageResponse) {
+if (sendMessageResponse is gmail:Message) {
     // If successful, print the message ID and thread ID.
     log:printInfo("Sent Message ID: "+ sendMessageResponse.id);
     log:printInfo("Sent Thread ID: "+ sendMessageResponse.threadId);
@@ -254,27 +253,26 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 This sample shows how to send a simple email that contain an html page as the payload to a specific recipient. The 
 necessary data to create an email in this connector is represented in a type called `MessageRequest`. User can decide 
 what to send as data for an email. As the content type is HTML, the user must specify the `contentType` in 
-`MessageRequest` as **text/html**. This operation returns a MessageResponse record of the newly sent email. Else an `error`
+`MessageRequest` as **text/html**. This operation returns a Message record of the newly sent email. Else an `error`
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
 string userId = "me";
 
-gmail:MessageRequest messageRequest = {};
-messageRequest.recipient = os:getEnv("RECIPIENT"); // Recipient's email address
-messageRequest.sender = os:getEnv("SENDER"); // Sender's email address
-messageRequest.cc = os:getEnv("CC"); // Email address to carbon copy
-messageRequest.subject = "HTML-Email-Subject";
-
-// Set HTML Body
+string inlineImageName = "test_image.png";
 string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
-messageRequest.messageBody = htmlBody;
+gmail:MessageRequest messageRequest = {
+    recipient : os:getEnv("RECIPIENT"), // Recipient's email address
+    sender : os:getEnv("SENDER"),// Sender's email address
+    cc : os:getEnv("CC"), // Email address to carbon copy,
+    subject : "HTML-Email-Subject",
+    //---Set HTML Body---    
+    messageBody : htmlBody,
+    contentType : gmail:TEXT_HTML
+};
 
-// Set the content type of the mail as TEXT_HTML.
-messageRequest.contentType = gmail:TEXT_HTML;
-
-gmail:MessageResponse|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
-if (sendMessageResponse is gmail:MessageResponse) {
+gmail:Message|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+if (sendMessageResponse is gmail:Message) {
     // If successful, print the message ID and thread ID.
     log:printInfo("Sent Message ID: " + sendMessageResponse.id);
     log:printInfo("Sent Thread ID: " + sendMessageResponse.threadId);
@@ -348,11 +346,11 @@ string sentMessageId = "<MESSAGE_ID>";
 gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
 
 if (response is gmail:Message) {
-    if (response.msgAttachments.length() >= 1) {
-        log:printInfo("Attachment retrieved ", status = response.msgAttachments[0]?.fileId);
-    } else {
+   if (response?.msgAttachments is gmail:MessageBodyPart[] ) {
+        log:printInfo("Attachment retrieved " + (<gmail:MessageBodyPart[]>response?.msgAttachments).toStrin());
+   } else {
         log:printError("No attachment exists for this message");
-    }
+   }
 } else {
     log:printError("Failed to get attachments");
 }
@@ -379,10 +377,9 @@ string readAttachmentFileId = "<ATTACHMENT_ID>";
 gmail:MessageBodyPart|error response = gmailClient->getAttachment(userId, sentMessageId, readAttachmentFileId);
 
 if (response is gmail:MessageBodyPart) {
-    boolean status = (response.fileId == "" && response.body == "") ? false : true;
-    log:printInfo("Attachment retrieved ", status = status);
+    log:printInfo("Attachment " + response.toString());
 } else {
-    log:printError("Failed to get the attachments");
+    log:printError("Failed to get the attachments : "+ response.message());
 }
 
 ```
@@ -611,12 +608,13 @@ string userId = "me";
 string sentMessageThreadId = "<THREAD_ID>";
 
 string messageBody = "Draft Text Message Body";
-gmail:MessageRequest messageRequest = {};
-messageRequest.recipient = os:getEnv("RECIPIENT"); // Recipient's email address
-messageRequest.sender = os:getEnv("SENDER"); // Sender's email address
-messageRequest.cc = os:getEnv("CC"); // Email address to carbon copy
-messageRequest.messageBody = messageBody;
-messageRequest.contentType = gmail:TEXT_PLAIN;
+gmail:MessageRequest messageRequest = {
+    recipient : os:getEnv("RECIPIENT"), // Recipient's email address
+    sender : os:getEnv("SENDER"), // Sender's email address
+    cc : os:getEnv("CC"), // Email address to carbon copy
+    messageBody : messageBody,
+    contentType : gmail:TEXT_PLAIN
+};
 
 string|error draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentMessageThreadId);
 
@@ -643,12 +641,13 @@ string userId = "me";
 string createdDraftId = "<DRAFT_ID>";
 
 string updatedMessageBody = "Updated Draft Text Message Body";
-gmail:MessageRequest newMessageRequest = {};
-newMessageRequest.recipient = os:getEnv("RECIPIENT"); // Recipient's email address
-newMessageRequest.sender = os:getEnv("SENDER"); // Sender's email address
-newMessageRequest.messageBody = updatedMessageBody;
-newMessageRequest.subject = "Update Draft Subject";
-newMessageRequest.contentType = gmail:TEXT_PLAIN;
+gmail:MessageRequest newMessageRequest = {
+    recipient : os:getEnv("RECIPIENT"), // Recipient's email address
+    sender : os:getEnv("SENDER"), // Sender's email address
+    messageBody : updatedMessageBody,
+    subject : "Update Draft Subject",
+    contentType : gmail:TEXT_PLAIN
+};
 
 string testAttachmentPath = "../resources/test_document.txt";
 string attachmentContentType = "text/plain";
@@ -691,14 +690,14 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### List drafts
 This sample shows how to list the available drafts in authorized user's mailbox. You must specify the 
 **ID/email of the authorized user** as a parameter for this operation. In the connector implementation the 
-result contains a `DraftListPage` which inside it contains an array of `DraftList` record, each represent data about a 
+result contains a `DraftListPage` which inside it contains an array of `Draft` record, each represent data about a 
 draft if operation is successful. Else returns an `error`.
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
 string userId = "me";
 
-gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: "10"};
+gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
 
 gmail:DraftListPage|error msgList = gmailClient->listDrafts(userId, filter = searchFilter);
 if (msgList is gmail:DraftListPage) {
@@ -739,7 +738,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### Send draft
 This sample shows how to send an existing draft to the recipients in the `recipient` and  `cc` fields. Here, you have to 
 provide the **ID of the authorized user** and the **ID of the draft** existing in the account. Sending a draft gives 
-similar return types as sending a message. It will return `MessageResponse` record if the operation is successful. Else
+similar return types as sending a message. It will return `Message` record if the operation is successful. Else
 return `error`. This is because, when the draft is sent, the draft is automatically deleted and a new message with an 
 updated ID is created with the SENT system label.
  
@@ -750,9 +749,9 @@ string userId = "me";
 // The ID of the existing draft we want to send.
 string createdDraftId = "<DRAFT_ID>"; 
 
-gmail:MessageResponse |error sendDraftResponse = gmailClient->sendDraft(userId, createdDraftId);
+gmail:Message |error sendDraftResponse = gmailClient->sendDraft(userId, createdDraftId);
 
-if (sendDraftResponse is gmail:MessageResponse) {
+if (sendDraftResponse is gmail:Message) {
     log:printInfo("Sent the draft successfully: ",
                   status =  sendDraftResponse.id !== "" && sendDraftResponse.threadId !== "");
 } else {
@@ -818,8 +817,8 @@ gmail:Label|error updateLabelResponse = gmailClient->updateLabel(userId, created
 
 if (updateLabelResponse is gmail:Label) {
     log:printInfo("Successfully updated label: ", status = updateLabelResponse.name == updateName &&
-        updateLabelResponse.backgroundColor == updateBgColor &&
-        updateLabelResponse.textColor == updateTxtColor);
+                  updateLabelResponse?.color?.backgroundColor == updateBgColor &&
+                  updateLabelResponse?.color?.textColor == updateTxtColor);
 } else {
     log:printError("Failed to update label");
 }
@@ -917,10 +916,13 @@ if (response is gmail:Message) {
         historyTypes = historyTypes);
 
     if (listHistoryResponse is gmail:MailboxHistoryPage) {
-        error? e = listHistoryResponse.historyRecords.forEach(function (gmail:History history) {
-            log:printInfo(history.id);
-        });
-    } else {
+            if (listHistoryResponse?.historyRecords is gmail:History[]) {
+                gmail:History[] historyRecords = <gmail:History[]> listHistoryResponse?.historyRecords;
+                error? e = historyRecords.forEach(function (gmail:History history) {
+                    log:printInfo(history.id);
+                });
+            }            
+        } else {
         log:printError("Failed to list user profile history");
     }
 } else {

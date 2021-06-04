@@ -16,7 +16,6 @@
 
 import ballerina/log;
 import ballerina/os;
-//import ballerina/io;
 import ballerinax/googleapis.gmail as gmail;
 
 gmail:GmailConfiguration gmailConfig = {
@@ -36,26 +35,26 @@ public function main(string... args) {
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
-    gmail:MessageRequest messageRequest = {};
-    messageRequest.recipient = os:getEnv("RECIPIENT"); // Recipient's email address
-    messageRequest.sender = os:getEnv("SENDER"); // Sender's email address
-    messageRequest.cc = os:getEnv("CC"); // Email address to carbon copy
-    messageRequest.subject = "Email-Subject";
-    messageRequest.messageBody = "Email Message Body Text";
+    gmail:MessageRequest messageRequest = {
+        recipient : os:getEnv("RECIPIENT"), // Recipient's email address
+        sender : os:getEnv("SENDER"), // Sender's email address
+        cc : os:getEnv("CC"), // Email address to carbon copy
+        subject : "Text-Email-Subject",
+        //---Set Text Body---
+        messageBody : "Text Message Body",
+        contentType : gmail:TEXT_PLAIN
+    };
 
     string testAttachmentPath = "../resources/test_document.txt";
     string attachmentContentType = "text/plain";
-
-    // Set the content type of the mail as TEXT_PLAIN.
-    messageRequest.contentType = gmail:TEXT_PLAIN;
     
     // Set Attachments if exists
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
 
-    gmail:MessageResponse|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId, messageRequest);
+    gmail:Message|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId, messageRequest);
     
-    if (sendMessageResponse is gmail:MessageResponse) {
+    if (sendMessageResponse is gmail:Message) {
         // If successful, print the message ID and thread ID.
         log:printInfo("Sent Message ID: "+ sendMessageResponse.id);
         log:printInfo("Sent Thread ID: "+ sendMessageResponse.threadId);
