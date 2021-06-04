@@ -16,6 +16,7 @@
 
 import ballerina/lang.array;
 import ballerina/lang.'int;
+import ballerina/regex;
 import ballerina/log;
 
 type mapJson map<json>;
@@ -337,4 +338,16 @@ function convertJSONToDraftType(json sourceDraftJsonObject) returns @tainted Dra
         log:printError("Error occurred while getting message from sourceDraftJsonObject.", 'error = message);
     }
     return targetDraft;
+}
+
+# Format received base64 data string to the valid format in MessageBodyPart.
+# + receivedMessageBodyPart - The MessageBodyPart which received
+# + return - Returns MessageBodyPart with valid Base64 encoded data
+isolated function getFormattedBase64MessageBodyPart (MessageBodyPart receivedMessageBodyPart) returns MessageBodyPart {
+    if (receivedMessageBodyPart?.data is string) {
+        string formattedBody = <string> receivedMessageBodyPart?.data;
+        formattedBody = regex:replaceAll(formattedBody, DASH_SYMBOL, PLUS_SYMBOL);
+        receivedMessageBodyPart.data = regex:replaceAll(formattedBody, UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL);
+    }
+    return receivedMessageBodyPart;
 }

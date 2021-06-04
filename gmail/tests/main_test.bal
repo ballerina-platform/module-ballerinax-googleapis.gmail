@@ -16,7 +16,6 @@
 
 import ballerina/log;
 import ballerina/os;
-// import ballerina/io;
 import ballerina/test;
 
 configurable string testRecipient = os:getEnv("RECIPIENT");
