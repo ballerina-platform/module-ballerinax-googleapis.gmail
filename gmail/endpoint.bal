@@ -171,7 +171,8 @@ public client class Client {
         //Get json attachment response. If unsuccessful, throws and returns error.
         json jsonAttachment = check handleResponse(httpResponse);
         //Transform the json attachment message body response from Gmail API to MessageBodyPart type.
-        return check jsonAttachment.cloneWithType(MessageBodyPart);
+        MessageBodyPart receivedMessageBodyPart = check jsonAttachment.cloneWithType(MessageBodyPart);
+        return getFormattedBase64MessageBodyPart(receivedMessageBodyPart);
     }
 
     # Move the specified message to the trash.
