@@ -38,12 +38,13 @@ public function main(string... args) {
     string sentMessageThreadId = "<THREAD_ID>";
 
     string messageBody = "Draft Text Message Body";
-    gmail:MessageRequest messageRequest = {};
-    messageRequest.recipient = os:getEnv("RECIPIENT"); // Recipient's email address
-    messageRequest.sender = os:getEnv("SENDER"); // Sender's email address
-    messageRequest.cc = os:getEnv("CC"); // Email address to carbon copy
-    messageRequest.messageBody = messageBody;
-    messageRequest.contentType = gmail:TEXT_PLAIN;
+    gmail:MessageRequest messageRequest = {
+        recipient : os:getEnv("RECIPIENT"), // Recipient's email address
+        sender : os:getEnv("SENDER"), // Sender's email address
+        cc : os:getEnv("CC"), // Email address to carbon copy
+        messageBody : messageBody,
+        contentType : gmail:TEXT_PLAIN
+    };
 
     string|error draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentMessageThreadId);
     

@@ -35,24 +35,22 @@ public function main(string... args) {
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
-    gmail:MessageRequest messageRequest = {};
-    messageRequest.recipient = os:getEnv("RECIPIENT"); // Recipient's email address
-    messageRequest.sender = os:getEnv("SENDER"); // Sender's email address
-    messageRequest.cc = os:getEnv("CC"); // Email address to carbon copy
-    messageRequest.subject = "HTML-Email-Subject";
+    string inlineImageName = "test_image.png";
+    string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
+    gmail:MessageRequest messageRequest = {
+        recipient : os:getEnv("RECIPIENT"), // Recipient's email address
+        sender : os:getEnv("SENDER"),// Sender's email address
+        cc : os:getEnv("CC"), // Email address to carbon copy,
+        subject : "HTML-Email-Subject",
+        //---Set HTML Body---    
+        messageBody : htmlBody,
+        contentType : gmail:TEXT_HTML
+    };
     
     string inlineImagePath = "../resources/test_image.png";
-    string inlineImageName = "test_image.png";
     string imageContentType = "image/png";
-
     string testAttachmentPath = "../resources/test_document.txt";
     string attachmentContentType = "text/plain";
-    
-    // Set HTML Body
-    string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
-    messageRequest.messageBody = htmlBody;
-    // Set the content type of the mail as TEXT_HTML.
-    messageRequest.contentType = gmail:TEXT_HTML;
 
     // Set Inline Images if exists
     gmail:InlineImagePath[] inlineImages = [{imagePath: inlineImagePath, mimeType: imageContentType}];
@@ -62,9 +60,9 @@ public function main(string... args) {
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
 
-    gmail:MessageResponse|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+    gmail:Message|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
 
-    if (sendMessageResponse is gmail:MessageResponse) {
+    if (sendMessageResponse is gmail:Message) {
         // If successful, print the message ID and thread ID.
         log:printInfo("Sent Message ID: " + sendMessageResponse.id);
         log:printInfo("Sent Thread ID: " + sendMessageResponse.threadId);

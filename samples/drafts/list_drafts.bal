@@ -35,7 +35,7 @@ public function main(string... args) {
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
-    gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: "10"};
+    gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
     
     gmail:DraftListPage|error msgList = gmailClient->listDrafts(userId, filter = searchFilter);
     if (msgList is gmail:DraftListPage) {
