@@ -21,10 +21,10 @@
 # + threadsTotal - The total number of threads in the mailbox
 # + historyId - The ID of the mailbox's current history record
 public type UserProfile record {
-    string emailAddress = "";
-    string messagesTotal = "";
-    string threadsTotal = "";
-    string historyId = "";
+    string emailAddress;
+    int messagesTotal;
+    int threadsTotal;
+    string historyId;
 };
 
 # Represents mail thread resource.
@@ -54,26 +54,15 @@ public type MailThread record {
 #                            Note that inline images can only be send for `TEXT_HTML` messages.
 # + attachmentPaths - The AttachmentPath array consisting the attachment file paths and mime types. Optional.
 public type MessageRequest record {
-    string recipient = "";
-    string subject = "";
-    string messageBody = "";
-    string contentType = "";
-    string sender = "";
-    string cc = "";
-    string bcc = "";
-    InlineImagePath[] inlineImagePaths = [];
-    AttachmentPath[] attachmentPaths = [];
-};
-
-# Represents MessageResponse.
-#
-# + id - Message Id
-# + threadId - Thread ID which the message belongs to
-# + labelIds - The label ids of the message
-public type MessageResponse record {
-    string id;
-    string threadId;
-    string[] labelIds?;
+    string recipient;
+    string subject?;
+    string messageBody;
+    string contentType;
+    string sender;
+    string cc?;
+    string bcc?;
+    InlineImagePath[] inlineImagePaths?;
+    AttachmentPath[] attachmentPaths?;
 };
 
 # Represents image file path and mime type of an inline image in a message request.
@@ -83,8 +72,8 @@ public type MessageResponse record {
 #                  For ex: If you are sending a jpg image, give the mime type as `image/jpeg`.
 #                          If you are sending a png image, give the mime type as `image/png`.
 public type InlineImagePath record {
-    string imagePath = "";
-    string mimeType = "";
+    string imagePath;
+    string mimeType;
 };
 
 # Represents an attachment file path and mime type of an attachment in a message request.
@@ -94,8 +83,8 @@ public type InlineImagePath record {
 #                  For ex: If you are sending a pdf document, give the mime type as `application/pdf`.
 #                  If you are sending a text file, give the mime type as `text/plain`.
 public type AttachmentPath record {
-    string attachmentPath = "";
-    string mimeType = "";
+    string attachmentPath;
+    string mimeType;
 };
 
 # Represents message resource which will be received as a response from the Gmail API.
@@ -123,32 +112,32 @@ public type AttachmentPath record {
 # + emailInlineImages - MIME Message Parts with inline images with the image/* content type
 # + msgAttachments - MIME Message Parts of the message consisting the attachments
 public type Message record {
-    string threadId = "";
-    string id = "";
-    string[] labelIds = [];
-    string raw = "";
-    string snippet = "";
-    string historyId = "";
-    string internalDate = "";
-    string sizeEstimate = "";
-    map<string> headers = {};
-    string headerTo = "";
-    string headerFrom = "";
-    string headerBcc = "";
-    string headerCc = "";
-    string headerSubject = "";
-    string headerDate = "";
-    string headerContentType = "";
-    string mimeType = "";
-    MessageBodyPart emailBodyInText = {};
-    MessageBodyPart emailBodyInHTML = {};
-    MessageBodyPart[] emailInlineImages = [];
-    MessageBodyPart[] msgAttachments = [];
+    string threadId;
+    string id;
+    string[] labelIds?;
+    string raw?;
+    string snippet?;
+    string historyId?;
+    string internalDate?;
+    string sizeEstimate?;
+    map<string> headers?;
+    string headerTo?;
+    string headerFrom?;
+    string headerBcc?;
+    string headerCc?;
+    string headerSubject?;
+    string headerDate?;
+    string headerContentType?;
+    string mimeType?;
+    MessageBodyPart emailBodyInText?;
+    MessageBodyPart emailBodyInHTML?;
+    MessageBodyPart[] emailInlineImages?;
+    MessageBodyPart[] msgAttachments?;
 };
 
 # Represents the email message body part of a message resource response.
 #
-# + body - The body data of the message part. This is a base64 encoded string
+# + data - The body data of the message part. This is a base64 encoded string
 # + mimeType - MIME type of the message part
 # + bodyHeaders - Headers of the MIME Message Part
 # + fileId - The file id of the attachment/inline image in message part *(This is empty unless the message part
@@ -158,13 +147,13 @@ public type Message record {
 # + partId - The part id of the message part
 # + size - Number of bytes of message part data
 public type MessageBodyPart record {
-    string body = "";
-    string mimeType = "";
-    map<string> bodyHeaders = {};
-    string fileId = "";
-    string fileName = "";
-    string partId = "";
-    string size = "";
+    string data?;
+    string mimeType?;
+    map<string> bodyHeaders?;
+    string fileId?;
+    string fileName?;
+    string partId?;
+    int size?;
 };
 
 # Represents the optional search message filter fields.
@@ -177,11 +166,11 @@ public type MessageBodyPart record {
 # + q - Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports
 #       the same query format as the Gmail search box.
 public type MsgSearchFilter record {
-    boolean includeSpamTrash = false;
-    string[] labelIds = [];
-    string maxResults = "";
-    string pageToken = "";
-    string q = "";
+    boolean includeSpamTrash?;
+    string[] labelIds?;
+    int maxResults?;
+    string pageToken?;
+    string q?;
 };
 
 # Represents the optional search drafts filter fields.
@@ -192,10 +181,10 @@ public type MsgSearchFilter record {
 # + q - Query for searching . Only returns drafts matching the specified query. Supports
 #       the same query format as the Gmail search box.
 public type DraftSearchFilter record {
-    boolean includeSpamTrash = false;
-    string maxResults = "";
-    string pageToken = "";
-    string q = "";
+    boolean includeSpamTrash?;
+    int maxResults?;
+    string pageToken?;
+    string q?;
 };
 
 # Represents a page of the message list received as response for list messages api call.
@@ -204,7 +193,7 @@ public type DraftSearchFilter record {
 # + resultSizeEstimate - Estimated size of the whole list
 # + nextPageToken - Token for next page of message list
 public type MessageListPage record {
-    MessageResponse[] messages?;
+    Message[] messages?;
     int resultSizeEstimate;
     string nextPageToken?;
 };
@@ -226,7 +215,7 @@ public type ThreadListPage record {
 # + resultSizeEstimate - Estimated size of the whole list
 # + nextPageToken - Token for next page of mail drafts list
 public type DraftListPage record {
-    DraftList[] drafts?;
+    Draft[] drafts?;
     int resultSizeEstimate;
     string nextPageToken?;
 };
@@ -246,7 +235,7 @@ public type DraftListPage record {
 #                            *labelHide*: Do not show the label in the label list
 #                            *labelShow*: Show the label in the label list (Default)
 #                            *labelShowIfUnread*: Show the label if there are any unread messages with that label
-# + ownerType - The owner type for the label.
+# + type - The owner type for the label.
 #               Acceptable values are:
 #                    *system*: Labels created by Gmail
 #                    *user*: Custom labels created by the user or application
@@ -255,20 +244,34 @@ public type DraftListPage record {
 # + messagesUnread - The number of unread messages with the label
 # + threadsTotal - The total number of threads with the label
 # + threadsUnread - The number of unread threads with the label
+# + color - Reperesents the color of label
+public type Label record {
+    string id;
+    string name;
+    string messageListVisibility?;
+    string labelListVisibility?;
+    string 'type?;
+    int messagesTotal?;
+    int messagesUnread?;
+    int threadsTotal?;
+    int threadsUnread?;
+    Color color?;
+};
+
+# Represents the list of labels.
+#
+# + labels - The array of labels
+public type LabelList record {
+    Label[] labels;
+};
+
+# Represents the color of label.
+#
 # + textColor - The text color of the label, represented as hex string
 # + backgroundColor - The background color represented as hex string
-public type Label record {
-    string id = "";
-    string name = "";
-    string messageListVisibility = "";
-    string labelListVisibility = "";
-    string ownerType = "";
-    int messagesTotal = 0;
-    int messagesUnread = 0;
-    int threadsTotal = 0;
-    int threadsUnread = 0;
-    string textColor = "";
-    string backgroundColor = "";
+public type Color record {
+    string textColor;
+    string backgroundColor;
 };
 
 # Represents a page of the history list received as response for list history api call.
@@ -278,9 +281,9 @@ public type Label record {
 # + nextPageToken - Page token to retrieve the next page of results in the list
 # + historyId - The ID of the mailbox's current history record
 public type MailboxHistoryPage record {
-    History[] historyRecords = [];
-    string nextPageToken = "";
-    string historyId = "";
+    History[] historyRecords?;
+    string nextPageToken?;
+    string historyId;
 };
 
 # Represents a history reoced in MailboxHistoryPage.
@@ -292,12 +295,12 @@ public type MailboxHistoryPage record {
 # + labelsAdded - Array of maps of Labels added to messages in this history record
 # + labelsRemoved - Array of maps of Labels removed from messages in this history record
 public type History record {
-    string id = "";
-    Message[] messages = [];
-    HistoryEvent[] messagesAdded = [];
-    HistoryEvent[] messagesDeleted = [];
-    HistoryEvent[] labelsAdded = [];
-    HistoryEvent[] labelsRemoved = [];
+    string id;
+    Message[] messages?;
+    HistoryEvent[] messagesAdded?;
+    HistoryEvent[] messagesDeleted?;
+    HistoryEvent[] labelsAdded?;
+    HistoryEvent[] labelsRemoved?;
 };
 
 # Represents changes of messages in history record.
@@ -305,8 +308,8 @@ public type History record {
 # + message - The message changed  
 # + labelIds - The label ids of the message  
 public type HistoryEvent record {
-    Message message = {};
-    string [] labelIds = [];
+    Message message;
+    string [] labelIds?;
 };
 
 # Represents a draft email in user's mailbox.
@@ -314,17 +317,8 @@ public type HistoryEvent record {
 # + id - The immutable id of the draft
 # + message - The message content of the draft
 public type Draft record {
-    string id = "";
-    Message message = {};
-};
-
-# Represents a draft email of darft List in user's mailbox .
-#
-# + id - The immutable id of the draft
-# + message - The message content of the draft
-public type DraftList record {
     string id;
-    MessageResponse message;
+    Message message?;
 };
 
 # Represents a watch response.
@@ -332,8 +326,8 @@ public type DraftList record {
 # + historyId - The ID of the mailbox's current history record.
 # + expiration - When Gmail will stop sending notifications for mailbox updates (epoch millis) - (int64 format). 
 public type WatchResponse record {
-    string historyId = "";
-    string expiration = "";
+    string historyId;
+    string expiration;
 };
 
 # Represents a watch request body.

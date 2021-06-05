@@ -22,7 +22,7 @@ import ballerinax/googleapis.gmail as gmail;
 # + changedLabelId - The changed label id of the message
 public type ChangedLabel record {
     gmail:Message message;
-    string[] changedLabelId;
+    string[] changedLabelId?;
 };
 
 # Represents the record of topic name and subscription name which was created.

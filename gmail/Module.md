@@ -60,18 +60,20 @@ gmail:GmailConfiguration gmailConfig = {
 
 gmail:Client gmailClient = new (gmailConfig);
 public function main(string... args) {
-    gmail:MessageRequest messageRequest = {};
-    messageRequest.recipient = "aa@gmail.com";
-    messageRequest.sender = "bb@gmail.com";
-    messageRequest.cc = "cc@gmail.com";
-    messageRequest.subject = "Email-Subject";
-    messageRequest.messageBody = "Email Message Body Text";
+    gmail:MessageRequest messageRequest = {
+    recipient : "aa@gmail.com",
+    sender : "bb@gmail.com",
+    cc : "cc@gmail.com",
+    subject : "Email-Subject",
+    messageBody : "Email Message Body Text",
     // Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
-    messageRequest.contentType = gmail:TEXT_PLAIN;
+    contentType : gmail:TEXT_PLAIN
+    };
+
     string userId = "me";
     // Send the message.
     var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
-    if (sendMessageResponse is gmail:MessageResponse) {
+    if (sendMessageResponse is gmail:Message) {
         // If successful, print the message ID and thread ID.
         log:printInfo("Sent Message ID: "+ sendMessageResponse.id);
         log:printInfo("Sent Thread ID: "+ sendMessageResponse.threadId);

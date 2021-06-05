@@ -41,8 +41,8 @@ public function main(string... args) {
     gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
     
     if (response is gmail:Message) {
-       if (response.msgAttachments.length() >= 1) {
-            log:printInfo("Attachment retrieved ", status = response.msgAttachments[0]?.fileId);
+       if (response?.msgAttachments is gmail:MessageBodyPart[] ) {
+            log:printInfo("Attachment retrieved " + (<gmail:MessageBodyPart[]>response?.msgAttachments).toString());
        } else {
             log:printError("No attachment exists for this message");
        }

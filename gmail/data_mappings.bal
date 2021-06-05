@@ -27,7 +27,7 @@ type mapJson map<json>;
 # + sourceMessageJsonObject - `json` message object
 # + return - Returns Message type object
 function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted Message {
-    Message targetMessageType = {};
+    Message targetMessageType = {id : EMPTY_STRING, threadId : EMPTY_STRING};
 
     targetMessageType.id = let var id = sourceMessageJsonObject.id in id is string ? id : EMPTY_STRING;
     targetMessageType.threadId = let var threadId = sourceMessageJsonObject.threadId in threadId is string ? threadId : 
@@ -57,13 +57,17 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
     } else {
         targetMessageType.headers = {};
     }
-    targetMessageType.headerDate = getValueForMapKey(targetMessageType.headers, DATE);
-    targetMessageType.headerSubject = getValueForMapKey(targetMessageType.headers, SUBJECT);
-    targetMessageType.headerTo = getValueForMapKey(targetMessageType.headers, TO);
-    targetMessageType.headerFrom = getValueForMapKey(targetMessageType.headers, FROM);
-    targetMessageType.headerContentType = getValueForMapKey(targetMessageType.headers, CONTENT_TYPE);
-    targetMessageType.headerCc = getValueForMapKey(targetMessageType.headers, CC);
-    targetMessageType.headerBcc = getValueForMapKey(targetMessageType.headers, BCC);
+    if (targetMessageType?.headers is map<string>) {
+        map<string> headers = <map<string>>targetMessageType?.headers;
+        targetMessageType.headerDate = getValueForMapKey(headers, DATE);
+        targetMessageType.headerSubject = getValueForMapKey(headers, SUBJECT);
+        targetMessageType.headerTo = getValueForMapKey(headers, TO);
+        targetMessageType.headerFrom = getValueForMapKey(headers, FROM);
+        targetMessageType.headerContentType = getValueForMapKey(headers, CONTENT_TYPE);
+        targetMessageType.headerCc = getValueForMapKey(headers, CC);
+        targetMessageType.headerBcc = getValueForMapKey(headers, BCC);
+    }
+    
     
     targetMessageType.mimeType = let var mimeType = 
         sourceMessageJsonObject.payload.mimeType in mimeType is string ? mimeType : EMPTY_STRING;
@@ -83,11 +87,6 @@ function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted
         [attachments, imageParts] = parts;
         targetMessageType.msgAttachments = attachments;
         targetMessageType.emailInlineImages = imageParts;
-    } else {
-        targetMessageType.emailBodyInText = {};
-        targetMessageType.emailBodyInHTML = {};
-        targetMessageType.msgAttachments = [];
-        targetMessageType.emailInlineImages = [];
     }
 
     return targetMessageType;
@@ -102,11 +101,13 @@ isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) ret
         targetMessageBodyType.fileId = let var fileId = 
             sourceMessagePartJsonObject.body.attachmentId in fileId is string ? fileId : EMPTY_STRING;
         // body is an object of MessagePartBody in the docs.
-        targetMessageBodyType.body = let var body = 
+        targetMessageBodyType.data = let var body = 
             sourceMessagePartJsonObject.body.data in body is map<json> ? body.toString() : EMPTY_STRING;
         // In the payload body, "size" is an integer.
-        targetMessageBodyType.size = let var size = 
-            sourceMessagePartJsonObject.body.size in size is int ? size.toString() : EMPTY_STRING;
+        var size = sourceMessagePartJsonObject.body.size;
+        if (size is int) {
+            targetMessageBodyType.size = size;
+        }
         targetMessageBodyType.mimeType = let var mimeType = 
             sourceMessagePartJsonObject.mimeType in mimeType is string ? mimeType : EMPTY_STRING;
         targetMessageBodyType.partId = let var partId = 
@@ -117,34 +118,14 @@ isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) ret
         json|error srcMssgPartHeaders = sourceMessagePartJsonObject.headers;
         if(srcMssgPartHeaders is json) {
             // Headers is an object of type headers
-            targetMessageBodyType.bodyHeaders = 
-                sourceMessagePartJsonObject.headers !== () ? convertJSONToHeaderMap(srcMssgPartHeaders) : 
-                targetMessageBodyType.bodyHeaders;
+            if (sourceMessagePartJsonObject.headers !== ()) {
+                targetMessageBodyType.bodyHeaders = convertJSONToHeaderMap(srcMssgPartHeaders);
+            }
         } else {
             log:printError("Error occurred while getting headers from src message part.", 'error = srcMssgPartHeaders);
         }
     }
     return targetMessageBodyType;
-}
-
-# Transforms single body of MIME Message part into MessageBodyPart Attachment.
-# + sourceMessageBodyJsonObject - `json` message body object
-# + return - Returns MessageBodyPart type object
-isolated function convertJSONToMsgBodyAttachment(json sourceMessageBodyJsonObject) returns MessageBodyPart {
-    return {
-        fileId: let var fileId = sourceMessageBodyJsonObject.attachmentId in fileId is string ? fileId : EMPTY_STRING,
-        body: getFormattedBase64Body(sourceMessageBodyJsonObject),
-        size: let var size = sourceMessageBodyJsonObject.size in size is int ? size.toString() : EMPTY_STRING
-    };
-}
-
-# Format received base64 data string to the valid format.
-# + sourceMessageBodyJsonObject - `json` message body object
-# + return - Returns attachment body with valid Base64 encoded
-isolated function getFormattedBase64Body(json sourceMessageBodyJsonObject)  returns string {
-    string formattedBody = let var body = sourceMessageBodyJsonObject.data in body is string ? body : EMPTY_STRING;
-    formattedBody = regex:replaceAll(formattedBody, DASH_SYMBOL, PLUS_SYMBOL);
-    return regex:replaceAll(formattedBody, UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL);
 }
 
 # Transforms mail thread JSON object into MailThread type.
@@ -173,24 +154,6 @@ function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns @tai
     return messages;
 }
 
-# Transforms user profile JSON object into UserProfile.
-# + sourceUserProfileJsonObject - `json` user profile object
-# + return - UserProfile type
-isolated function convertJSONToUserProfileType(json sourceUserProfileJsonObject) returns UserProfile {
-    return {
-        emailAddress: let var emailAddress = 
-            sourceUserProfileJsonObject.emailAddress in emailAddress is string ? emailAddress : EMPTY_STRING,
-        threadsTotal: let var threadsTotal = 
-            sourceUserProfileJsonObject.threadsTotal in threadsTotal is int ? threadsTotal.toString() : 
-            EMPTY_STRING,
-        messagesTotal: let var messagesTotal = 
-            sourceUserProfileJsonObject.messagesTotal in messagesTotal is int ? messagesTotal.toString() : 
-            EMPTY_STRING,
-        historyId: let var historyId = sourceUserProfileJsonObject.historyId in historyId is string ? historyId : 
-            EMPTY_STRING
-    };
-}
-
 # Converts the message part header JSON array to headers.
 # + jsonMsgPartHeaders - `json` array of message part headers
 # + return - Map of headers
@@ -204,121 +167,6 @@ isolated function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<st
     return headers;
 }
 
-# Converts the JSON label resource to Label type.
-# + sourceLabelJsonObject - `json` label
-# + return - Label type object
-isolated function convertJSONToLabelType(json sourceLabelJsonObject) returns Label|error {
-    Label targetLabel = {};
-    map<json>|error srcLabelJsonObjectMap = sourceLabelJsonObject.cloneWithType(mapJson);
-    if (srcLabelJsonObjectMap is map<json>) {
-        // id
-        if (elementExists(srcLabelJsonObjectMap, "id")) {
-            targetLabel.id = srcLabelJsonObjectMap["id"].toString();
-        } else {
-            targetLabel.id = EMPTY_STRING;
-        }
-        // name
-        if (elementExists(srcLabelJsonObjectMap, "name")) {
-            targetLabel.name = srcLabelJsonObjectMap["name"].toString();
-        } else {
-            targetLabel.name = EMPTY_STRING;
-        }
-        // messageListVisibility
-        if (elementExists(srcLabelJsonObjectMap, "messageListVisibility")) {
-            targetLabel.messageListVisibility = srcLabelJsonObjectMap["messageListVisibility"].toString();
-        } else {
-            targetLabel.messageListVisibility = EMPTY_STRING;
-        }
-        // labelListVisibility
-        if (elementExists(srcLabelJsonObjectMap, "labelListVisibility")) {
-            targetLabel.labelListVisibility = srcLabelJsonObjectMap["labelListVisibility"].toString();
-        } else {
-            targetLabel.labelListVisibility = EMPTY_STRING;
-        }
-        // ownerType
-        if (elementExists(srcLabelJsonObjectMap, "ownerType")) {
-            targetLabel.ownerType = srcLabelJsonObjectMap["ownerType"].toString();
-        } else {
-            targetLabel.ownerType = EMPTY_STRING;
-        }
-        // messgTotal
-        if (elementExists(srcLabelJsonObjectMap, "messagesTotal")) {
-            int|error messagesTotal = srcLabelJsonObjectMap["messagesTotal"].cloneWithType(int);
-            if (messagesTotal is int) {
-                targetLabel.messagesTotal = messagesTotal;
-            } else {
-                error err = error(GMAIL_ERROR_CODE, message = 
-                    "Error occurred while converting messagesTotal json to int.");
-                return err;
-            }
-        } else {
-            targetLabel.messagesTotal = 0;
-        }
-        // messagesUnread
-        if (elementExists(srcLabelJsonObjectMap, "messagesUnread")) {
-            int|error messagesUnread = srcLabelJsonObjectMap["messagesUnread"].cloneWithType(int);
-            if (messagesUnread is int) {
-                targetLabel.messagesUnread = messagesUnread;
-            } else {
-                error err = error(GMAIL_ERROR_CODE, 
-                    message = "Error occurred while converting messagesUnread json to int.");
-                return err;
-            }
-        } else {
-            targetLabel.messagesUnread = 0;
-        }
-        // threadsUnread
-        if (elementExists(srcLabelJsonObjectMap, "threadsUnread")) {
-            int|error threadsUnread = srcLabelJsonObjectMap["threadsUnread"].cloneWithType(int);
-            if (threadsUnread is int) {
-                targetLabel.threadsUnread = threadsUnread;
-            } else {
-                error err = error(GMAIL_ERROR_CODE, 
-                    message = "Error occurred while converting threadsUnread json to int.");
-                return err;
-            }
-        } else {
-            targetLabel.threadsUnread = 0;
-        }
-        // threadsTotal
-        if (elementExists(srcLabelJsonObjectMap, "threadsTotal")) {
-            int|error threadsTotal = srcLabelJsonObjectMap["threadsTotal"].cloneWithType(int);
-            if (threadsTotal is int) {
-                targetLabel.threadsTotal = threadsTotal;
-            } else {
-                error err = error(GMAIL_ERROR_CODE, 
-                    message = "Error occurred while converting threadsTotal json to int.");
-                return err;
-            }
-        } else {
-            targetLabel.threadsTotal = 0;
-        }
-        // color
-        if (elementExists(srcLabelJsonObjectMap, "color")) {
-            json|error color = srcLabelJsonObjectMap["color"];
-            if (color is json) {
-                map<json>|error colorMap = color.cloneWithType(mapJson);
-                if (colorMap is map<json>) {
-                    // textColor
-                    if (elementExists(colorMap, "textColor")) {
-                        targetLabel.textColor = colorMap["textColor"].toString();
-                    }
-                    // backgroundColor
-                    if (elementExists(colorMap, "backgroundColor")) {
-                        targetLabel.backgroundColor = colorMap["backgroundColor"].toString();
-                    }
-                }
-            }
-        }
-        return targetLabel;
-    } else {
-        log:printError("Error occurred while converting sourceLabelJsonObject json to map of json. sourceLabelJsonObject: " 
-            + sourceLabelJsonObject.toString(), 'error = srcLabelJsonObjectMap);
-        error err = error(GMAIL_ERROR_CODE, message = 
-            "Error occurred while converting sourceLabelJsonObject json to map of json.");
-        return err;
-    }
-}
 
 isolated function convertToInt(json jsonVal) returns int {
     string stringVal = jsonVal.toString();
@@ -335,33 +183,12 @@ isolated function convertToInt(json jsonVal) returns int {
     }
 }
 
-# Convert JSON label list response to an array of Label type objects.
-# + sourceJsonLabelList - Source `json` object
-# + return - Returns an array of Label type objects
-isolated function convertJSONToLabelTypeList(json sourceJsonLabelList) returns Label[]|error {
-    Label[] targetLabelList = [];
-    //Convert json object to json array object
-    json|error jsonLabelList = sourceJsonLabelList.labels;
-    if (jsonLabelList is json) {
-        foreach json label in <json[]>jsonLabelList {
-            Label|error labelResult = convertJSONToLabelType(label);
-            if (labelResult is Label) {
-                array:push(targetLabelList, labelResult);
-            } else {
-                return labelResult;
-            }
-        }
-    } else {
-        log:printError("Error occurred while getting label list", 'error = jsonLabelList);
-    }
-    return targetLabelList;
-}
 
 # Converts JSON mailbox history to MailboxHistoryPage Type.
 # + sourceJsonMailboxHistory - `json` mailbox history
 # + return-  Returns MailboxHistoryPage Type object
 function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns @tainted MailboxHistoryPage {
-    MailboxHistoryPage targetMailboxHistoryPage = {};
+    MailboxHistoryPage targetMailboxHistoryPage = {historyId : EMPTY_STRING};
     targetMailboxHistoryPage.nextPageToken = let var next = 
         sourceJsonMailboxHistory.nextPageToken in next is string ? next : EMPTY_STRING;
     targetMailboxHistoryPage.historyId = let var historyId = 
@@ -371,7 +198,8 @@ function convertJSONToMailboxHistoryPage (json sourceJsonMailboxHistory) returns
         json|error historyList = sourceJsonMailboxHistory.history;
         if (historyList is json) {
             foreach json history in <json[]>historyList {
-                array:push(targetMailboxHistoryPage.historyRecords, convertJSONToHistoryType(history));
+                array:push(targetMailboxHistoryPage?.historyRecords is History[] ? 
+                           <History[]>targetMailboxHistoryPage?.historyRecords : [], convertJSONToHistoryType(history));
             }
         } else {
             log:printError("Error occurred while getting history list", 'error = historyList);
@@ -398,7 +226,7 @@ function convertJSONToMsgTypeList(json[] messages, @tainted Message[] targetList
 # + sourceJsonHistory - Source `json` History
 # + return - Returns History Type object
 function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted History {
-    History targetHistory = {};
+    History targetHistory = {id:EMPTY_STRING};
     map<json>|error srcJsonHisMap = sourceJsonHistory.cloneWithType(mapJson);
     if (srcJsonHisMap is map<json>) {
         // id
@@ -410,7 +238,8 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
         // messages
         if (elementExists(srcJsonHisMap, "messages")) {
             targetHistory.messages = 
-                convertJSONToMsgTypeList(<json[]>srcJsonHisMap["messages"], targetHistory.messages);
+                convertJSONToMsgTypeList(<json[]>srcJsonHisMap["messages"], targetHistory?.messages is Message[] ?
+                <Message[]>targetHistory?.messages : []);
         } else {
             targetHistory.messages = [];
         }
@@ -421,7 +250,8 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                 foreach var addedMessage in addedMessages {
                     var historyEvent = addedMessage.cloneWithType(HistoryEvent);
                     if(historyEvent is HistoryEvent) {
-                        array:push(targetHistory.messagesAdded,historyEvent);
+                        array:push(targetHistory?.messagesAdded is HistoryEvent[] ? 
+                                   <HistoryEvent[]>targetHistory?.messagesAdded : [],historyEvent);
                     } else {
                         log:printError("Error occured while converting to HistoryEvent type", 'error = historyEvent);
                     }
@@ -439,7 +269,8 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                 foreach var deletedMessage in deletedMessages {
                     var historyEvent = deletedMessage.cloneWithType(HistoryEvent);
                     if(historyEvent is HistoryEvent) {
-                        array:push(targetHistory.messagesDeleted,historyEvent);
+                        array:push(targetHistory?.messagesDeleted is HistoryEvent[] ? 
+                                   <HistoryEvent[]>targetHistory?.messagesDeleted : [],historyEvent);
                     } else {
                         log:printError("Error occured while converting to HistoryEvent type", 'error = historyEvent);
                     }
@@ -457,7 +288,8 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                 foreach var addedLabel in addedLabels {
                     var historyEvent = addedLabel.cloneWithType(HistoryEvent);
                     if(historyEvent is HistoryEvent) {
-                        array:push(targetHistory.labelsAdded,historyEvent);
+                        array:push(targetHistory?.labelsAdded is HistoryEvent[] ? 
+                                   <HistoryEvent[]> targetHistory?.labelsAdded : [],historyEvent);
                     } else {
                         log:printError("Error occured while converting to HistoryEvent type", 'error = historyEvent);
                     }
@@ -475,7 +307,8 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
                 foreach var removedLabel in removedLabels {
                     var historyEvent = removedLabel.cloneWithType(HistoryEvent);
                     if(historyEvent is HistoryEvent) {
-                        array:push(targetHistory.labelsRemoved,historyEvent);
+                        array:push(targetHistory?.labelsRemoved is HistoryEvent[] ? 
+                                   <HistoryEvent[]>targetHistory?.labelsRemoved : [],historyEvent);
                     } else {
                         log:printError("Error occured while converting to HistoryEvent type", 'error = historyEvent);
                     }
@@ -494,14 +327,27 @@ function convertJSONToHistoryType(json sourceJsonHistory) returns @tainted Histo
 # + sourceDraftJsonObject - `json` Draft Object
 # + return - If successful, returns Draft. Else returns error.
 function convertJSONToDraftType(json sourceDraftJsonObject) returns @tainted Draft {
-    Draft targetDraft = {};
+    Draft targetDraft = {id: EMPTY_STRING};
     targetDraft.id = let var id = sourceDraftJsonObject.id in id is string ? id : EMPTY_STRING;
 
     json|error message = sourceDraftJsonObject.message;
     if(message is json) {
-        targetDraft.message = sourceDraftJsonObject.message !== () ? convertJSONToMessageType(message) : {};
+        targetDraft.message = sourceDraftJsonObject.message !== () ? convertJSONToMessageType(message) 
+                              : {id : EMPTY_STRING, threadId : EMPTY_STRING};
     } else {
         log:printError("Error occurred while getting message from sourceDraftJsonObject.", 'error = message);
     }
     return targetDraft;
+}
+
+# Format received base64 data string to the valid format in MessageBodyPart.
+# + receivedMessageBodyPart - The MessageBodyPart which received
+# + return - Returns MessageBodyPart with valid Base64 encoded data
+isolated function getFormattedBase64MessageBodyPart (MessageBodyPart receivedMessageBodyPart) returns MessageBodyPart {
+    if (receivedMessageBodyPart?.data is string) {
+        string formattedBody = <string> receivedMessageBodyPart?.data;
+        formattedBody = regex:replaceAll(formattedBody, DASH_SYMBOL, PLUS_SYMBOL);
+        receivedMessageBodyPart.data = regex:replaceAll(formattedBody, UNDERSCORE_SYMBOL, FORWARD_SLASH_SYMBOL);
+    }
+    return receivedMessageBodyPart;
 }
