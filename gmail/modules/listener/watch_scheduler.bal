@@ -14,20 +14,51 @@
 // specific language governing permissions and limitations
 // under the License.
 
+import ballerina/lang.runtime;
+import ballerina/log;
 import ballerina/task;
 import ballerina/time;
 
 class Job {
     *task:Job;
     private Listener 'listener;
+    private int retryCount = 1;
+    private int retryScheduleCount = 1;
 
     isolated function init(Listener 'listener) {
         self.'listener = 'listener;
     }
 
     public isolated function execute() {
-        checkpanic self.'listener.watchMailbox();
-        checkpanic self.scheduleNextWatchRenewal();
+        error? err = self.'listener.watchMailbox();
+        if (err is error) {
+            log:printWarn(WARN_WATCH_MAILBOX, 'error = err);
+            if (self.retryCount <= 10) {
+                log:printInfo(INFO_RETRY_WATCH_MAILBOX + self.retryCount.toString());
+                runtime:sleep(5);
+                self.retryCount += 1;
+                self.execute();
+            } else {
+                panic error(ERR_WATCH_MAILBOX);
+            }
+        } else {
+            self.scheduleNextWatch();
+        }
+    }
+
+    isolated function scheduleNextWatch() {
+        error? err = self.scheduleNextWatchRenewal();
+        if (err is error) {
+            log:printWarn(WARN_WATCH_MAILBOX, 'error = err);
+            if (self.retryScheduleCount <= 10) {
+                log:printInfo(INFO_RETRY_SCHEDULE + self.retryScheduleCount.toString());
+                runtime:sleep(5);
+                self.retryScheduleCount += 1;
+                self.scheduleNextWatch();
+            } else {
+                panic error(ERR_SCHEDULE);
+            }
+        }
     }
 
     isolated function scheduleNextWatchRenewal() returns error? {

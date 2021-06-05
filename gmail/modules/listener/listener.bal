@@ -30,9 +30,10 @@ public class Listener {
     private string project;
     private string pushEndpoint;
 
-    private gmail:WatchRequestBody requestBody={topicName:""};
+    private WatchRequestBody requestBody={topicName:""};
     private HttpService httpService;
     http:Client pubSubClient;
+    http:Client gmailHttpClient;
 
     public isolated function init(int port, gmail:GmailConfiguration gmailConfig, string project, string pushEndpoint,
                                     GmailListenerConfiguration? listenerConfig = ()) returns @tainted error? {
@@ -45,9 +46,14 @@ public class Listener {
                     : (gmailConfig.oauthClientConfig),
             secureSocket: socketConfig
         }); 
+        // Create gmail http client.
+        self.gmailHttpClient = checkpanic new (gmail:BASE_URL, {
+            auth: gmailConfig.oauthClientConfig,
+            secureSocket: socketConfig
+        }); 
 
         self.httpListener = check new (port);
-        //Create gmail client.
+        //Create gmail connector client.
         self.gmailClient = new (gmailConfig);     
         self.project = project;
         self.pushEndpoint = pushEndpoint;
@@ -55,7 +61,7 @@ public class Listener {
         TopicSubscriptionDetail topicSubscriptionDetail = check createTopic(self.pubSubClient, project, pushEndpoint);        
         self.topicResource = topicSubscriptionDetail.topicResource;
         self.subscriptionResource = topicSubscriptionDetail.subscriptionResource;
-        self.requestBody = {topicName: self.topicResource, labelIds: [INBOX], labelFilterAction : gmail:INCLUDE};
+        self.requestBody = {topicName: self.topicResource, labelIds: [INBOX], labelFilterAction : INCLUDE};
     }
 
     public isolated function attach(service object {} s, string[]|string? name = ()) returns @tainted error? {
@@ -77,7 +83,7 @@ public class Listener {
     public isolated function gracefulStop() returns @tainted error? {
         json deleteSubscription = check deletePubsubSubscription(self.pubSubClient, self.subscriptionResource);
         json deleteTopic = check deletePubsubTopic(self.pubSubClient, self.topicResource);
-        var response = check self.gmailClient->stop(self.userId);
+        var response = check stop(self.gmailHttpClient, self.userId);
         log:printInfo("Watch Stopped = " + response.toString());
         return self.httpListener.gracefulStop();
     }
@@ -87,7 +93,7 @@ public class Listener {
     }
 
     public isolated function watchMailbox() returns @tainted error? {
-        gmail:WatchResponse  response = check self.gmailClient->watch(self.userId, self.requestBody);
+        WatchResponse  response = check watch(self.gmailHttpClient, self.userId, self.requestBody);
         self.startHistoryId = response.historyId;
         log:printInfo("New History ID: " + self.startHistoryId);
         self.httpService.startHistoryId = self.startHistoryId;

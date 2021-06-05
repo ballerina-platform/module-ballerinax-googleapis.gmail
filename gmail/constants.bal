@@ -16,7 +16,7 @@
 
 //API urls
 # Holds the value for URL of gmail.
-const string BASE_URL = "https://www.googleapis.com/gmail";
+public const string BASE_URL = "https://www.googleapis.com/gmail";
 # Holds the value for URL of refresh token end point.
 public const string REFRESH_URL = "https://oauth2.googleapis.com/token";
 # Holds the value for oauth scheme.
@@ -44,10 +44,6 @@ const string HISTORY_RESOURCE = "/history";
 const string DRAFT_RESOURCE = "/drafts";
 # Holds the value for send draft resource.
 const string DRAFT_SEND_RESOURCE = "/drafts/send";
-# Holds the value for watch mailbox resource path.
-public const string WATCH = "/watch";
-# Holds the value for stop watch mailbox resource path.
-public const string STOP = "/stop";
 
 # Holds the value for empty string.
 const string EMPTY_STRING = "";
@@ -196,9 +192,3 @@ public const string TEXT_HTML = "text/html";
 
 // Error Codes
 const string GMAIL_ERROR_CODE = "(ballerinax/googleapis.gmail)GmailError";
-
-#Holds values fro LabelFilterAction for watch request.
-public enum LabelFilterAction{
-    INCLUDE = "include",
-    EXCLUDE = "exclude"
-}
