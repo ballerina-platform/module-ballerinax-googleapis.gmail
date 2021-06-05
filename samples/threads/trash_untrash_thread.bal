@@ -39,18 +39,18 @@ public function main(string... args) {
     string sentMessageThreadId = "<THREAD_ID"; 
 
     log:printInfo("Trash thread");
-    boolean|error trash = gmailClient->trashThread(userId, sentMessageThreadId);
+    gmail:MailThread|error trash = gmailClient->trashThread(userId, sentMessageThreadId);
 
-    if (trash == true) {
+    if (trash is gmail:MailThread) {
         log:printInfo("Successfully trashed the thread");
     } else {
         log:printError("Failed to trash the thread");
     } 
 
     log:printInfo("Un-trash thread");
-    boolean|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
+    gmail:MailThread|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
 
-    if (untrash == true) {
+    if (untrash is gmail:MailThread) {
         log:printInfo("Successfully un-trashed the thread");
     } else {
         log:printError("Failed to un-trash the thread");

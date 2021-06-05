@@ -249,8 +249,8 @@ function getFileNameFromPath(string filePath) returns string|error {
 # + return - If successful returns `json` response. Else returns error.
 isolated function handleResponse(http:Response httpResponse) returns @tainted json|error {
     if (httpResponse.statusCode == http:STATUS_NO_CONTENT) {
-        //If status 204, then no response body. So returns json boolean true.
-        return true;
+        //If status 204, then no response body. So don't returns anything.
+        return null;
     }
     var jsonResponse = httpResponse.getJsonPayload();
     if (jsonResponse is json) {
@@ -312,7 +312,7 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
         }
     } else {
         error err = error(GMAIL_ERROR_CODE, message = 
-            "Error occurred while accessing the JSON payload of the response");
+            "Error occurred while accessing the JSON payload of the response", 'error = jsonResponse.toString());
         return err;
     }
 }
