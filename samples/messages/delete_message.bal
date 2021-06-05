@@ -40,12 +40,12 @@ public function main(string... args) {
     // Id of the message to delete. This can be obtained from the response of create message.
     string sentMessageId = "<MESSAGE_ID>"; 
 
-    boolean|error delete = gmailClient->deleteMessage(userId, sentMessageId);
+    error? delete = gmailClient->deleteMessage(userId, sentMessageId);
     
-    if (delete == true) {
-        log:printInfo("Successfully deleted the message");
-    } else {
+    if (delete is error) {
         log:printError("Failed to delete the message");
+    } else {
+        log:printInfo("Successfully deleted the message");
     }
     log:printInfo("End!");
 }

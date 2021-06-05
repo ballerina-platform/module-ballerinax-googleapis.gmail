@@ -221,7 +221,7 @@ function testTrashMessage() {
     if (trash is error) {
         test:assertFail(msg = trash.message());
     } else {
-        test:assertTrue(trash, msg = "Trash mail failed");
+        test:assertTrue(sentHtmlMessageId == trash.id, msg = "Trash mail failed");
     }
 }
 
@@ -235,7 +235,7 @@ function testUntrashMessage() {
     if (untrash is error) {
         test:assertFail(msg = untrash.message());
     } else {
-        test:assertTrue(untrash, msg = "Trash mail failed");
+        test:assertTrue(sentHtmlMessageId == untrash.id, msg = "Trash mail failed");
     }
 }
 
@@ -247,9 +247,7 @@ function testDeleteMessage() {
     log:printInfo("testDeleteMessage");
     var delete = gmailClient->deleteMessage(testUserId, sentHtmlMessageId);
     if (delete is error) {
-        test:assertFail(msg = delete.message());
-    } else {
-        test:assertTrue(delete, msg = "Trash mail failed");
+        test:assertFail(msg = delete.toString());
     }
 }
 
@@ -311,7 +309,7 @@ function testTrashThread() {
     if (trash is error) {
         test:assertFail(msg = trash.message());
     } else {
-        test:assertTrue(trash, msg = "Trash thread failed");
+        test:assertTrue(sentTextMessageThreadId == trash.id, msg = "Trash thread failed");
     }
 }
 
@@ -325,7 +323,7 @@ function testUnTrashThread() {
     if (untrash is error) {
         test:assertFail(msg = untrash.message());
     } else {
-        test:assertTrue(untrash, msg = "Untrash thread failed");
+        test:assertTrue(sentTextMessageThreadId == untrash.id, msg = "Untrash thread failed");
     }
 }
 
@@ -338,9 +336,7 @@ function testDeleteThread() {
     log:printInfo("testDeleteThread");
     var delete = gmailClient->deleteThread(testUserId, sentTextMessageThreadId);
     if (delete is error) {
-        test:assertFail(msg = delete.message());
-    } else {
-        test:assertTrue(delete, msg = "Delete thread failed");
+        test:assertFail(msg = delete.toString());
     }
 }
 
@@ -404,9 +400,7 @@ function testDeleteLabel() {
     log:printInfo("testDeleteLabel");
     var deleteLabelResponse = gmailClient->deleteLabel(testUserId, createdLabelId);
     if (deleteLabelResponse is error) {
-        test:assertFail(msg = deleteLabelResponse.message());
-    } else {
-        test:assertTrue(deleteLabelResponse, msg = "Delete Label failed");
+        test:assertFail(msg = deleteLabelResponse.toString());
     }
 }
 
@@ -560,9 +554,7 @@ function testDeleteDraft() {
     }
     //Delete the created draft
     var deleteResponse = gmailClient->deleteDraft(testUserId, draftIdToDelete);
-    if (deleteResponse is boolean) {
-        test:assertTrue(deleteResponse, msg = "Delete Draft Failed");
-    } else {
-        test:assertFail(msg = deleteResponse.message());
+    if (deleteResponse is error) {
+        test:assertFail(msg = deleteResponse.toString());
     }
 }
