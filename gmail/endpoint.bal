@@ -623,7 +623,7 @@ public client class Client {
     # + pageToken - Optional. Page token to retrieve a specific page of results in the list
     # + return - If successful, returns MailboxHistoryPage. Else returns error.
     @display {label: "List history"}
-    remote function listHistory(@display {label: "Mail address of user"} string userId,
+    remote isolated function listHistory(@display {label: "Mail address of user"} string userId,
                                 @display {label: "Start history id"} string startHistoryId,
                                 @display {label: "History type"} string[]? historyTypes = (),
                                 @display {label: "Label id"} string? labelId = (),
@@ -652,7 +652,7 @@ public client class Client {
         //Get json history reponse. If unsuccessful, throws and returns error.
         json jsonHistoryResponse = check handleResponse(httpResponse);
         //Transform the json history response from Gmail API to Mailbox History Page type.s
-        return convertJSONToMailboxHistoryPage(<@untainted>jsonHistoryResponse);
+        return check jsonHistoryResponse.cloneWithType(MailboxHistoryPage);
     }
 
     # List the drafts in user's mailbox.

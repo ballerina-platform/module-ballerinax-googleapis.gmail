@@ -441,9 +441,9 @@ function testListHistory() {
     if (listHistoryResponse is error) {
         test:assertFail(msg = listHistoryResponse.message());
     } else {
-        if (listHistoryResponse?.historyRecords is History[]) {
-            History[] historyRecords = <History[]>listHistoryResponse?.historyRecords;
-            test:assertTrue(historyRecords.length() != 0, msg = "List history failed");
+        if (listHistoryResponse?.history is History[]) {
+            History[] history = <History[]>listHistoryResponse?.history;
+            test:assertTrue(history.length() != 0, msg = "List history failed");
         }        
     }
 }

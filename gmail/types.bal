@@ -276,12 +276,12 @@ public type Color record {
 
 # Represents a page of the history list received as response for list history api call.
 #
-# + historyRecords - List of history records. Any messages contained in the response will typically only have id and
+# + history - List of history records. Any messages contained in the response will typically only have id and
 #                    threadId fields populated.
 # + nextPageToken - Page token to retrieve the next page of results in the list
 # + historyId - The ID of the mailbox's current history record
 public type MailboxHistoryPage record {
-    History[] historyRecords?;
+    History[] history?;
     string nextPageToken?;
     string historyId;
 };
