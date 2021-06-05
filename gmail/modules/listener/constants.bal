@@ -23,6 +23,12 @@ const string FORWARD_SLASH_SYMBOL = "/";
 const string STARRED = "STARRED";
 #Holds the value of label Id "INBOX".
 const string INBOX = "INBOX";
+# Holds the value for watch mailbox resource path.
+public const string WATCH = "/watch";
+# Holds the value for stop watch mailbox resource path.
+public const string STOP = "/stop";
+# Holds the value for user resource path of gmail client.
+const string USER_RESOURCE = "/v1/users/";
 
 # Holds the value "me". Used as current authenticated userId.
 const string ME = "me";
@@ -76,8 +82,25 @@ const string SETIAMPOLICY = ":setIamPolicy";
 # Holds the value Error code in listener.
 const string GMAIL_LISTENER_ERROR_CODE = "(ballerinax/googleapis.gmail) GmailListenerError";
 
+// Warn constants
+const string WARN_WATCH_MAILBOX = "Could not watch mailbox";
+
+// Info constants
+const string INFO_RETRY_WATCH_MAILBOX = "Retrying to watch mailbox. Attempt - ";
+const string INFO_RETRY_SCHEDULE = "Retrying to schedule watch renewal. Attempt - ";
+
+// Error constants
+const string ERR_WATCH_MAILBOX = "Unable to watch mailbox.";
+const string ERR_SCHEDULE = "Unable to schedule watch renewal.";
+
 public enum Encoding {
     ENCODING_UNSPECIFIED,
     JSON,
     BINARY
+}
+
+#Holds values fro LabelFilterAction for watch request.
+public enum LabelFilterAction{
+    INCLUDE = "include",
+    EXCLUDE = "exclude"
 }
