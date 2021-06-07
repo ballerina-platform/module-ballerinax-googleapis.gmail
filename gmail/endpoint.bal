@@ -46,7 +46,7 @@ public client class Client {
     # + filter - Optional. MsgSearchFilter with optional query parameters to search messages.
     # + return - If successful, returns MessageListPage. Else returns error.
     @display {label: "List Messages"} 
-    remote isolated  function listMessages(@display {label: "Mail Address of User"} string userId, 
+    remote isolated  function listMessages(@display {label: "Email Address"} string userId, 
                                            @display {label: "Message Search Filter"} MsgSearchFilter? filter = ())
                                            returns @tainted @display {label: "Message List"} MessageListPage|error {
         string getListMessagesPath = USER_RESOURCE + userId + MESSAGE_RESOURCE;
@@ -86,7 +86,7 @@ public client class Client {
     # (The Subject headers must match)
     # + return - If successful, returns Message record of the successfully sent message. Else return error.
     @display {label: "Send Message"} 
-    remote function sendMessage(@display {label: "Mail Address of User"} string userId,
+    remote function sendMessage(@display {label: "Email Address"} string userId,
                                 @display {label: "Message Request to Send"} MessageRequest message,
                                 @display {label: "Thread Id"} string? threadId = ())
                                 returns @tainted @display {label: "Sent Message Response"} Message|error {
@@ -129,7 +129,7 @@ public client class Client {
     #                       as *FORMAT_METADATA*.
     # + return - If successful, returns Message type object of the specified mail. Else returns error.
     @display {label: "Read Message"} 
-    remote function readMessage(@display {label: "Mail Address of User"} string userId,
+    remote function readMessage(@display {label: "Email Address"} string userId,
                                 @display {label: "Message Id"} string messageId,
                                 @display {label: "Message Format"} string? format = (), 
                                 @display {label: "Metadata Headers"} string[]? metadataHeaders = ())
@@ -160,7 +160,7 @@ public client class Client {
     # + attachmentId - The id of the attachment to retrieve
     # + return - If successful, returns MessageBodyPart type object of the specified attachment. Else returns error.
     @display {label: "Get Attachment"} 
-    remote isolated function getAttachment(@display {label: "Mail Address of User"} string userId,
+    remote isolated function getAttachment(@display {label: "Email Address"} string userId,
                                            @display {label: "Message Id"} string messageId,
                                            @display {label: "Attachment Id"} string attachmentId)
                                            returns @tainted @display {label: "Message Body Part"} MessageBodyPart | 
@@ -181,7 +181,7 @@ public client class Client {
     # + messageId - The id of the message to trash
     # + return - If successful, returns trashed Message record. Else returns error.
     @display {label: "Trash Message"} 
-    remote isolated function trashMessage(@display {label: "Mail Address of User"} string userId,
+    remote isolated function trashMessage(@display {label: "Email Address"} string userId,
                                           @display {label: "Message Id"} string messageId) 
                                           returns @tainted @display {label: "Trashed Message"} Message|error {
         http:Request request = new;
@@ -199,7 +199,7 @@ public client class Client {
     # + messageId - The id of the message to untrash
     # + return - If successful, returns untrashed Message record. Else returns error.
     @display {label: "Untrash Message"} 
-    remote isolated function untrashMessage(@display {label: "Mail Address of User"} string userId, 
+    remote isolated function untrashMessage(@display {label: "Email Address"} string userId, 
                                             @display {label: "Message Id"} string messageId) 
                                             returns @tainted @display {label: "Untrashed Message"} Message|error {
         http:Request request = new;
@@ -217,7 +217,7 @@ public client class Client {
     # + messageId - The id of the message to delete
     # + return - If successful, returns nothing. Else returns error.
     @display {label: "Delete Message"}
-    remote isolated function deleteMessage(@display {label: "Mail Address of User"} string userId,
+    remote isolated function deleteMessage(@display {label: "Email Address"} string userId,
                                            @display {label: "Message Id"} string messageId) 
                                            returns @tainted @display {label: "Status"} error? {
         http:Request request = new;
@@ -237,7 +237,7 @@ public client class Client {
     # + removeLabelIds - A list Ids of labels to remove from this message
     # + return - If successful, returns modified Message type object in **minimal** format. Else returns error.
     @display {label: "Modify Message Labels"} 
-    remote function modifyMessage(@display {label: "Mail Address of User"} string userId, 
+    remote function modifyMessage(@display {label: "Email Address"} string userId, 
                                   @display {label: "Message Id"} string messageId, 
                                   @display {label: "Labels to Add"} string[] addLabelIds, 
                                   @display {label: "Labels to Remove"} string[] removeLabelIds)
@@ -270,7 +270,7 @@ public client class Client {
     # + filter - Optional. The MsgSearchFilter with optional query parameters to search a thread.
     # + return - If successful, returns ThreadListPage type. Else returns error.
     @display {label: "List Threads"} 
-    remote isolated function listThreads(@display {label: "Mail Address of User"} string userId,
+    remote isolated function listThreads(@display {label: "Email Address"} string userId,
                                          @display {label: "Message Search Filter"} MsgSearchFilter? filter = ()) 
                                          returns @tainted @display {label: "Thread List"} ThreadListPage|error {
         string getListThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE;
@@ -323,7 +323,7 @@ public client class Client {
     #                           as `FORMAT_METADATA`.
     # + return - If successful, returns MailThread type of the specified mail thread. Else returns error.
     @display {label: "Read Thread"}
-    remote function readThread(@display {label: "Mail Address of User"} string userId,
+    remote function readThread(@display {label: "Email Address"} string userId,
                                @display {label: "Thread Id"} string threadId,
                                @display {label: "Message Format"} string? format = (),
                                @display {label: "Metadata Headers"} string[]? metadataHeaders = ())
@@ -352,7 +352,7 @@ public client class Client {
     # + threadId - The id of the thread to trash
     # + return - If successful, returns trashed MailThread record. Else returns error.
     @display {label: "Trash Thread"} 
-    remote isolated function trashThread(@display {label: "Mail Address of User"} string userId,
+    remote isolated function trashThread(@display {label: "Email Address"} string userId,
                                          @display {label: "Thread Id"} string threadId) 
                                          returns @tainted @display {label: "Trashed Thread"} MailThread|error {
         http:Request request = new;
@@ -370,7 +370,7 @@ public client class Client {
     # + threadId - The id of the thread to untrash
     # + return - If successful, returns boolean status of untrashing. Else returns error.
     @display {label: "Untrash Thread"} 
-    remote isolated function untrashThread(@display {label: "Mail Address of User"} string userId,
+    remote isolated function untrashThread(@display {label: "Email Address"} string userId,
                                            @display {label: "Thread Id"} string threadId) 
                                            returns @tainted @display {label: "Untrashed Thread"} MailThread|error {
         http:Request request = new;
@@ -388,7 +388,7 @@ public client class Client {
     # + threadId - The id of the thread to delete
     # + return - If successful, returns nothing. Else returns error.
     @display {label: "Delete Thread"}
-    remote isolated function deleteThread(@display {label: "Mail Address of User"} string userId,
+    remote isolated function deleteThread(@display {label: "Email Address"} string userId,
                                           @display {label: "Thread Id"} string threadId) 
                                           returns @tainted @display {label: "Status"} error? {
         http:Request request = new;
@@ -407,7 +407,7 @@ public client class Client {
     # + removeLabelIds - A list IDs of labels to remove from this thread
     # + return - If successful, returns modified MailThread type object. Else returns error.
     @display {label: "Modify Labels on Thread"}
-    remote function modifyThread(@display {label: "Mail Address of User"} string userId, 
+    remote function modifyThread(@display {label: "Email Address"} string userId, 
                                  @display {label: "Thread Id"} string threadId, 
                                  @display {label: "Labels to Add"} string[] addLabelIds, 
                                  @display {label: "Labels to Remove"} string[] removeLabelIds)
@@ -436,7 +436,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns UserProfile type. Else returns error.
     @display {label: "Get User Profile"}
-    remote isolated function getUserProfile(@display {label: "Mail Address of User"} string userId)
+    remote isolated function getUserProfile(@display {label: "Email Address"} string userId)
                                             returns @tainted @display {label: "User Profile"} UserProfile|error {
         string getProfilePath = USER_RESOURCE + userId + PROFILE_RESOURCE;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(getProfilePath);
@@ -452,7 +452,7 @@ public client class Client {
     # + labelId - The label Id
     # + return - If successful, returns Label type. Else returns error.
     @display {label: "Get Label"}
-    remote isolated function getLabel(@display {label: "Mail Address of User"} string userId,
+    remote isolated function getLabel(@display {label: "Email Address"} string userId,
                                       @display {label: "Label Id"} string labelId) 
                                       returns @tainted @display {label: "Label"} Label|error {
         string getLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
@@ -484,7 +484,7 @@ public client class Client {
     #                   to set the color of a label.
     # + return - If successful, returns id of the created label. If not, returns error.
     @display {label: "Create Label"}
-    remote isolated function createLabel(@display {label: "Mail Address of User"} string userId,
+    remote isolated function createLabel(@display {label: "Email Address"} string userId,
                                          @display {label: "Label Name"} string name,
                                          @display {label: "Label Visibility"} string labelListVisibility,
                                          @display {label: "Message List Visibility"} string messageListVisibility, 
@@ -519,7 +519,7 @@ public client class Client {
     # + return - If successful, returns an array of Label type objects with values for a set of main fields only. (Use
     #            `getLabel` to get all the details for a specific label) If not successful, returns error.
     @display {label: "List Labels"}
-    remote isolated function listLabels(@display {label: "Mail Address of User"} string userId)
+    remote isolated function listLabels(@display {label: "Email Address"} string userId)
                                         returns @tainted @display {label: "Labels"} LabelList|error {
         string listLabelsPath = USER_RESOURCE + userId + LABEL_RESOURCE;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(listLabelsPath);
@@ -534,7 +534,7 @@ public client class Client {
     # + labelId - The id of the label to delete
     # + return - If successful, returns nothing. Else returns error.
     @display {label: "Delete Label"}
-    remote isolated function deleteLabel(@display {label: "Mail Address of User"} string userId,
+    remote isolated function deleteLabel(@display {label: "Email Address"} string userId,
                                          @display {label: "Label Id"} string labelId) 
                                          returns @tainted @display {label: "Status"} error? {
         http:Request request = new;
@@ -567,7 +567,7 @@ public client class Client {
     # + textColor - Optional. The text color of the label, represented as hex string.
     # + return - If successful, returns updated Label type object. Else returns error.
     @display {label: "Update Label"}
-    remote isolated function updateLabel(@display {label: "Mail Address of User"} string userId,
+    remote isolated function updateLabel(@display {label: "Email Address"} string userId,
                                          @display {label: "Label Id"} string labelId, 
                                          @display {label: "Label Name"} string? name = (),
                                          @display {label: "Message List Visibility"} string? messageListVisibility =(),
@@ -625,7 +625,7 @@ public client class Client {
     # + pageToken - Optional. Page token to retrieve a specific page of results in the list
     # + return - If successful, returns MailboxHistoryPage. Else returns error.
     @display {label: "List History"}
-    remote isolated function listHistory(@display {label: "Mail Address of User"} string userId,
+    remote isolated function listHistory(@display {label: "Email Address"} string userId,
                                 @display {label: "Start History Id"} string startHistoryId,
                                 @display {label: "History Type"} string[]? historyTypes = (),
                                 @display {label: "Label Id"} string? labelId = (),
@@ -663,7 +663,7 @@ public client class Client {
     # + filter - Optional. DraftSearchFilter with optional query parameters to search drafts.
     # + return - If successful, returns DraftListPage. Else returns error.
     @display {label: "List Drafts"}
-    remote isolated function listDrafts(@display {label: "Mail Address of User"} string userId,
+    remote isolated function listDrafts(@display {label: "Email Address"} string userId,
                                         @display {label: "Drafts Search Filter"} DraftSearchFilter? filter = ()) 
                                         returns @tainted @display {label: "Drafts"} DraftListPage|error {
         string getListDraftsPath = USER_RESOURCE + userId + DRAFT_RESOURCE;
@@ -704,7 +704,7 @@ public client class Client {
     #                               base64url encoded string. (the payload field is not included in the response)
     # + return - If successful, returns Draft type of the specified draft. Else returns error.
     @display {label: "Read Draft"}
-    remote function readDraft(@display {label: "Mail Address of User"} string userId, 
+    remote function readDraft(@display {label: "Email Address"} string userId, 
                               @display {label: "Draft Id"} string draftId,
                               @display {label: "Draft Format"} string? format = ()) 
                               returns @tainted @display {label: "Draft"} Draft|error {
@@ -727,7 +727,7 @@ public client class Client {
     # + draftId - The id of the draft to delete
     # + return - If successful, returns nothing. Else returns error.
     @display {label: "Delete Draft"}
-    remote isolated function deleteDraft(@display {label: "Mail Address of User"} string userId, 
+    remote isolated function deleteDraft(@display {label: "Email Address"} string userId, 
                                          @display {label: "Draft Id"} string draftId) 
                                          returns @tainted @display {label: "Status"} error? {
         http:Request request = new;
@@ -746,7 +746,7 @@ public client class Client {
     # + threadId - Optional. Thread Id of the draft to reply
     # + return - If successful, returns the draft Id of the created Draft. Else returns error.
     @display {label: "Create Draft"}
-    remote function createDraft(@display {label: "Mail Address of User"} string userId,
+    remote function createDraft(@display {label: "Email Address"} string userId,
                                 @display {label: "Message Request"} MessageRequest message,
                                 @display {label: "Thread Id"} string? threadId = ())
                                 returns @tainted @display {label: "Draft Id"} string|error {
@@ -779,7 +779,7 @@ public client class Client {
     # + threadId - Optional. Thread Id of the draft to reply
     # + return - If successful, returns the draft Id of the updated Draft. Else returns error.
     @display {label: "Update Draft"}
-    remote function updateDraft(@display {label: "Mail Address of User"} string userId, 
+    remote function updateDraft(@display {label: "Email Address"} string userId, 
                                 @display {label: "Draft Id"} string draftId, 
                                 @display {label: "Message Request"} MessageRequest message, 
                                 @display {label: "Thread Id"} string? threadId = ())
@@ -811,7 +811,7 @@ public client class Client {
     # + draftId - The draft Id to send
     # + return - If successful, returns Message record of the sent Draft. Else returns error.
     @display {label: "Send Draft"} 
-    remote isolated function sendDraft(@display {label: "Mail Address of User"} string userId,
+    remote isolated function sendDraft(@display {label: "Email Address"} string userId,
                                        @display {label: "Draft Id"} string draftId) 
                                        returns @tainted @display {label: "Sent Message Response"} Message |
                                        error {
