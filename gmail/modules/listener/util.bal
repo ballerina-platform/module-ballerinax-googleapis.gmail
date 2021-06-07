@@ -200,3 +200,22 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
         return err;
     }
 }
+
+// Gmail watch and stop Functions
+
+isolated function watch(http:Client gmailHttpClient, string userId, WatchRequestBody requestBody) 
+                        returns @tainted WatchResponse | error {
+    http:Request request = new;
+    string watchPath = USER_RESOURCE + userId + WATCH;
+    request.setJsonPayload(requestBody.toJson());
+    http:Response httpResponse = <http:Response> check gmailHttpClient->post(watchPath, request);
+    json jsonWatchResponse = check handleResponse(httpResponse);
+    WatchResponse watchResponse = check jsonWatchResponse.cloneWithType(WatchResponse);
+    return watchResponse;
+}
+
+isolated function stop(http:Client gmailHttpClient, string userId) returns @tainted error? {
+    http:Request request = new;
+    string stopPath = USER_RESOURCE + userId + STOP;
+    http:Response httpResponse = <http:Response> check gmailHttpClient->post(stopPath, request);
+}

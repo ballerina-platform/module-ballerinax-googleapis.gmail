@@ -53,9 +53,9 @@ public function main(string... args) {
             historyTypes = historyTypes);
 
         if (listHistoryResponse is gmail:MailboxHistoryPage) {
-            if (listHistoryResponse?.historyRecords is gmail:History[]) {
-                gmail:History[] historyRecords = <gmail:History[]> listHistoryResponse?.historyRecords;
-                error? e = historyRecords.forEach(function (gmail:History history) {
+            if (listHistoryResponse?.history is gmail:History[]) {
+                gmail:History[] history = <gmail:History[]> listHistoryResponse?.history;
+                error? e = history.forEach(function (gmail:History history) {
                     log:printInfo(history.id);
                 });
             }            

@@ -65,8 +65,8 @@ class Dispatcher {
     }
 
     function dispatch(gmail:MailboxHistoryPage mailboxHistoryPage) returns @tainted error? {
-        if (mailboxHistoryPage?.historyRecords is gmail:History[]) {
-            foreach var history in <gmail:History[]>mailboxHistoryPage?.historyRecords {
+        if (mailboxHistoryPage?.history is gmail:History[]) {
+            foreach var history in <gmail:History[]>mailboxHistoryPage?.history {
                 if (history?.messagesAdded is gmail:HistoryEvent[] ) {
                     gmail:HistoryEvent[] newMessages = <gmail:HistoryEvent[]>history?.messagesAdded;
                     if ((newMessages.length()>0) && (self.isOnNewEmail || self.isOnNewAttachment || self.isOnNewThread)) {
