@@ -623,7 +623,7 @@ public client class Client {
     # + pageToken - Optional. Page token to retrieve a specific page of results in the list
     # + return - If successful, returns MailboxHistoryPage. Else returns error.
     @display {label: "List history"}
-    remote function listHistory(@display {label: "Mail address of user"} string userId,
+    remote isolated function listHistory(@display {label: "Mail address of user"} string userId,
                                 @display {label: "Start history id"} string startHistoryId,
                                 @display {label: "History type"} string[]? historyTypes = (),
                                 @display {label: "Label id"} string? labelId = (),
@@ -652,7 +652,7 @@ public client class Client {
         //Get json history reponse. If unsuccessful, throws and returns error.
         json jsonHistoryResponse = check handleResponse(httpResponse);
         //Transform the json history response from Gmail API to Mailbox History Page type.s
-        return convertJSONToMailboxHistoryPage(<@untainted>jsonHistoryResponse);
+        return check jsonHistoryResponse.cloneWithType(MailboxHistoryPage);
     }
 
     # List the drafts in user's mailbox.
@@ -818,43 +818,6 @@ public client class Client {
         http:Response httpResponse = <http:Response> check self.gmailClient->post(updateDraftPath, request);        
         json jsonSendDraftResponse = check handleResponse(httpResponse);
         return check jsonSendDraftResponse.cloneWithType(Message);
-    }
-
-    # Set up or update a push notification watch on the given user mailbox.
-    #
-    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
-    # + requestBody - The request body contains data with the following structure of JSON representation:
-    #                   `{`
-    #                   `   "labelIds": [`
-    #                   `       string`
-    #                   `    ],`
-    #                   `    "labelFilterAction": enum (LabelFilterAction),`
-    #                   `    "topicName": string`
-    #                   `       }`
-    # + return - If successful, returns WatchResponse. Else returns error.
-    @display {label: "Watch mailbox changes"}
-    remote isolated function watch(@display {label: "Mail address of user"} string userId, 
-                                   @display {label: "The request body for subscription"} WatchRequestBody requestBody) 
-                                   returns @tainted @display {label: "Watch result"} WatchResponse | error {
-        http:Request request = new;
-        string watchPath = USER_RESOURCE + userId + WATCH;
-        request.setJsonPayload(requestBody.toJson());
-        http:Response httpResponse = <http:Response> check self.gmailClient->post(watchPath, request);
-        json jsonWatchResponse = check handleResponse(httpResponse);
-        WatchResponse watchResponse = check jsonWatchResponse.cloneWithType(WatchResponse);
-        return watchResponse;
-    }
-
-    # Set up or update a push notification watch on the given user mailbox.
-    #
-    # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
-    # + return - If successful, nothing will be returned. Else returns error.
-    @display {label: "Stop watching mailbox changes"}
-    remote isolated function stop(@display {label: "Mail address of user"} string userId) 
-                                  returns @tainted @display {label: "Result"} error? {
-        http:Request request = new;
-        string stopPath = USER_RESOURCE + userId + STOP;
-        http:Response httpResponse = <http:Response> check self.gmailClient->post(stopPath, request);
     }
 }
 

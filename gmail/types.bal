@@ -276,12 +276,12 @@ public type Color record {
 
 # Represents a page of the history list received as response for list history api call.
 #
-# + historyRecords - List of history records. Any messages contained in the response will typically only have id and
+# + history - List of history records. Any messages contained in the response will typically only have id and
 #                    threadId fields populated.
 # + nextPageToken - Page token to retrieve the next page of results in the list
 # + historyId - The ID of the mailbox's current history record
 public type MailboxHistoryPage record {
-    History[] historyRecords?;
+    History[] history?;
     string nextPageToken?;
     string historyId;
 };
@@ -319,25 +319,4 @@ public type HistoryEvent record {
 public type Draft record {
     string id;
     Message message?;
-};
-
-# Represents a watch response.
-#
-# + historyId - The ID of the mailbox's current history record.
-# + expiration - When Gmail will stop sending notifications for mailbox updates (epoch millis) - (int64 format). 
-public type WatchResponse record {
-    string historyId;
-    string expiration;
-};
-
-# Represents a watch request body.
-#
-# + topicName - A fully qualified Google Cloud Pub/Sub API topic name to publish the events to. This topic name must
-#               already exist in Cloud Pub/Sub and you must have already granted gmail "publish" permission on it. 
-# + labelIds - Array of labelIds of gmail to restrict notifications about
-# + labelFilterAction - Filtering behavior of labelIds list specified.
-public type WatchRequestBody record {
-    string topicName;
-    string[] labelIds?;
-    LabelFilterAction labelFilterAction?;
 };
