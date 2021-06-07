@@ -182,13 +182,13 @@ if (response is gmail:Message) {
 
 ### Step 2: Trash the unwanted message
 Trashing sends the message to the trash folder. The message does not delete permanently. The user can always un-trash 
-the message before it automatically deletes by Gmail after 30 days. The operation returns a boolean `true` if the message
+the message before it automatically deletes by Gmail after 30 days. The operation returns `Message` record if the message
 is trashed successfully. Else returns an `error`.
 
 ```ballerina
-boolean|error trash = gmailClient->trashMessage(userId, sentHtmlMessageId);
+gmail:Message|error trash = gmailClient->trashMessage(userId, sentMessageId);
 
-if (trash == true) {
+if (trash is gmail:Message) {
     log:printInfo("Successfully trashed the message");
 } else {
     log:printError("Failed to trash the message");
@@ -389,7 +389,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 This sample shows how to trash or un-trash an email that is available in the authorized user's account. When you trash a 
 message, it stays in your Trash folder for 30 days. After that time, it will be permanently deleted. So if you want to 
 recover the email you have deleted within these 30 days, you can do so using the un-trash capability of the connector. 
-These two operations returns boolean `true` if the operations are successful. Else returns `error`.
+These two operations returns `Message` record if the operations are successful. Else returns `error`.
 
 ```ballerina 
 // Moves the specified message to the trash.
@@ -400,17 +400,17 @@ string userId = "me";
 // ID of the message to trash or un-trash.
 string sentMessageId = "<MESSAGE_ID>"; 
 
-boolean|error trash = gmailClient->trashMessage(userId, sentMessageId);
+gmail:Message|error trash = gmailClient->trashMessage(userId, sentMessageId);
 
-if (trash == true) {
+if (trash is gmail:Message) {
     log:printInfo("Successfully trashed the message");
 } else {
     log:printError("Failed to trash the message");
 }
 
-boolean|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
+gmail:Message|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
 
-if (untrash == true) {
+if (untrash is gmail:Message) {
     log:printInfo("Successfully un-trashed the message");
 } else {
     log:printError("Failed to un-trash the message");
@@ -422,7 +422,7 @@ Sample is un-trashing is available at: https://github.com/ballerina-platform/mod
 ### Delete message
 This sample shows how to delete an email that is available in the authorized user's account.In contrast to trashing a 
 message, delete message permanently deletes the message such that it cannot be recovered again. This operation returns 
-a boolean `true` if successful. Else returns `error`.
+nothing if successful. Else returns `error`.
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -431,12 +431,12 @@ string userId = "me";
 // Id of the message to delete. This can be obtained from the response of create message.
 string sentMessageId = "<MESSAGE_ID>"; 
 
-boolean|error delete = gmailClient->deleteMessage(userId, sentMessageId);
-
-if (delete == true) {
-    log:printInfo("Successfully deleted the message");
-} else {
+error? delete = gmailClient->deleteMessage(userId, sentMessageId);
+    
+if (delete is error) {
     log:printError("Failed to delete the message");
+} else {
+    log:printInfo("Successfully deleted the message");
 }
 ```
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/messages/delete_message.bal
@@ -538,7 +538,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 This sample shows how to trash or un-trash an email thread that is available in the authorized user's account. When you 
 trash an email thread, it stays in your Trash folder for 30 days. After that time, it will be permanently deleted. So if 
 you want to recover the email thread you have deleted within these 30 days, you can do so using the un-trash capability 
-of the connector. The operation has These two operations returns boolean `true` if the operations are successful. Else 
+of the connector. The operation has These two operations returns `MailThread` record if the operations are successful. Else 
 returns `error`.
 
 ```ballerina
@@ -549,18 +549,18 @@ string userId = "me";
 string sentMessageThreadId = "<THREAD_ID";
 
 log:printInfo("Trash thread");
-boolean|error trash = gmailClient->trashThread(userId, sentMessageThreadId);
+gmail:MailThread|error trash = gmailClient->trashThread(userId, sentMessageThreadId);
 
-if (trash == true) {
+if (trash is gmail:MailThread) {
     log:printInfo("Successfully trashed the thread");
 } else {
     log:printError("Failed to trash the thread");
 } 
 
 log:printInfo("Un-trash thread");
-boolean|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
+gmail:MailThread|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
 
-if (untrash == true) {
+if (untrash is gmail:MailThread) {
     log:printInfo("Successfully un-trashed the thread");
 } else {
     log:printError("Failed to un-trash the thread");
@@ -571,7 +571,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### Delete thread
 This sample shows how to delete an email thread that is available in the authorized user's account.In contrast to 
 trashing a an email thread, delete thread permanently deletes the email thread such that it cannot be recovered again. 
-This operation returns a boolean `true` if successful. Else returns `error`.
+This operation returns nothing if successful. Else returns `error`.
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -580,12 +580,12 @@ string userId = "me";
 // ID of the thread to delete.
 string sentMessageThreadId = "<THREAD_ID"; 
 
-boolean|error delete = gmailClient->deleteThread(userId, sentMessageThreadId);
-
-if (delete == true) {
-    log:printInfo("Successfully deleted the thread");
-} else {
+error? delete = gmailClient->deleteThread(userId, sentMessageThreadId);
+ 
+if (delete is error) {
     log:printError("Failed to delete the thread");
+} else {
+    log:printInfo("Successfully deleted the thread");
 }
 ```
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/threads/delete_thread.bal
@@ -716,7 +716,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### Delete draft
 This sample shows how to delete a draft that is available in the authorized user's account. In contrast to previous 
 resources, delete of drafts immediately and permanently deletes the specified draft. Does not simply trash it.
-This operation returns a boolean `true` if successful. Else returns `error`.
+This operation returns nothing if successful. Else returns `error`.
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -725,12 +725,12 @@ string userId = "me";
 // The ID of the existing draft we want to delete.
 string createdDraftId = "<DRAFT_ID>"; 
 
-boolean|error deleteResponse = gmailClient->deleteDraft(userId, createdDraftId);
+error? deleteResponse = gmailClient->deleteDraft(userId, createdDraftId);
 
-if (deleteResponse == true) {
-    log:printInfo("Successfully deleted the draft");
-} else {
+if (deleteResponse is error) {
     log:printError("Failed to delete the draft");
+} else {
+    log:printInfo("Successfully deleted the draft");
 }
 ```
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/drafts/delete_draft.bal
@@ -849,7 +849,7 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### Delete label
 This sample shows how to delete a label that is available in the authorized user's account. Delete of a label immediately 
 and permanently deletes the specified label and removes it from any messages and threads that it is applied to.
-This operation returns a boolean `true` if successful. Else returns `error`.
+This operation returns nothing if successful. Else returns `error`.
 
 ```ballerina
 // The user's email address. The special value **me** can be used to indicate the authenticated user.
@@ -858,12 +858,12 @@ string userId = "me";
 // The ID of an already created label that we want to delete
 string createdLabelId = "<LABEL_ID>";
 
-boolean|error deleteLabelResponse = gmailClient->deleteLabel(userId, createdLabelId);
-    
-if (deleteLabelResponse == true) {
-    log:printError("Successfully deleted the message");
-} else {
+error? deleteLabelResponse = gmailClient->deleteLabel(userId, createdLabelId);
+     
+if (deleteLabelResponse is error) {
     log:printInfo("Failed to delete the message");
+} else {
+    log:printError("Successfully deleted the message");
 }
 ```
 Sample is available at: https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/blob/master/samples/labels/delete_label.bal

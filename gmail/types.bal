@@ -35,7 +35,7 @@ public type UserProfile record {
 # + messages - The list of messages in the thread
 public type MailThread record {
     string id ;
-    string historyId;
+    string historyId?;
     string snippet?;
     Message[] messages?;
 };

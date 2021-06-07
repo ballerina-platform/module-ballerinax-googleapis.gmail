@@ -39,9 +39,9 @@ public function main(string... args) {
     // ID of the message to trash.
     string sentMessageId = "<MESSAGE_ID>"; 
 
-    boolean|error trash = gmailClient->trashMessage(userId, sentMessageId);
+    gmail:Message|error trash = gmailClient->trashMessage(userId, sentMessageId);
 
-    if (trash == true) {
+    if (trash is gmail:Message) {
         log:printInfo("Successfully trashed the message");
     } else {
         log:printError("Failed to trash the message");

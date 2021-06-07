@@ -179,54 +179,54 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to trash
-    # + return - If successful, returns boolean specifying the status of trashing. Else returns error.
+    # + return - If successful, returns trashed Message record. Else returns error.
     @display {label: "Trash a message"} 
     remote isolated function trashMessage(@display {label: "Mail address of user"} string userId,
                                           @display {label: "Message id"} string messageId) 
-                                          returns @tainted @display {label: "Status"} boolean|error {
+                                          returns @tainted @display {label: "Status"} Message|error {
         http:Request request = new;
         string trashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
             + FORWARD_SLASH_SYMBOL + TRASH;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(trashMessagePath, request);
         //Get json trash response. If unsuccessful, throws and returns error.
         json jsonTrashMessageResponse = check handleResponse(httpResponse);
-        //Return status of trashing message
-        return let var id = jsonTrashMessageResponse.id in id is string ? id == messageId ? true : false : false;
+        return check jsonTrashMessageResponse.cloneWithType(Message);
     }
 
     # Removes the specified message from the trash.
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to untrash
-    # + return - If successful, returns boolean specifying the status of untrashing. Else returns error.
+    # + return - If successful, returns untrashed Message record. Else returns error.
     @display {label: "Untrash a message"} 
     remote isolated function untrashMessage(@display {label: "Mail address of user"} string userId, 
                                             @display {label: "Message id"} string messageId) 
-                                            returns @tainted @display {label: "Status"} boolean|error {
+                                            returns @tainted @display {label: "Status"} Message|error {
         http:Request request = new;
         string untrashMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId
             + FORWARD_SLASH_SYMBOL + UNTRASH;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(untrashMessagePath, request);
         //Get json untrash response. If unsuccessful, throws and returns error.
         json jsonUntrashMessageReponse = check handleResponse(httpResponse);
-        //Return status of untrashing message
-        return let var id = jsonUntrashMessageReponse.id in id is string ? id == messageId ? true : false : false;
+        return check jsonUntrashMessageReponse.cloneWithType(Message);
     }
 
     # Immediately and permanently deletes the specified message. This operation cannot be undone.
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + messageId - The id of the message to delete
-    # + return - If successful, returns boolean status of deletion. Else returns error.
+    # + return - If successful, returns nothing. Else returns error.
     @display {label: "Delete a message"}
     remote isolated function deleteMessage(@display {label: "Mail address of user"} string userId,
                                            @display {label: "Message id"} string messageId) 
-                                           returns @tainted @display {label: "Status"} boolean|error {
+                                           returns @tainted @display {label: "Status"} error? {
         http:Request request = new;
         string deleteMessagePath = USER_RESOURCE + userId + MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId;
         http:Response httpResponse = <http:Response> check self.gmailClient->delete(deleteMessagePath, request);
-        //Return boolean status of message deletion response. If unsuccessful, throws and returns error.
-        return <boolean>check handleResponse(httpResponse);
+        var handledResponse = handleResponse(httpResponse);
+        if (handledResponse is error) {
+            return handledResponse;
+        }
     }
 
     # Modifies the labels on the specified message.
@@ -350,19 +350,18 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to trash
-    # + return - If successful, returns boolean status of trashing. Else returns error.
+    # + return - If successful, returns trashed MailThread record. Else returns error.
     @display {label: "Trash thread"} 
     remote isolated function trashThread(@display {label: "Mail address of user"} string userId,
                                          @display {label: "Thread id"} string threadId) 
-                                         returns @tainted @display {label: "Status"} boolean|error {
+                                         returns @tainted @display {label: "Status"} MailThread|error {
         http:Request request = new;
         string trashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
             + FORWARD_SLASH_SYMBOL + TRASH;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(trashThreadPath, request);
         //Get json trash response. If unsuccessful, throws and returns error.
         json jsonTrashThreadResponse = check handleResponse(httpResponse);
-        //Return status of trashing thread
-        return let var id = jsonTrashThreadResponse.id in id is string ? id == threadId ? true : false : false;
+        return check jsonTrashThreadResponse.cloneWithType(MailThread);
     }
 
     # Removes the specified mail thread from the trash.
@@ -373,31 +372,32 @@ public client class Client {
     @display {label: "Untrash thread"} 
     remote isolated function untrashThread(@display {label: "Mail address of user"} string userId,
                                            @display {label: "Thread id"} string threadId) 
-                                           returns @tainted @display {label: "Status"} boolean|error {
+                                           returns @tainted @display {label: "Status"} MailThread|error {
         http:Request request = new;
         string untrashThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId
             + FORWARD_SLASH_SYMBOL + UNTRASH;
         http:Response httpResponse = <http:Response> check self.gmailClient->post(untrashThreadPath, request);
         //Get json untrash response. If unsuccessful, throws and returns error.
         json jsonUntrashThreadResponse = check handleResponse(httpResponse);
-        //Return status of untrashing thread
-        return let var id = jsonUntrashThreadResponse.id in id is string ? id == threadId ? true : false : false;
+        return check jsonUntrashThreadResponse.cloneWithType(MailThread);
     }
 
     # Immediately and permanently deletes the specified mail thread. This operation cannot be undone.
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + threadId - The id of the thread to delete
-    # + return - If successful, returns boolean status of deletion. Else returns error.
+    # + return - If successful, returns nothing. Else returns error.
     @display {label: "Delete thread"}
     remote isolated function deleteThread(@display {label: "Mail address of user"} string userId,
                                           @display {label: "Thread id"} string threadId) 
-                                          returns @tainted @display {label: "Status"} boolean|error {
+                                          returns @tainted @display {label: "Status"} error? {
         http:Request request = new;
         string deleteThreadPath = USER_RESOURCE + userId + THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId;
         http:Response httpResponse = <http:Response> check self.gmailClient->delete(deleteThreadPath, request);
-        //Return boolean status of thread deletion response. If unsuccessful, throws and returns error.
-        return <boolean>check handleResponse(httpResponse);
+        var handledResponse = handleResponse(httpResponse);
+        if (handledResponse is error) {
+            return handledResponse;
+        }
     }
 
     # Modifies the labels on the specified thread.
@@ -532,16 +532,18 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + labelId - The id of the label to delete
-    # + return - If successful, returns boolean status of deletion. Else returns error.
+    # + return - If successful, returns nothing. Else returns error.
     @display {label: "Delete label"}
     remote isolated function deleteLabel(@display {label: "Mail address of user"} string userId,
                                          @display {label: "Label id"} string labelId) 
-                                         returns @tainted @display {label: "Status"} boolean|error {
+                                         returns @tainted @display {label: "Status"} error? {
         http:Request request = new;
         string deleteLabelPath = USER_RESOURCE + userId + LABEL_RESOURCE + FORWARD_SLASH_SYMBOL + labelId;
         http:Response httpResponse = <http:Response> check self.gmailClient->delete(deleteLabelPath, request);
-        //Return boolean status of label deletion response. If unsuccessful, throws and returns error.
-        return <boolean>check handleResponse(httpResponse);
+        var handledResponse = handleResponse(httpResponse);
+        if (handledResponse is error) {
+            return handledResponse;
+        }
     }
 
     # Update a label.
@@ -723,16 +725,18 @@ public client class Client {
     #
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + draftId - The id of the draft to delete
-    # + return - If successful, returns boolean status of deletion. Else returns error.
+    # + return - If successful, returns nothing. Else returns error.
     @display {label: "Delete draft"}
     remote isolated function deleteDraft(@display {label: "Mail address of user"} string userId, 
                                          @display {label: "Draft id"} string draftId) 
-                                         returns @tainted @display {label: "Status"} boolean|error {
+                                         returns @tainted @display {label: "Status"} error? {
         http:Request request = new;
         string deleteDraftPath = USER_RESOURCE + userId + DRAFT_RESOURCE + FORWARD_SLASH_SYMBOL + draftId;
         http:Response httpResponse = <http:Response> check self.gmailClient->delete(deleteDraftPath, request);
-        //Return boolean status of darft deletion response. If unsuccessful, throws and returns error.
-        return <boolean>check handleResponse(httpResponse);
+        var handledResponse = handleResponse(httpResponse);
+        if (handledResponse is error) {
+            return handledResponse;
+        }
     }
 
     # Creates a new draft with the DRAFT label.

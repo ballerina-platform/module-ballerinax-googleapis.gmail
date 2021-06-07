@@ -38,12 +38,12 @@ public function main(string... args) {
     // The ID of an already created label that we want to delete
     string createdLabelId = "<LABEL_ID>";
 
-    boolean|error deleteLabelResponse = gmailClient->deleteLabel(userId, createdLabelId);
+    error? deleteLabelResponse = gmailClient->deleteLabel(userId, createdLabelId);
      
-    if (deleteLabelResponse == true) {
-        log:printError("Successfully deleted the message");
-    } else {
+    if (deleteLabelResponse is error) {
         log:printInfo("Failed to delete the message");
+    } else {
+        log:printError("Successfully deleted the message");
     }
 
     log:printInfo("End!");
