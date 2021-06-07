@@ -39,9 +39,9 @@ public function main(string... args) {
     // ID of the message to untrash.
     string sentMessageId = "<MESSAGE_ID>"; 
 
-    boolean|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
+    gmail:Message|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
 
-    if (untrash == true) {
+    if (untrash is gmail:Message) {
         log:printInfo("Successfully un-trashed the message");
     } else {
         log:printError("Failed to un-trash the message");

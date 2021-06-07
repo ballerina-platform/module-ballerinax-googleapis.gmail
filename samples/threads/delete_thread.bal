@@ -38,12 +38,12 @@ public function main(string... args) {
     // ID of the thread to delete.
     string sentMessageThreadId = "<THREAD_ID"; 
 
-    boolean|error delete = gmailClient->deleteThread(userId, sentMessageThreadId);
+    error? delete = gmailClient->deleteThread(userId, sentMessageThreadId);
  
-    if (delete == true) {
-        log:printInfo("Successfully deleted the thread");
-    } else {
+    if (delete is error) {
         log:printError("Failed to delete the thread");
+    } else {
+        log:printInfo("Successfully deleted the thread");
     }
 
     log:printInfo("End!");
