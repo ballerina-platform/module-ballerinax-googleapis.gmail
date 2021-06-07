@@ -20,10 +20,15 @@
 # + messagesTotal - The total number of messages in the mailbox
 # + threadsTotal - The total number of threads in the mailbox
 # + historyId - The ID of the mailbox's current history record
+@display {label: "User Profile"}
 public type UserProfile record {
+    @display {label: "Email Address"}
     string emailAddress;
+    @display {label: "Total Messages"}
     int messagesTotal;
+    @display {label: "Total Threads"}
     int threadsTotal;
+    @display {label: "History Id"}
     string historyId;
 };
 
@@ -33,10 +38,15 @@ public type UserProfile record {
 # + snippet - A short part of the message text
 # + historyId - The ID of the last history record that modified this thread
 # + messages - The list of messages in the thread
+@display {label: "Mail Thread"}
 public type MailThread record {
+    @display {label: "Thread Id"}
     string id ;
+    @display {label: "History Id"}
     string historyId?;
+    @display {label: "Snippet"}
     string snippet?;
+    @display {label: "Messages"}
     Message[] messages?;
 };
 
@@ -53,15 +63,25 @@ public type MailThread record {
 # + inlineImagePaths - The InlineImagePath array consisting the inline image file paths and mime types. Optional.
 #                            Note that inline images can only be send for `TEXT_HTML` messages.
 # + attachmentPaths - The AttachmentPath array consisting the attachment file paths and mime types. Optional.
+@display {label: "Message Request"}
 public type MessageRequest record {
+    @display {label: "Recipient"}
     string recipient;
+    @display {label: "Subject"}
     string subject?;
+    @display {label: "Message Body"}
     string messageBody;
+    @display {label: "Content Type"}
     string contentType;
+    @display {label: "Sender"}
     string sender;
+    @display {label: "Cc"}
     string cc?;
+    @display {label: "Bcc"}
     string bcc?;
+    @display {label: "Inline Image Paths"}
     InlineImagePath[] inlineImagePaths?;
+    @display {label: "Attachment Paths"}
     AttachmentPath[] attachmentPaths?;
 };
 
@@ -71,8 +91,11 @@ public type MessageRequest record {
 # + mimeType - The mime type of the image. The primary type should be `image`.
 #                  For ex: If you are sending a jpg image, give the mime type as `image/jpeg`.
 #                          If you are sending a png image, give the mime type as `image/png`.
+@display {label: "Inline Image Path"}
 public type InlineImagePath record {
+    @display {label: "Image Path"}
     string imagePath;
+    @display {label: "Mime Type"}
     string mimeType;
 };
 
@@ -82,8 +105,11 @@ public type InlineImagePath record {
 # + mimeType - The mime type of the attachment
 #                  For ex: If you are sending a pdf document, give the mime type as `application/pdf`.
 #                  If you are sending a text file, give the mime type as `text/plain`.
+@display {label: "Attachment Path"}
 public type AttachmentPath record {
+    @display {label: "Attachment Path"}
     string attachmentPath;
+    @display {label: "Mime Type"}
     string mimeType;
 };
 
@@ -111,27 +137,49 @@ public type AttachmentPath record {
 # + emailBodyInHTML - MIME Message Part with text/html content type
 # + emailInlineImages - MIME Message Parts with inline images with the image/* content type
 # + msgAttachments - MIME Message Parts of the message consisting the attachments
+@display {label: "Message"}
 public type Message record {
+    @display {label: "Thread Id"}
     string threadId;
+    @display {label: "Message Id"}
     string id;
+    @display {label: "Label Ids"}
     string[] labelIds?;
+    @display {label: "Raw"}
     string raw?;
+    @display {label: "Snippet"}
     string snippet?;
+    @display {label: "History Id"}
     string historyId?;
+    @display {label: "Internal Date"}
     string internalDate?;
+    @display {label: "Size Estimate"}
     string sizeEstimate?;
+    @display {label: "Headers"}
     map<string> headers?;
+    @display {label: "To"}
     string headerTo?;
+    @display {label: "From"}
     string headerFrom?;
+    @display {label: "Bcc"}
     string headerBcc?;
+    @display {label: "Cc"}
     string headerCc?;
+    @display {label: "Subject"}
     string headerSubject?;
+    @display {label: "Date"}
     string headerDate?;
+    @display {label: "Content Type"}
     string headerContentType?;
+    @display {label: "Mime Type"}
     string mimeType?;
+    @display {label: "Email Body in Text"}
     MessageBodyPart emailBodyInText?;
+    @display {label: "Email Body in HTML"}
     MessageBodyPart emailBodyInHTML?;
+    @display {label: "Email Inline Images"}
     MessageBodyPart[] emailInlineImages?;
+    @display {label: "Message Attachments"}
     MessageBodyPart[] msgAttachments?;
 };
 
@@ -146,13 +194,21 @@ public type Message record {
 #            represent an inline image/attachment)*
 # + partId - The part id of the message part
 # + size - Number of bytes of message part data
+@display {label: "Message Body Part"}
 public type MessageBodyPart record {
+    @display {label: "Data"}
     string data?;
+    @display {label: "Mime Type"}
     string mimeType?;
+    @display {label: "Body Headers"}
     map<string> bodyHeaders?;
+    @display {label: "File Id"}
     string fileId?;
+    @display {label: "File Name"}
     string fileName?;
+    @display {label: "Part Id"}
     string partId?;
+    @display {label: "Size"}
     int size?;
 };
 
@@ -165,11 +221,17 @@ public type MessageBodyPart record {
 # + pageToken - Page token to retrieve a specific page of results in the list
 # + q - Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports
 #       the same query format as the Gmail search box.
+@display {label: "Message Search Filter"}
 public type MsgSearchFilter record {
+    @display {label: "Include Spam Trash"}
     boolean includeSpamTrash?;
+    @display {label: "Label Ids"}
     string[] labelIds?;
+    @display {label: "Maximum Results"}
     int maxResults?;
+    @display {label: "Page Token"}
     string pageToken?;
+    @display {label: "Query"}
     string q?;
 };
 
@@ -180,10 +242,15 @@ public type MsgSearchFilter record {
 # + pageToken - Page token to retrieve a specific page of results in the list
 # + q - Query for searching . Only returns drafts matching the specified query. Supports
 #       the same query format as the Gmail search box.
+@display {label: "Draft Search Filter"}
 public type DraftSearchFilter record {
+    @display {label: "Include Spam Trash"}
     boolean includeSpamTrash?;
+    @display {label: "Maximum Results"}
     int maxResults?;
+    @display {label: "Page Token"}
     string pageToken?;
+    @display {label: "Query"}
     string q?;
 };
 
@@ -192,9 +259,13 @@ public type DraftSearchFilter record {
 # + messages - Array of message maps with messageId and threadId as keys
 # + resultSizeEstimate - Estimated size of the whole list
 # + nextPageToken - Token for next page of message list
+@display {label: "Message List Page"}
 public type MessageListPage record {
+    @display {label: "Messages"}
     Message[] messages?;
+    @display {label: "Result Size Estimate"}
     int resultSizeEstimate;
+    @display {label: "Next Page Token"}
     string nextPageToken?;
 };
 
@@ -203,9 +274,13 @@ public type MessageListPage record {
 # + threads - Array of thread maps with threadId, snippet and historyId as keys
 # + resultSizeEstimate - Estimated size of the whole list
 # + nextPageToken - Token for next page of mail thread list
+@display {label: "Thread List Page"}
 public type ThreadListPage record {
+    @display {label: "Threads"}
     MailThread[] threads?;
+    @display {label: "Result Size Estimate"}
     int resultSizeEstimate;
+    @display {label: "Next Page Token"}
     string nextPageToken?;
 };
 
@@ -214,9 +289,13 @@ public type ThreadListPage record {
 # + drafts - Array of draft maps with draftId, messageId and threadId as keys
 # + resultSizeEstimate - Estimated size of the whole list
 # + nextPageToken - Token for next page of mail drafts list
+@display {label: "Draft List Page"}
 public type DraftListPage record {
+    @display {label: "Drafts"}
     Draft[] drafts?;
+    @display {label: "Result Size Estimate"}
     int resultSizeEstimate;
+    @display {label: "Next Page Token"}
     string nextPageToken?;
 };
 
@@ -245,23 +324,36 @@ public type DraftListPage record {
 # + threadsTotal - The total number of threads with the label
 # + threadsUnread - The number of unread threads with the label
 # + color - Reperesents the color of label
+@display {label: "Label"}
 public type Label record {
+    @display {label: "Label Id"}
     string id;
+    @display {label: "Label Name"}
     string name;
+    @display {label: "Message List Visibility"}
     string messageListVisibility?;
+    @display {label: "Label List Visibility"}
     string labelListVisibility?;
+    @display {label: "Type"}
     string 'type?;
+    @display {label: "Total Messages"}
     int messagesTotal?;
+    @display {label: "Unread Messages"}
     int messagesUnread?;
+    @display {label: "Total Threads"}
     int threadsTotal?;
+    @display {label: "Unread Threads"}
     int threadsUnread?;
+    @display {label: "Color"}
     Color color?;
 };
 
 # Represents the list of labels.
 #
 # + labels - The array of labels
+@display {label: "Label List"}
 public type LabelList record {
+    @display {label: "Labels"}
     Label[] labels;
 };
 
@@ -269,8 +361,11 @@ public type LabelList record {
 #
 # + textColor - The text color of the label, represented as hex string
 # + backgroundColor - The background color represented as hex string
+@display {label: "Color"}
 public type Color record {
+    @display {label: "Text Color"}
     string textColor;
+    @display {label: "Background Color"}
     string backgroundColor;
 };
 
@@ -280,9 +375,13 @@ public type Color record {
 #                    threadId fields populated.
 # + nextPageToken - Page token to retrieve the next page of results in the list
 # + historyId - The ID of the mailbox's current history record
+@display {label: "Mailbox History Page"}
 public type MailboxHistoryPage record {
+    @display {label: "History List"}
     History[] history?;
+    @display {label: "Next Page Token"}
     string nextPageToken?;
+    @display {label: "History Id"}
     string historyId;
 };
 
@@ -294,12 +393,19 @@ public type MailboxHistoryPage record {
 # + messagesDeleted - Messages deleted (not Trashed) from the mailbox in this history record
 # + labelsAdded - Array of maps of Labels added to messages in this history record
 # + labelsRemoved - Array of maps of Labels removed from messages in this history record
+@display {label: "History"}
 public type History record {
+    @display {label: "History Id"}
     string id;
+    @display {label: "Messages"}
     Message[] messages?;
+    @display {label: "Messages Added"}
     HistoryEvent[] messagesAdded?;
+    @display {label: "Messages Deleted"}
     HistoryEvent[] messagesDeleted?;
+    @display {label: "Labels Added"}
     HistoryEvent[] labelsAdded?;
+    @display {label: "Labels Removed"}
     HistoryEvent[] labelsRemoved?;
 };
 
@@ -307,8 +413,11 @@ public type History record {
 # 
 # + message - The message changed  
 # + labelIds - The label ids of the message  
+@display {label: "History Event"}
 public type HistoryEvent record {
+    @display {label: "Message"}
     Message message;
+    @display {label: "Label Ids"}
     string [] labelIds?;
 };
 
@@ -316,7 +425,10 @@ public type HistoryEvent record {
 #
 # + id - The immutable id of the draft
 # + message - The message content of the draft
+@display {label: "Draft"}
 public type Draft record {
+    @display {label: "Draft Id"}
     string id;
+    @display {label: "Message"}
     Message message?;
 };

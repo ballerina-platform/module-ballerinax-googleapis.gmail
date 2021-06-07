@@ -20,8 +20,11 @@ import ballerinax/googleapis.gmail as gmail;
 #
 # + historyId - The ID of the mailbox's current history record.
 # + expiration - When Gmail will stop sending notifications for mailbox updates (epoch millis) - (int64 format). 
+@display {label: "Watch Response"}
 public type WatchResponse record {
+    @display {label: "History Id"}
     string historyId;
+    @display {label: "Expiration"}
     string expiration;
 };
 
@@ -31,9 +34,13 @@ public type WatchResponse record {
 #               already exist in Cloud Pub/Sub and you must have already granted gmail "publish" permission on it. 
 # + labelIds - Array of labelIds of gmail to restrict notifications about
 # + labelFilterAction - Filtering behavior of labelIds list specified.
+@display {label: "Watch Request Body"}
 public type WatchRequestBody record {
+    @display {label: "Topic Name"}
     string topicName;
+    @display {label: "Label Ids"}
     string[] labelIds?;
+    @display {label: "Label Filter Action"}
     LabelFilterAction labelFilterAction?;
 };
 
@@ -41,8 +48,11 @@ public type WatchRequestBody record {
 #
 # + message - The message which affected by label change  
 # + changedLabelId - The changed label id of the message
+@display {label: "Changed Label"}
 public type ChangedLabel record {
+    @display {label: "Message"}
     gmail:Message message;
+    @display {label: "Changed Label Ids"}
     string[] changedLabelId?;
 };
 
@@ -50,8 +60,11 @@ public type ChangedLabel record {
 #
 # + topicResource - Topic resource name
 # + subscriptionResource - Subscription resource name
+@display {label: "Topic Subscription Detail"}
 public type TopicSubscriptionDetail record {
+    @display {label: "Topic Resource"}
     string topicResource;
+    @display {label: "Subscription Resource"}
     string subscriptionResource;
 };
 
@@ -59,8 +72,11 @@ public type TopicSubscriptionDetail record {
 #
 # + messageId - Message Id
 # + msgAttachments - Message attachment  
+@display {label: "Mail Attachment"}
 public type MailAttachment record {
+    @display {label: "Message Id"}
     string messageId;
+    @display {label: "Message Attachments"}
     gmail:MessageBodyPart[] msgAttachments;
 };
 // Records for pubsub
@@ -71,10 +87,15 @@ public type MailAttachment record {
 # + title - Title for the expression
 # + description - Description of the expression
 # + location - String indicating the location of the expression for error reporting
+@display {label: "Expression"}
 public type Expression record {
+    @display {label: "expression"}
     string expression;
+    @display {label: "Title"}
     string title?;
+    @display {label: "Description"}
     string description?;
+    @display {label: "Location"}
     string location?;
 };
 
@@ -83,9 +104,13 @@ public type Expression record {
 # + role - Role that is assigned to members
 # + members - Specifies the identities requesting access for a Cloud Platform resource
 # + condition - The condition that is associated with this binding
+@display {label: "Binding"}
 public type Binding record {
+    @display {label: "Role"}
     string role;
+    @display {label: "Members"}
     string [] members;
+    @display {label: "Condition"}
     Expression condition?;
 };
 
@@ -94,9 +119,13 @@ public type Binding record {
 # + etag - Unique identity used for optimistic concurrency control  
 # + version - Specifies the format of the policy
 # + bindings - Associates a list of members to a role
+@display {label: "Policy"}
 public type Policy record {
+    @display {label: "Etag"}
     string etag;
+    @display {label: "Version"}
     int 'version?;
+    @display {label: "Bindings"}
     Binding [] bindings?;
 };
 
@@ -104,7 +133,9 @@ public type Policy record {
 #
 # + allowedPersistenceRegions - A list of IDs of GCP regions where messages that are published to the topic may be 
 #                               persisted in storage
+@display {label: "Message Storage Policy"}
 public type MessageStoragePolicy record {
+    @display {label: "Allowed Persistence Regions"}
     string[] allowedPersistenceRegions;
 };
 
@@ -112,8 +143,11 @@ public type MessageStoragePolicy record {
 #
 # + schema - The name of the schema that messages published should be validated against 
 # + encoding - The encoding of messages validated against schema 
+@display {label: "Schema Settings"}
 public type SchemaSettings record {
+    @display {label: "Schema"}
     string schema;
+    @display {label: "Encoding"}
     Encoding encoding;
 };
 
@@ -126,18 +160,26 @@ public type SchemaSettings record {
 #                this topic
 # + schemaSettings - Settings for validating messages published against a schema
 # + satisfiesPzs - Reserved for future use. This field is set only in responses from the server
+@display {label: "Topic Request Body"}
 public type TopicRequestBody record {
+    @display {label: "Labels"}
     map<string> labels?;
+    @display {label: "Message Storage Policy"}
     MessageStoragePolicy messageStoragePolicy?;
+    @display {label: "Kms Key Name"}
     string kmsKeyName?;
+    @display {label: "Schema Settings"}
     SchemaSettings schemaSettings?;
+    @display {label: "Satisfies Pzs"}
     boolean satisfiesPzs?;
 };
 
 # Represents a topic resource.
 #
 # + name - Name of the topic
+@display {label: "Topic"}
 public type Topic record {
+    @display {label: "Topic Name"}
     string name;
     *TopicRequestBody;
 };
@@ -146,8 +188,11 @@ public type Topic record {
 #
 # + serviceAccountEmail - Service account email to be used for generating the OIDC token
 # + audience - Audience to be used when generating OIDC token
+@display {label: "Oidc Token"}
 public type OidcToken record {
+    @display {label: "Service Account Email"}
     string serviceAccountEmail;
+    @display {label: "Audience"}
     string audience;
 };
 
@@ -156,16 +201,22 @@ public type OidcToken record {
 # + pushEndpoint - A URL locating the endpoint to which messages should be pushed
 # + attributes - Endpoint configuration attributes that can be used to control different aspects of message delivery
 # + oidcToken - Contains information needed for generating an OpenID Connect token  
+@display {label: "Push Config"}
 public type PushConfig record {
+    @display {label: "Push Endpoint"}
     string pushEndpoint;
+    @display {label: "Attributes"}
     map<string> attributes?;
+    @display {label: "Oidc Token"}
     OidcToken oidcToken?;
 };
 
 # Represents a policy that specifies the conditions for resource expiration.
 #
 # + ttl - Specifies the "time-to-live" duration for an associated resource
+@display {label: "Expiration Policy"}
 public type ExpirationPolicy record {
+    @display {label: "TTL"}
     string ttl;
 };
 
@@ -173,8 +224,11 @@ public type ExpirationPolicy record {
 #
 # + deadLetterTopic - The name of the topic to which dead letter messages should be published
 # + maxDeliveryAttempts - The maximum number of delivery attempts for any message
+@display {label: "Dead Letter Policy"}
 public type DeadLetterPolicy record {
+    @display {label: "Dead Letter Topic"}
     string deadLetterTopic;
+    @display {label: "Maximum Delivery Attempts"}
     string maxDeliveryAttempts;
 };
 
@@ -182,8 +236,11 @@ public type DeadLetterPolicy record {
 #
 # + minimumBackoff - The minimum delay between consecutive deliveries of a given message
 # + maximumBackoff - The maximum delay between consecutive deliveries of a given message
+@display {label: "Retry Policy"}
 public type RetryPolicy record {
+    @display {label: "Minimum Backoff"}
     string minimumBackoff;
+    @display {label: "Maximum Backoff"}
     string maximumBackoff;
 };
 
@@ -204,25 +261,40 @@ public type RetryPolicy record {
 # + deadLetterPolicy - A policy that specifies the conditions for dead lettering messages in this subscription
 # + retryPolicy - A policy that specifies how Pub/Sub retries message delivery for this subscription
 # + detached - Indicates whether the subscription is detached from its topic
+@display {label: "Subscription Request"}
 public type SubscriptionRequest record {
+    @display {label: "Topic"}
     string topic;
+    @display {label: "Push Config"}
     PushConfig pushConfig;
+    @display {label: "Ack Deadline Seconds"}
     int ackDeadlineSeconds?;
+    @display {label: "Retain Acked Messages"}
     boolean retainAckedMessages?;
+    @display {label: "Message Retention Duration"}
     string messageRetentionDuration?;
+    @display {label: "Labels"}
     map<string> labels?;
+    @display {label: "Enable Message Ordering"}
     boolean enableMessageOrdering?;
+    @display {label: "Expiration Policy"}
     ExpirationPolicy expirationPolicy?;
+    @display {label: "Filter"}
     string filter?;
+    @display {label: "Dead Letter Policy"}
     DeadLetterPolicy deadLetterPolicy?;
+    @display {label: "Retry Policy"}
     RetryPolicy retryPolicy?;
+    @display {label: "Detached"}
     boolean detached?;
 };
 
 # Represents a subscription resource.
 #
 # + name - Name of the subscription  
+@display {label: "Subscription"}
 public type Subscription record {
+    @display {label: "Subscription Name"}
     string name;
     *SubscriptionRequest;
 };
@@ -230,7 +302,9 @@ public type Subscription record {
 # Represents a setIamPolicy request body resource.
 #
 # + policy - Field Description  
+@display {label: "Policy Request Body"}
 public type PolicyRequestBody record {
+    @display {label: "Policy"}
     Policy policy;
 };
 
@@ -239,8 +313,12 @@ public type PolicyRequestBody record {
 # + code - Error code  
 # + message - Error Message  
 # + status - Error Status  
+@display {label: "PubSub Error"}
 public type PubSubError record {
+    @display {label: "Error Code"}
     int code?;
+    @display {label: "Error Message"}
     string message?;
+    @display {label: "Status"}
     string status?;
 };

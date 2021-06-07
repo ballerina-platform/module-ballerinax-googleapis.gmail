@@ -49,7 +49,7 @@ public class Listener {
         // Create gmail http client.
         self.gmailHttpClient = checkpanic new (gmail:BASE_URL, {
             auth: gmailConfig.oauthClientConfig,
-            secureSocket: socketConfig
+            secureSocket: gmailConfig?.secureSocketConfig
         }); 
 
         self.httpListener = check new (port);
@@ -104,7 +104,10 @@ public class Listener {
 #
 # + authConfig - Auth client configuration
 # + secureSocketConfig - Secure socket configuration
+@display {label: "Listener Connection Config"}
 public type GmailListenerConfiguration record {
+    @display {label: "Auth Config"}
     http:JwtIssuerConfig authConfig;
+    @display {label: "SSL Config"}
     http:ClientSecureSocket secureSocketConfig?;
 };
