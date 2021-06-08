@@ -32,16 +32,13 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     log:printInfo("Create label");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
     string displayName = "Test";
     // The visibility of the label in the label list in the Gmail web interface.
     string labelVisibility = "labelShow";
     // The visibility of messages with this label in the message list in the Gmail web interface.
     string messageListVisibility = "show";
 
-    string|error createLabelResponse = gmailClient->createLabel(userId, displayName, labelVisibility, 
-        messageListVisibility);
+    string|error createLabelResponse = gmailClient->createLabel(displayName, labelVisibility, messageListVisibility);
     
     if (createLabelResponse is string) {
         log:printInfo("Successfully created label: ", labelId = createLabelResponse);

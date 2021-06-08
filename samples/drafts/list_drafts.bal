@@ -37,7 +37,7 @@ public function main(string... args) {
 
     gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
     
-    gmail:DraftListPage|error msgList = gmailClient->listDrafts(userId, filter = searchFilter);
+    gmail:DraftListPage|error msgList = gmailClient->listDrafts(filter = searchFilter, userId = userId);
     if (msgList is gmail:DraftListPage) {
         error? e = msgList.drafts.forEach(function (gmail:DraftList draft) {
             log:printInfo(draft.toString());

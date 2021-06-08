@@ -32,13 +32,11 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("Read a message with an attachment");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // ID of the message to read with an attachment.
     string sentMessageId = "<MESSAGE_ID>"; 
 
-    gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
+    gmail:Message|error response = gmailClient->readMessage(sentMessageId);
     
     if (response is gmail:Message) {
        if (response?.msgAttachments is gmail:MessageBodyPart[] ) {

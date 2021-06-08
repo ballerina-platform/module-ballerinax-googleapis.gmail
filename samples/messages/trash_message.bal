@@ -33,13 +33,11 @@ public function main(string... args) {
     
     // Moves the specified message to the trash.
     log:printInfo("Trash a message");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // ID of the message to trash.
     string sentMessageId = "<MESSAGE_ID>"; 
 
-    gmail:Message|error trash = gmailClient->trashMessage(userId, sentMessageId);
+    gmail:Message|error trash = gmailClient->trashMessage(sentMessageId);
 
     if (trash is gmail:Message) {
         log:printInfo("Successfully trashed the message");

@@ -32,11 +32,9 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("List threads");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // Make includeSpamTrash false to exclude threads from SPAM and TRASH in the results.
-    gmail:ThreadListPage|error threadList = gmailClient->listThreads(userId, filter = {includeSpamTrash: false, 
+    gmail:ThreadListPage|error threadList = gmailClient->listThreads(filter = {includeSpamTrash: false, 
         labelIds: ["INBOX"]});
         
     if (threadList is gmail:ThreadListPage) {  

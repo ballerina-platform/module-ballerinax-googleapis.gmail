@@ -32,8 +32,6 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("Modify labels of a HTML message");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // ID of the message to modify.
     string sentMessageId = "<MESSAGE_ID>"; 
@@ -42,7 +40,7 @@ public function main(string... args) {
     string[] labelsToRemove = ["INBOX"];
 
     log:printInfo("Add Labels");
-    gmail:Message|error response = gmailClient->modifyMessage(userId, sentMessageId, labelsToAdd, []);
+    gmail:Message|error response = gmailClient->modifyMessage(sentMessageId, labelsToAdd, []);
 
     if (response is gmail:Message) {
         log:printInfo("Is lablel modified: ", status = response.id == sentMessageId);
@@ -51,7 +49,7 @@ public function main(string... args) {
     }
 
     log:printInfo("Remove Labels");
-    response = gmailClient->modifyMessage(userId, sentMessageId, [], labelsToRemove);
+    response = gmailClient->modifyMessage(sentMessageId, [], labelsToRemove);
     
     if (response is gmail:Message) {
         log:printInfo("Is lablel modified: ", ststus = response.id == sentMessageId);
