@@ -32,15 +32,13 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("List all messages");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
     string[] labelsToMatch = ["INBOX"];
 
     // To exclude messages from spam and trash make set includeSpamTrash to false. Only return messages with labels that 
     // match all of the specified label ID "INBOX"
     gmail:MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: labelsToMatch};
     
-    gmail:MessageListPage|error msgList = gmailClient->listMessages(userId, filter = searchFilter);
+    gmail:MessageListPage|error msgList = gmailClient->listMessages(filter = searchFilter);
 
     if (msgList is gmail:MessageListPage) {
         error? e = msgList.messages.forEach(function (gmail:Message message) {

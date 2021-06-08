@@ -22,7 +22,6 @@ service class HttpService {
 
     private gmail:Client gmailClient;
     public  string startHistoryId = "";
-    private string userId = ME;
     private Dispatcher dispatcher;
 
     public isolated function init(SimpleHttpService|HttpService httpService, gmail:Client gmailClient, 
@@ -34,7 +33,7 @@ service class HttpService {
 
     resource function post mailboxChanges(http:Caller caller, http:Request request) returns @tainted error? {
         check caller->respond(http:STATUS_OK);
-        var  mailboxHistoryPage =  self.gmailClient->listHistory(<@untainted>self.userId, self.startHistoryId);
+        var  mailboxHistoryPage =  self.gmailClient->listHistory(self.startHistoryId);
         
         if (mailboxHistoryPage is gmail:MailboxHistoryPage) {
             self.startHistoryId = mailboxHistoryPage.historyId;

@@ -32,13 +32,11 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("Delete thread");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // ID of the thread to delete.
     string sentMessageThreadId = "<THREAD_ID"; 
 
-    error? delete = gmailClient->deleteThread(userId, sentMessageThreadId);
+    error? delete = gmailClient->deleteThread(sentMessageThreadId);
  
     if (delete is error) {
         log:printError("Failed to delete the thread");

@@ -32,8 +32,6 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     log:printInfo("Update label");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
     
     // The ID of an already created label that we want to update
     string createdLabelId = "Label_20";
@@ -42,7 +40,7 @@ public function main(string... args) {
     string updateBgColor = "#16a766";
     string updateTxtColor = "#000000";
 
-    gmail:Label|error updateLabelResponse = gmailClient->updateLabel(userId, createdLabelId, name = updateName,
+    gmail:Label|error updateLabelResponse = gmailClient->updateLabel(createdLabelId, name = updateName,
         backgroundColor = updateBgColor, textColor = updateTxtColor);
 
     if (updateLabelResponse is gmail:Label) {

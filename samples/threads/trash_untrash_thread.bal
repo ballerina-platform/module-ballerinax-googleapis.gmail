@@ -32,14 +32,12 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("Trash and Untrash thread");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // ID of the thread to trash or untrash.
     string sentMessageThreadId = "<THREAD_ID"; 
 
     log:printInfo("Trash thread");
-    gmail:MailThread|error trash = gmailClient->trashThread(userId, sentMessageThreadId);
+    gmail:MailThread|error trash = gmailClient->trashThread(sentMessageThreadId);
 
     if (trash is gmail:MailThread) {
         log:printInfo("Successfully trashed the thread");
@@ -48,7 +46,7 @@ public function main(string... args) {
     } 
 
     log:printInfo("Un-trash thread");
-    gmail:MailThread|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
+    gmail:MailThread|error untrash = gmailClient->untrashThread(sentMessageThreadId);
 
     if (untrash is gmail:MailThread) {
         log:printInfo("Successfully un-trashed the thread");

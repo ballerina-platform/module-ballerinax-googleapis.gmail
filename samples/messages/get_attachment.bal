@@ -32,8 +32,6 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("Get an attachment in a sent message");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // ID of the message where the attachment belongs to.
     string sentHtmlMessageId = "<MESSAGE_ID>"; 
@@ -42,7 +40,7 @@ public function main(string... args) {
     string readAttachmentFileId;
 
     // To read the attachment you should first obtain the attachment file ID 
-    gmail:Message|error readResponse = gmailClient->readMessage(userId, sentHtmlMessageId);
+    gmail:Message|error readResponse = gmailClient->readMessage(sentHtmlMessageId);
     
     if (readResponse is gmail:Message) {
         log:printInfo("Meesage information retrieved");
@@ -50,7 +48,7 @@ public function main(string... args) {
             gmail:MessageBodyPart[] msgAttachments = <gmail:MessageBodyPart[]>readResponse?.msgAttachments;
             readAttachmentFileId = msgAttachments[0]?.fileId is string ? <@untainted>(<string>msgAttachments[0]?.fileId)
                                     : readAttachmentFileId;
-            gmail:MessageBodyPart|error response = gmailClient->getAttachment(userId, sentHtmlMessageId, 
+            gmail:MessageBodyPart|error response = gmailClient->getAttachment(sentHtmlMessageId, 
                 readAttachmentFileId);
             if (response is gmail:MessageBodyPart) {
                 log:printInfo("Attachment " + response.toString());

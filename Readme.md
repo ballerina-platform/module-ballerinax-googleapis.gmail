@@ -153,7 +153,7 @@ The response from `sendMessage` is either a Message record or an `error` (if sen
 
 ```ballerina
 //Send the message.
-gmail:Message|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId,messageRequest);
+gmail:Message|error sendMessageResponse = checkpanic gmailClient->sendMessage(messageRequest, userId = userId);
 
 if (sendMessageResponse is gmail:Message) {
     // If successful, print the message ID and thread ID.
@@ -171,7 +171,7 @@ The `readMessage` remote function reads messages. It returns the `Message` objec
 when unsuccessful.
 
 ```ballerina
-gmail:Message|error response = gmailClient->readMessage(userId, <@untainted>messageId);
+gmail:Message|error response = gmailClient->readMessage(<@untainted>messageId);
 
 if (response is gmail:Message) {
     io:println("Sent Message: " + response.toString());
@@ -186,7 +186,7 @@ the message before it automatically deletes by Gmail after 30 days. The operatio
 is trashed successfully. Else returns an `error`.
 
 ```ballerina
-gmail:Message|error trash = gmailClient->trashMessage(userId, sentMessageId);
+gmail:Message|error trash = gmailClient->trashMessage(sentMessageId);
 
 if (trash is gmail:Message) {
     log:printInfo("Successfully trashed the message");
@@ -200,7 +200,7 @@ The `deleteMessage` remote function deletes messages permanently from the Gmail 
 unsuccessful.
 
 ```ballerina    
-var delete = gmailClient->deleteMessage(userId, <@untainted>messageId);
+var delete = gmailClient->deleteMessage(<@untainted>messageId);
 
 if (delete is error) {
     io:println("Error: ", delete);
@@ -236,7 +236,7 @@ gmail:MessageRequest messageRequest = {
     contentType : gmail:TEXT_PLAIN
 };
 
-gmail:Message|error sendMessageResponse = checkpanic gmailClient->sendMessage(userId,messageRequest);
+gmail:Message|error sendMessageResponse = checkpanic gmailClient->sendMessage(messageRequest, userId = userId );
 
 if (sendMessageResponse is gmail:Message) {
     // If successful, print the message ID and thread ID.
@@ -256,8 +256,6 @@ what to send as data for an email. As the content type is HTML, the user must sp
 `MessageRequest` as **text/html**. This operation returns a Message record of the newly sent email. Else an `error`
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 string inlineImageName = "test_image.png";
 string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
@@ -271,7 +269,7 @@ gmail:MessageRequest messageRequest = {
     contentType : gmail:TEXT_HTML
 };
 
-gmail:Message|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+gmail:Message|error sendMessageResponse = gmailClient->sendMessage(messageRequest);
 if (sendMessageResponse is gmail:Message) {
     // If successful, print the message ID and thread ID.
     log:printInfo("Sent Message ID: " + sendMessageResponse.id);
@@ -312,13 +310,11 @@ This operation will return a `Message` if successful. Else return an `error`.
 
 ```ballerina
 
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // ID of the message to read.
 string sentMessageId = "<MESSAGE_ID>"; 
 
-gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
+gmail:Message|error response = gmailClient->readMessage(sentMessageId);
 
 if (response is gmail:Message) {
     log:printInfo("Is message details available: ", status = response.id == sentMessageId);
@@ -337,13 +333,10 @@ of this operation is extracting the attachment and that can be accessed inside t
 
 ```ballerina
 
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
-
 // ID of the message to read
 string sentMessageId = "<MESSAGE_ID>";
 
-gmail:Message|error response = gmailClient->readMessage(userId, sentMessageId);
+gmail:Message|error response = gmailClient->readMessage(sentMessageId);
 
 if (response is gmail:Message) {
    if (response?.msgAttachments is gmail:MessageBodyPart[] ) {
@@ -365,8 +358,7 @@ successful. Else returns `error`.
 
 ```ballerina
 
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
+
 
 // ID of the message where attachment belongs to.
 string sentMessageId = "<MESSAGE_ID>"; 
@@ -374,7 +366,7 @@ string sentMessageId = "<MESSAGE_ID>";
 // ID of the attachment
 string readAttachmentFileId = "<ATTACHMENT_ID>";
 
-gmail:MessageBodyPart|error response = gmailClient->getAttachment(userId, sentMessageId, readAttachmentFileId);
+gmail:MessageBodyPart|error response = gmailClient->getAttachment(sentMessageId, readAttachmentFileId);
 
 if (response is gmail:MessageBodyPart) {
     log:printInfo("Attachment " + response.toString());
@@ -394,13 +386,11 @@ These two operations returns `Message` record if the operations are successful. 
 ```ballerina 
 // Moves the specified message to the trash.
 
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // ID of the message to trash or un-trash.
 string sentMessageId = "<MESSAGE_ID>"; 
 
-gmail:Message|error trash = gmailClient->trashMessage(userId, sentMessageId);
+gmail:Message|error trash = gmailClient->trashMessage(sentMessageId);
 
 if (trash is gmail:Message) {
     log:printInfo("Successfully trashed the message");
@@ -408,7 +398,7 @@ if (trash is gmail:Message) {
     log:printError("Failed to trash the message");
 }
 
-gmail:Message|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
+gmail:Message|error untrash = gmailClient->untrashMessage(sentMessageId);
 
 if (untrash is gmail:Message) {
     log:printInfo("Successfully un-trashed the message");
@@ -425,13 +415,12 @@ message, delete message permanently deletes the message such that it cannot be r
 nothing if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
+
 
 // Id of the message to delete. This can be obtained from the response of create message.
 string sentMessageId = "<MESSAGE_ID>"; 
 
-error? delete = gmailClient->deleteMessage(userId, sentMessageId);
+error? delete = gmailClient->deleteMessage(sentMessageId);
     
 if (delete is error) {
     log:printError("Failed to delete the message");
@@ -455,14 +444,12 @@ search result. For this operation in the connector, you must also provide the **
 information. Returns a `MailThread` if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // ID of the thread to read.
 string sentMessageThreadId = "<THREAD_ID";
 
 // When given and format is METADATA, only include headers specified. Here, it will specify "Subject"
-gmail:MailThread|error thread = gmailClient->readThread(userId, sentMessageThreadId, format = gmail:FORMAT_METADATA, 
+gmail:MailThread|error thread = gmailClient->readThread(sentMessageThreadId, format = gmail:FORMAT_METADATA, 
     metadataHeaders = ["Subject"]);
     
 if (thread is gmail:MailThread) {
@@ -480,8 +467,6 @@ also provide the **ID of the thread** you want to read the information and **arr
 from the thread. Returns `MailThread` if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // ID of the thread to modify.
 string sentMessageThreadId = "<THREAD_ID"; 
@@ -489,7 +474,7 @@ string sentMessageThreadId = "<THREAD_ID";
 // Modify labels of the thread with thread id which was sent in testSendTextMessage
 
 log:printInfo("Add labels to a thread");
-gmail:MailThread|error response = gmailClient->modifyThread(userId, sentMessageThreadId, ["INBOX"], []);
+gmail:MailThread|error response = gmailClient->modifyThread(sentMessageThreadId, ["INBOX"], []);
 
 if (response is gmail:MailThread) {
     log:printInfo("Add labels to thread successfully: ", status = response.id == sentMessageThreadId);
@@ -498,7 +483,7 @@ if (response is gmail:MailThread) {
 }
 
 log:printInfo("Remove labels from a thread");
-response = gmailClient->modifyThread(userId, sentMessageThreadId, [], ["INBOX"]);
+response = gmailClient->modifyThread(sentMessageThreadId, [], ["INBOX"]);
 if (response is gmail:MailThread) {
     log:printInfo("Removed labels from thread successfully: ", status = response.id == sentMessageThreadId);
 } else {
@@ -514,11 +499,9 @@ result contains a `ThreadListPage` which inside it contains an array of `MailThr
 thread if operation is successful. Else returns an `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // Make includeSpamTrash false to exclude threads from SPAM and TRASH in the results.
-gmail:ThreadListPage|error threadList = gmailClient->listThreads(userId, filter = {includeSpamTrash: false, 
+gmail:ThreadListPage|error threadList = gmailClient->listThreads(filter = {includeSpamTrash: false, 
     labelIds: ["INBOX"]});
 
 if (threadList is gmail:ThreadListPage) {
@@ -542,14 +525,12 @@ of the connector. The operation has These two operations returns `MailThread` re
 returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // ID of the thread to trash or un-trash.
 string sentMessageThreadId = "<THREAD_ID";
 
 log:printInfo("Trash thread");
-gmail:MailThread|error trash = gmailClient->trashThread(userId, sentMessageThreadId);
+gmail:MailThread|error trash = gmailClient->trashThread(sentMessageThreadId);
 
 if (trash is gmail:MailThread) {
     log:printInfo("Successfully trashed the thread");
@@ -558,7 +539,7 @@ if (trash is gmail:MailThread) {
 } 
 
 log:printInfo("Un-trash thread");
-gmail:MailThread|error untrash = gmailClient->untrashThread(userId, sentMessageThreadId);
+gmail:MailThread|error untrash = gmailClient->untrashThread(sentMessageThreadId);
 
 if (untrash is gmail:MailThread) {
     log:printInfo("Successfully un-trashed the thread");
@@ -574,13 +555,11 @@ trashing a an email thread, delete thread permanently deletes the email thread s
 This operation returns nothing if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // ID of the thread to delete.
 string sentMessageThreadId = "<THREAD_ID"; 
 
-error? delete = gmailClient->deleteThread(userId, sentMessageThreadId);
+error? delete = gmailClient->deleteThread(sentMessageThreadId);
  
 if (delete is error) {
     log:printError("Failed to delete the thread");
@@ -602,8 +581,6 @@ This draft will be represented as an unsent messages with the DRAFT system label
 `string` representing the draft ID. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 // The ID of the thread the draft should sent to. this is optional.
 string sentMessageThreadId = "<THREAD_ID>";
 
@@ -616,7 +593,7 @@ gmail:MessageRequest messageRequest = {
     contentType : gmail:TEXT_PLAIN
 };
 
-string|error draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentMessageThreadId);
+string|error draftResponse = gmailClient->createDraft(messageRequest, threadId = sentMessageThreadId);
 
 if (draftResponse is string) {
     log:printInfo("Successfully created draft: ", draftId = draftResponse);
@@ -634,8 +611,6 @@ return `string` representing the **ID of the draft** which is updated where, it 
 along with the request.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // The ID of the draft to update. This will be returned when a draft is created. 
 string createdDraftId = "<DRAFT_ID>";
@@ -655,7 +630,7 @@ string attachmentContentType = "text/plain";
 gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
 newMessageRequest.attachmentPaths = attachments;
 
-string|error draftUpdateResponse = gmailClient->updateDraft(userId, createdDraftId, newMessageRequest);
+string|error draftUpdateResponse = gmailClient->updateDraft(createdDraftId, newMessageRequest);
 
 if (draftUpdateResponse is string) {
     log:printInfo("Successfully updated the draft: ", result = draftUpdateResponse);
@@ -671,13 +646,11 @@ connector, you must also provide the **ID of the draft** you want to read the in
 contain the data of the message which is saved as a draft if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // The ID of the existing draft we want to read.
 string createdDraftId = "<DRAFT_ID>"; 
 
-gmail:Draft|error draftReadResponse = gmailClient->readDraft(userId, createdDraftId);
+gmail:Draft|error draftReadResponse = gmailClient->readDraft(createdDraftId);
 
 if (draftReadResponse is gmail:Draft) {
     log:printInfo("Successfully read the draft: ", status = draftReadResponse.id == createdDraftId);
@@ -694,12 +667,10 @@ result contains a `DraftListPage` which inside it contains an array of `Draft` r
 draft if operation is successful. Else returns an `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
 
-gmail:DraftListPage|error msgList = gmailClient->listDrafts(userId, filter = searchFilter);
+gmail:DraftListPage|error msgList = gmailClient->listDrafts(filter = searchFilter);
 if (msgList is gmail:DraftListPage) {
     error? e = msgList.drafts.forEach(function (gmail:DraftList draft) {
         log:printInfo(draft.toString());
@@ -719,13 +690,11 @@ resources, delete of drafts immediately and permanently deletes the specified dr
 This operation returns nothing if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // The ID of the existing draft we want to delete.
 string createdDraftId = "<DRAFT_ID>"; 
 
-error? deleteResponse = gmailClient->deleteDraft(userId, createdDraftId);
+error? deleteResponse = gmailClient->deleteDraft(createdDraftId);
 
 if (deleteResponse is error) {
     log:printError("Failed to delete the draft");
@@ -743,13 +712,11 @@ return `error`. This is because, when the draft is sent, the draft is automatica
 updated ID is created with the SENT system label.
  
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // The ID of the existing draft we want to send.
 string createdDraftId = "<DRAFT_ID>"; 
 
-gmail:Message |error sendDraftResponse = gmailClient->sendDraft(userId, createdDraftId);
+gmail:Message |error sendDraftResponse = gmailClient->sendDraft(createdDraftId);
 
 if (sendDraftResponse is gmail:Message) {
     log:printInfo("Sent the draft successfully: ",
@@ -774,15 +741,13 @@ as the visibility is set to **labelShow** and the messages with this label will 
 **show**. This will return the ID of the created label as a `string` if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 string displayName = "Test";
 // The visibility of the label in the label list in the Gmail web interface.
 string labelVisibility = "labelShow";
 // The visibility of messages with this label in the message list in the Gmail web interface.
 string messageListVisibility = "show";
 
-string|error createLabelResponse = gmailClient->createLabel(userId, displayName, labelVisibility, 
+string|error createLabelResponse = gmailClient->createLabel(displayName, labelVisibility, 
     messageListVisibility);
 
 if (createLabelResponse is string) {
@@ -802,8 +767,6 @@ sample, the name of that label is changed to **updateTest** and additional prope
 colour is given as updates. This operation returns `Label` as result if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // The ID of an already created label that we want to update
 string createdLabelId = "<LABEL_ID>";
@@ -812,7 +775,7 @@ string updateName = "updateTest";
 string updateBgColor = "#16a766";
 string updateTxtColor = "#000000";
 
-gmail:Label|error updateLabelResponse = gmailClient->updateLabel(userId, createdLabelId, name = updateName,
+gmail:Label|error updateLabelResponse = gmailClient->updateLabel(createdLabelId, name = updateName,
     backgroundColor = updateBgColor, textColor = updateTxtColor);
 
 if (updateLabelResponse is gmail:Label) {
@@ -852,13 +815,11 @@ and permanently deletes the specified label and removes it from any messages and
 This operation returns nothing if successful. Else returns `error`.
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 
 // The ID of an already created label that we want to delete
 string createdLabelId = "<LABEL_ID>";
 
-error? deleteLabelResponse = gmailClient->deleteLabel(userId, createdLabelId);
+error? deleteLabelResponse = gmailClient->deleteLabel(createdLabelId);
      
 if (deleteLabelResponse is error) {
     log:printInfo("Failed to delete the message");
@@ -895,15 +856,13 @@ The operation needs to give a starting history ID from where the list of history
 onwards. 
 
 ```ballerina
-// The user's email address. The special value **me** can be used to indicate the authenticated user.
-string userId = "me";
 // TO get the history ID we have to get the history ID referring to message response.
 string sentMessageId = "<MESSAGE_ID>";
 
 // This operation returns history records after the specified `startHistoryId`. The supplied startHistoryId should be 
 // obtained from the historyId of a message, thread, or previous list response.
 string startHistoryId;
-var response = gmailClient->readMessage(userId, sentMessageId);
+var response = gmailClient->readMessage(sentMessageId);
 
 if (response is gmail:Message) {
 
@@ -912,7 +871,7 @@ if (response is gmail:Message) {
     // History types to be returned by the function
     string[] historyTypes = ["labelAdded", "labelRemoved", "messageAdded", "messageDeleted"];
 
-    gmail:MailboxHistoryPage|error listHistoryResponse = gmailClient->listHistory(userId, startHistoryId, 
+    gmail:MailboxHistoryPage|error listHistoryResponse = gmailClient->listHistory(startHistoryId, 
         historyTypes = historyTypes);
 
     if (listHistoryResponse is gmail:MailboxHistoryPage) {
