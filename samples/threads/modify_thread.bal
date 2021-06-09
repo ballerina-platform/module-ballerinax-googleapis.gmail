@@ -32,15 +32,12 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("Modify labels in a thread");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
-
     // ID of the thread to modify.
     string sentMessageThreadId = "<THREAD_ID";
 
     // Modify labels of the thread with thread id which was sent in testSendTextMessage
     log:printInfo("Add labels to a thread");
-    gmail:MailThread|error response = gmailClient->modifyThread(userId, sentMessageThreadId, ["INBOX"], []);
+    gmail:MailThread|error response = gmailClient->modifyThread(sentMessageThreadId, ["INBOX"], []);
 
     if (response is gmail:MailThread) {
         log:printInfo("Add labels to thread successfully: ", status = response.id == sentMessageThreadId);
@@ -49,7 +46,7 @@ public function main(string... args) {
     }
 
     log:printInfo("Remove labels from a thread");
-    response = gmailClient->modifyThread(userId, sentMessageThreadId, [], ["INBOX"]);
+    response = gmailClient->modifyThread(sentMessageThreadId, [], ["INBOX"]);
     
     if (response is gmail:MailThread) {
         log:printInfo("Removed labels from thread successfully: ", status = response.id == sentMessageThreadId);

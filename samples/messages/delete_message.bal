@@ -34,13 +34,11 @@ public function main(string... args) {
     // This method immediately and permanently deletes the specified message
     log:printInfo("Delete a message");
 
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
     
     // Id of the message to delete. This can be obtained from the response of create message.
     string sentMessageId = "<MESSAGE_ID>"; 
 
-    error? delete = gmailClient->deleteMessage(userId, sentMessageId);
+    error? delete = gmailClient->deleteMessage(sentMessageId);
     
     if (delete is error) {
         log:printError("Failed to delete the message");

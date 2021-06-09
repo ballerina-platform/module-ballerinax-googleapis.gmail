@@ -32,8 +32,6 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     log:printInfo("Update draft"); // New update will be to update the darft subject, body and attchments.
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // The ID of the draft to update. This will be returned when a draft is created. 
     string createdDraftId = "<DRAFT_ID>";
@@ -53,7 +51,7 @@ public function main(string... args) {
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     newMessageRequest.attachmentPaths = attachments;
 
-    string|error draftUpdateResponse = gmailClient->updateDraft(userId, createdDraftId, newMessageRequest);
+    string|error draftUpdateResponse = gmailClient->updateDraft(createdDraftId, newMessageRequest);
     if (draftUpdateResponse is string) {
         log:printInfo("Successfully updated the draft: ", result = draftUpdateResponse);
     } else {

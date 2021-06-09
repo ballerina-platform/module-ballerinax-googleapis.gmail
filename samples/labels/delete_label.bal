@@ -32,13 +32,11 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     log:printInfo("Delete label");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
     
     // The ID of an already created label that we want to delete
     string createdLabelId = "<LABEL_ID>";
 
-    error? deleteLabelResponse = gmailClient->deleteLabel(userId, createdLabelId);
+    error? deleteLabelResponse = gmailClient->deleteLabel(createdLabelId);
      
     if (deleteLabelResponse is error) {
         log:printInfo("Failed to delete the message");

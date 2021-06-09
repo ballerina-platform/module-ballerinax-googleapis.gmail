@@ -56,10 +56,12 @@ public type MailThread record {
 # + subject - The subject of the mail
 # + messageBody - The message body of the mail. Can be either plain text or html text.
 # + contentType - The content type of the mail, whether it is text/plain or text/html. Only pass one of the
-#                        constant values defined in the module; `TEXT_PLAIN` or `TEXT_HTML`
-# + sender - The sender of the mail
+#                 constant values defined in the module; `TEXT_PLAIN` or `TEXT_HTML`. If the message contains some rich
+#                 content (Eg: inline image, table etc), then it should be text/html (`TEXT_HTML`) other wise it will
+#                 be text/plain (`TEXT_PLAIN`).
 # + cc - The cc recipient of the mail. Optional.
 # + bcc - The bcc recipient of the mail. Optional.
+# + sender - The sender of the mail. Optional
 # + inlineImagePaths - The InlineImagePath array consisting the inline image file paths and mime types. Optional.
 #                            Note that inline images can only be send for `TEXT_HTML` messages.
 # + attachmentPaths - The AttachmentPath array consisting the attachment file paths and mime types. Optional.
@@ -68,17 +70,17 @@ public type MessageRequest record {
     @display {label: "Recipient"}
     string recipient;
     @display {label: "Subject"}
-    string subject?;
+    string subject;
     @display {label: "Message Body"}
     string messageBody;
     @display {label: "Content Type"}
-    string contentType;
-    @display {label: "Sender"}
-    string sender;
+    string contentType?;
     @display {label: "Cc"}
     string cc?;
     @display {label: "Bcc"}
     string bcc?;
+    @display {label: "Sender"}
+    string sender?;
     @display {label: "Inline Image Paths"}
     InlineImagePath[] inlineImagePaths?;
     @display {label: "Attachment Paths"}

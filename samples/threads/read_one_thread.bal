@@ -32,14 +32,12 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
 
     log:printInfo("Read one thread");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // ID of the thread to read.
     string sentMessageThreadId = "<THREAD_ID"; 
 
     // When given and format is METADATA, only include headers specified. Here, it will specify "Subject"
-    gmail:MailThread|error thread = gmailClient->readThread(userId, sentMessageThreadId, format = gmail:FORMAT_METADATA, 
+    gmail:MailThread|error thread = gmailClient->readThread(sentMessageThreadId, format = gmail:FORMAT_METADATA, 
         metadataHeaders = ["Subject"]);
         
     if (thread is gmail:MailThread) {

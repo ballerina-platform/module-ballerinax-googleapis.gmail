@@ -118,7 +118,7 @@ class Dispatcher {
     }
 
     function dispatchNewMessage(gmail:HistoryEvent newMessage) returns @tainted error? {
-        gmail:Message message = check self.gmailClient->readMessage(ME,<@untainted>newMessage.message.id);
+        gmail:Message message = check self.gmailClient->readMessage(<@untainted>newMessage.message.id);
         if (self.isOnNewEmail) {
             check callOnNewEmail(self.httpService, message);
         }
@@ -142,7 +142,7 @@ class Dispatcher {
 
     function dispatchNewThread(gmail:HistoryEvent newMessage) returns @tainted error? {
         if(newMessage.message.id == newMessage.message.threadId) {               
-            gmail:MailThread thread = check self.gmailClient->readThread(ME, <@untainted>newMessage.message.threadId);
+            gmail:MailThread thread = check self.gmailClient->readThread(<@untainted>newMessage.message.threadId);
             check callOnNewThread(self.httpService, thread);
         }
     }
@@ -152,7 +152,7 @@ class Dispatcher {
         if (addedlabel?.labelIds is string []) {
             changedLabeldMsg.changedLabelId = <string []>addedlabel?.labelIds;
         }
-        gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>addedlabel.message.id);
+        gmail:Message message = check self.gmailClient->readMessage(<@untainted>addedlabel.message.id);
         changedLabeldMsg.message = message;
         check callOnNewLabeledEmail(self.httpService, changedLabeldMsg);
     }
@@ -162,7 +162,7 @@ class Dispatcher {
             foreach var label in <string[]>addedlabel?.labelIds {
                 match label{
                     STARRED =>{
-                        gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>addedlabel.message.id);
+                        gmail:Message message = check self.gmailClient->readMessage(<@untainted>addedlabel.message.id);
                         check callOnNewStarredEmail(self.httpService, message);
                     }
                 }
@@ -175,7 +175,7 @@ class Dispatcher {
         if (removedLabel?.labelIds is string[]) {
             changedLabeldMsg.changedLabelId = <string[]>removedLabel?.labelIds;
         }
-        gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>removedLabel.message.id);
+        gmail:Message message = check self.gmailClient->readMessage(<@untainted>removedLabel.message.id);
         changedLabeldMsg.message = message;
         check callOnLabelRemovedEmail(self.httpService, changedLabeldMsg);
     }
@@ -185,7 +185,7 @@ class Dispatcher {
             foreach var label in <string[]>removedLabel?.labelIds {
                 match label{
                     STARRED =>{
-                        gmail:Message message = check self.gmailClient->readMessage(ME, <@untainted>removedLabel.message.id);
+                        gmail:Message message = check self.gmailClient->readMessage(<@untainted>removedLabel.message.id);
                         check callOnStarRemovedEmail(self.httpService, message);
                     }
                 }

@@ -32,8 +32,6 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     log:printInfo("Send a HTML message");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     string inlineImageName = "test_image.png";
     string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
@@ -60,7 +58,7 @@ public function main(string... args) {
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
 
-    gmail:Message|error sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+    gmail:Message|error sendMessageResponse = gmailClient->sendMessage(messageRequest);
 
     if (sendMessageResponse is gmail:Message) {
         // If successful, print the message ID and thread ID.
