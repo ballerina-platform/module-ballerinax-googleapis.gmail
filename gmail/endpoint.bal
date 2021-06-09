@@ -22,6 +22,7 @@ import ballerina/http;
 @display {label: "Gmail", iconPath: "GmailLogo.png"}
 public client class Client {
     http:Client gmailClient;
+    //Here "me" denotes the current authenticated user.
     string userEmailId = ME;
 
     public isolated  function init(GmailConfiguration gmailConfig) {
@@ -90,7 +91,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns Message record of the successfully sent message. Else return error.
     @display {label: "Send Message"} 
-    remote function sendMessage(@display {label: "Message Request to Send"} MessageRequest message,
+    remote function sendMessage(@display {label: "Send Message"} MessageRequest message,
                                 @display {label: "Thread Id"} string? threadId = (),
                                 @display {label: "Email Address"} string? userId = ())
                                 returns @tainted @display {label: "Sent Message Response"} Message|error {
