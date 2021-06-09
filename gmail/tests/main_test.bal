@@ -115,7 +115,7 @@ function testSendHTMLMessage() {
     string messageId = "";
     string threadId = "";
     if (sendMessageResponse is error) {
-        test:assertFail(msg = sendMessageResponse.message());
+        test:assertFail(msg = sendMessageResponse.toString());
     } else {
         messageId = sendMessageResponse.id;
         threadId = sendMessageResponse.threadId;
