@@ -24,7 +24,7 @@ type mapJson map<json>;
 # Transforms JSON message object into Message Type Object.
 # + sourceMessageJsonObject - `json` message object
 # + return - Returns Message type object
-function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted Message {
+isolated function convertJSONToMessageType(json sourceMessageJsonObject) returns @tainted Message {
     Message targetMessageType = {id : EMPTY_STRING, threadId : EMPTY_STRING};
 
     targetMessageType.id = let var id = sourceMessageJsonObject.id in id is string ? id : EMPTY_STRING;
@@ -129,7 +129,7 @@ isolated function convertJSONToMsgBodyType(json sourceMessagePartJsonObject) ret
 # Transforms mail thread JSON object into MailThread type.
 # + sourceThreadJsonObject - `json` message thread object.
 # + return - Returns MailThread type
-function convertJSONToThreadType(json sourceThreadJsonObject) returns @tainted MailThread {
+isolated function convertJSONToThreadType(json sourceThreadJsonObject) returns @tainted MailThread {
     return {
         id: let var id = sourceThreadJsonObject.id in id is string ? id : EMPTY_STRING,
         historyId: let var historyId = sourceThreadJsonObject.historyId in historyId is string ? historyId : 
@@ -142,7 +142,7 @@ function convertJSONToThreadType(json sourceThreadJsonObject) returns @tainted M
 # Converts the JSON message array into Message type array.
 # + sourceMessageArrayJsonObject - `json` message array object
 # + return - Message type array
-function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns @tainted Message[] {
+isolated function convertToMessageArray(json[] sourceMessageArrayJsonObject) returns @tainted Message[] {
     Message[] messages = [];
     int i = 0;
     foreach json jsonMessage in sourceMessageArrayJsonObject {
@@ -168,7 +168,7 @@ isolated function convertJSONToHeaderMap(json jsonMsgPartHeaders) returns map<st
 # Transform draft JSON object into Draft Type Object.
 # + sourceDraftJsonObject - `json` Draft Object
 # + return - If successful, returns Draft. Else returns error.
-function convertJSONToDraftType(json sourceDraftJsonObject) returns @tainted Draft {
+isolated function convertJSONToDraftType(json sourceDraftJsonObject) returns @tainted Draft {
     Draft targetDraft = {id: EMPTY_STRING};
     targetDraft.id = let var id = sourceDraftJsonObject.id in id is string ? id : EMPTY_STRING;
 

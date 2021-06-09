@@ -31,7 +31,7 @@ service class HttpService {
         self.dispatcher = new (httpService, self.gmailClient);
     }
 
-    resource function post mailboxChanges(http:Caller caller, http:Request request) returns @tainted error? {
+    isolated resource function post mailboxChanges(http:Caller caller, http:Request request) returns @tainted error? {
         check caller->respond(http:STATUS_OK);
         var  mailboxHistoryPage =  self.gmailClient->listHistory(self.startHistoryId);
         
