@@ -70,9 +70,8 @@ public function main(string... args) {
     contentType : gmail:TEXT_PLAIN
     };
 
-    string userId = "me";
     // Send the message.
-    var sendMessageResponse = gmailClient->sendMessage(userId, messageRequest);
+    var sendMessageResponse = gmailClient->sendMessage(messageRequest);
     if (sendMessageResponse is gmail:Message) {
         // If successful, print the message ID and thread ID.
         log:printInfo("Sent Message ID: "+ sendMessageResponse.id);

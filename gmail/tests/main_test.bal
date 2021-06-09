@@ -79,7 +79,7 @@ function testSendTextMessage() {
     };
     log:printInfo("testSendTextMessage");
     //----Send the mail----
-    var sendMessageResponse = gmailClient->sendMessage(testUserId, messageRequest);
+    var sendMessageResponse = gmailClient->sendMessage(messageRequest,userId = testUserId);
     if (sendMessageResponse is Message) {
         sentTextMessageId = <@untainted>sendMessageResponse.id;
         sentTextMessageThreadId = <@untainted>sendMessageResponse.threadId;
@@ -111,11 +111,11 @@ function testSendHTMLMessage() {
     messageRequest.attachmentPaths = attachments;
     log:printInfo("testSendHTMLMessage");
     //----Send the mail----
-    var sendMessageResponse = gmailClient->sendMessage(testUserId, messageRequest);
+    var sendMessageResponse = gmailClient->sendMessage(messageRequest, userId = testUserId);
     string messageId = "";
     string threadId = "";
     if (sendMessageResponse is error) {
-        test:assertFail(msg = sendMessageResponse.message());
+        test:assertFail(msg = sendMessageResponse.toString());
     } else {
         messageId = sendMessageResponse.id;
         threadId = sendMessageResponse.threadId;
@@ -131,13 +131,13 @@ function testSendHTMLMessage() {
 function testModifyHTMLMessage() {
     //Modify labels of the message with message id which was sent in testSendHTMLMessage
     log:printInfo("testModifyHTMLMessage");
-    var response = gmailClient->modifyMessage(testUserId, sentHtmlMessageId, ["INBOX"], []);
+    var response = gmailClient->modifyMessage(sentHtmlMessageId, ["INBOX"], []);
     if (response is Message) {
         test:assertTrue(response.id == sentHtmlMessageId, msg = "Modify HTML message by adding new label failed");
     } else {
         test:assertFail(msg = response.message());
     }
-    response = gmailClient->modifyMessage(testUserId, sentHtmlMessageId, [], ["INBOX"]);
+    response = gmailClient->modifyMessage(sentHtmlMessageId, [], ["INBOX"]);
     if (response is Message) {
         test:assertTrue(response.id == sentHtmlMessageId,
         msg = "Modify HTML message by removing existing label failed");
@@ -153,7 +153,7 @@ function testListMessages() {
     //List All Messages with Label INBOX without including Spam and Trash
     log:printInfo("testListAllMessages");
     MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: ["INBOX"]};
-    var msgList = gmailClient->listMessages("me", filter = searchFilter);
+    var msgList = gmailClient->listMessages(filter = searchFilter, userId = testUserId);
     if msgList is error {
         test:assertFail(msg = msgList.message());
     }
@@ -166,7 +166,7 @@ function testListMessages() {
 function testReadTextMessage() {
     //Read mail with message id which was sent in testSendSimpleMessage
     log:printInfo("testReadTextMessage");
-    var response = gmailClient->readMessage(testUserId, sentTextMessageId);
+    var response = gmailClient->readMessage(sentTextMessageId);
     if (response is Message) {
         testHistoryId = response?.historyId is string ? <@untainted>(<string>response?.historyId) : testHistoryId;
         test:assertEquals(response.id, sentTextMessageId, msg = "Read text mail failed");
@@ -182,7 +182,7 @@ function testReadTextMessage() {
 function testReadHTMLMessageWithAttachment() {
     //Read mail with message id which sent in testSendWithAttachment
     log:printInfo("testReadMessageWithAttachment");
-    var response = gmailClient->readMessage(testUserId, sentHtmlMessageId);
+    var response = gmailClient->readMessage(sentHtmlMessageId);
     if (response is Message) {
         if (response?.msgAttachments is MessageBodyPart[]) {
             MessageBodyPart[] msgAttachments = <MessageBodyPart[]>response?.msgAttachments;
@@ -201,7 +201,7 @@ function testReadHTMLMessageWithAttachment() {
 }
 function testgetAttachment() {
     log:printInfo("testgetAttachment");
-    var response = gmailClient->getAttachment(testUserId, sentHtmlMessageId, readAttachmentFileId);
+    var response = gmailClient->getAttachment(sentHtmlMessageId, readAttachmentFileId);
     if (response is MessageBodyPart) {
         if (response?.data is string) {
             test:assertTrue(<string>response?.data !==EMPTY_STRING, msg = "Get Attachment failed");
@@ -217,7 +217,7 @@ function testgetAttachment() {
 }
 function testTrashMessage() {
     log:printInfo("testTrashMessage");
-    var trash = gmailClient->trashMessage(testUserId, sentHtmlMessageId);
+    var trash = gmailClient->trashMessage(sentHtmlMessageId);
     if (trash is error) {
         test:assertFail(msg = trash.message());
     } else {
@@ -231,7 +231,7 @@ function testTrashMessage() {
 }
 function testUntrashMessage() {
     log:printInfo("testUntrashMessage");
-    var untrash = gmailClient->untrashMessage(testUserId, sentHtmlMessageId);
+    var untrash = gmailClient->untrashMessage(sentHtmlMessageId);
     if (untrash is error) {
         test:assertFail(msg = untrash.message());
     } else {
@@ -245,7 +245,7 @@ function testUntrashMessage() {
 }
 function testDeleteMessage() {
     log:printInfo("testDeleteMessage");
-    var delete = gmailClient->deleteMessage(testUserId, sentHtmlMessageId);
+    var delete = gmailClient->deleteMessage(sentHtmlMessageId);
     if (delete is error) {
         test:assertFail(msg = delete.toString());
     }
@@ -256,7 +256,7 @@ function testDeleteMessage() {
 }
 function testListThreads() {
     log:printInfo("testListThreads");
-    var threadList = gmailClient->listThreads(testUserId, filter = {includeSpamTrash: false, labelIds: ["INBOX"]});
+    var threadList = gmailClient->listThreads(filter = {includeSpamTrash: false, labelIds: ["INBOX"]});
     if (threadList is error) {
         test:assertFail(msg = threadList.message());
     }
@@ -268,7 +268,7 @@ function testListThreads() {
 }
 function testReadThread() {
     log:printInfo("testReadThread");
-    var thread = gmailClient->readThread(testUserId, sentTextMessageThreadId, format = FORMAT_METADATA,
+    var thread = gmailClient->readThread(sentTextMessageThreadId, format = FORMAT_METADATA,
         metadataHeaders = ["Subject"]);
     if (thread is MailThread) {
         test:assertEquals(thread.id, sentTextMessageThreadId, msg = "Read thread failed");
@@ -284,13 +284,13 @@ function testReadThread() {
 function testModifyThread() {
     //Modify labels of the thread with thread id which was sent in testSendTextMessage
     log:printInfo("testModifyThread");
-    var response = gmailClient->modifyThread(testUserId, sentTextMessageThreadId, ["INBOX"], []);
+    var response = gmailClient->modifyThread(sentTextMessageThreadId, ["INBOX"], []);
     if (response is MailThread) {
         test:assertTrue(response.id == sentTextMessageThreadId, msg = "Modify thread by adding new label failed");
     } else {
         test:assertFail(msg = response.message());
     }
-    response = gmailClient->modifyThread(testUserId, sentTextMessageThreadId, [], ["INBOX"]);
+    response = gmailClient->modifyThread(sentTextMessageThreadId, [], ["INBOX"]);
     if (response is MailThread) {
         test:assertTrue(response.id == sentTextMessageThreadId,
             msg = "Modify thread by removing existing label failed");
@@ -305,7 +305,7 @@ function testModifyThread() {
 }
 function testTrashThread() {
     log:printInfo("testTrashThread");
-    var trash = gmailClient->trashThread(testUserId, sentTextMessageThreadId);
+    var trash = gmailClient->trashThread(sentTextMessageThreadId);
     if (trash is error) {
         test:assertFail(msg = trash.message());
     } else {
@@ -319,7 +319,7 @@ function testTrashThread() {
 }
 function testUnTrashThread() {
     log:printInfo("testUnTrashThread");
-    var untrash = gmailClient->untrashThread(testUserId, sentTextMessageThreadId);
+    var untrash = gmailClient->untrashThread(sentTextMessageThreadId);
     if (untrash is error) {
         test:assertFail(msg = untrash.message());
     } else {
@@ -334,7 +334,7 @@ function testUnTrashThread() {
 }
 function testDeleteThread() {
     log:printInfo("testDeleteThread");
-    var delete = gmailClient->deleteThread(testUserId, sentTextMessageThreadId);
+    var delete = gmailClient->deleteThread(sentTextMessageThreadId);
     if (delete is error) {
         test:assertFail(msg = delete.toString());
     }
@@ -359,7 +359,7 @@ function testgetUserProfile() {
 }
 function testGetLabel() {
     log:printInfo("testgetLabel");
-    var response = gmailClient->getLabel(testUserId, createdLabelId);
+    var response = gmailClient->getLabel(createdLabelId);
     if (response is Label) {
         test:assertTrue(response.id !== EMPTY_STRING, msg = "Get Label failed");
     } else {
@@ -372,7 +372,7 @@ function testGetLabel() {
 }
 function testCreateLabel() {
     log:printInfo("testCreateLabel");
-    var createLabelResponse = gmailClient->createLabel(testUserId, "Test", "labelShow", "show");
+    var createLabelResponse = gmailClient->createLabel("Test", "labelShow", "show");
     if (createLabelResponse is Label) {
         createdLabelId = <@untainted>createLabelResponse.id;
         test:assertTrue(createdLabelId != "null", msg = "Create Label failed");
@@ -398,7 +398,7 @@ function testListLabels() {
 }
 function testDeleteLabel() {
     log:printInfo("testDeleteLabel");
-    var deleteLabelResponse = gmailClient->deleteLabel(testUserId, createdLabelId);
+    var deleteLabelResponse = gmailClient->deleteLabel(createdLabelId);
     if (deleteLabelResponse is error) {
         test:assertFail(msg = deleteLabelResponse.toString());
     }
@@ -413,7 +413,7 @@ function testUpdateLabel() {
     string updateName = "updateTest";
     string updateBgColor = "#16a766";
     string updateTxtColor = "#000000";
-    var updateLabelResponse = gmailClient->updateLabel(testUserId, createdLabelId, name = updateName,
+    var updateLabelResponse = gmailClient->updateLabel(createdLabelId, name = updateName,
     backgroundColor = updateBgColor, textColor = updateTxtColor);
     if (updateLabelResponse is error) {
         test:assertFail(msg = updateLabelResponse.message());
@@ -431,7 +431,7 @@ function testUpdateLabel() {
 function testListHistory() {
     log:printInfo("testListTheHistory");
     string[] historyTypes = ["labelAdded", "labelRemoved", "messageAdded", "messageDeleted"];
-    var listHistoryResponse = gmailClient->listHistory(testUserId, testHistoryId, historyTypes = historyTypes);
+    var listHistoryResponse = gmailClient->listHistory(testHistoryId, historyTypes = historyTypes);
     if (listHistoryResponse is error) {
         test:assertFail(msg = listHistoryResponse.message());
     } else {
@@ -449,7 +449,7 @@ function testListDrafts() {
     //List maximum of ten results for Drafts without including Spam and Trash
     log:printInfo("testListDrafts");
     DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
-    var msgList = gmailClient->listDrafts("me", filter = searchFilter);
+    var msgList = gmailClient->listDrafts(filter = searchFilter);
     if (msgList is error) {
         test:assertFail(msg = msgList.message());
     }
@@ -464,12 +464,13 @@ function testCreateDraft() {
     string messageBody = "Draft Text Message Body";
     MessageRequest messageRequest = {
         recipient : testRecipient,
+        subject : "Create Draft Subject",
         sender : testSender,
         cc : testCc,
         messageBody : messageBody,
         contentType : TEXT_PLAIN
     };
-    var draftResponse = gmailClient->createDraft(testUserId, messageRequest, threadId = sentTextMessageThreadId);
+    var draftResponse = gmailClient->createDraft(messageRequest, threadId = sentTextMessageThreadId);
     if (draftResponse is string) {
         test:assertTrue(draftResponse != "null", msg = "Create Draft failed");
         createdDraftId = <@untainted>draftResponse;
@@ -494,7 +495,7 @@ function testUpdateDraft() {
     };    
     AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
-    var draftResponse = gmailClient->updateDraft(testUserId, createdDraftId, messageRequest);
+    var draftResponse = gmailClient->updateDraft(createdDraftId, messageRequest);
     if (draftResponse is string) {
         test:assertTrue(draftResponse == createdDraftId, msg = "Update Draft failed");
     } else {
@@ -508,7 +509,7 @@ function testUpdateDraft() {
 }
 function testReadDraft() {
     log:printInfo("testReadDraft");
-    var draftResponse = gmailClient->readDraft(testUserId, createdDraftId);
+    var draftResponse = gmailClient->readDraft(createdDraftId);
     if (draftResponse is Draft) {
         test:assertTrue(draftResponse.id == createdDraftId, msg = "Read Draft failed");
     } else {
@@ -522,7 +523,7 @@ function testReadDraft() {
 }
 function testSendDraft() {
     log:printInfo("testSendDraft");
-    var sendDraftResponse = gmailClient->sendDraft(testUserId, createdDraftId);
+    var sendDraftResponse = gmailClient->sendDraft(createdDraftId);
     if (sendDraftResponse is error) {
         test:assertFail(msg = sendDraftResponse.message());
     } else {
@@ -544,7 +545,7 @@ function testDeleteDraft() {
         messageBody : "Draft Text Message Body To Delete",
         contentType : TEXT_PLAIN
     };    
-    var draftResponse = gmailClient->createDraft(testUserId, messageRequest);
+    var draftResponse = gmailClient->createDraft(messageRequest);
     string draftIdToDelete = "";
     if (draftResponse is string) {
         test:assertTrue(draftResponse != "null", msg = "Create Draft failed");
@@ -553,7 +554,7 @@ function testDeleteDraft() {
         test:assertFail(msg = draftResponse.message());
     }
     //Delete the created draft
-    var deleteResponse = gmailClient->deleteDraft(testUserId, draftIdToDelete);
+    var deleteResponse = gmailClient->deleteDraft(draftIdToDelete);
     if (deleteResponse is error) {
         test:assertFail(msg = deleteResponse.toString());
     }

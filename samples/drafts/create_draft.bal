@@ -32,8 +32,6 @@ gmail:Client gmailClient = new(gmailConfig);
 public function main(string... args) {
     
     log:printInfo("Create draft");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
     // The ID of the thread the draft should sent to. this is optional.
     string sentMessageThreadId = "<THREAD_ID>";
 
@@ -46,7 +44,7 @@ public function main(string... args) {
         contentType : gmail:TEXT_PLAIN
     };
 
-    string|error draftResponse = gmailClient->createDraft(userId, messageRequest, threadId = sentMessageThreadId);
+    string|error draftResponse = gmailClient->createDraft(messageRequest, threadId = sentMessageThreadId);
     
     if (draftResponse is string) {
         log:printInfo("Successfully created draft: ", draftId = draftResponse);

@@ -189,6 +189,8 @@ public const string FORMAT_RAW = "raw";
 public const string TEXT_PLAIN = "text/plain";
 # Holds value for message type **text/html**.
 public const string TEXT_HTML = "text/html";
+# Holds the value "me". Used as current authenticated userId.
+const string ME = "me";
 
 // Error Codes
 const string GMAIL_ERROR_CODE = "(ballerinax/googleapis.gmail)GmailError";

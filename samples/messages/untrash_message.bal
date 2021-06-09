@@ -33,13 +33,11 @@ public function main(string... args) {
 
     // Removes the specified message from the trash.
     log:printInfo("Untrash a message");
-    // The user's email address. The special value **me** can be used to indicate the authenticated user.
-    string userId = "me";
 
     // ID of the message to untrash.
     string sentMessageId = "<MESSAGE_ID>"; 
 
-    gmail:Message|error untrash = gmailClient->untrashMessage(userId, sentMessageId);
+    gmail:Message|error untrash = gmailClient->untrashMessage(sentMessageId);
 
     if (untrash is gmail:Message) {
         log:printInfo("Successfully un-trashed the message");
