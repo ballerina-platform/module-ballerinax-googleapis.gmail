@@ -22,7 +22,7 @@ import ballerina/jballerina.java as java;
 import ballerina/lang.'string as strings;
 import ballerina/log;
 import ballerina/mime;
-import ballerina/jballerina.java.arrays as jarrays;
+import ballerina/regex;
 
 # Gets only the attachment and inline image MIME messageParts from the JSON message payload of the email.
 #
@@ -30,7 +30,7 @@ import ballerina/jballerina.java.arrays as jarrays;
 # + msgAttachments - Initial array of attachment message parts
 # + inlineMessageImages - Initial array of inline image message parts
 # + return - Returns a tuple of two arrays of attachement parts and inline image parts
-function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttachments,
+isolated function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttachments,
                                  MessageBodyPart[] inlineMessageImages) returns 
                                  @tainted [MessageBodyPart[], MessageBodyPart[]] {
     MessageBodyPart[] attachmentParts = msgAttachments;
@@ -73,7 +73,7 @@ function getFilePartsFromPayload(json messagePayload, MessageBodyPart[] msgAttac
 # + messagePayload - `json` message payload which is the parent message part of the email
 # + mimeType - Mime type of the message body part to retrieve
 # + return - Returns MessageBodyPart
-function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType) returns 
+isolated function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mimeType) returns 
                                                  @tainted MessageBodyPart {
     MessageBodyPart msgBodyPart = {};
     string disposition = getDispostionFromPayload(messagePayload);
@@ -112,7 +112,7 @@ function getMessageBodyPartFromPayloadByMimeType(json messagePayload, string mim
 #
 # + messagePayload - Payload to get the disposition from
 # + return - Returns disposition of the message body part
-function getDispostionFromPayload(json messagePayload) returns string {
+isolated function getDispostionFromPayload(json messagePayload) returns string {
     string disposition = "";
     json|error payloadHeaders = messagePayload.headers;
     if (payloadHeaders is json) {
@@ -120,8 +120,8 @@ function getDispostionFromPayload(json messagePayload) returns string {
             //If no key name CONTENT_DISPOSITION in the payload, disposition is an empty string.
             map<string> headers = convertJSONToHeaderMap(payloadHeaders);
             string contentDispositionHeader = getValueForMapKey(headers, CONTENT_DISPOSITION);
-            handle headerParts = split(java:fromString(contentDispositionHeader), java:fromString(SEMICOLON_SYMBOL));
-            string? dispositionStr = java:toString(jarrays:get(headerParts, 0));
+            string[] headerParts = regex:split(contentDispositionHeader, SEMICOLON_SYMBOL);
+            string? dispositionStr = headerParts[0];
             if (dispositionStr is string) {
                 disposition = dispositionStr;
             } else {
@@ -168,14 +168,14 @@ isolated function convertStringArrayToJSONArray(string[] sourceStringObject) ret
 # + msgMimeType - The mime type of the message part you want check
 # + mType - The given mime type which you wants check against with
 # + return - Boolean status of mime type match
-function isMimeType(string msgMimeType, string mType) returns boolean {
-    handle msgTypes = split(java:fromString(msgMimeType), java:fromString(FORWARD_SLASH_SYMBOL));
-    string|() msgPrimaryType = java:toString(jarrays:get(msgTypes, 0));
-    string|() msgSecondaryType = java:toString(jarrays:get(msgTypes, 1));
+isolated function isMimeType(string msgMimeType, string mType) returns boolean {
+    string[] msgTypes = regex:split(msgMimeType, FORWARD_SLASH_SYMBOL);
+    string|() msgPrimaryType = msgTypes[0];
+    string|() msgSecondaryType = msgTypes[1];
 
-    handle requestmTypes = split(java:fromString(mType), java:fromString(FORWARD_SLASH_SYMBOL));
-    string|() reqPrimaryType = java:toString(jarrays:get(requestmTypes, 0));
-    string|() reqSecondaryType = java:toString(jarrays:get(requestmTypes, 1));
+    string[] requestmTypes = regex:split(mType, FORWARD_SLASH_SYMBOL);
+    string|() reqPrimaryType = requestmTypes[0];
+    string|() reqSecondaryType = requestmTypes[1];
 
     if (msgPrimaryType is () || msgSecondaryType is () || reqPrimaryType is () || reqSecondaryType is ()) {
         return false;
@@ -231,10 +231,10 @@ isolated function encodeFile(string filePath) returns string|error {
 #
 # + filePath - File path (including the file name and extension at the end)
 # + return - Returns the file name extracted from the file path
-function getFileNameFromPath(string filePath) returns string|error {
-    handle pathParts = split(java:fromString(filePath), java:fromString("/"));
-    int pathPartsLength = jarrays:getLength(pathParts);
-    string? fileName = java:toString(jarrays:get(pathParts, (pathPartsLength - 1)));
+isolated function getFileNameFromPath(string filePath) returns string|error {
+    string[] pathParts = regex:split(filePath, FORWARD_SLASH_SYMBOL);
+    int pathPartsLength = pathParts.length();
+    string? fileName = pathParts[pathPartsLength - 1];
     if (fileName is string) {
         return fileName;
     } else {
@@ -355,7 +355,7 @@ isolated function getValueForMapKey(map<string> targetMap, string key) returns s
 #
 # + msgRequest - MessageRequest to create the message
 # + return - If successful, returns the encoded raw string. Else returns error.
-function createEncodedRawMessage(MessageRequest msgRequest) returns string|error {
+isolated function createEncodedRawMessage(MessageRequest msgRequest) returns string|error {
     //Adding inline images to messages of TEXT_PLAIN content type is not supported.
     InlineImagePath[] inlineImagePaths = [];
     AttachmentPath[] attachmentPaths = [];
