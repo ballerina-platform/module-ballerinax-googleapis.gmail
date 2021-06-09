@@ -25,7 +25,7 @@ public client class Client {
     //Here "me" denotes the current authenticated user.
     string userEmailId = ME;
 
-    public isolated  function init(GmailConfiguration gmailConfig) {
+    public isolated function init(GmailConfiguration gmailConfig) {
         // Create OAuth2 provider.
         http:ClientSecureSocket? socketConfig = gmailConfig?.secureSocketConfig;
 
@@ -48,7 +48,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns MessageListPage. Else returns error.
     @display {label: "List Messages"} 
-    remote isolated  function listMessages(@display {label: "Message Search Filter"} MsgSearchFilter? filter = (),
+    remote isolated function listMessages(@display {label: "Message Search Filter"} MsgSearchFilter? filter = (),
                                            @display {label: "Email Address"} string? userId = ())
                                            returns @tainted @display {label: "Message List"} MessageListPage|error {
         if (userId is string) {
@@ -91,7 +91,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns Message record of the successfully sent message. Else return error.
     @display {label: "Send Message"} 
-    remote function sendMessage(@display {label: "Send Message"} MessageRequest message,
+    remote isolated function sendMessage(@display {label: "Send Message"} MessageRequest message,
                                 @display {label: "Thread Id"} string? threadId = (),
                                 @display {label: "Email Address"} string? userId = ())
                                 returns @tainted @display {label: "Sent Message Response"} Message|error {
@@ -137,7 +137,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns Message type object of the specified mail. Else returns error.
     @display {label: "Read Message"} 
-    remote function readMessage(@display {label: "Message Id"} string messageId,
+    remote isolated function readMessage(@display {label: "Message Id"} string messageId,
                                 @display {label: "Message Format"} string? format = (), 
                                 @display {label: "Metadata Headers"} string[]? metadataHeaders = (),
                                 @display {label: "Email Address"} string? userId = ())
@@ -260,7 +260,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns modified Message type object in **minimal** format. Else returns error.
     @display {label: "Modify Message Labels"} 
-    remote function modifyMessage(@display {label: "Message Id"} string messageId, 
+    remote isolated function modifyMessage(@display {label: "Message Id"} string messageId, 
                                   @display {label: "Labels to Add"} string[] addLabelIds, 
                                   @display {label: "Labels to Remove"} string[] removeLabelIds,
                                   @display {label: "Email Address"} string? userId = ())
@@ -352,7 +352,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns MailThread type of the specified mail thread. Else returns error.
     @display {label: "Read Thread"}
-    remote function readThread(@display {label: "Thread Id"} string threadId,
+    remote isolated function readThread(@display {label: "Thread Id"} string threadId,
                                @display {label: "Message Format"} string? format = (),
                                @display {label: "Metadata Headers"} string[]? metadataHeaders = (),
                                @display {label: "Email Address"} string? userId = ())
@@ -449,7 +449,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns modified MailThread type object. Else returns error.
     @display {label: "Modify Labels on Thread"}
-    remote function modifyThread(@display {label: "Thread Id"} string threadId, 
+    remote isolated function modifyThread(@display {label: "Thread Id"} string threadId, 
                                  @display {label: "Labels to Add"} string[] addLabelIds, 
                                  @display {label: "Labels to Remove"} string[] removeLabelIds,
                                  @display {label: "Email Address"} string? userId = ())
@@ -775,7 +775,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns Draft type of the specified draft. Else returns error.
     @display {label: "Read Draft"}
-    remote function readDraft(@display {label: "Draft Id"} string draftId,
+    remote isolated function readDraft(@display {label: "Draft Id"} string draftId,
                               @display {label: "Draft Format"} string? format = (),
                               @display {label: "Email Address"} string? userId = ()) 
                               returns @tainted @display {label: "Draft"} Draft|error {
@@ -823,7 +823,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns the draft Id of the created Draft. Else returns error.
     @display {label: "Create Draft"}
-    remote function createDraft(@display {label: "Message Request"} MessageRequest message,
+    remote isolated function createDraft(@display {label: "Message Request"} MessageRequest message,
                                 @display {label: "Thread Id"} string? threadId = (),
                                 @display {label: "Email Address"} string? userId = ())
                                 returns @tainted @display {label: "Draft Id"} string|error {
@@ -859,7 +859,7 @@ public client class Client {
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
     # + return - If successful, returns the draft Id of the updated Draft. Else returns error.
     @display {label: "Update Draft"}
-    remote function updateDraft(@display {label: "Draft Id"} string draftId, 
+    remote isolated function updateDraft(@display {label: "Draft Id"} string draftId, 
                                 @display {label: "Message Request"} MessageRequest message, 
                                 @display {label: "Thread Id"} string? threadId = (),
                                 @display {label: "Email Address"} string? userId = ())
