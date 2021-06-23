@@ -1,51 +1,49 @@
 [[dependency]]
 org = "ballerina"
 name = "io"
-version = "0.6.0-beta.1"
+version = "0.6.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "log"
-version = "1.1.0-beta.1"
+version = "1.1.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "url"
-version = "1.1.0-beta.1"
+version = "1.1.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "mime"
-version = "1.1.0-beta.1"
+version = "1.1.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "http"
-version = "1.1.0-beta.1"
+version = "1.1.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "uuid"
-version = "0.10.0-beta.1"
+version = "0.10.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "time"
-version = "2.0.0-beta.1"
+version = "2.0.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "task"
-version = "2.0.0-beta.1"
+version = "2.0.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "os"
-version = "0.8.0-beta.1"
+version = "0.8.0-beta.2"
 
 [[dependency]]
 org = "ballerina"
 name = "regex"
-version = "0.7.0-beta.1"
-
-
+version = "0.7.0-beta.2"
