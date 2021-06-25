@@ -65,7 +65,7 @@ public class Listener {
     }
 
     public isolated function attach(service object {} s, string[]|string? name = ()) returns @tainted error? {
-        self.httpService = new HttpService(s, self.gmailClient, self.startHistoryId);
+        self.httpService = new HttpService(s, self.gmailClient, self.startHistoryId, self.subscriptionResource);
         check self.watchMailbox();
         check self.httpListener.attach(self.httpService, name);
         Job job = new (self);

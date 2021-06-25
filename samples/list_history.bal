@@ -48,16 +48,13 @@ public function main(string... args) {
         // History types to be returned by the function
         string[] historyTypes = ["labelAdded", "labelRemoved", "messageAdded", "messageDeleted"];
 
-        gmail:MailboxHistoryPage|error listHistoryResponse = gmailClient->listHistory(startHistoryId, 
+        stream<gmail:History,error>|error listHistoryResponse = gmailClient->listHistory(startHistoryId, 
                                                                                       historyTypes = historyTypes);
 
-        if (listHistoryResponse is gmail:MailboxHistoryPage) {
-            if (listHistoryResponse?.history is gmail:History[]) {
-                gmail:History[] history = <gmail:History[]> listHistoryResponse?.history;
-                error? e = history.forEach(function (gmail:History history) {
-                    log:printInfo(history.id);
-                });
-            }            
+        if (listHistoryResponse is stream<gmail:History,error>) {
+            error? e = listHistoryResponse.forEach(function (gmail:History history) {
+                log:printInfo(history.toString());
+            });    
         } else {
             log:printError("Failed to list user profile history");
         }
