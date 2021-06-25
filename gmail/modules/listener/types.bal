@@ -46,12 +46,12 @@ public type WatchRequestBody record {
 
 # Represents label changed message.
 #
-# + message - The message which affected by label change  
+# + messageDetail - The message which affected by label change  
 # + changedLabelId - The changed label id of the message
 @display {label: "Changed Label"}
 public type ChangedLabel record {
     @display {label: "Message"}
-    gmail:Message message;
+    gmail:Message messageDetail;
     @display {label: "Changed Label Ids"}
     string[] changedLabelId?;
 };

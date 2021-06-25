@@ -22,29 +22,35 @@ service class HttpService {
 
     private gmail:Client gmailClient;
     public  string startHistoryId = "";
+    private string subscriptionResource;
     private Dispatcher dispatcher;
 
     public isolated function init(SimpleHttpService|HttpService httpService, gmail:Client gmailClient, 
-        string historyId) {
+        string historyId, string subscriptionResource) {
         self.gmailClient = gmailClient;
         self.startHistoryId = historyId;
+        self.subscriptionResource = subscriptionResource;
         self.dispatcher = new (httpService, self.gmailClient);
     }
 
     isolated resource function post mailboxChanges(http:Caller caller, http:Request request) returns @tainted error? {
+        json ReqPayload = check request.getJsonPayload();
+        string incomingSubscription = check ReqPayload.subscription;
         check caller->respond(http:STATUS_OK);
-        var  mailboxHistoryPage =  self.gmailClient->listHistory(self.startHistoryId);
-        
-        if (mailboxHistoryPage is gmail:MailboxHistoryPage) {
-            self.startHistoryId = mailboxHistoryPage.historyId;
-            log:printDebug("Next History ID = "+self.startHistoryId);
-            check self.dispatcher.dispatch(mailboxHistoryPage);                          
-        } else {
-            log:printError("Error occured while getting history.", 'error= mailboxHistoryPage);
-        }
-    }
 
-    public isolated function setStartHistoryId(string startHistoryId) {
-        self.startHistoryId = startHistoryId;
+        if (self.subscriptionResource === incomingSubscription) {
+            var  mailboxHistoryPage =  self.gmailClient->listHistory(self.startHistoryId);
+            if (mailboxHistoryPage is stream<gmail:History,error>) {
+                var history = mailboxHistoryPage.next();
+                while (history is record {| gmail:History value; |}) {
+                    self.startHistoryId =<string> history.value?.historyId;
+                    log:printDebug("Next History ID = "+self.startHistoryId);
+                    check self.dispatcher.dispatch(history.value);
+                    history = mailboxHistoryPage.next();
+                }
+            } else {
+                log:printError("Error occured while getting history.", 'error= mailboxHistoryPage);
+            }
+        }
     }
 }

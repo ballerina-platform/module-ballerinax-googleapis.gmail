@@ -389,6 +389,7 @@ public type MailboxHistoryPage record {
 
 # Represents a history reoced in MailboxHistoryPage.
 #
+# + historyId - The ID of the mailbox's current history record
 # + id - The mailbox sequence ID
 # + messages - List of messages changed in this history record
 # + messagesAdded - 	Messages added to the mailbox in this history record
@@ -398,7 +399,9 @@ public type MailboxHistoryPage record {
 @display {label: "History"}
 public type History record {
     @display {label: "History Id"}
-    string id;
+    string historyId?;
+    @display {label: "History Sequence Id"}
+    string id?;
     @display {label: "Messages"}
     Message[] messages?;
     @display {label: "Messages Added"}

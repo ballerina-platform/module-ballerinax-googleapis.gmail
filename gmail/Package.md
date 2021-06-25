@@ -300,8 +300,8 @@ gmail:GmailConfiguration gmailConfig = {
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
 service / on gmailEventListener {
-   remote function onNewLabeledEmail(gmailListener:ChangedLabel changedLabeldMsg) returns error? {
-           log:printInfo("Labeled : " , changedLabeldMsg);
+   remote function onNewLabeledEmail(gmailListener:ChangedLabel changedLabel) returns error? {
+           log:printInfo("Labeled : " , changedLabel);
    }   
 }
 
