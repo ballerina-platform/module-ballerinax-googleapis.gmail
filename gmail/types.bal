@@ -437,3 +437,6 @@ public type Draft record {
     @display {label: "Message"}
     Message message?;
 };
+
+# Represents union of MsgSearchFilter and DraftSearchFilter.
+public type Filter MsgSearchFilter|DraftSearchFilter;

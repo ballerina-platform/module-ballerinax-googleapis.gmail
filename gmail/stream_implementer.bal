@@ -51,32 +51,10 @@ class MessageStream {
     }
 
     isolated function fetchMessages() returns @tainted Message[]|error {
-
         string getListMessagesPath = USER_RESOURCE + self.userEmailId + MESSAGE_RESOURCE;
-
-        if (self.filter is MsgSearchFilter) {
-            string uriParams = "";
-            //The default value for include spam trash query parameter of the api call is false
-            //If append unsuccessful throws and returns error
-            uriParams = self.filter?.includeSpamTrash is boolean ? check appendEncodedURIParameter(uriParams, 
-                        INCLUDE_SPAMTRASH, string `${<boolean>self.filter?.includeSpamTrash}`) : uriParams;
-            //---Append other optional URI query parameters---
-            if (self.filter?.labelIds is string[]) {
-                foreach string labelId in <string[]>self.filter?.labelIds {
-                    uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
-                }
-            }
-            //Empty check is done since these parameters are optional to be filled in MsgSearchFilter Type object
-            uriParams = self.filter?.maxResults is int ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
-                self.filter?.maxResults.toString()) : uriParams;
-            uriParams = self.pageToken is string ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
-                <string>self.pageToken) :uriParams;
-            uriParams = self.filter?.q is string ? check appendEncodedURIParameter(uriParams, QUERY, <string>self.filter?.q) : 
-                uriParams;
-            getListMessagesPath = getListMessagesPath + <@untainted>uriParams;
-        }
-        http:Response httpResponse = <http:Response> check self.httpClient->get(getListMessagesPath);
-        //Get json msg list reponse. If unsuccessful throws and returns error.
+        string uriParams = check getURIParamsFromFilter(self.filter, self.pageToken);
+        getListMessagesPath = getListMessagesPath + <@untainted>uriParams;
+        http:Response httpResponse = <http:Response> check self.httpClient->get(getListMessagesPath);        
         json jsonlistMsgResponse = check handleResponse(httpResponse);
         MessageListPage|error response = jsonlistMsgResponse.cloneWithType(MessageListPage);
 
@@ -129,29 +107,9 @@ class ThreadStream {
 
     isolated function fetchThreads() returns @tainted MailThread[]|error {
         string getListThreadPath = USER_RESOURCE + self.userEmailId + THREAD_RESOURCE;
-        if (self.filter is MsgSearchFilter) {
-            string uriParams = "";
-            //The default value for include spam trash query parameter of the api call is false
-            //If append unsuccessful throws and returns error
-            uriParams = self.filter?.includeSpamTrash is boolean ? check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
-                string `${<boolean>self.filter?.includeSpamTrash}`) : uriParams;
-            //---Append other optional URI query parameters---
-            if (self.filter?.labelIds is string[]){
-                foreach string labelId in <string[]>self.filter?.labelIds {
-                    uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
-                }
-            }
-            //Empty check is done since these parameters are optional to be filled in MsgSearchFilter Type object
-            uriParams = self.filter?.maxResults is int ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
-                self.filter?.maxResults.toString()) : uriParams;
-            uriParams = self.pageToken is string ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
-                <string>self.pageToken) :uriParams;
-            uriParams = self.filter?.q is string ? check appendEncodedURIParameter(uriParams, QUERY, <string>self.filter?.q) : 
-                uriParams;
-            getListThreadPath = getListThreadPath + <@untainted>uriParams;
-        }
+        string uriParams = check getURIParamsFromFilter(self.filter, self.pageToken);
+        getListThreadPath = getListThreadPath + <@untainted>uriParams;
         http:Response httpResponse = <http:Response> check self.httpClient->get(getListThreadPath);
-        //Get json thread list reponse. If unsuccessful throws and returns error.
         json jsonListThreadResponse = check handleResponse(httpResponse);
         ThreadListPage|error response = jsonListThreadResponse.cloneWithType(ThreadListPage);
 
@@ -173,11 +131,11 @@ class DraftStream {
     private int index = 0;
     private final http:Client httpClient;
     private final string userEmailId;
-    private final MsgSearchFilter? filter;
+    private final DraftSearchFilter? filter;
     private string? pageToken = ();
 
 
-    isolated function init(http:Client httpClient, string userId, MsgSearchFilter? filter) returns error? {
+    isolated function init(http:Client httpClient, string userId, DraftSearchFilter? filter) returns error? {
         self.httpClient = httpClient;
         self.filter = filter;
         if (self.filter?.pageToken is string) {
@@ -203,21 +161,9 @@ class DraftStream {
     }
 
     isolated function fetchDrafts() returns @tainted Draft[]|error {
-
         string getListDraftsPath = USER_RESOURCE + self.userEmailId + DRAFT_RESOURCE;
-        if (self.filter is DraftSearchFilter) {
-            string uriParams = "";
-            //The default value for include spam trash query parameter of the api call is false
-            uriParams = self.filter?.includeSpamTrash is boolean ? check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH,
-                string `${<boolean>self.filter?.includeSpamTrash}`) : uriParams;
-            uriParams = self.filter?.maxResults is int ? check appendEncodedURIParameter(uriParams, MAX_RESULTS, 
-                self.filter?.maxResults.toString()) : uriParams;
-            uriParams = self.pageToken is string ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, 
-                <string>self.pageToken) :uriParams;
-            uriParams = self.filter?.q is string ? check appendEncodedURIParameter(uriParams, QUERY, <string>self.filter?.q) : 
-                uriParams;
-            getListDraftsPath += <@untainted>uriParams;
-        }
+        string uriParams = check getURIParamsFromFilter(self.filter, self.pageToken);
+        getListDraftsPath += <@untainted>uriParams;
         http:Response httpResponse = <http:Response> check self.httpClient->get(getListDraftsPath);
         json jsonListDraftResponse = check handleResponse(httpResponse);
         DraftListPage|error response = jsonListDraftResponse.cloneWithType(DraftListPage);
@@ -279,7 +225,6 @@ class MailboxHistoryStream {
         string uriParams = "";
         uriParams = check appendEncodedURIParameter(uriParams, START_HISTORY_ID, self.startHistoryId);
         if (self.historyTypes is string[]) {
-            //Append optional query parameter history types to be returned
             foreach string historyType in <string[]>self.historyTypes {
                 uriParams = check appendEncodedURIParameter(uriParams, HISTORY_TYPES, historyType);
             }
@@ -295,9 +240,7 @@ class MailboxHistoryStream {
         }
         string listHistoryPath = USER_RESOURCE + self.userEmailId + HISTORY_RESOURCE + uriParams;
         http:Response httpResponse = <http:Response> check self.httpClient->get(listHistoryPath);
-        //Get json history reponse. If unsuccessful, throws and returns error.
-        json jsonHistoryResponse = check handleResponse(httpResponse);
-        //Transform the json history response from Gmail API to Mailbox History Page type.        
+        json jsonHistoryResponse = check handleResponse(httpResponse);      
         MailboxHistoryPage|error response = jsonHistoryResponse.cloneWithType(MailboxHistoryPage);
 
         if (response is MailboxHistoryPage) {
@@ -314,4 +257,26 @@ class MailboxHistoryStream {
             return error(ERR_MAILBOX_HISTORY_LIST, response);
         }
     }
+}
+
+isolated function getURIParamsFromFilter(Filter? filter, string? pageToken) returns string|error {
+    string uriParams = "";
+    if (filter is Filter) {
+        uriParams = filter?.includeSpamTrash is boolean ? check appendEncodedURIParameter(uriParams, INCLUDE_SPAMTRASH, 
+                    string `${<boolean>filter?.includeSpamTrash}`) : uriParams;        
+        uriParams = filter?.maxResults is int ? check appendEncodedURIParameter(uriParams, MAX_RESULTS,
+                    filter?.maxResults.toString()) : uriParams;        
+        uriParams = filter?.q is string ? check appendEncodedURIParameter(uriParams, QUERY, <string>filter?.q) : 
+                    uriParams;
+    }
+    if (filter is MsgSearchFilter) {
+        if (filter?.labelIds is string[]) {
+            foreach string labelId in <string[]>filter?.labelIds {
+                uriParams = check appendEncodedURIParameter(uriParams, LABEL_IDS, labelId);
+            }
+        }
+    }
+    uriParams = pageToken is string ? check appendEncodedURIParameter(uriParams, PAGE_TOKEN, <string>pageToken) :
+                uriParams;
+    return uriParams;
 }
