@@ -84,7 +84,7 @@ public class Listener {
         json deleteSubscription = check deletePubsubSubscription(self.pubSubClient, self.subscriptionResource);
         json deleteTopic = check deletePubsubTopic(self.pubSubClient, self.topicResource);
         var response = check stop(self.gmailHttpClient, self.userId);
-        log:printInfo("Watch Stopped = " + response.toString());
+        log:printInfo(WATCH_STOPPED + response.toString());
         return self.httpListener.gracefulStop();
     }
 
@@ -95,7 +95,7 @@ public class Listener {
     public isolated function watchMailbox() returns @tainted error? {
         WatchResponse  response = check watch(self.gmailHttpClient, self.userId, self.requestBody);
         self.startHistoryId = response.historyId;
-        log:printInfo("New History ID: " + self.startHistoryId);
+        log:printInfo(NEW_HISTORY_ID + self.startHistoryId);
         self.httpService.startHistoryId = self.startHistoryId;
     }    
 }

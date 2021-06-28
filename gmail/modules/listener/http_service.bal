@@ -40,17 +40,19 @@ service class HttpService {
 
         if (self.subscriptionResource === incomingSubscription) {
             var  mailboxHistoryPage =  self.gmailClient->listHistory(self.startHistoryId);
-            if (mailboxHistoryPage is stream<gmail:History,error>) {
+            if (mailboxHistoryPage is stream<gmail:History,error?>) {
                 var history = mailboxHistoryPage.next();
                 while (history is record {| gmail:History value; |}) {
-                    self.startHistoryId =<string> history.value?.historyId;
-                    log:printDebug("Next History ID = "+self.startHistoryId);
                     check self.dispatcher.dispatch(history.value);
+                    self.startHistoryId =<string> history.value?.historyId;
+                    log:printDebug(NEXT_HISTORY_ID+self.startHistoryId);
                     history = mailboxHistoryPage.next();
                 }
             } else {
-                log:printError("Error occured while getting history.", 'error= mailboxHistoryPage);
+                log:printError(ERR_HISTORY_LIST, 'error= mailboxHistoryPage);
             }
+        } else {
+            log:printWarn(WARN_UNKNOWN_PUSH_NOTIFICATION + incomingSubscription);
         }
     }
 }

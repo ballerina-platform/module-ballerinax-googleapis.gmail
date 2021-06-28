@@ -495,16 +495,16 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### List threads
 This sample shows how to list the available threads in authorized user's mailbox. You must specify the 
 **ID/email of the authorized user** as a parameter for this operation. In the connector implementation the 
-result contains a `stream<gmail:MailThread,error>` which is stream of `MailThread` records, each represent data about
+result contains a `stream<gmail:MailThread,error?>` which is stream of `MailThread` records, each represent data about
  a thread if operation is successful. Else returns an `error`.
 
 ```ballerina
 
 // Make includeSpamTrash false to exclude threads from SPAM and TRASH in the results.
-stream<gmail:MailThread,error>|error threadList = gmailClient->listThreads(filter = {includeSpamTrash: false, 
+stream<gmail:MailThread,error?>|error threadList = gmailClient->listThreads(filter = {includeSpamTrash: false, 
     labelIds: ["INBOX"]});
 
-if (threadList is stream<gmail:MailThread,error>) {  
+if (threadList is stream<gmail:MailThread,error?>) {  
     error? e = threadList.forEach(function (gmail:MailThread thread) {
         log:printInfo(thread.toString());
     }); 
@@ -663,15 +663,15 @@ Sample is available at: https://github.com/ballerina-platform/module-ballerinax-
 ### List drafts
 This sample shows how to list the available drafts in authorized user's mailbox. You must specify the 
 **ID/email of the authorized user** as a parameter for this operation. In the connector implementation the 
-result contains a `stream<gmail:Draft,error>` which is stream of `Draft` records, each represent data about a 
+result contains a `stream<gmail:Draft,error?>` which is stream of `Draft` records, each represent data about a 
 draft if operation is successful. Else returns an `error`.
 
 ```ballerina
 
 gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
 
-stream<gmail:Draft,error>|error msgList = gmailClient->listDrafts(filter = searchFilter);
-if (msgList is stream<gmail:Draft,error>) {
+stream<gmail:Draft,error?>|error msgList = gmailClient->listDrafts(filter = searchFilter);
+if (msgList is stream<gmail:Draft,error?>) {
     error? e = msgList.forEach(function (gmail:Draft draft) {
         log:printInfo(draft.toString());
     });   
@@ -871,9 +871,9 @@ if (response is gmail:Message) {
     // History types to be returned by the function
     string[] historyTypes = ["labelAdded", "labelRemoved", "messageAdded", "messageDeleted"];
 
-    stream<gmail:History,error>|error listHistoryResponse = gmailClient->listHistory(startHistoryId, 
+    stream<gmail:History,error?>|error listHistoryResponse = gmailClient->listHistory(startHistoryId, 
                                                                                      historyTypes = historyTypes);
-        if (listHistoryResponse is stream<gmail:History,error>) {
+        if (listHistoryResponse is stream<gmail:History,error?>) {
             error? e = listHistoryResponse.forEach(function (gmail:History history) {
                 log:printInfo(history.toString());
             });    
@@ -1092,7 +1092,7 @@ gmail:GmailConfiguration gmailConfig = {
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
 service / on gmailEventListener {
-   remote function onNewLabeledEmail(gmailListener:ChangedLabel changedLabel) returns error? {
+   remote function onEmailLabelAdded(gmailListener:ChangedLabel changedLabel) returns error? {
            log:printInfo("Labeled : " , changedLabel);
    }   
 }
@@ -1128,7 +1128,7 @@ gmail:GmailConfiguration gmailConfig = {
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
 service / on gmailEventListener {
-   remote function onNewStarredEmail(gmail:Message message) returns error? {
+   remote function onEmailStarred(gmail:Message message) returns error? {
            log:printInfo("Starred : " , message);
    }   
 }
@@ -1165,7 +1165,7 @@ gmail:GmailConfiguration gmailConfig = {
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
 service / on gmailEventListener {
-   remote function onLabelRemovedEmail(gmailListener:ChangedLabel changedLabel) returns error? {
+   remote function onEmailLabelRemoved(gmailListener:ChangedLabel changedLabel) returns error? {
            log:printInfo("Label Removed Mail : " , changedLabel);
    }   
 }
@@ -1202,7 +1202,7 @@ gmail:GmailConfiguration gmailConfig = {
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
 service / on gmailEventListener {
-   remote function onStarRemovedEmail(gmail:Message message) returns error? {
+   remote function onEmailStarRemoved(gmail:Message message) returns error? {
            log:printInfo("Star Removed : " , message);
    }   
 }

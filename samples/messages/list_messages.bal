@@ -38,9 +38,9 @@ public function main(string... args) {
     // match all of the specified label ID "INBOX"
     gmail:MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: labelsToMatch};
     
-    stream<gmail:Message,error>|error msgList = gmailClient->listMessages(filter = searchFilter);
+    stream<gmail:Message,error?>|error msgList = gmailClient->listMessages(filter = searchFilter);
 
-    if (msgList is stream<gmail:Message,error>) {
+    if (msgList is stream<gmail:Message,error?>) {
         error? e  = msgList.forEach(function (gmail:Message message) {
             log:printInfo(message.toString());
         });
