@@ -38,11 +38,11 @@ public function main(string... args) {
     // match all of the specified label ID "INBOX"
     gmail:MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: labelsToMatch};
     
-    gmail:MessageListPage|error msgList = gmailClient->listMessages(filter = searchFilter);
+    stream<gmail:Message,error?>|error msgList = gmailClient->listMessages(filter = searchFilter);
 
-    if (msgList is gmail:MessageListPage) {
-        error? e = msgList.messages.forEach(function (gmail:Message message) {
-                log:printInfo(message.toString());
+    if (msgList is stream<gmail:Message,error?>) {
+        error? e  = msgList.forEach(function (gmail:Message message) {
+            log:printInfo(message.toString());
         });
     } else {
         log:printError("Failed to list messages");

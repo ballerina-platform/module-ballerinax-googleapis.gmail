@@ -194,3 +194,7 @@ const string ME = "me";
 
 // Error Codes
 const string GMAIL_ERROR_CODE = "(ballerinax/googleapis.gmail)GmailError";
+const string ERR_MESSAGE_LIST = "Error occurred while constructing MessageListPage record.";
+const string ERR_THREAD_LIST = "Error occurred while constructing ThreadListPage record.";
+const string ERR_DRAFT_LIST = "Error occurred while constructing DraftListPage record.";
+const string ERR_MAILBOX_HISTORY_LIST = "Error occurred while constructing MailboxHistoryPage record.";

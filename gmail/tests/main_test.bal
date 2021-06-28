@@ -147,14 +147,17 @@ function testModifyHTMLMessage() {
 }
 
 @test:Config {
-
+    
 }
 function testListMessages() {
     //List All Messages with Label INBOX without including Spam and Trash
     log:printInfo("testListAllMessages");
     MsgSearchFilter searchFilter = {includeSpamTrash: false, labelIds: ["INBOX"]};
-    var msgList = gmailClient->listMessages(filter = searchFilter, userId = testUserId);
-    if msgList is error {
+    stream<Message,error?>|error msgList = gmailClient->listMessages(filter = searchFilter, userId = testUserId);
+    if (msgList is stream<Message,error?>) {
+        record {| Message value; |}|error? response = msgList.next();
+        test:assertTrue(response is record {| Message value; |}, msg = "Found 0 records");
+    } else {
         test:assertFail(msg = msgList.message());
     }
 }
@@ -256,8 +259,12 @@ function testDeleteMessage() {
 }
 function testListThreads() {
     log:printInfo("testListThreads");
-    var threadList = gmailClient->listThreads(filter = {includeSpamTrash: false, labelIds: ["INBOX"]});
-    if (threadList is error) {
+    stream<MailThread,error?>|error threadList = gmailClient->listThreads(filter = {includeSpamTrash: false, 
+                                                                                   labelIds: ["INBOX"]});
+    if (threadList is stream<MailThread,error?>) {
+        record {| MailThread value; |}|error? response = threadList.next();
+        test:assertTrue(response is record {| MailThread value; |}, msg = "Found 0 records");
+    } else {
         test:assertFail(msg = threadList.message());
     }
 }
@@ -431,26 +438,29 @@ function testUpdateLabel() {
 function testListHistory() {
     log:printInfo("testListTheHistory");
     string[] historyTypes = ["labelAdded", "labelRemoved", "messageAdded", "messageDeleted"];
-    var listHistoryResponse = gmailClient->listHistory(testHistoryId, historyTypes = historyTypes);
-    if (listHistoryResponse is error) {
-        test:assertFail(msg = listHistoryResponse.message());
+    stream<History,error?>|error listHistoryResponse = gmailClient->listHistory(testHistoryId, 
+                                                                               historyTypes = historyTypes);
+    if (listHistoryResponse is stream<History,error?>) {
+        record {| History value; |}|error? response = listHistoryResponse.next();
+        test:assertTrue(response is record {| History value; |}, msg = "Found 0 records");
     } else {
-        if (listHistoryResponse?.history is History[]) {
-            History[] history = <History[]>listHistoryResponse?.history;
-            test:assertTrue(history.length() != 0, msg = "List history failed");
-        }        
+        test:assertFail(msg = listHistoryResponse.message());
     }
 }
 
 @test:Config {
-
+    dependsOn: [testCreateDraft],
+    groups: ["draftTestGroup"]
 }
 function testListDrafts() {
     //List maximum of ten results for Drafts without including Spam and Trash
     log:printInfo("testListDrafts");
     DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
-    var msgList = gmailClient->listDrafts(filter = searchFilter);
-    if (msgList is error) {
+    stream<Draft,error?>|error msgList = gmailClient->listDrafts(filter = searchFilter);
+    if (msgList is stream<Draft,error?>) {
+        record {| Draft value; |}|error? response = msgList.next();
+        test:assertTrue(response is record {| Draft value; |}, msg = "Found 0 records");
+    } else {
         test:assertFail(msg = msgList.message());
     }
 }
@@ -480,7 +490,7 @@ function testCreateDraft() {
 }
 
 @test:Config {
-    dependsOn: [testCreateDraft],
+    dependsOn: [testListDrafts],
     groups: ["draftTestGroup"]
 }
 function testUpdateDraft() {

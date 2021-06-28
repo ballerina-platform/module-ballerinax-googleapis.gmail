@@ -82,8 +82,15 @@ const string SETIAMPOLICY = ":setIamPolicy";
 # Holds the value Error code in listener.
 const string GMAIL_LISTENER_ERROR_CODE = "(ballerinax/googleapis.gmail) GmailListenerError";
 
+//Log constants
+const string NEXT_HISTORY_ID = "Next History ID : ";
+const string NEW_HISTORY_ID = "New History ID : ";
+const string WATCH_STOPPED = "Watch Stopped : ";
+ 
 // Warn constants
 const string WARN_WATCH_MAILBOX = "Could not watch mailbox";
+const string WARN_UNKNOWN_PUSH_NOTIFICATION = "This listener endpoint is getting push notification from an unknown "
+                                            + "subscription. The subsciption resource is ";
 
 // Info constants
 const string INFO_RETRY_WATCH_MAILBOX = "Retrying to watch mailbox. Attempt - ";
@@ -92,6 +99,7 @@ const string INFO_RETRY_SCHEDULE = "Retrying to schedule watch renewal. Attempt 
 // Error constants
 const string ERR_WATCH_MAILBOX = "Unable to watch mailbox.";
 const string ERR_SCHEDULE = "Unable to schedule watch renewal.";
+const string ERR_HISTORY_LIST = "Unable to schedule watch renewal.";
 
 public enum Encoding {
     ENCODING_UNSPECIFIED,
