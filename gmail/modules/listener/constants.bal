@@ -90,7 +90,7 @@ const string WATCH_STOPPED = "Watch Stopped : ";
 // Warn constants
 const string WARN_WATCH_MAILBOX = "Could not watch mailbox";
 const string WARN_UNKNOWN_PUSH_NOTIFICATION = "This listener endpoint is getting push notification from an unknown "
-                                            + "subscription. The subsciption resource is";
+                                            + "subscription. The subsciption resource is ";
 
 // Info constants
 const string INFO_RETRY_WATCH_MAILBOX = "Retrying to watch mailbox. Attempt - ";
