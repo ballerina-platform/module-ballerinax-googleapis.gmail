@@ -37,8 +37,8 @@ public function main(string... args) {
 
     gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
     
-    stream<gmail:Draft,error>|error msgList = gmailClient->listDrafts(filter = searchFilter, userId = userId);
-    if (msgList is stream<gmail:Draft,error>) {
+    stream<gmail:Draft,error?>|error msgList = gmailClient->listDrafts(filter = searchFilter, userId = userId);
+    if (msgList is stream<gmail:Draft,error?>) {
         error? e = msgList.forEach(function (gmail:Draft draft) {
             log:printInfo(draft.toString());
         });   

@@ -37,7 +37,7 @@ gmail:GmailConfiguration gmailConfig = {
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
 service / on gmailEventListener {
-   remote function onStarRemovedEmail(gmail:Message message) returns error? {
+   remote function onEmailStarRemoved(gmail:Message message) returns error? {
            log:printInfo("Star Removed : " , message);
    }   
 }

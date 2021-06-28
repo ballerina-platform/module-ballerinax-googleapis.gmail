@@ -46,16 +46,16 @@ public client class Client {
     #
     # + filter - Optional. MsgSearchFilter with optional query parameters to search messages.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
-    # + return - If successful, returns stream<Message,error>. Else returns error.
+    # + return - If successful, returns stream<Message,error?>. Else returns error.
     @display {label: "List Messages"} 
     remote isolated function listMessages(@display {label: "Message Search Filter"} MsgSearchFilter? filter = (),
                                           @display {label: "Email Address"} string? userId = ()) returns @tainted 
-                                          @display {label: "Message List"} stream<Message,error>|error {
+                                          @display {label: "Message List"} stream<Message,error?>|error {
         if (userId is string) {
             self.userEmailId = userId;
         }
         MessageStream messageStream = check new MessageStream (self.gmailClient, self.userEmailId, filter);
-        return new stream<Message,error>(messageStream);
+        return new stream<Message,error?>(messageStream);
     }
 
     # Create the raw base 64 encoded string of the whole message and send it as an email from the user's
@@ -270,16 +270,16 @@ public client class Client {
     #
     # + filter - Optional. The MsgSearchFilter with optional query parameters to search a thread.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
-    # + return - If successful, returns stream<MailThread,error>. Else returns error.
+    # + return - If successful, returns stream<MailThread,error?>. Else returns error.
     @display {label: "List Threads"} 
     remote isolated function listThreads(@display {label: "Message Search Filter"} MsgSearchFilter? filter = (),
                                          @display {label: "Email Address"} string? userId = ()) returns @tainted 
-                                         @display {label: "Thread List"} stream<MailThread,error>|error {
+                                         @display {label: "Thread List"} stream<MailThread,error?>|error {
         if (userId is string) {
             self.userEmailId = userId;
         }
         ThreadStream threadStream = check new ThreadStream (self.gmailClient, self.userEmailId, filter);
-        return new stream<MailThread,error>(threadStream);
+        return new stream<MailThread,error?>(threadStream);
     }
 
     # Read the specified mail thread from users mailbox.
@@ -639,7 +639,7 @@ public client class Client {
     # + maxResults - Optional. The maximum number of history records to return
     # + pageToken - Optional. Page token to retrieve a specific page of results in the list
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
-    # + return - If successful, returns stream<History,error>. Else returns error.
+    # + return - If successful, returns stream<History,error?>. Else returns error.
     @display {label: "List History"}
     remote isolated function listHistory(@display {label: "Start History Id"} string startHistoryId,
                                          @display {label: "History Type"} string[]? historyTypes = (),
@@ -647,30 +647,30 @@ public client class Client {
                                          @display {label: "Maximum Records"} string? maxResults = (),
                                          @display {label: "Page Token"} string? pageToken = (),
                                          @display {label: "Email Address"} string? userId = ()) returns @tainted
-                                         @display {label: "Mailbox History Page"}stream<History,error>|error {
+                                         @display {label: "Mailbox History Page"}stream<History,error?>|error {
         if (userId is string) {
             self.userEmailId = userId;
         }
         MailboxHistoryStream mailboxHistoryStream = check new MailboxHistoryStream (self.gmailClient, self.userEmailId,
                                                                                     startHistoryId, historyTypes,
                                                                                     labelId, maxResults, pageToken);
-        return new stream<History,error>(mailboxHistoryStream);
+        return new stream<History,error?>(mailboxHistoryStream);
     }
 
     # List the drafts in user's mailbox.
     #
     # + filter - Optional. DraftSearchFilter with optional query parameters to search drafts.
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
-    # + return - If successful, returns stream<Draft,error>. Else returns error.
+    # + return - If successful, returns stream<Draft,error?>. Else returns error.
     @display {label: "List Drafts"}
     remote isolated function listDrafts(@display {label: "Drafts Search Filter"} DraftSearchFilter? filter = (),
                                         @display {label: "Email Address"} string? userId = ()) 
-                                        returns @tainted @display {label: "Drafts"} stream<Draft,error>|error {
+                                        returns @tainted @display {label: "Drafts"} stream<Draft,error?>|error {
         if (userId is string) {
             self.userEmailId = userId;
         }
         DraftStream draftStream = check new DraftStream (self.gmailClient, self.userEmailId, filter);
-        return new stream<Draft,error>(draftStream);
+        return new stream<Draft,error?>(draftStream);
     }
 
     # Read the specified draft from users mailbox.

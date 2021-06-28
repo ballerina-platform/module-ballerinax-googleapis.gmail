@@ -27,22 +27,22 @@ isolated function callOnNewThread(SimpleHttpService httpService, gmail:MailThrea
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;
 
-isolated function callOnNewLabeledEmail(SimpleHttpService httpService, ChangedLabel changedLabel) returns error?
+isolated function callOnEmailLabelAdded(SimpleHttpService httpService, ChangedLabel changedLabel) returns error?
     = @java:Method {
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;
 
-isolated function callOnNewStarredEmail(SimpleHttpService httpService, gmail:Message message) returns error?
+isolated function callOnEmailStarred(SimpleHttpService httpService, gmail:Message message) returns error?
     = @java:Method {
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;
 
-isolated function callOnLabelRemovedEmail(SimpleHttpService httpService, ChangedLabel changedLabel) returns error?
+isolated function callOnEmailLabelRemoved(SimpleHttpService httpService, ChangedLabel changedLabel) returns error?
     = @java:Method {
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;
 
-isolated function callOnStarRemovedEmail(SimpleHttpService httpService, gmail:Message message) returns error?
+isolated function callOnEmailStarRemoved(SimpleHttpService httpService, gmail:Message message) returns error?
     = @java:Method {
     'class: "org.ballerinalang.googleapis.gmail.HttpNativeOperationHandler"
 } external;

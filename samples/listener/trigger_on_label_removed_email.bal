@@ -37,7 +37,7 @@ gmail:GmailConfiguration gmailConfig = {
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
 service / on gmailEventListener {
-   remote function onLabelRemovedEmail(gmailListener:ChangedLabel changedLabel) returns error? {
+   remote function onEmailLabelRemoved(gmailListener:ChangedLabel changedLabel) returns error? {
            log:printInfo("Label Removed Mail : " , changedLabel);
    }   
 }
