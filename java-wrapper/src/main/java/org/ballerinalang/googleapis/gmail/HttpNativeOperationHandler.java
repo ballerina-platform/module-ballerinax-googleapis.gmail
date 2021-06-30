@@ -46,20 +46,20 @@ public class HttpNativeOperationHandler {
         return invokeRemoteFunction(env, bHttpService, message, "callOnNewThread", "onNewThread");
     }
 
-    public static Object callOnNewLabeledEmail(Environment env, BObject bHttpService, BMap<BString, Object> message) {
-        return invokeRemoteFunction(env, bHttpService, message, "callOnNewLabeledEmail", "onNewLabeledEmail");
+    public static Object callOnEmailLabelAdded(Environment env, BObject bHttpService, BMap<BString, Object> message) {
+        return invokeRemoteFunction(env, bHttpService, message, "callOnEmailLabelAdded", "onEmailLabelAdded");
     }
 
-    public static Object callOnNewStarredEmail(Environment env, BObject bHttpService, BMap<BString, Object> message) {
-        return invokeRemoteFunction(env, bHttpService, message, "callOnNewStarredEmail", "onNewStarredEmail");
+    public static Object callOnEmailStarred(Environment env, BObject bHttpService, BMap<BString, Object> message) {
+        return invokeRemoteFunction(env, bHttpService, message, "callOnEmailStarred", "onEmailStarred");
     }
 
-    public static Object callOnLabelRemovedEmail(Environment env, BObject bHttpService, BMap<BString, Object> message) {
-        return invokeRemoteFunction(env, bHttpService, message, "callOnLabelRemovedEmail", "onLabelRemovedEmail");
+    public static Object callOnEmailLabelRemoved(Environment env, BObject bHttpService, BMap<BString, Object> message) {
+        return invokeRemoteFunction(env, bHttpService, message, "callOnEmailLabelRemoved", "onEmailLabelRemoved");
     }
 
-    public static Object callOnStarRemovedEmail(Environment env, BObject bHttpService, BMap<BString, Object> message) {
-        return invokeRemoteFunction(env, bHttpService, message, "callOnStarRemovedEmail", "onStarRemovedEmail");
+    public static Object callOnEmailStarRemoved(Environment env, BObject bHttpService, BMap<BString, Object> message) {
+        return invokeRemoteFunction(env, bHttpService, message, "callOnEmailStarRemoved", "onEmailStarRemoved");
     }
 
     public static Object callOnNewAttachment(Environment env, BObject bHttpService, BMap<BString, Object> message) {

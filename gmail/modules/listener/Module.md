@@ -4,7 +4,7 @@ Connects to Gmail Listener using Ballerina.
 
 # Module Overview
 
-The Gmail Listener Ballerina Connector provides the capability to listen the push notification for changes to Gmail mailboxes. The Gmail Listener Ballerina Connector supports to listen the changes of Gmail mailboxes such as receiving new message, receiving new thread, adding new label to a message, adding star to a message, removing label to a message, removing star to a message and receiving a new attachment with following trigger methods: `onNewEmail`, `onNewThread`, `onNewLabeledEmail`, `onNewStarredEmail`, `onLabelRemovedEmail`,`onStarRemovedEmail`, `onNewAttachment`.
+The Gmail Listener Ballerina Connector provides the capability to listen the push notification for changes to Gmail mailboxes. The Gmail Listener Ballerina Connector supports to listen the changes of Gmail mailboxes such as receiving new message, receiving new thread, adding new label to a message, adding star to a message, removing label to a message, removing star to a message and receiving a new attachment with following trigger methods: `onNewEmail`, `onNewThread`, `onEmailLabelAdded`, `onEmailStarred`, `onEmailLabelRemoved`,`onEmailStarRemoved`, `onNewAttachment`.
 
 
 # Prerequisites:
@@ -224,8 +224,8 @@ gmail:GmailConfiguration gmailConfig = {
 listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
 
 service / on gmailEventListener {
-   remote function onNewLabeledEmail(gmailListener:ChangedLabel changedLabeldMsg) returns error? {
-           log:printInfo("Labeled : " , changedLabeldMsg);
+   remote function onEmailLabelAdded(gmailListener:ChangedLabel changedLabel) returns error? {
+           log:printInfo("Labeled : " , changedLabel);
    }   
 }
 
