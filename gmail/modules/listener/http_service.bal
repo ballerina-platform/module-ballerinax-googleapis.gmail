@@ -36,7 +36,6 @@ service class HttpService {
     isolated resource function post mailboxChanges(http:Caller caller, http:Request request) returns @tainted error? {
         json ReqPayload = check request.getJsonPayload();
         string incomingSubscription = check ReqPayload.subscription;
-        check caller->respond(http:STATUS_OK);
 
         if (self.subscriptionResource === incomingSubscription) {
             var  mailboxHistoryPage =  self.gmailClient->listHistory(self.startHistoryId);
@@ -54,5 +53,6 @@ service class HttpService {
         } else {
             log:printWarn(WARN_UNKNOWN_PUSH_NOTIFICATION + incomingSubscription);
         }
+        check caller->respond(http:STATUS_OK);
     }
 }

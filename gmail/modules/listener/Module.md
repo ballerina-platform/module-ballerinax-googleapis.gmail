@@ -231,3 +231,44 @@ service / on gmailEventListener {
 
 ```
 More samples are available at "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/samples/listener".
+
+> **NOTE:**
+If the user's logic inside any remote method of the connector listener throws an error, connector internal logic will 
+covert that error into a HTTP 500 error response and respond to the webhook (so that event may get redelivered), 
+otherwise it will respond with HTTP 200 OK. Due to this architecture, if the user logic in listener remote operations
+includes heavy processing, the user may face HTTP timeout issues for webhook responses. In such cases, it is advised to
+process events asynchronously as shown below.
+
+```ballerina
+
+import ballerinax/googleapis.gmail as gmail;
+import ballerinax/googleapis.gmail.'listener as gmailListener;
+
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable int port = ?;
+configurable string project = ?;
+configurable string pushEndpoint = ?;
+
+gmail:GmailConfiguration gmailConfig = {
+    oauthClientConfig: {
+        refreshUrl: gmail:REFRESH_URL,
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
+        }
+};
+
+listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  project, pushEndpoint);
+
+service / on gmailEventListener {
+   remote function onNewEmail(gmail:Message message) returns error? {
+        _ = @strand { thread: "any" } start userLogic(message);
+   }   
+}
+
+function userLogic(gmail:Message message) returns error? {
+    // Write your logic here
+}
+```
