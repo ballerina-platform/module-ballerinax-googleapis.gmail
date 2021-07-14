@@ -38,6 +38,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  pro
 
 service / on gmailEventListener {
    remote function onNewAttachment(gmailListener:MailAttachment attachment) returns error? {
-           log:printInfo("New Attachment : " , attachment);
+           log:printInfo("New Attachment : " , attachment = attachment);
    }   
 }

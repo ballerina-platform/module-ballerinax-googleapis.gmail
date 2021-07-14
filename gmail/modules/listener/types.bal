@@ -22,7 +22,7 @@ import ballerinax/googleapis.gmail as gmail;
 # + expiration - When Gmail will stop sending notifications for mailbox updates (epoch millis) - (int64 format). 
 @display {label: "Watch Response"}
 public type WatchResponse record {
-    @display {label: "History Id"}
+    @display {label: "History ID"}
     string historyId;
     @display {label: "Expiration"}
     string expiration;
@@ -47,7 +47,7 @@ public type WatchRequestBody record {
 # Represents label changed message.
 #
 # + messageDetail - The message which affected by label change  
-# + changedLabelId - The changed label id of the message
+# + changedLabelId - The changed label ID of the message
 @display {label: "Changed Label"}
 public type ChangedLabel record {
     @display {label: "Message"}
@@ -70,11 +70,11 @@ public type TopicSubscriptionDetail record {
 
 # Represents a mail attachment
 #
-# + messageId - Message Id
+# + messageId - Message ID
 # + msgAttachments - Message attachment  
 @display {label: "Mail Attachment"}
 public type MailAttachment record {
-    @display {label: "Message Id"}
+    @display {label: "Message ID"}
     string messageId;
     @display {label: "Message Attachments"}
     gmail:MessageBodyPart[] msgAttachments;

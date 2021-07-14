@@ -28,7 +28,7 @@ public type UserProfile record {
     int messagesTotal;
     @display {label: "Total Threads"}
     int threadsTotal;
-    @display {label: "History Id"}
+    @display {label: "History ID"}
     string historyId;
 };
 
@@ -40,9 +40,9 @@ public type UserProfile record {
 # + messages - The list of messages in the thread
 @display {label: "Mail Thread"}
 public type MailThread record {
-    @display {label: "Thread Id"}
+    @display {label: "Thread ID"}
     string id ;
-    @display {label: "History Id"}
+    @display {label: "History ID"}
     string historyId?;
     @display {label: "Snippet"}
     string snippet?;
@@ -118,11 +118,11 @@ public type AttachmentPath record {
 # Represents message resource which will be received as a response from the Gmail API.
 #
 # + threadId - Thread ID which the message belongs to
-# + id - Message Id
+# + id - Message ID
 # + labelIds - The label ids of the message
 # + raw - Represent the entire message in base64 encoded string
 # + snippet - Short part of the message text
-# + historyId - The id of the last history record that modified the message
+# + historyId - The ID of the last history record that modified the message
 # + internalDate - The internal message creation timestamp(epoch ms)
 # + sizeEstimate - Estimated size of the message in bytes
 # + headers - The map of headers in the top level message part representing the entire message payload in a
@@ -141,9 +141,9 @@ public type AttachmentPath record {
 # + msgAttachments - MIME Message Parts of the message consisting the attachments
 @display {label: "Message"}
 public type Message record {
-    @display {label: "Thread Id"}
+    @display {label: "Thread ID"}
     string threadId;
-    @display {label: "Message Id"}
+    @display {label: "Message ID"}
     string id;
     @display {label: "Label Ids"}
     string[] labelIds?;
@@ -151,7 +151,7 @@ public type Message record {
     string raw?;
     @display {label: "Snippet"}
     string snippet?;
-    @display {label: "History Id"}
+    @display {label: "History ID"}
     string historyId?;
     @display {label: "Internal Date"}
     string internalDate?;
@@ -190,11 +190,11 @@ public type Message record {
 # + data - The body data of the message part. This is a base64 encoded string
 # + mimeType - MIME type of the message part
 # + bodyHeaders - Headers of the MIME Message Part
-# + fileId - The file id of the attachment/inline image in message part *(This is empty unless the message part
+# + fileId - The file ID of the attachment/inline image in message part *(This is empty unless the message part
 #            represent an inline image/attachment)*
 # + fileName - The file name of the attachment/inline image in message part *(This is empty unless the message part
 #            represent an inline image/attachment)*
-# + partId - The part id of the message part
+# + partId - The part ID of the message part
 # + size - Number of bytes of message part data
 @display {label: "Message Body Part"}
 public type MessageBodyPart record {
@@ -204,11 +204,11 @@ public type MessageBodyPart record {
     string mimeType?;
     @display {label: "Body Headers"}
     map<string> bodyHeaders?;
-    @display {label: "File Id"}
+    @display {label: "File ID"}
     string fileId?;
     @display {label: "File Name"}
     string fileName?;
-    @display {label: "Part Id"}
+    @display {label: "Part ID"}
     string partId?;
     @display {label: "Size"}
     int size?;
@@ -328,7 +328,7 @@ public type DraftListPage record {
 # + color - Reperesents the color of label
 @display {label: "Label"}
 public type Label record {
-    @display {label: "Label Id"}
+    @display {label: "Label ID"}
     string id;
     @display {label: "Label Name"}
     string name;
@@ -373,7 +373,7 @@ public type Color record {
 
 # Represents a page of the history list received as response for list history api call.
 #
-# + history - List of history records. Any messages contained in the response will typically only have id and
+# + history - List of history records. Any messages contained in the response will typically only have ID and
 #                    threadId fields populated.
 # + nextPageToken - Page token to retrieve the next page of results in the list
 # + historyId - The ID of the mailbox's current history record
@@ -383,7 +383,7 @@ public type MailboxHistoryPage record {
     History[] history?;
     @display {label: "Next Page Token"}
     string nextPageToken?;
-    @display {label: "History Id"}
+    @display {label: "History ID"}
     string historyId;
 };
 
@@ -398,9 +398,9 @@ public type MailboxHistoryPage record {
 # + labelsRemoved - Array of maps of Labels removed from messages in this history record
 @display {label: "History"}
 public type History record {
-    @display {label: "History Id"}
+    @display {label: "History ID"}
     string historyId?;
-    @display {label: "History Sequence Id"}
+    @display {label: "History Sequence ID"}
     string id?;
     @display {label: "Messages"}
     Message[] messages?;
@@ -428,11 +428,11 @@ public type HistoryEvent record {
 
 # Represents a draft email in user's mailbox.
 #
-# + id - The immutable id of the draft
+# + id - The immutable ID of the draft
 # + message - The message content of the draft
 @display {label: "Draft"}
 public type Draft record {
-    @display {label: "Draft Id"}
+    @display {label: "Draft ID"}
     string id;
     @display {label: "Message"}
     Message message?;

@@ -38,6 +38,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  pro
 
 service / on gmailEventListener {
    remote function onEmailStarred(gmail:Message message) returns error? {
-           log:printInfo("Starred : " , message);
+           log:printInfo("Starred : " , message = message);
    }   
 }

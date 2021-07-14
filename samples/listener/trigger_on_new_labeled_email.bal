@@ -38,6 +38,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  pro
 
 service / on gmailEventListener {
    remote function onEmailLabelAdded(gmailListener:ChangedLabel changedLabel) returns error? {
-           log:printInfo("Labeled : " , changedLabel);
+           log:printInfo("Labeled : " , changedLabel = changedLabel);
    }   
 }

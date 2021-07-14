@@ -38,6 +38,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  pro
 
 service / on gmailEventListener {
    remote function onNewThread(gmail:MailThread thread) returns error? {
-           log:printInfo("New Thread : " , thread);
+           log:printInfo("New Thread : " , thread = thread);
    }   
 }
