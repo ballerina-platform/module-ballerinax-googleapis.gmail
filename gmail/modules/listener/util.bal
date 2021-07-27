@@ -17,6 +17,7 @@
 import ballerina/log;
 import ballerina/uuid;
 import ballerina/http;
+import ballerinax/googleapis.gmail as gmail;
 
 type mapJson map<json>;
 isolated function createTopic(http:Client pubSubClient, string project, string pushEndpoint) 
@@ -219,3 +220,94 @@ isolated function stop(http:Client gmailHttpClient, string userId) returns @tain
     string stopPath = USER_RESOURCE + userId + STOP;
     http:Response httpResponse = <http:Response> check gmailHttpClient->post(stopPath, request);
 }
+
+isolated function getClient(gmail:GmailConfiguration config) returns http:Client|error {
+    http:ClientSecureSocket? socketConfig = config?.secureSocketConfig;
+    return check new (gmail:BASE_URL, {
+        auth: config.oauthClientConfig,
+        secureSocket: socketConfig
+    });
+}
+
+# Retrieves whether the particular remote method is available.
+#
+# + methodName - Name of the required method
+# + methods - All available methods
+# + return - `true` if method available or else `false`
+isolated function isMethodAvailable(string methodName, string[] methods) returns boolean {
+    boolean isAvailable = methods.indexOf(methodName) is int;
+    if (isAvailable) {
+        var index = methods.indexOf(methodName);
+        if (index is int) {
+            _ = methods.remove(index);
+        }
+    }
+    return isAvailable;
+}
+
+isolated function readMessage(gmail:GmailConfiguration gmailConfig, string messageId, string? format = (), 
+                              string[]? metadataHeaders = (), string? userId = ()) returns @tainted gmail:Message|error {
+    string userEmailId = ME;
+    if (userId is string) {
+        userEmailId = userId;
+    }
+    string uriParams = "";
+    //Append format query parameter
+    if (format is string) {
+        uriParams = check gmail:appendEncodedURIParameter(uriParams, gmail:FORMAT, format);
+    }
+    if (metadataHeaders is string[]) {
+        foreach string metaDataHeader in metadataHeaders {
+            uriParams = check gmail:appendEncodedURIParameter(uriParams, gmail:METADATA_HEADERS, metaDataHeader);
+        }
+    }
+    string readMessagePath = USER_RESOURCE + userEmailId + gmail:MESSAGE_RESOURCE + FORWARD_SLASH_SYMBOL + messageId 
+        + uriParams;
+
+    http:Client httpClient = check getClient(gmailConfig);
+    http:Response httpResponse = <http:Response>check httpClient->get(readMessagePath);
+    //Get json message response. If unsuccessful, throws and returns error.
+    json jsonreadMessageResponse = check handleResponse(httpResponse);
+    //Transform the json mail response from Gmail API to Message type. If unsuccessful, throws and returns error.
+    return gmail:convertJSONToMessageType(<@untainted>jsonreadMessageResponse);
+}
+
+isolated function readThread(gmail:GmailConfiguration gmailConfig, string threadId, string? format = (), 
+                             string[]? metadataHeaders = (), string? userId = ()) returns @tainted gmail:MailThread|error {
+    string userEmailId = ME;
+    if (userId is string) {
+        userEmailId = userId;
+    }
+    string uriParams = "";
+    if (format is string) {
+        uriParams = check gmail:appendEncodedURIParameter(uriParams, gmail:FORMAT, format);
+    }
+    if (metadataHeaders is string[]) {
+        //Append the optional meta data headers as query parameters
+        foreach string metaDataHeader in metadataHeaders {
+            uriParams = check gmail:appendEncodedURIParameter(uriParams, gmail:METADATA_HEADERS, metaDataHeader);
+        }
+    }
+    string readThreadPath = USER_RESOURCE + userEmailId + gmail:THREAD_RESOURCE + FORWARD_SLASH_SYMBOL + threadId 
+                             + uriParams;
+
+    http:Client httpClient = check getClient(gmailConfig);
+    http:Response httpResponse = <http:Response>check httpClient->get(readThreadPath);
+    //Get json thread response. If unsuccessful, throws and returns error.
+    json jsonReadThreadResponse = check handleResponse(httpResponse);
+    //Transform json thread response from Gmail API to MailThread type. If unsuccessful, throws and returns error.
+    return gmail:convertJSONToThreadType(<@untainted>jsonReadThreadResponse);
+}
+
+isolated function listHistory(gmail:GmailConfiguration gmailConfig, string startHistoryId, string[]? historyTypes = (), 
+                              string? labelId = (), string? maxResults = (), string? pageToken = (), string? userId = ()) 
+                              returns @tainted stream<gmail:History,error?>|error {
+    string userEmailId = ME; 
+    if (userId is string) {
+        userEmailId = userId;
+    }
+    http:Client httpClient = check getClient(gmailConfig);   
+    gmail:MailboxHistoryStream mailboxHistoryStream = check new gmail:MailboxHistoryStream (httpClient, userEmailId,
+            startHistoryId, historyTypes, labelId, maxResults, pageToken);
+    return new stream<gmail:History,error?>(mailboxHistoryStream);
+}  
