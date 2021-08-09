@@ -18,6 +18,8 @@ import ballerina/log;
 import ballerina/os;
 import ballerinax/googleapis.gmail as gmail;
 
+public function main() returns error? {
+
 gmail:GmailConfiguration gmailConfig = {
     oauthClientConfig: {
         refreshUrl: gmail:REFRESH_URL,
@@ -27,9 +29,7 @@ gmail:GmailConfiguration gmailConfig = {
     }
 };
 
-gmail:Client gmailClient = new(gmailConfig);
-
-public function main(string... args) {
+gmail:Client gmailClient = check new(gmailConfig);
 
     log:printInfo("Read one thread");
 
