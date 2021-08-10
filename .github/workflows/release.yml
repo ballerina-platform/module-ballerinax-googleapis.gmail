@@ -6,9 +6,7 @@ on:
 
 jobs:
     build:
-
         runs-on: ubuntu-latest
-
         steps:
             - uses: actions/checkout@v2
             - name: Set up JDK 11
@@ -25,7 +23,7 @@ jobs:
               run: |
                   ./gradlew build            
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action@slbeta2
               with:
                   args:
                       build -c
@@ -46,7 +44,7 @@ jobs:
                   INLINE_IMAGE_NAME: ${{ secrets.INLINE_IMAGE_NAME }}
                   IMAGE_CONTENT_TYPE: ${{ secrets.IMAGE_CONTENT_TYPE }}     
             - name: Ballerina Push
-              uses: ballerina-platform/ballerina-action/@master
+              uses: ballerina-platform/ballerina-action@slbeta2
               with:
                   args:
                       push 

@@ -4,9 +4,7 @@ on: [pull_request]
 
 jobs:
     build:
-
         runs-on: ubuntu-latest
-
         steps:
             - uses: actions/checkout@v2
             - name: Set up JDK 11
@@ -23,7 +21,7 @@ jobs:
               run: |
                   ./gradlew build
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action@slbeta2
               with:
                   args:
                       build -c
