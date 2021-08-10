@@ -38,6 +38,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  pro
 
 service / on gmailEventListener {
    remote function onNewEmail(gmail:Message message) returns error? {
-           log:printInfo("New Email : " , message);
+           log:printInfo("New Email : " , message = message);
    }   
 }

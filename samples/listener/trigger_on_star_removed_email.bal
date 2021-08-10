@@ -38,6 +38,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  pro
 
 service / on gmailEventListener {
    remote function onEmailStarRemoved(gmail:Message message) returns error? {
-           log:printInfo("Star Removed : " , message);
+           log:printInfo("Star Removed : " , message = message);
    }   
 }

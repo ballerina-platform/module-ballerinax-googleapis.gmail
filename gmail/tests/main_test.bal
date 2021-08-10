@@ -39,7 +39,7 @@ GmailConfiguration gmailConfig = {
     }
 };
 
-Client gmailClient = new(gmailConfig);
+Client gmailClient = check new(gmailConfig);
 
 
 //---------------Do not change the following variables-----------------------//

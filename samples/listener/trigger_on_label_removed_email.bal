@@ -38,6 +38,6 @@ listener gmailListener:Listener gmailEventListener = new(port, gmailConfig,  pro
 
 service / on gmailEventListener {
    remote function onEmailLabelRemoved(gmailListener:ChangedLabel changedLabel) returns error? {
-           log:printInfo("Label Removed Mail : " , changedLabel);
+           log:printInfo("Label Removed Mail : " , changedLabel = changedLabel);
    }   
 }
