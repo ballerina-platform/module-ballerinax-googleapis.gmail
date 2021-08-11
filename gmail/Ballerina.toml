@@ -1,7 +1,7 @@
 [package]
 org = "ballerinax"
 name = "googleapis.gmail"
-version = "1.0.1
+version = "1.0.1"
 export= ["googleapis.gmail", "googleapis.gmail.listener"]
 authors = ["Ballerina"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
