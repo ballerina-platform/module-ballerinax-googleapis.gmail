@@ -19,13 +19,13 @@ import ballerina/log;
 import ballerinax/googleapis.gmail as gmail;
 
 # Listener for Gmail Connector.
-@display {label: "Gmail Listener"}
+@display {label: "Gmail Listener", iconPath: "resources/googleapis.gmail.svg"}
 public class Listener {
     private string startHistoryId = "";
     private string topicResource = "";
     private string subscriptionResource = "";
     private string userId = ME;
-    private gmail:GmailConfiguration gmailConfig;
+    private gmail:ConnectionConfig gmailConfig;
     private http:Listener httpListener;
     private string project;
     private string pushEndpoint;
@@ -43,22 +43,19 @@ public class Listener {
     # + pushEndpoint - The endpoint URL of the listener
     # + listenerConfig - Configurations required to initialize the `Listener` endpoint with service account
     # + return - Error if any failures during initialization.
-    public isolated function init(int port, gmail:GmailConfiguration gmailConfig, string project, string pushEndpoint,
+    public isolated function init(int port, gmail:ConnectionConfig gmailConfig, string project, string pushEndpoint,
                                     GmailListenerConfiguration? listenerConfig = ()) returns @tainted error? {
 
         http:ClientSecureSocket? socketConfig = (listenerConfig is GmailListenerConfiguration) ? (listenerConfig
-                                                    ?.secureSocketConfig) : (gmailConfig?.secureSocketConfig);
+                                                    ?.secureSocketConfig) : (gmailConfig.secureSocket);
         // Create pubsub http client.
         self.pubSubClient = check new (PUBSUB_BASE_URL, {
             auth: (listenerConfig is GmailListenerConfiguration) ? (listenerConfig.authConfig) 
-                    : (gmailConfig.oauthClientConfig),
+                    : (gmailConfig.auth),
             secureSocket: socketConfig
         });
         // Create gmail http client.
-        self.gmailHttpClient = check new (gmail:BASE_URL, {
-            auth: gmailConfig.oauthClientConfig,
-            secureSocket: gmailConfig?.secureSocketConfig
-        });
+        self.gmailHttpClient = check new (gmail:BASE_URL, gmailConfig);
 
         self.httpListener = check new (port);
         self.gmailConfig = gmailConfig;

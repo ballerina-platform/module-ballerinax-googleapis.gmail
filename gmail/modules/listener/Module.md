@@ -31,7 +31,7 @@ You can now make the connection configuration using either one of the following 
 
     If you are able to authorize the pubsub scope, then you can follow all these steps to create a listener.
 
-    Create a `gmail:GmailConfiguration` with the OAuth2 tokens obtained and initialize the connector with it.
+    Create a `gmail:ConnectionConfig` with the OAuth2 tokens obtained and initialize the connector with it.
     ```ballerina
     configurable string refreshToken = ?;
     configurable string clientId = ?;
@@ -40,8 +40,8 @@ You can now make the connection configuration using either one of the following 
     configurable string project = ?;
     configurable string pushEndpoint = ?;
 
-    gmail:GmailConfiguration gmailConfig = {
-        oauthClientConfig: {
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
             refreshUrl: gmail:REFRESH_URL,
             refreshToken: refreshToken,
             clientId: clientId,
@@ -56,7 +56,7 @@ You can now make the connection configuration using either one of the following 
 
     If you prefer to use only gmail scopes in your tokens, then you can use a service account to do listener operations along with your gmail tokens. For that you need to initialize the connector using following method
 
-    Create a `gmail:GmailConfiguration` and `gmailListener:GmailListenerConfiguration` with the OAuth2 tokens obtained, and initialize the connector with it.
+    Create a `gmail:ConnectionConfig` and `gmailListener:GmailListenerConfiguration` with the OAuth2 tokens obtained, and initialize the connector with it.
 
     ```ballerina
     configurable string refreshToken = ?;
@@ -74,8 +74,8 @@ You can now make the connection configuration using either one of the following 
     configurable string keyAlias = ?;
     configurable string keyPassword = ?;
 
-    gmail:GmailConfiguration gmailConfig = {
-        oauthClientConfig: {
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
             refreshUrl: gmail:REFRESH_URL,
             refreshToken: refreshToken,
             clientId: clientId,
@@ -137,8 +137,8 @@ configurable int port = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
-gmail:GmailConfiguration gmailConfig = {
-    oauthClientConfig: {
+gmail:ConnectionConfig gmailConfig = {
+    auth: {
         refreshUrl: gmail:REFRESH_URL,
         refreshToken: refreshToken,
         clientId: clientId,

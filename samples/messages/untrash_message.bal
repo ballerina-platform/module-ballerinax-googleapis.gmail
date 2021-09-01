@@ -20,8 +20,8 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:GmailConfiguration gmailConfig = {
-    oauthClientConfig: {
+gmail:ConnectionConfig gmailConfig = {
+    auth: {
         refreshUrl: gmail:REFRESH_URL,
         refreshToken: os:getEnv("REFRESH_TOKEN"),
         clientId: os:getEnv("CLIENT_ID"),

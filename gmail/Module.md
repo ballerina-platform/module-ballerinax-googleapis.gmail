@@ -23,11 +23,11 @@ import ballerinax/googleapis.gmail;
 ```
 
 ### Step 2: Create a new connector instance
-Create a `gmail:GmailConfiguration` with the OAuth 2.0 tokens obtained, and initialize the connector with it.
+Create a `gmail:ConnectionConfig` with the OAuth 2.0 tokens obtained, and initialize the connector with it.
 
 ```ballerina
-gmail:GmailConfiguration gmailConfig = {
-    oauthClientConfig: {
+gmail:ConnectionConfig gmailConfig = {
+    auth: {
         refreshUrl: gmail:REFRESH_URL,
         refreshToken: <REFRESH_TOKEN>,
         clientId: <CLIENT_ID>,

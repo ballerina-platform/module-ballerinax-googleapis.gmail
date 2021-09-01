@@ -43,7 +43,6 @@ target/
 .DS_Store
 *Ballerina.lock
 gmail/modules/gmail/resources
-gmail/resources
 .ballerina
 
 # Ignore Gradle project-specific cache directory
@@ -51,4 +50,3 @@ gmail/resources
 
 # Ignore Gradle build output directory
 build
-

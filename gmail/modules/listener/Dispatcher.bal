@@ -27,9 +27,9 @@ isolated class Dispatcher {
     private final boolean isOnNewAttachment;
 
     private final HttpToGmailAdaptor adaptor;
-    private final gmail:GmailConfiguration & readonly gmailConfig;
+    private final gmail:ConnectionConfig & readonly gmailConfig;
 
-    isolated function init(HttpToGmailAdaptor adaptor, gmail:GmailConfiguration config) {
+    isolated function init(HttpToGmailAdaptor adaptor, gmail:ConnectionConfig config) {
         self.adaptor = adaptor;
         self.gmailConfig = config.cloneReadOnly();
         
