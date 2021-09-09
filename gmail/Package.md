@@ -14,7 +14,8 @@ Ballerina Gmail Connector provides the capability to send, read, and delete emai
 | Gmail API             | v1                            |
 
 ## Report issues
-To report bugs, request new features, start new discussions, view project boards, etc., go to the [Ballerina Gmail connector repository](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail)
+To report bugs, request new features, start new discussions, view project boards, etc., go to the [Ballerina Extended Library repository](https://github.com/ballerina-platform/ballerina-extended-library)
+
 ## Useful links
 - Discuss code changes of the Ballerina project in [ballerina-dev@googlegroups.com](mailto:ballerina-dev@googlegroups.com).
 - Chat live with us on our [Slack channel](https://ballerina.io/community/slack/).

@@ -19,13 +19,13 @@ import ballerina/log;
 import ballerinax/googleapis.gmail as gmail;
 
 isolated service class HttpService {
-    private final gmail:GmailConfiguration & readonly gmailConfig;
+    private final gmail:ConnectionConfig & readonly gmailConfig;
     private string startHistoryId;
     private final string subscriptionResource;
     private final HttpToGmailAdaptor adaptor;
     private final Dispatcher dispatcher;
 
-    isolated function init(HttpToGmailAdaptor adaptor, gmail:GmailConfiguration config, string historyId, 
+    isolated function init(HttpToGmailAdaptor adaptor, gmail:ConnectionConfig config, string historyId, 
                             string subscriptionResource) {
         self.adaptor = adaptor;
         self.gmailConfig = config.cloneReadOnly();

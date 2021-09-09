@@ -25,8 +25,8 @@ configurable int port = ?;
 configurable string project = ?;
 configurable string pushEndpoint = ?;
 
-gmail:GmailConfiguration gmailConfig = {
-    oauthClientConfig: {
+gmail:ConnectionConfig gmailConfig = {
+    auth: {
         refreshUrl: gmail:REFRESH_URL,
         refreshToken: refreshToken,
         clientId: clientId,

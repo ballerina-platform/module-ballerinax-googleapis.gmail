@@ -66,8 +66,8 @@ configurable string refreshToken = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
 
-gmail:GmailConfiguration gmailConfig = {
-    oauthClientConfig: {
+gmail:ConnectionConfig gmailConfig = {
+    auth: {
         refreshUrl: REFRESH_URL,
         refreshToken: refreshToken,
         clientId: clientId,

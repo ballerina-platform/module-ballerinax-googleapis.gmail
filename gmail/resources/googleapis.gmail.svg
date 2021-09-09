@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="16px" viewBox="0 0 20 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>CAFEA241-7A6A-4547-A00D-527B13B34D7F</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="adding-new-API-Calls" transform="translate(-1178.000000, -276.000000)" fill-rule="nonzero">
+            <g id="Dropdown/Select/Default-Copy-18" transform="translate(1168.000000, 264.000000)">
+                <g id="Icon/Connectro-logo" transform="translate(10.000000, 10.000000)">
+                    <g id="Gmail_icon_(2020)" transform="translate(0.000000, 2.500000)">
+                        <path d="M1.36363636,15.2272727 L4.54545455,15.2272727 L4.54545455,7.5 L0,4.09090909 L0,13.8636364 C0,14.6181818 0.611363636,15.2272727 1.36363636,15.2272727" id="Path" fill="#4285F4"></path>
+                        <path d="M15.4545455,15.2272727 L18.6363636,15.2272727 C19.3909091,15.2272727 20,14.6159091 20,13.8636364 L20,4.09090909 L15.4545455,7.5" id="Path" fill="#34A853"></path>
+                        <path d="M15.4545455,1.59090909 L15.4545455,7.5 L20,4.09090909 L20,2.27272727 C20,0.586363636 18.075,-0.375 16.7272727,0.636363636" id="Path" fill="#FBBC04"></path>
+                        <polyline id="Path" fill="#EA4335" points="4.54545455 7.5 4.54545455 1.59090909 10 5.68181818 15.4545455 1.59090909 15.4545455 7.5 10 11.5909091"></polyline>
+                        <path d="M0,2.27272727 L0,4.09090909 L4.54545455,7.5 L4.54545455,1.59090909 L3.27272727,0.636363636 C1.92272727,-0.375 0,0.586363636 0,2.27272727" id="Path" fill="#C5221F"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

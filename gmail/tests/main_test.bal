@@ -30,8 +30,8 @@ configurable string refreshToken = os:getEnv("REFRESH_TOKEN");
 configurable string clientId = os:getEnv("CLIENT_ID");
 configurable string clientSecret = os:getEnv("CLIENT_SECRET");
 
-GmailConfiguration gmailConfig = {
-    oauthClientConfig: {
+ConnectionConfig gmailConfig = {
+    auth: {
         refreshUrl: REFRESH_URL,
         refreshToken: refreshToken,
         clientId: clientId,

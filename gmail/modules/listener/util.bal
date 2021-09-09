@@ -221,12 +221,8 @@ isolated function stop(http:Client gmailHttpClient, string userId) returns @tain
     http:Response httpResponse = <http:Response> check gmailHttpClient->post(stopPath, request);
 }
 
-isolated function getClient(gmail:GmailConfiguration config) returns http:Client|error {
-    http:ClientSecureSocket? socketConfig = config?.secureSocketConfig;
-    return check new (gmail:BASE_URL, {
-        auth: config.oauthClientConfig,
-        secureSocket: socketConfig
-    });
+isolated function getClient(gmail:ConnectionConfig config) returns http:Client|error {
+    return check new (gmail:BASE_URL, config);
 }
 
 # Retrieves whether the particular remote method is available.
@@ -245,7 +241,7 @@ isolated function isMethodAvailable(string methodName, string[] methods) returns
     return isAvailable;
 }
 
-isolated function readMessage(gmail:GmailConfiguration gmailConfig, string messageId, string? format = (), 
+isolated function readMessage(gmail:ConnectionConfig gmailConfig, string messageId, string? format = (), 
                               string[]? metadataHeaders = (), string? userId = ()) returns @tainted gmail:Message|error {
     string userEmailId = ME;
     if (userId is string) {
@@ -272,7 +268,7 @@ isolated function readMessage(gmail:GmailConfiguration gmailConfig, string messa
     return gmail:convertJSONToMessageType(<@untainted>jsonreadMessageResponse);
 }
 
-isolated function readThread(gmail:GmailConfiguration gmailConfig, string threadId, string? format = (), 
+isolated function readThread(gmail:ConnectionConfig gmailConfig, string threadId, string? format = (), 
                              string[]? metadataHeaders = (), string? userId = ()) returns @tainted gmail:MailThread|error {
     string userEmailId = ME;
     if (userId is string) {
@@ -299,7 +295,7 @@ isolated function readThread(gmail:GmailConfiguration gmailConfig, string thread
     return gmail:convertJSONToThreadType(<@untainted>jsonReadThreadResponse);
 }
 
-isolated function listHistory(gmail:GmailConfiguration gmailConfig, string startHistoryId, string[]? historyTypes = (), 
+isolated function listHistory(gmail:ConnectionConfig gmailConfig, string startHistoryId, string[]? historyTypes = (), 
                               string? labelId = (), string? maxResults = (), string? pageToken = (), string? userId = ()) 
                               returns @tainted stream<gmail:History,error?>|error {
     string userEmailId = ME; 
