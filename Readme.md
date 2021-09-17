@@ -85,7 +85,7 @@ Refresh Token.
 
 * Java 11 Installed <br/> Java Development Kit (JDK) with version 11 is required.
 
-* Ballerina SLAlpha5 Installed <br/> Ballerina Swan Lake Alpha 5 is required.
+* Ballerina SLBeta3 Installed <br/> Ballerina Swan Lake Beta 3 is required.
 
 # Supported Versions & Limitations
 
@@ -95,7 +95,7 @@ Refresh Token.
 |-----------------------------------|-----------------------|
 | Gmail API Version                 | v1                    |
 | Google Cloud Pub/Sub API Version  | v1                    |
-| Ballerina Language                | Swan Lake Alpha 5     |
+| Ballerina Language                | Swan Lake Beta 3      |
 | Java Development Kit (JDK)        | 11                    |
 
 # Limitations
@@ -1258,7 +1258,7 @@ service / on gmailEventListener {
 
         > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
 
-2. Download and install [Ballerina Swan Lake Alpha5](https://ballerina.io/). 
+2. Download and install [Ballerina Swan Lake Beta3](https://ballerina.io/). 
 
 3. Download and install gradle.
 
@@ -1283,7 +1283,7 @@ To build java libraries execute the following command.
 
 ### Build ballerina connector.
 
-Execute the commands below to build from the source after installing Ballerina Swan Lake Alpha5.
+Execute the commands below to build from the source after installing Ballerina Swan Lake Beta3.
 
 1. To build the library:
 ```shell script
