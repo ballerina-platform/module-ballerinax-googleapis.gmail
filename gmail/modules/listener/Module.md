@@ -13,7 +13,7 @@ The Gmail Listener Ballerina Connector provides the capability to listen the pus
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 5 is required.
+Ballerina Swan Lake Beta 3 is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for BasicAuth and OAuth 2.0. Gmail uses OAuth 2.0 to authenticate and authorize requests. The Gmail connector can be minimally instantiated in the HTTP client config using the client ID, client secret, and refresh token.
     * Client ID
@@ -65,7 +65,7 @@ keyPassword = "key password"
 
 | Ballerina Language Versions  | Gmail API Version |
 |:----------------------------:|:-----------------:|
-|  Swan Lake Alpha 5           |   v1              |
+|  Swan Lake Beta 3            |   v1              |
 
 # Quickstart(s):
 
