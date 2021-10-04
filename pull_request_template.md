@@ -1,52 +1,39 @@
-## Purpose
-> Describe the problems, issues, or needs driving this feature/fix and include links to related issues in the following format: Resolves issue1, issue2, etc.
+# Description
 
-## Goals
-> Describe the solutions that this feature/fix will introduce to resolve the problems described above
+Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
-## Approach
-> Describe how you are implementing the solutions. Include an animated GIF or screenshot if the change affects the UI (email documentation@wso2.com to review all UI text). Include a link to a Markdown file or Google doc if the feature write-up is too long to paste here.
+Fixes # (issue)
 
-## User stories
-> Summary of user stories addressed by this change>
+Related Pull Requests (remove if not relevant)
+- Pull request 1
+- Pull request 2
 
-## Release note
-> Brief description of the new feature or bug fix as it will appear in the release notes
+One line release note: 
+- One line describing the feature/improvement/fix made by this PR 
 
-## Documentation
-> Link(s) to product documentation that addresses the changes of this PR. If no doc impact, enter “N/A” plus brief explanation of why there’s no doc impact
+## Type of change
 
-## Training
-> Link to the PR for changes to the training content in https://github.com/wso2/WSO2-Training, if applicable
+Please delete options that are not relevant.
 
-## Certification
-> Type “Sent” when you have provided new/updated certification questions, plus four answers for each question (correct answer highlighted in bold), based on this change. Certification questions/answers should be sent to certification@wso2.com and NOT pasted in this PR. If there is no impact on certification exams, type “N/A” and explain why.
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] This change requires a documentation update
 
-## Marketing
-> Link to drafts of marketing content that will describe and promote this feature, including product page changes, technical articles, blog posts, videos, etc., if applicable
+# How Has This Been Tested?
 
-## Automation tests
- - Unit tests 
-   > Code coverage information
- - Integration tests
-   > Details about the test cases and coverage
+Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
 
-## Security checks
- - Followed secure coding standards in http://wso2.com/technical-reports/wso2-secure-engineering-guidelines? yes/no
- - Ran FindSecurityBugs plugin and verified report? yes/no
- - Confirmed that this PR doesn't commit any keys, passwords, tokens, usernames, or other secrets? yes/no
+- [ ] Test A
+- [ ] Test B
 
-## Samples
-> Provide high-level details about the samples related to this feature
+**Test Configuration**:
+* Ballerina Version:
+* Operating System:
+* Java SDK: 
 
-## Related PRs
-> List any other related PRs
+# Checklist:
 
-## Migrations (if applicable)
-> Describe migration steps and platforms on which migration has been tested
-
-## Test environment
-> List all JDK versions, operating systems, databases, and browser/versions on which this feature/fix was tested
- 
-## Learning
-> Describe the research phase and any blog posts, patterns, libraries, or add-ons you used to solve the problem.
+### Security checks
+ - [ ] Followed secure coding standards in http://wso2.com/technical-reports/wso2-secure-engineering-guidelines? 
+ - [ ] Confirmed that this PR doesn't commit any keys, passwords, tokens, usernames, or other secrets? 
