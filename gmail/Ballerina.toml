@@ -1,11 +1,11 @@
 [package]
 org = "ballerinax"
 name = "googleapis.gmail"
-version = "0.99.8-SNAPSHOT"
+version = "2.0.0"
 export= ["googleapis.gmail", "googleapis.gmail.listener"]
 authors = ["Ballerina"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
-keywords = ["communication/email", "cost/free", "vendor/google"]
+keywords = ["Communication/Email", "Cost/Free", "Vendor/Google"]
 license = ["Apache-2.0"]
 
 [build-options]
