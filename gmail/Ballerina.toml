@@ -12,7 +12,7 @@ license = ["Apache-2.0"]
 observabilityIncluded = true
 
 [[platform.java11.dependency]]
-path = "../java-wrapper/build/libs/java-wrapper-0.99.11.jar"
+path = "../java-wrapper/build/libs/java-wrapper-0.99.12.jar"
 groupId = "org.ballerinalang.googleapis.gmail"
 artifactId = "java-wrapper"
-version = "0.99.11"
+version = "0.99.12"
