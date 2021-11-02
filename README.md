@@ -45,12 +45,12 @@ Execute the commands below to build from the source.
 
 2. - To build the package:
         ```shell script
-            bal build -c ./gmail
+            bal pack ./gmail
         ```
 
-   - To build the package without tests:
+   - To test the package:
         ```shell script
-            bal build -c --skip-tests ./gmail
+            bal test ./gmail
         ```
 
 ## Contributing to Ballerina
