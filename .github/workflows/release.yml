@@ -28,7 +28,7 @@ jobs:
               uses: ballerina-platform/ballerina-action/@master
               with:
                   args:
-                      build -c
+                      pack
               env:
                   WORKING_DIR: ./gmail
                   JAVA_HOME: /usr/lib/jvm/default-jvm

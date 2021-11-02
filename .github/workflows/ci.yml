@@ -30,7 +30,15 @@ jobs:
               uses: ballerina-platform/ballerina-action/@nightly
               with:
                   args:
-                      build -c
+                      pack
+              env:
+                WORKING_DIR: ./gmail
+                JAVA_HOME: /usr/lib/jvm/default-jvm
+            - name: Ballerina Tests
+              uses: ballerina-platform/ballerina-action/@nightly
+              with:
+                  args:
+                      test
               env:
                   WORKING_DIR: ./gmail
                   JAVA_HOME: /usr/lib/jvm/default-jvm
