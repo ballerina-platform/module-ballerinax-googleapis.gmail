@@ -19,6 +19,7 @@ import ballerina/log;
 import ballerinax/googleapis.gmail as gmail;
 
 isolated service class HttpService {
+    *http:Service;
     private final gmail:ConnectionConfig & readonly gmailConfig;
     private string startHistoryId;
     private final string subscriptionResource;
