@@ -307,6 +307,7 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
                 return err;
             } else {
                 error err = error(GMAIL_ERROR_CODE, message = jsonErrors);
+                return err;
             }
 
         }

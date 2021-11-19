@@ -70,17 +70,22 @@ public class Listener {
         self.httpService = ();
     }
 
-    public isolated function attach(service object {} s, string[]|string? name = ()) returns @tainted error? {
+    public isolated function attach(SimpleHttpService s, string[]|string? name = ()) returns @tainted error? {
         HttpToGmailAdaptor adaptor = check new (s);
-        self.httpService = new HttpService(adaptor, self.gmailConfig, self.startHistoryId, self.subscriptionResource);
+        HttpService currentHttpService = new (adaptor, self.gmailConfig, self.startHistoryId,
+                                              self.subscriptionResource);
+        self.httpService = currentHttpService;
         check self.watchMailbox();
-        check self.httpListener.attach(<HttpService>self.httpService, name);
+        check self.httpListener.attach(currentHttpService, name);
         Job job = new (self);
         check job.scheduleNextWatchRenewal();
     }
 
-    public isolated function detach(service object {} s) returns error? {
-        return self.httpListener.detach(s);
+    public isolated function detach(SimpleHttpService s) returns error? {
+        HttpService? currentHttpService = self.httpService;
+        if currentHttpService is HttpService {
+            return self.httpListener.detach(currentHttpService);
+        }        
     }
 
     public isolated function 'start() returns error? {
@@ -88,8 +93,8 @@ public class Listener {
     }
 
     public isolated function gracefulStop() returns @tainted error? {
-        json deleteSubscription = check deletePubsubSubscription(self.pubSubClient, self.subscriptionResource);
-        json deleteTopic = check deletePubsubTopic(self.pubSubClient, self.topicResource);
+        _ = check deletePubsubSubscription(self.pubSubClient, self.subscriptionResource);
+        _ = check deletePubsubTopic(self.pubSubClient, self.topicResource);
         var response = check stop(self.gmailHttpClient, self.userId);
         log:printInfo(WATCH_STOPPED + response.toString());
         return self.httpListener.gracefulStop();

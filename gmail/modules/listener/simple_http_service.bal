@@ -15,4 +15,4 @@
 // under the License.
 
 # SimpleHttpService for Listener. 
-public type SimpleHttpService service object {};
+public type SimpleHttpService distinct service object {};

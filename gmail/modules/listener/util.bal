@@ -47,7 +47,7 @@ isolated function createTopic(http:Client pubSubClient, string project, string p
             json newPolicyRequestbody = {
                                             "policy": newPolicy.toJson()
                                         };
-            Policy createdPolicy = check setPubsubTopicIamPolicy(pubSubClient, <@untainted>topicResource,
+            _ = check setPubsubTopicIamPolicy(pubSubClient, <@untainted>topicResource,
                                                                                     newPolicyRequestbody);
             string subscriptionResource = check createSubscription(pubSubClient, subscriptionName, project, pushEndpoint,
                                                                    topicResource);
@@ -192,8 +192,8 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
                 return err;
             } else {
                 error err = error(GMAIL_LISTENER_ERROR_CODE, message = jsonErrors);
+                return err;
             }
-        log:printError("Error in handle"+jsonResponse.toString());
         }
     } else {
         error err = error(GMAIL_LISTENER_ERROR_CODE, message = 
@@ -218,7 +218,7 @@ isolated function watch(http:Client gmailHttpClient, string userId, WatchRequest
 isolated function stop(http:Client gmailHttpClient, string userId) returns @tainted error? {
     http:Request request = new;
     string stopPath = USER_RESOURCE + userId + STOP;
-    http:Response httpResponse = <http:Response> check gmailHttpClient->post(stopPath, request);
+    return check gmailHttpClient->post(stopPath, request);
 }
 
 isolated function getClient(gmail:ConnectionConfig config) returns http:Client|error {

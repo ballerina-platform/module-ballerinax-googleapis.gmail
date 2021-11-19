@@ -48,6 +48,7 @@ class MessageStream {
             self.index += 1;
             return message;
         }
+        return;
     }
 
     isolated function fetchMessages() returns @tainted Message[]|error {
@@ -103,6 +104,7 @@ class ThreadStream {
             self.index += 1;
             return thread;
         }
+        return;
     }
 
     isolated function fetchThreads() returns @tainted MailThread[]|error {
@@ -158,6 +160,7 @@ class DraftStream {
             self.index += 1;
             return draft;
         }
+        return;
     }
 
     isolated function fetchDrafts() returns @tainted Draft[]|error {
@@ -218,6 +221,7 @@ public class MailboxHistoryStream {
             self.index += 1;
             return history;
         }
+        return;
     }
 
     isolated function fetchHistory() returns @tainted History[]|error {
