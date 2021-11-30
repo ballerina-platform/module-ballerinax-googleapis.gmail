@@ -331,7 +331,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "googleapis.gmail"
-version = "2.0.0"
+version = "2.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},
