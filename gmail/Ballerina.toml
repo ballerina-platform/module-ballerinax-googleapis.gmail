@@ -6,6 +6,7 @@ export= ["googleapis.gmail", "googleapis.gmail.listener"]
 authors = ["Ballerina"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
 keywords = ["Communication/Email", "Cost/Free", "Vendor/Google"]
+icon = "icon.png"
 license = ["Apache-2.0"]
 
 [build-options]
