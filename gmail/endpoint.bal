@@ -20,7 +20,7 @@ import ballerina/http;
 # The connector let you to interact with users' Gmail inboxes through the Gmail REST API.
 #
 # + gmailClient - The HTTP Client
-@display {label: "Gmail", iconPath: "resources/googleapis.gmail.svg"}
+@display {label: "Gmail", iconPath: "icon.png"}
 public isolated client class Client {
     private final http:Client gmailClient;
 
