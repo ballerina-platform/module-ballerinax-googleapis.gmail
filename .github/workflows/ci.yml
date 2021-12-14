@@ -27,7 +27,7 @@ jobs:
               run: |
                   ./gradlew build
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action@slbeta6
               with:
                   args:
                       pack
@@ -35,7 +35,7 @@ jobs:
                 WORKING_DIR: ./gmail
                 JAVA_HOME: /usr/lib/jvm/default-jvm
             - name: Ballerina Tests
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action@slbeta6
               with:
                   args:
                       test
