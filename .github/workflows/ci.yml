@@ -38,7 +38,7 @@ jobs:
               uses: ballerina-platform/ballerina-action/@nightly
               with:
                   args:
-                      test
+                      test --code-coverage
               env:
                   WORKING_DIR: ./gmail
                   JAVA_HOME: /usr/lib/jvm/default-jvm
@@ -55,3 +55,18 @@ jobs:
                   INLINE_IMAGE_PATH: ${{ secrets.INLINE_IMAGE_PATH }}
                   INLINE_IMAGE_NAME: ${{ secrets.INLINE_IMAGE_NAME }}
                   IMAGE_CONTENT_TYPE: ${{ secrets.IMAGE_CONTENT_TYPE }}
+
+            # Read the ballerina test results
+            - name: Read Ballerina Test Results
+              id: test_results
+              run: |
+                  content=`cat ./gmail/target/report/test_results.json`                
+                  content="${content//'%'/'%25'}"
+                  content="${content//$'\n'/'%0A'}"
+                  content="${content//$'\r'/'%0D'}"
+                  echo "::set-output name=testResultsJson::$content"
+
+            # Print the code coverage information
+            - name: Code Coverage
+              run: |
+                  echo "Code Coverage Percentage : ${{fromJson(steps.test_results.outputs.testResultsJson).coveragePercentage}}"
