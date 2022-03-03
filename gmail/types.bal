@@ -137,8 +137,10 @@ public type AttachmentPath record {
 # + mimeType - MIME type of the top level message part
 # + emailBodyInText - MIME Message Part with text/plain content type
 # + emailBodyInHTML - MIME Message Part with text/html content type
-# + emailInlineImages - MIME Message Parts with inline images with the image/* content type
-# + msgAttachments - MIME Message Parts of the message consisting the attachments
+# + emailInlineImages - MIME Message Parts with inline images with the image/* content type. Note: Here attachments 
+#                       need to be less than 25MB.
+# + msgAttachments - MIME Message Parts of the message consisting the attachments. Note: Here attachments need to be 
+#                    less than 25MB.
 @display {label: "Message"}
 public type Message record {
     @display {label: "Thread ID"}

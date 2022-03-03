@@ -52,7 +52,8 @@ public isolated client class Client {
     # Creates the raw base 64 encoded string of the whole message and send it as an email from the user's
     # mailbox to its recipient.
     #
-    # + message - MessageRequest to send
+    # + message - MessageRequest to send. Note: Here if any attachments included in the message, those attachments need
+    #             to be less than 25MB.
     # + threadId - Optional. Required if message is expected to be send The ID of the thread the message belongs to.
     # (The Subject headers must match)
     # + userId - The user's email address. The special value **me** can be used to indicate the authenticated user.
