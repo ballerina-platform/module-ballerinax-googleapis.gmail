@@ -201,27 +201,28 @@ isolated function encodeFile(string filePath) returns string|error {
     byte[] readEncodedContent = [];
 
     if (fileChannel is io:ReadableByteChannel) {
-        var fileContent = fileChannel.base64Encode();
+        io:ReadableByteChannel|io:Error fileContent = fileChannel.base64Encode();
         if (fileContent is io:ReadableByteChannel) {
             io:ReadableByteChannel encodedfileChannel = fileContent;
-            var readChannel = encodedfileChannel.read(bytesChunk);
+            byte[]|io:Error readChannel = encodedfileChannel.read(bytesChunk);
             if (readChannel is byte[]) {
                 readEncodedContent = readChannel;
             } else {
-                error err = error(GMAIL_ERROR_CODE, message = "Error occurred while reading the file channel");
+                error err = error(GMAIL_ERROR_CODE, readChannel, message = "Error occurred while reading the file" +
+                " channel");
                 return err;
             }
         } else {
-            error err = error(GMAIL_ERROR_CODE, message = "Error occurred encoding the file channel");
+            error err = error(GMAIL_ERROR_CODE, fileContent, message = "Error occurred encoding the file channel");
             return err;
         }
     } else if (fileChannel is io:GenericError) {
-        error err = error(GMAIL_ERROR_CODE, message = "Generic error occurred while reading file from path: "
-            + filePath);
+        error err = error(GMAIL_ERROR_CODE, fileChannel, message = "Generic error occurred while reading file from" +
+        " path: " + filePath);
         return err;
     } else {
-        error err = error(GMAIL_ERROR_CODE, message = 
-            "Connection TimedOut error occurred while reading file from path: " + filePath);
+        error err = error(GMAIL_ERROR_CODE, fileChannel, message = "Connection TimedOut error occurred while reading" +
+        " file from path: " + filePath);
         return err;
     }
     return <@untainted>strings:fromBytes(readEncodedContent);
@@ -306,13 +307,13 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
                 error err = error(GMAIL_ERROR_CODE, message = errorMsg);
                 return err;
             } else {
-                error err = error(GMAIL_ERROR_CODE, message = jsonErrors);
+                error err = error(GMAIL_ERROR_CODE, jsonErrors, message = jsonErrors);
                 return err;
             }
 
         }
     } else {
-        error err = error(GMAIL_ERROR_CODE, message = 
+        error err = error(GMAIL_ERROR_CODE, jsonResponse, message = 
             "Error occurred while accessing the JSON payload of the response", 'error = jsonResponse.toString());
         return err;
     }
@@ -325,13 +326,13 @@ isolated function handleResponse(http:Response httpResponse) returns @tainted js
 # + value - Value of the form value parameter
 # + return - If successful, returns created request path as an encoded string. Else returns error.
 public isolated function appendEncodedURIParameter(string requestPath, string key, string value) returns string|error {
-    var encodedVar = url:encode(value, "UTF-8");
+    string|url:Error encodedVar = url:encode(value, "UTF-8");
     string encodedString = "";
     string path = "";
     if (encodedVar is string) {
         encodedString = encodedVar;
     } else {
-        error err = error(GMAIL_ERROR_CODE, message = "Error occurred while encoding the string");
+        error err = error(GMAIL_ERROR_CODE, encodedVar, message = "Error occurred while encoding the string");
         return err;
     }
     if (requestPath != EMPTY_STRING) {
