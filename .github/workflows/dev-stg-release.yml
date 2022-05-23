@@ -38,7 +38,6 @@ jobs:
                       pack
               env:
                   WORKING_DIR: ./gmail
-                  JAVA_HOME: /usr/lib/jvm/default-jvm
                   JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
    
             - name: Push to Dev
@@ -49,7 +48,6 @@ jobs:
                       push 
               env:
                   WORKING_DIR: ./gmail
-                  JAVA_HOME: /usr/lib/jvm/default-jvm
                   JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
                   BALLERINA_CENTRAL_ACCESS_TOKEN: ${{ secrets.BALLERINA_CENTRAL_DEV_ACCESS_TOKEN }}
                   
@@ -61,6 +59,5 @@ jobs:
                       push 
               env:
                   WORKING_DIR: ./gmail
-                  JAVA_HOME: /usr/lib/jvm/default-jvm
                   JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
                   BALLERINA_CENTRAL_ACCESS_TOKEN: ${{ secrets.BALLERINA_CENTRAL_STAGE_ACCESS_TOKEN }}

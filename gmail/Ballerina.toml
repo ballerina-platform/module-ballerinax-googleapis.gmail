@@ -1,9 +1,8 @@
 [package]
-distribution = "2201.0.0"
+distribution = "2201.0.3"
 org = "ballerinax"
 name = "googleapis.gmail"
-version = "2.2.1"
-export= ["googleapis.gmail", "googleapis.gmail.listener"]
+version = "3.0.0"
 authors = ["Ballerina"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
 keywords = ["Communication/Email", "Cost/Free", "Vendor/Google"]
@@ -12,9 +11,3 @@ license = ["Apache-2.0"]
 
 [build-options]
 observabilityIncluded = true
-
-[[platform.java11.dependency]]
-path = "../java-wrapper/build/libs/java-wrapper-2.2.1.jar"
-groupId = "org.ballerinalang.googleapis.gmail"
-artifactId = "java-wrapper"
-version = "2.2.1"
