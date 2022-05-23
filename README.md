@@ -7,13 +7,11 @@
 [Gmail](https://blog.google/products/gmail/), short for Google Mail is a free email service developed by Google LLC. It
 enables users to send and receive emails over the internet.
 
-Gmail connector connects to Gmail API via [Ballerina](https://ballerina.io/). This connector provides the capability to programatically handle Gmail related operations and watch for changes in the Gmail mailbox.
+Gmail connector connects to Gmail API via [Ballerina](https://ballerina.io/). This connector provides the capability to programatically handle Gmail related operations.
 
 For more information, go to the module(s).
 
 - [`googleapis.gmail`](gmail/Module.md)
-- [`googleapis.gmail.listener`](gmail/modules/listener/Module.md)
-
 
 ## Building from the source
 
@@ -25,33 +23,20 @@ For more information, go to the module(s).
  
 2. Download and install [Ballerina Swan Lake](https://ballerina.io/)
 
-3. Download and install Gradle.
-
-4. Export Github Personal access token with read package permissions as follows,
-
-```
- export packageUser=<Username>
- export packagePAT=<Personal access token>
- ```
-
 ### Building the source
 
 Execute the commands below to build from the source.
 
-1. To build Java dependency
-    ```
-    ./gradlew clean build
+
+- To build the package:
+    ```shell script
+    bal build ./gmail
     ```
 
-2. - To build the package:
-        ```shell script
-            bal pack ./gmail
-        ```
-
-   - To test the package:
-        ```shell script
-            bal test ./gmail
-        ```
+- To test the package:
+    ```shell script
+    bal test ./gmail
+    ```
 
 ## Contributing to Ballerina
 
