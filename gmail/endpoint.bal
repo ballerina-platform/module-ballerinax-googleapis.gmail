@@ -34,7 +34,7 @@ public isolated client class Client {
         http:ClientConfiguration httpClientConfig = {
             auth: config.auth,
             httpVersion: config.httpVersion,
-            http1Settings: config.http1Settings,
+            http1Settings: {...config.http1Settings},
             http2Settings: config.http2Settings,
             timeout: config.timeout,
             forwarded: config.forwarded,
