@@ -78,7 +78,6 @@ public type OAuth2RefreshTokenGrantConfig record {|
     decimal clockSkew = 0;
     map<string> optionalParams?;
     CredentialBearer credentialBearer = AUTH_HEADER_BEARER;
-    ClientConfiguration clientConfig = {};
 |};
 
 # Represents the credential-bearing methods.
@@ -86,124 +85,6 @@ public enum CredentialBearer {
     AUTH_HEADER_BEARER,
     POST_BODY_BEARER
 }
-
-# Represents the configurations of the client used to call the introspection endpoint.
-#
-# + httpVersion - The HTTP version of the client
-# + customHeaders - The list of custom HTTP headers
-# + customPayload - The list of custom HTTP payload parameters
-# + auth - The client auth configurations
-# + secureSocket - SSL/TLS-related configurations
-public type ClientConfiguration record {|
-    Oauth2HttpVersion httpVersion = HTTP_1_1;
-    map<string> customHeaders?;
-    string customPayload?;
-    ClientAuth auth?;
-    SecureSocket secureSocket?;
-|};
-
-# Represents the HTTP versions.
-public enum Oauth2HttpVersion {
-    HTTP_1_1,
-    HTTP_2
-}
-
-# Represents the the authentication configuration types for the HTTP client used for token introspection.
-public type ClientAuth ClientCredentialsGrantConfig|PasswordGrantConfig|RefreshTokenGrantConfig;
-
-# Represents the data structure, which is used to configure the OAuth2 client credentials grant type.
-#
-# + tokenUrl - Token URL of the token endpoint
-# + clientId - Client ID of the client authentication
-# + clientSecret - Client secret of the client authentication
-# + scopes - Scope(s) of the access request
-# + defaultTokenExpTime - Expiration time (in seconds) of the tokens if the token endpoint response does not contain an `expires_in` field
-# + clockSkew - Clock skew (in seconds) that can be used to avoid token validation failures due to clock synchronization problems
-# + optionalParams - Map of the optional parameters used for the token endpoint
-# + credentialBearer - Bearer of the authentication credentials, which is sent to the token endpoint
-# + clientConfig - HTTP client configurations, which are used to call the token endpoint
-public type ClientCredentialsGrantConfig record {|
-    string tokenUrl;
-    string clientId;
-    string clientSecret;
-    string[] scopes?;
-    decimal defaultTokenExpTime = 3600;
-    decimal clockSkew = 0;
-    map<string> optionalParams?;
-    CredentialBearer credentialBearer = AUTH_HEADER_BEARER;
-    ClientConfiguration clientConfig = {};
-|};
-
-# Represents the data structure, which is used to configure the OAuth2 password grant type.
-#
-# + tokenUrl - Token URL of the token endpoint
-# + username - Username for the password grant type
-# + password - Password for the password grant type
-# + clientId - Client ID of the client authentication
-# + clientSecret - Client secret of the client authentication
-# + scopes - Scope(s) of the access request
-# + refreshConfig - Configurations for refreshing the access token
-# + defaultTokenExpTime - Expiration time (in seconds) of the tokens if the token endpoint response does not contain an `expires_in` field
-# + clockSkew - Clock skew (in seconds) that can be used to avoid token validation failures due to clock synchronization problems
-# + optionalParams - Map of the optional parameters used for the token endpoint
-# + credentialBearer - Bearer of the authentication credentials, which is sent to the token endpoint
-# + clientConfig - HTTP client configurations, which are used to call the token endpoint
-public type PasswordGrantConfig record {|
-    string tokenUrl;
-    string username;
-    string password;
-    string clientId?;
-    string clientSecret?;
-    string[] scopes?;
-    record {|
-        string refreshUrl;
-        string[] scopes?;
-        map<string> optionalParams?;
-        CredentialBearer credentialBearer = AUTH_HEADER_BEARER;
-        ClientConfiguration clientConfig = {};
-    |} refreshConfig?;
-    decimal defaultTokenExpTime = 3600;
-    decimal clockSkew = 0;
-    map<string> optionalParams?;
-    CredentialBearer credentialBearer = AUTH_HEADER_BEARER;
-    ClientConfiguration clientConfig = {};
-|};
-
-# Represents the data structure, which is used to configure the OAuth2 refresh token grant type.
-#
-# + refreshUrl - Refresh token URL of the token endpoint
-# + refreshToken - Refresh token for the token endpoint
-# + clientId - Client ID of the client authentication
-# + clientSecret - Client secret of the client authentication
-# + scopes - Scope(s) of the access request
-# + defaultTokenExpTime - Expiration time (in seconds) of the tokens if the token endpoint response does not contain an `expires_in` field
-# + clockSkew - Clock skew (in seconds) that can be used to avoid token validation failures due to clock synchronization problems
-# + optionalParams - Map of the optional parameters used for the token endpoint
-# + credentialBearer - Bearer of the authentication credentials, which is sent to the token endpoint
-# + clientConfig - HTTP client configurations, which are used to call the token endpoint
-public type RefreshTokenGrantConfig record {|
-    string refreshUrl;
-    string refreshToken;
-    string clientId;
-    string clientSecret;
-    string[] scopes?;
-    decimal defaultTokenExpTime = 3600;
-    decimal clockSkew = 0;
-    map<string> optionalParams?;
-    CredentialBearer credentialBearer = AUTH_HEADER_BEARER;
-    ClientConfiguration clientConfig = {};
-|};
-
-# Represents the SSL/TLS configurations.
-#
-# + disable - Disable SSL validation
-# + cert - Configurations associated with the `crypto:TrustStore` or single certificate file that the client trusts
-# + key - Configurations associated with the `crypto:KeyStore` or combination of certificate and private key of the client
-public type SecureSocket record {|
-    boolean disable = false;
-    TrustStore|string cert?;
-    KeyStore|CertKey key?;
-|};
 
 # Represents the truststore-related configurations.
 #
