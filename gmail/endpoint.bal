@@ -15,6 +15,7 @@
 // under the License.
 
 import ballerina/http;
+import ballerinax/commons;
 
 # Ballerina Gmail connector provides the capability to access Gmail API.
 # The connector let you to interact with users' Gmail inboxes through the Gmail REST API.
@@ -31,23 +32,7 @@ public isolated client class Client {
     # + config - Configurations required to initialize the `Client` endpoint
     # + return - An error on failure of initialization or else `()`
     public isolated function init(ConnectionConfig config) returns error? {
-        http:ClientConfiguration httpClientConfig = {
-            auth: let var authConfig = config.auth in (authConfig is BearerTokenConfig ? authConfig : {...authConfig}),
-            httpVersion: config.httpVersion,
-            http1Settings: {...config.http1Settings},
-            http2Settings: config.http2Settings,
-            timeout: config.timeout,
-            forwarded: config.forwarded,
-            poolConfig: config.poolConfig,
-            cache: config.cache,
-            compression: config.compression,
-            circuitBreaker: config.circuitBreaker,
-            retryConfig: config.retryConfig,
-            responseLimits: config.responseLimits,
-            secureSocket: config.secureSocket,
-            proxy: config.proxy,
-            validation: config.validation
-        };
+        http:ClientConfiguration httpClientConfig = check commons:constructHTTPClientConfig(config);
         self.gmailClient = check new (BASE_URL, httpClientConfig);
     }
 
@@ -751,3 +736,11 @@ public isolated client class Client {
         return check jsonSendDraftResponse.cloneWithType(Message);
     }
 }
+
+# Client configuration details.
+@display {label: "Connection Config"}
+public type ConnectionConfig record {|
+    *commons:ConnectionConfig;
+    # Configurations related to client authentication
+    http:BearerTokenConfig|commons:OAuth2RefreshTokenGrantConfig auth;
+|};
