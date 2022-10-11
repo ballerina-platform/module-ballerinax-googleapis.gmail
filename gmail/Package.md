@@ -10,7 +10,7 @@ Ballerina Gmail Connector provides the capability to send, read, and delete emai
 
 |                       | Version                       |
 |-----------------------|-------------------------------|
-| Ballerina Language    | Swan Lake 2201.2.0            |
+| Ballerina Language    | Swan Lake 2201.2.1            |
 | Gmail API             | v1                            |
 
 ## Report issues
