@@ -17,14 +17,14 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action/@2201.3.1
               with:
                   args:
                       pack
               env:
                 WORKING_DIR: ./gmail
             - name: Ballerina Tests
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action/@2201.3.1
               with:
                   args:
                       test --code-coverage
