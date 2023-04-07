@@ -64,18 +64,3 @@ jobs:
                   echo "Covered Code Lines : ${{fromJson(steps.test_results.outputs.testResultsJson).coveredLines}}"
                   echo "Total Code Lines : $(expr ${{fromJson(steps.test_results.outputs.testResultsJson).missedLines}} + ${{fromJson(steps.test_results.outputs.testResultsJson).coveredLines}})"
                   echo "Code Coverage Percentage : ${{fromJson(steps.test_results.outputs.testResultsJson).coveragePercentage}}"
-
-            # Send notification when build fails
-            - name: Notify failure
-              if: ${{ failure() }}
-              run: |
-                curl -X POST \
-                'https://api.github.com/repos/ballerina-platform/ballerina-release/dispatches' \
-                -H 'Accept: application/vnd.github.v3+json' \
-                -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
-                --data "{
-                  \"event_type\": \"notify-build-failure\",
-                  \"client_payload\": {
-                    \"repoName\": \"module-ballerinax-googleapis.gmail\"
-                  }
-                }"
