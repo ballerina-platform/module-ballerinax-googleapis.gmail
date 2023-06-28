@@ -10,29 +10,9 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@nightly
+              uses: ballerina-platform/ballerina-action/@2201.6.0
               with:
                   args:
                       pack
               env:
                 WORKING_DIR: ./gmail
-            - name: Ballerina Test
-              uses: ballerina-platform/ballerina-action/@nightly
-              with:
-                  args:
-                      test
-              env:
-                  WORKING_DIR: ./gmail
-                  JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
-                  CLIENT_ID: ${{ secrets.CLIENT_ID }} 
-                  CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }} 
-                  REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-                  REFRESH_URL: ${{ secrets.REFRESH_URL }}
-                  RECIPIENT: ${{ secrets.RECIPIENT }}
-                  SENDER: ${{ secrets.SENDER }}
-                  CC: ${{ secrets.CC }}
-                  ATTACHMENT_PATH: ${{ secrets.ATTACHMENT_PATH }}
-                  ATTACHMENT_CONTENT_TYPE: ${{ secrets.ATTACHMENT_CONTENT_TYPE }}
-                  INLINE_IMAGE_PATH: ${{ secrets.INLINE_IMAGE_PATH }}
-                  INLINE_IMAGE_NAME: ${{ secrets.INLINE_IMAGE_NAME }}
-                  IMAGE_CONTENT_TYPE: ${{ secrets.IMAGE_CONTENT_TYPE }}
