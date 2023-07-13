@@ -33,7 +33,7 @@ jobs:
 
             - name: Run Ballerina tests using the native executable
               working-directory: ./gmail
-              run: bal test --native
+              run: bal test --graalvm
               env:
                 JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
                 CLIENT_ID: ${{ secrets.CLIENT_ID }} 
