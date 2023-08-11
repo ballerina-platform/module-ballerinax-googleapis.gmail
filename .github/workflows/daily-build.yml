@@ -1,81 +1,67 @@
 name: Daily build
 
-# Controls when the action will run.
-on: 
+on:
   schedule:
     - cron: '30 2 * * *'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-    # This workflow contains a single job called "build"
-    build:
-        # The type of runner that the job will run on
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        # Steps represent a sequence of tasks that will be executed as part of the job
-        steps:
-            # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-            # Build the ballerina project
-            - name: Ballerina Build
-              uses: ballerina-platform/ballerina-action/@nightly
-              with:
-                  args:
-                      pack 
-              env:
-                WORKING_DIR: ./gmail
+      # Setup Ballerina Environment
+      - name: Set Up Ballerina
+        uses: ballerina-platform/setup-ballerina@v1.1.0
+        with:
+          version: latest
 
-            # Test the ballerina project
-            - name: Ballerina Test
-              uses: ballerina-platform/ballerina-action/@nightly
-              with:
-                  args:
-                      test --code-coverage
-              env:        
-                WORKING_DIR: ./gmail
-                JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
-                CLIENT_ID: ${{ secrets.CLIENT_ID }} 
-                CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }} 
-                REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-                REFRESH_URL: ${{ secrets.REFRESH_URL }}
-                RECIPIENT: ${{ secrets.RECIPIENT }}
-                SENDER: ${{ secrets.SENDER }}
-                CC: ${{ secrets.CC }}
-                ATTACHMENT_PATH: ${{ secrets.ATTACHMENT_PATH }}
-                ATTACHMENT_CONTENT_TYPE: ${{ secrets.ATTACHMENT_CONTENT_TYPE }}
-                INLINE_IMAGE_PATH: ${{ secrets.INLINE_IMAGE_PATH }}
-                INLINE_IMAGE_NAME: ${{ secrets.INLINE_IMAGE_NAME }}
-                IMAGE_CONTENT_TYPE: ${{ secrets.IMAGE_CONTENT_TYPE }}
-            
-            # Read the ballerina test results
-            - name: Read Ballerina Test Results
-              id: test_results
-              run: |
-                  content=`cat ./gmail/target/report/test_results.json`                
-                  content="${content//'%'/'%25'}"
-                  content="${content//$'\n'/'%0A'}"
-                  content="${content//$'\r'/'%0D'}"
-                  echo "::set-output name=testResultsJson::$content"
+      # Build Ballerina Project
+      - name: Ballerina Build
+        run: bal pack ./ballerina
+        env:
+          JAVA_HOME: /usr/lib/jvm/default-jvm
 
-            # Print the code coverage information
-            - name: Code Coverage
-              run: |
-                  echo "Covered Code Lines : ${{fromJson(steps.test_results.outputs.testResultsJson).coveredLines}}"
-                  echo "Total Code Lines : $(expr ${{fromJson(steps.test_results.outputs.testResultsJson).missedLines}} + ${{fromJson(steps.test_results.outputs.testResultsJson).coveredLines}})"
-                  echo "Code Coverage Percentage : ${{fromJson(steps.test_results.outputs.testResultsJson).coveragePercentage}}"
+      # Build Module Examples
+      - name: Ballerina Examples Build
+        run: chmod +x ./examples/build.sh && ./examples/build.sh build
+        env:
+          JAVA_HOME: /usr/lib/jvm/default-jvm
 
-            # Send notification when build fails
-            - name: Notify failure
-              if: ${{ failure() }}
-              run: |
-                curl -X POST \
-                'https://api.github.com/repos/ballerina-platform/ballerina-release/dispatches' \
-                -H 'Accept: application/vnd.github.v3+json' \
-                -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
-                --data "{
-                  \"event_type\": \"notify-build-failure\",
-                  \"client_payload\": {
-                    \"repoName\": \"module-ballerinax-googleapis.gmail\"
-                  }
-                }"
+      # Test Ballerina Project
+      - name: Ballerina Test
+        run: bal test ./ballerina --test-report --code-coverage --coverage-format=xml
+        env:
+          JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
+          CLIENT_ID: ${{ secrets.CLIENT_ID }} 
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }} 
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          REFRESH_URL: ${{ secrets.REFRESH_URL }}
+          RECIPIENT: ${{ secrets.RECIPIENT }}
+          SENDER: ${{ secrets.SENDER }}
+          CC: ${{ secrets.CC }}
+          ATTACHMENT_PATH: ${{ secrets.ATTACHMENT_PATH }}
+          ATTACHMENT_CONTENT_TYPE: ${{ secrets.ATTACHMENT_CONTENT_TYPE }}
+          INLINE_IMAGE_PATH: ${{ secrets.INLINE_IMAGE_PATH }}
+          INLINE_IMAGE_NAME: ${{ secrets.INLINE_IMAGE_NAME }}
+          IMAGE_CONTENT_TYPE: ${{ secrets.IMAGE_CONTENT_TYPE }}
+          JAVA_HOME: /usr/lib/jvm/default-jvm
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+
+      # Send notification when build fails
+      - name: Notify failure
+        if: ${{ failure() }}
+        run: |
+          curl -X POST \
+          'https://api.github.com/repos/ballerina-platform/ballerina-release/dispatches' \
+          -H 'Accept: application/vnd.github.v3+json' \
+          -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
+          --data "{
+            \"event_type\": \"notify-build-failure\",
+            \"client_payload\": {
+              \"repoName\": \"module-ballerinax-googleapis.gmail\"
+            }
+          }"

@@ -59,4 +59,4 @@ Following is an example on how to send an email using the connector.
     ```
 2. Use `bal run` command to compile and run the Ballerina program.
 
-**[You can find a list of samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/main/examples)**
+**[You can find a list of samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples)**
