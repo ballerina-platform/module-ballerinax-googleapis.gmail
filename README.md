@@ -37,7 +37,7 @@ Execute the commands below to build from the source.
 
 - To test the package:
     ```shell script
-    bal test ./gmail
+    bal test ./ballerina
     ```
 
 ## Contributing to Ballerina
