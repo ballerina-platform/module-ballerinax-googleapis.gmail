@@ -20,17 +20,17 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("Update draft"); // New update will be to update the darft subject, body and attchments.
 
     // The ID of the draft to update. This will be returned when a draft is created. 
@@ -38,11 +38,11 @@ gmail:Client gmailClient = check new(gmailConfig);
 
     string updatedMessageBody = "Updated Draft Text Message Body";
     gmail:MessageRequest newMessageRequest = {
-        recipient : os:getEnv("RECIPIENT"), // Recipient's email address
-        sender : os:getEnv("SENDER"), // Sender's email address
-        messageBody : updatedMessageBody,
-        subject : "Update Draft Subject",
-        contentType : gmail:TEXT_PLAIN
+        recipient: os:getEnv("RECIPIENT"), // Recipient's email address
+        sender: os:getEnv("SENDER"), // Sender's email address
+        messageBody: updatedMessageBody,
+        subject: "Update Draft Subject",
+        contentType: gmail:TEXT_PLAIN
     };
 
     string testAttachmentPath = "../resources/test_document.txt";

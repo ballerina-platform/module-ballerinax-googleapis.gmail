@@ -20,19 +20,19 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("Update label");
-    
+
     // The ID of an already created label that we want to update
     string createdLabelId = "Label_20";
 
@@ -45,8 +45,8 @@ gmail:Client gmailClient = check new(gmailConfig);
 
     if (updateLabelResponse is gmail:Label) {
         log:printInfo("Successfully updated label: ", status = updateLabelResponse.name == updateName &&
-                       updateLabelResponse?.color?.backgroundColor == updateBgColor &&
-                       updateLabelResponse?.color?.textColor == updateTxtColor);
+                        updateLabelResponse?.color?.backgroundColor == updateBgColor &&
+                        updateLabelResponse?.color?.textColor == updateTxtColor);
     } else {
         log:printError("Failed to update label");
     }

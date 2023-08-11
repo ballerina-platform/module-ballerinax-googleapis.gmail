@@ -20,27 +20,29 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     log:printInfo("List threads");
 
     // Make includeSpamTrash false to exclude threads from SPAM and TRASH in the results.
-    stream<gmail:MailThread,error?>|error threadList = gmailClient->listThreads(filter = {includeSpamTrash: false, 
-        labelIds: ["INBOX"]});
-        
-    if (threadList is stream<gmail:MailThread,error?>) {  
-        error? e = threadList.forEach(function (gmail:MailThread thread) {
+    stream<gmail:MailThread, error?>|error threadList = gmailClient->listThreads(filter = {
+        includeSpamTrash: false,
+        labelIds: ["INBOX"]
+    });
+
+    if (threadList is stream<gmail:MailThread, error?>) {
+        error? e = threadList.forEach(function(gmail:MailThread thread) {
             log:printInfo(thread.toString());
-        }); 
+        });
     } else {
         log:printError("Failed to list threads");
     }

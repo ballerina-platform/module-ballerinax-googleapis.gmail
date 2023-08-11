@@ -20,28 +20,28 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("List drafts");
     // The user's email address. The special value **me** can be used to indicate the authenticated user.
     string userId = "me";
 
     gmail:DraftSearchFilter searchFilter = {includeSpamTrash: false, maxResults: 10};
-    
-    stream<gmail:Draft,error?>|error msgList = gmailClient->listDrafts(filter = searchFilter, userId = userId);
-    if (msgList is stream<gmail:Draft,error?>) {
-        error? e = msgList.forEach(function (gmail:Draft draft) {
+
+    stream<gmail:Draft, error?>|error msgList = gmailClient->listDrafts(filter = searchFilter, userId = userId);
+    if (msgList is stream<gmail:Draft, error?>) {
+        error? e = msgList.forEach(function(gmail:Draft draft) {
             log:printInfo(draft.toString());
-        });   
+        });
     } else {
         log:printError("Failed to list drafts");
     }

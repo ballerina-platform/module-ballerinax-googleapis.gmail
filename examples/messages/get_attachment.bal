@@ -20,40 +20,40 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     log:printInfo("Get an attachment in a sent message");
 
     // ID of the message where the attachment belongs to.
-    string sentHtmlMessageId = "<MESSAGE_ID>"; 
+    string sentHtmlMessageId = "<MESSAGE_ID>";
 
     // ID of the attachment
     string readAttachmentFileId;
 
     // To read the attachment you should first obtain the attachment file ID 
     gmail:Message|error readResponse = gmailClient->readMessage(sentHtmlMessageId);
-    
+
     if (readResponse is gmail:Message) {
         log:printInfo("Meesage information retrieved");
         if (readResponse?.msgAttachments is gmail:MessageBodyPart[]) {
             gmail:MessageBodyPart[] msgAttachments = <gmail:MessageBodyPart[]>readResponse?.msgAttachments;
-            readAttachmentFileId = msgAttachments[0]?.fileId is string ? <@untainted>(<string>msgAttachments[0]?.fileId)
-                                    : readAttachmentFileId;
-            gmail:MessageBodyPart|error response = gmailClient->getAttachment(sentHtmlMessageId, 
+            readAttachmentFileId = msgAttachments[0]?.fileId is string ? (<string>msgAttachments[0]?.fileId)
+                : "id-not-found";
+            gmail:MessageBodyPart|error response = gmailClient->getAttachment(sentHtmlMessageId,
                 readAttachmentFileId);
             if (response is gmail:MessageBodyPart) {
                 log:printInfo("Attachment " + response.toString());
             } else {
-                log:printError("Failed to get the attachments : "+ response.message());
+                log:printError("Failed to get the attachments : " + response.message());
             }
         } else {
             log:printInfo("No attachment exists for this message");
@@ -62,6 +62,5 @@ gmail:Client gmailClient = check new(gmailConfig);
         log:printInfo("Failed to get the message");
     }
 
-    
     log:printInfo("End!");
 }

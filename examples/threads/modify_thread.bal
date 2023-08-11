@@ -20,16 +20,16 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     log:printInfo("Modify labels in a thread");
     // ID of the thread to modify.
@@ -47,7 +47,7 @@ gmail:Client gmailClient = check new(gmailConfig);
 
     log:printInfo("Remove labels from a thread");
     response = gmailClient->modifyThread(sentMessageThreadId, [], ["INBOX"]);
-    
+
     if (response is gmail:MailThread) {
         log:printInfo("Removed labels from thread successfully: ", status = response.id == sentMessageThreadId);
     } else {

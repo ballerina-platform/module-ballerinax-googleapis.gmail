@@ -20,21 +20,21 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     log:printInfo("Trash and Untrash thread");
 
     // ID of the thread to trash or untrash.
-    string sentMessageThreadId = "<THREAD_ID"; 
+    string sentMessageThreadId = "<THREAD_ID";
 
     log:printInfo("Trash thread");
     gmail:MailThread|error trash = gmailClient->trashThread(sentMessageThreadId);
@@ -43,7 +43,7 @@ gmail:Client gmailClient = check new(gmailConfig);
         log:printInfo("Successfully trashed the thread");
     } else {
         log:printError("Failed to trash the thread");
-    } 
+    }
 
     log:printInfo("Un-trash thread");
     gmail:MailThread|error untrash = gmailClient->untrashThread(sentMessageThreadId);
@@ -52,7 +52,7 @@ gmail:Client gmailClient = check new(gmailConfig);
         log:printInfo("Successfully un-trashed the thread");
     } else {
         log:printError("Failed to un-trash the thread");
-    } 
-    
+    }
+
     log:printInfo("End!");
 }

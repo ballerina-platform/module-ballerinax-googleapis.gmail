@@ -20,26 +20,26 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     log:printInfo("Read one thread");
 
     // ID of the thread to read.
-    string sentMessageThreadId = "<THREAD_ID"; 
+    string sentMessageThreadId = "<THREAD_ID";
 
     // When given and format is METADATA, only include headers specified. Here, it will specify "Subject"
-    gmail:MailThread|error thread = gmailClient->readThread(sentMessageThreadId, format = gmail:FORMAT_METADATA, 
+    gmail:MailThread|error thread = gmailClient->readThread(sentMessageThreadId, format = gmail:FORMAT_METADATA,
         metadataHeaders = ["Subject"]);
-        
+
     if (thread is gmail:MailThread) {
         log:printInfo("Thread obtained: ", status = thread.id == sentMessageThreadId);
     } else {

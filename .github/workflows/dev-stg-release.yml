@@ -31,6 +31,12 @@ jobs:
         env:
           JAVA_HOME: /usr/lib/jvm/default-jvm
 
+      # Build Module Examples
+      - name: Ballerina Examples Build
+        run: chmod +x ./examples/build.sh && ./examples/build.sh build
+        env:
+          JAVA_HOME: /usr/lib/jvm/default-jvm
+
       # Push to Ballerina Staging Central
       - name: Push to Staging
         if: github.event.inputs.bal_central_environment == 'STAGE'

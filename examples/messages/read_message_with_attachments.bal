@@ -20,30 +20,30 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     log:printInfo("Read a message with an attachment");
 
     // ID of the message to read with an attachment.
-    string sentMessageId = "<MESSAGE_ID>"; 
+    string sentMessageId = "<MESSAGE_ID>";
 
     gmail:Message|error response = gmailClient->readMessage(sentMessageId);
-    
+
     if (response is gmail:Message) {
-       if (response?.msgAttachments is gmail:MessageBodyPart[] ) {
+        if (response?.msgAttachments is gmail:MessageBodyPart[]) {
             log:printInfo("Attachment retrieved " + (<gmail:MessageBodyPart[]>response?.msgAttachments).toString());
-       } else {
+        } else {
             log:printError("No attachment exists for this message");
-       }
+        }
     } else {
         log:printError("Failed to get attachments");
     }

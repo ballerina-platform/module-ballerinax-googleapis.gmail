@@ -20,26 +20,25 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     // This method immediately and permanently deletes the specified message
     log:printInfo("Delete a message");
 
-    
     // Id of the message to delete. This can be obtained from the response of create message.
-    string sentMessageId = "<MESSAGE_ID>"; 
+    string sentMessageId = "<MESSAGE_ID>";
 
     error? delete = gmailClient->deleteMessage(sentMessageId);
-    
+
     if (delete is error) {
         log:printError("Failed to delete the message");
     } else {

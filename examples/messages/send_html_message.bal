@@ -20,31 +20,31 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("Send a HTML message");
 
     string inlineImageName = "test_image.png";
     string htmlBody = "<h1> Email Test HTML Body </h1> <br/> <img src=\"cid:image-" + inlineImageName + "\">";
     gmail:MessageRequest messageRequest = {
-        recipient : os:getEnv("RECIPIENT"), // Recipient's email address
-        sender : os:getEnv("SENDER"),// Sender's email address
-        cc : os:getEnv("CC"), // Email address to carbon copy,
-        subject : "HTML-Email-Subject",
+        recipient: os:getEnv("RECIPIENT"), // Recipient's email address
+        sender: os:getEnv("SENDER"), // Sender's email address
+        cc: os:getEnv("CC"), // Email address to carbon copy,
+        subject: "HTML-Email-Subject",
         //---Set HTML Body---    
-        messageBody : htmlBody,
-        contentType : gmail:TEXT_HTML
+        messageBody: htmlBody,
+        contentType: gmail:TEXT_HTML
     };
-    
+
     string inlineImagePath = "../resources/test_image.png";
     string imageContentType = "image/png";
     string testAttachmentPath = "../resources/test_document.txt";

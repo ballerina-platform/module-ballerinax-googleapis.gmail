@@ -54,7 +54,7 @@ class MessageStream {
     isolated function fetchMessages() returns @tainted Message[]|error {
         string getListMessagesPath = USER_RESOURCE + self.userEmailId + MESSAGE_RESOURCE;
         string uriParams = check getURIParamsFromFilter(self.filter, self.pageToken);
-        getListMessagesPath = getListMessagesPath + <@untainted>uriParams;
+        getListMessagesPath = getListMessagesPath + uriParams;
         http:Response httpResponse = <http:Response> check self.httpClient->get(getListMessagesPath);        
         json jsonlistMsgResponse = check handleResponse(httpResponse);
         MessageListPage|error response = jsonlistMsgResponse.cloneWithType(MessageListPage);
@@ -110,7 +110,7 @@ class ThreadStream {
     isolated function fetchThreads() returns @tainted MailThread[]|error {
         string getListThreadPath = USER_RESOURCE + self.userEmailId + THREAD_RESOURCE;
         string uriParams = check getURIParamsFromFilter(self.filter, self.pageToken);
-        getListThreadPath = getListThreadPath + <@untainted>uriParams;
+        getListThreadPath = getListThreadPath + uriParams;
         http:Response httpResponse = <http:Response> check self.httpClient->get(getListThreadPath);
         json jsonListThreadResponse = check handleResponse(httpResponse);
         ThreadListPage|error response = jsonListThreadResponse.cloneWithType(ThreadListPage);
@@ -166,7 +166,7 @@ class DraftStream {
     isolated function fetchDrafts() returns @tainted Draft[]|error {
         string getListDraftsPath = USER_RESOURCE + self.userEmailId + DRAFT_RESOURCE;
         string uriParams = check getURIParamsFromFilter(self.filter, self.pageToken);
-        getListDraftsPath += <@untainted>uriParams;
+        getListDraftsPath += uriParams;
         http:Response httpResponse = <http:Response> check self.httpClient->get(getListDraftsPath);
         json jsonListDraftResponse = check handleResponse(httpResponse);
         DraftListPage|error response = jsonListDraftResponse.cloneWithType(DraftListPage);

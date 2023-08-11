@@ -225,7 +225,7 @@ isolated function encodeFile(string filePath) returns string|error {
         " file from path: " + filePath);
         return err;
     }
-    return <@untainted>strings:fromBytes(readEncodedContent);
+    return strings:fromBytes(readEncodedContent);
 }
 
 # Gets the file name from the given file path.

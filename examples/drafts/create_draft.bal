@@ -20,32 +20,33 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("Create draft");
     // The ID of the thread the draft should sent to. this is optional.
     string sentMessageThreadId = "<THREAD_ID>";
 
     string messageBody = "Draft Text Message Body";
     gmail:MessageRequest messageRequest = {
-        recipient : os:getEnv("RECIPIENT"), // Recipient's email address
-        sender : os:getEnv("SENDER"), // Sender's email address
-        cc : os:getEnv("CC"), // Email address to carbon copy
-        messageBody : messageBody,
-        contentType : gmail:TEXT_PLAIN
+        subject: "Create-Draft",
+        recipient: os:getEnv("RECIPIENT"), // Recipient's email address
+        sender: os:getEnv("SENDER"), // Sender's email address
+        cc: os:getEnv("CC"), // Email address to carbon copy
+        messageBody: messageBody,
+        contentType: gmail:TEXT_PLAIN
     };
 
     string|error draftResponse = gmailClient->createDraft(messageRequest, threadId = sentMessageThreadId);
-    
+
     if (draftResponse is string) {
         log:printInfo("Successfully created draft: ", draftId = draftResponse);
     } else {

@@ -20,19 +20,19 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("List the profile history");
-    
+
     // TO get the history ID we have to get the history ID referring to message response.
     string sentMessageId = "<MESSAGE_ID>";
 
@@ -43,18 +43,18 @@ gmail:Client gmailClient = check new(gmailConfig);
 
     if (response is gmail:Message) {
 
-        startHistoryId = response?.historyId is string ? <string>response?.historyId : "" ;
-        
+        startHistoryId = response?.historyId is string ? <string>response?.historyId : "";
+
         // History types to be returned by the function
         string[] historyTypes = ["labelAdded", "labelRemoved", "messageAdded", "messageDeleted"];
 
-        stream<gmail:History,error?>|error listHistoryResponse = gmailClient->listHistory(startHistoryId, 
-                                                                                      historyTypes = historyTypes);
+        stream<gmail:History, error?>|error listHistoryResponse = gmailClient->listHistory(startHistoryId,
+                                                                                    historyTypes = historyTypes);
 
-        if (listHistoryResponse is stream<gmail:History,error?>) {
-            error? e = listHistoryResponse.forEach(function (gmail:History history) {
+        if (listHistoryResponse is stream<gmail:History, error?>) {
+            error? e = listHistoryResponse.forEach(function(gmail:History history) {
                 log:printInfo(history.toString());
-            });    
+            });
         } else {
             log:printError("Failed to list user profile history");
         }

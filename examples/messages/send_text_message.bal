@@ -20,42 +20,42 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("Send the message");
 
     gmail:MessageRequest messageRequest = {
-        recipient : os:getEnv("RECIPIENT"), // Recipient's email address
-        sender : os:getEnv("SENDER"), // Sender's email address
-        cc : os:getEnv("CC"), // Email address to carbon copy
-        subject : "Text-Email-Subject",
+        recipient: os:getEnv("RECIPIENT"), // Recipient's email address
+        sender: os:getEnv("SENDER"), // Sender's email address
+        cc: os:getEnv("CC"), // Email address to carbon copy
+        subject: "Text-Email-Subject",
         //---Set Text Body---
-        messageBody : "Text Message Body",
-        contentType : gmail:TEXT_PLAIN
+        messageBody: "Text Message Body",
+        contentType: gmail:TEXT_PLAIN
     };
 
     string testAttachmentPath = "../resources/test_document.txt";
     string attachmentContentType = "text/plain";
-    
+
     // Set Attachments if exists
     gmail:AttachmentPath[] attachments = [{attachmentPath: testAttachmentPath, mimeType: attachmentContentType}];
     messageRequest.attachmentPaths = attachments;
 
     gmail:Message|error sendMessageResponse = checkpanic gmailClient->sendMessage(messageRequest);
-    
+
     if (sendMessageResponse is gmail:Message) {
         // If successful, print the message ID and thread ID.
-        log:printInfo("Sent Message ID: "+ sendMessageResponse.id);
-        log:printInfo("Sent Thread ID: "+ sendMessageResponse.threadId);
+        log:printInfo("Sent Message ID: " + sendMessageResponse.id);
+        log:printInfo("Sent Thread ID: " + sendMessageResponse.threadId);
     } else {
         // If unsuccessful, print the error returned.
         log:printError(sendMessageResponse.message());

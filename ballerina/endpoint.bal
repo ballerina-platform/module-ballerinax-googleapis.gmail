@@ -73,7 +73,7 @@ public isolated client class Client {
             jsonPayload["threadId"] = threadId;
         }
         string sendMessagePath = USER_RESOURCE + (userId is string ? userId : ME) + MESSAGE_SEND_RESOURCE;
-        request.setJsonPayload(<@untainted>jsonPayload);
+        request.setJsonPayload(jsonPayload);
         
         http:Response httpResponse = <http:Response> check self.gmailClient->post(sendMessagePath, request);
         json jsonSendMessageResponse = check handleResponse(httpResponse);
@@ -121,7 +121,7 @@ public isolated client class Client {
                                  FORWARD_SLASH_SYMBOL + messageId + uriParams;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(readMessagePath);
         json jsonreadMessageResponse = check handleResponse(httpResponse);
-        return convertJSONToMessageType(<@untainted>jsonreadMessageResponse);
+        return convertJSONToMessageType(jsonreadMessageResponse);
     }
 
     # Gets the specified message attachment from users mailbox.
@@ -226,7 +226,7 @@ public isolated client class Client {
         http:Request request = new;
         request.setJsonPayload(jsonPayload);
         http:Response httpResponse = <http:Response> check self.gmailClient->post(modifyMsgPath, request);
-        return convertJSONToMessageType(<@untainted>check handleResponse(httpResponse));
+        return convertJSONToMessageType(check handleResponse(httpResponse));
     }
 
     # Lists the threads in user's mailbox.
@@ -284,7 +284,7 @@ public isolated client class Client {
                                 FORWARD_SLASH_SYMBOL + threadId + uriParams;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(readThreadPath);
         json jsonReadThreadResponse = check handleResponse(httpResponse);
-        return convertJSONToThreadType(<@untainted>jsonReadThreadResponse);
+        return convertJSONToThreadType(jsonReadThreadResponse);
     }
 
     # Moves the specified mail thread to the trash.
@@ -369,7 +369,7 @@ public isolated client class Client {
         http:Request request = new;
         request.setJsonPayload(jsonPayload);
         http:Response httpResponse = <http:Response> check self.gmailClient->post(modifyThreadPath, request);
-        return convertJSONToThreadType(<@untainted>check handleResponse(httpResponse));
+        return convertJSONToThreadType(check handleResponse(httpResponse));
     }
 
     # Gets the current user's Gmail Profile.
@@ -629,7 +629,7 @@ public isolated client class Client {
                                + draftId + uriParams;
         http:Response httpResponse = <http:Response> check self.gmailClient->get(readDraftPath);
         json jsonReadDraftResponse = check handleResponse(httpResponse);
-        return convertJSONToDraftType(<@untainted>jsonReadDraftResponse);
+        return convertJSONToDraftType(jsonReadDraftResponse);
     }
 
     # Immediately and permanently deletes the specified draft.
@@ -677,7 +677,7 @@ public isolated client class Client {
         jsonPayload["message"] = mssg;
 
         string createDraftPath = USER_RESOURCE + (userId is string ? userId : ME) + DRAFT_RESOURCE;
-        request.setJsonPayload(<@untainted>jsonPayload);
+        request.setJsonPayload(jsonPayload);
         http:Response httpResponse = <http:Response> check self.gmailClient->post(createDraftPath, request);
         json jsonCreateDraftResponse = check handleResponse(httpResponse);
         return let var id = jsonCreateDraftResponse.id in id is string ? id : EMPTY_STRING;
@@ -712,7 +712,7 @@ public isolated client class Client {
 
         string updateDraftPath = USER_RESOURCE + (userId is string ? userId : ME) + DRAFT_RESOURCE +
                                  FORWARD_SLASH_SYMBOL + draftId;
-        request.setJsonPayload(<@untainted>jsonPayload);
+        request.setJsonPayload(jsonPayload);
         http:Response httpResponse = <http:Response> check self.gmailClient->put(updateDraftPath, request);
         json jsonUpdateDraftResponse = check handleResponse(httpResponse);
         return let var id = jsonUpdateDraftResponse.id in id is string ? id : EMPTY_STRING;

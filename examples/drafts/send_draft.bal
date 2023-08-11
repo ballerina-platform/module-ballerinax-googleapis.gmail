@@ -20,27 +20,27 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("Send draft");
-    
-    // The ID of the existing draft we want to send.
-    string createdDraftId = "<DRAFT_ID>"; 
 
-    gmail:Message |error sendDraftResponse = gmailClient->sendDraft(createdDraftId);
-    
+    // The ID of the existing draft we want to send.
+    string createdDraftId = "<DRAFT_ID>";
+
+    gmail:Message|error sendDraftResponse = gmailClient->sendDraft(createdDraftId);
+
     if (sendDraftResponse is gmail:Message) {
         log:printInfo("Sent the draft successfully: ",
-                      status =  sendDraftResponse.id !== "" && sendDraftResponse.threadId !== "");
+                    status = sendDraftResponse.id !== "" && sendDraftResponse.threadId !== "");
     } else {
         log:printError("Failed to send the draft");
     }

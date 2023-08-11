@@ -20,17 +20,17 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
-    
+    gmail:Client gmailClient = check new (gmailConfig);
+
     log:printInfo("Create label");
     string displayName = "Test";
     // The visibility of the label in the label list in the Gmail web interface.
@@ -38,13 +38,13 @@ gmail:Client gmailClient = check new(gmailConfig);
     // The visibility of messages with this label in the message list in the Gmail web interface.
     string messageListVisibility = "show";
 
-    string|error createLabelResponse = gmailClient->createLabel(displayName, labelVisibility, messageListVisibility);
-    
-    if (createLabelResponse is string) {
+    gmail:Label|error createLabelResponse = gmailClient->createLabel(displayName, labelVisibility, messageListVisibility);
+
+    if (createLabelResponse is gmail:Label) {
         log:printInfo("Successfully created label: ", labelId = createLabelResponse);
     } else {
         log:printError("Failed to create label");
     }
-    
+
     log:printInfo("End!");
 }

@@ -20,24 +20,24 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     log:printInfo("Read a message");
 
     // ID of the message to read.
-    string sentMessageId = "<MESSAGE_ID>"; 
-    
+    string sentMessageId = "<MESSAGE_ID>";
+
     gmail:Message|error response = gmailClient->readMessage(sentMessageId);
-    
+
     if (response is gmail:Message) {
         log:printInfo("Is message details available: ", status = response.id == sentMessageId);
     } else {

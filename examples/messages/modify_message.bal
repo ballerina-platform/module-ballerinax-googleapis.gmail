@@ -20,21 +20,21 @@ import ballerinax/googleapis.gmail as gmail;
 
 public function main() returns error? {
 
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
-    }
-};
+    gmail:ConnectionConfig gmailConfig = {
+        auth: {
+            refreshUrl: gmail:REFRESH_URL,
+            refreshToken: os:getEnv("REFRESH_TOKEN"),
+            clientId: os:getEnv("CLIENT_ID"),
+            clientSecret: os:getEnv("CLIENT_SECRET")
+        }
+    };
 
-gmail:Client gmailClient = check new(gmailConfig);
+    gmail:Client gmailClient = check new (gmailConfig);
 
     log:printInfo("Modify labels of a HTML message");
 
     // ID of the message to modify.
-    string sentMessageId = "<MESSAGE_ID>"; 
+    string sentMessageId = "<MESSAGE_ID>";
 
     string[] labelsToAdd = ["INBOX"];
     string[] labelsToRemove = ["INBOX"];
@@ -50,7 +50,7 @@ gmail:Client gmailClient = check new(gmailConfig);
 
     log:printInfo("Remove Labels");
     response = gmailClient->modifyMessage(sentMessageId, [], labelsToRemove);
-    
+
     if (response is gmail:Message) {
         log:printInfo("Is lablel modified: ", ststus = response.id == sentMessageId);
     } else {
