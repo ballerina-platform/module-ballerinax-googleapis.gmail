@@ -23,7 +23,7 @@ jobs:
       - name: Set Up Ballerina
         uses: ballerina-platform/setup-ballerina@v1.1.0
         with:
-          version: latest
+          version: 2201.7.0
 
       # Build Ballerina Project
       - name: Ballerina Build
