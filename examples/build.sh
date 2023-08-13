@@ -14,7 +14,7 @@ run)
   BAL_CMD="run"
   ;;
 *)
-  echo "Invalid command provided: '$1'. Please provide 'build' or 'test' as the command."
+  echo "Invalid command provided: '$1'. Please provide 'build' or 'run' as the command."
   exit 1
   ;;
 esac

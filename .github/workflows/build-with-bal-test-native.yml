@@ -32,7 +32,7 @@ jobs:
           version: latest
 
       - name: Run Ballerina tests using the native executable
-        working-directory: ./calendar
+        working-directory: ./ballerina
         run: bal test --graalvm
         env:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
