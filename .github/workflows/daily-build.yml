@@ -31,7 +31,8 @@ jobs:
 
       # Test Ballerina Project
       - name: Ballerina Test
-        run: bal test ./ballerina --test-report --code-coverage --coverage-format=xml
+        working-directory: ./ballerina
+        run: bal test --test-report --code-coverage --coverage-format=xml
         env:
           JAVA_OPTS: -DBALLERINA_DEV_COMPILE_BALLERINA_ORG=true
           CLIENT_ID: ${{ secrets.CLIENT_ID }} 
