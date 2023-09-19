@@ -43,7 +43,7 @@ public function main() returns error? {
         contentType: gmail:TEXT_PLAIN
     };
 
-    string testAttachmentPath = "../resources/test_document.txt";
+    string testAttachmentPath = "../examples/resources/test_document.txt";
     string attachmentContentType = "text/plain";
 
     // Set Attachments if exists

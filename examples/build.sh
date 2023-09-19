@@ -41,7 +41,15 @@ BAL_SOURCE_DIR="$HOME/.ballerina/repositories/local/bala/ballerinax/$BAL_PACKAGE
 [ -d "$BAL_SOURCE_DIR" ] && cp -r "$BAL_SOURCE_DIR" "$BAL_DESTINATION_DIR"
 echo "Successfully updated the local central repositories"
 
+echo "$BAL_BAL_DESTINATION_DIR"
+echo "$BAL_SOURCE_DIR"
+
 # Loop through examples in the examples directory
 find "$BAL_EXAMPLES_DIR" -type f -name "*.bal" | while read -r BAL_EXAMPLE_FILE; do
   bal "$BAL_CMD" --offline "$BAL_EXAMPLE_FILE"
+done
+
+# Remove generated JAR files
+find "$BAL_HOME_DIR" -type f -name "*.jar" | while read -r JAR_FILE; do
+  rm "$JAR_FILE"
 done

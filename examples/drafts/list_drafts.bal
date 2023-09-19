@@ -39,7 +39,7 @@ public function main() returns error? {
 
     stream<gmail:Draft, error?>|error msgList = gmailClient->listDrafts(filter = searchFilter, userId = userId);
     if (msgList is stream<gmail:Draft, error?>) {
-        error? e = msgList.forEach(function(gmail:Draft draft) {
+        check msgList.forEach(function(gmail:Draft draft) {
             log:printInfo(draft.toString());
         });
     } else {
