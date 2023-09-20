@@ -47,7 +47,7 @@ public function main() returns error? {
 
     string inlineImagePath = "../resources/test_image.png";
     string imageContentType = "image/png";
-    string testAttachmentPath = "../resources/test_document.txt";
+    string testAttachmentPath = "../examples/resources/test_document.txt";
     string attachmentContentType = "text/plain";
 
     // Set Inline Images if exists

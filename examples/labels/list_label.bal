@@ -38,7 +38,7 @@ public function main() returns error? {
     gmail:LabelList|error listLabelResponse = gmailClient->listLabels(userId);
 
     if (listLabelResponse is gmail:LabelList) {
-        error? e = listLabelResponse.labels.forEach(function(gmail:Label label) {
+        listLabelResponse.labels.forEach(function(gmail:Label label) {
             log:printInfo(label.id);
         });
     } else {

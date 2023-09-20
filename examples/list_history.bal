@@ -52,7 +52,7 @@ public function main() returns error? {
                                                                                     historyTypes = historyTypes);
 
         if (listHistoryResponse is stream<gmail:History, error?>) {
-            error? e = listHistoryResponse.forEach(function(gmail:History history) {
+            check listHistoryResponse.forEach(function(gmail:History history) {
                 log:printInfo(history.toString());
             });
         } else {

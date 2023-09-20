@@ -40,7 +40,7 @@ public function main() returns error? {
     });
 
     if (threadList is stream<gmail:MailThread, error?>) {
-        error? e = threadList.forEach(function(gmail:MailThread thread) {
+        check threadList.forEach(function(gmail:MailThread thread) {
             log:printInfo(thread.toString());
         });
     } else {

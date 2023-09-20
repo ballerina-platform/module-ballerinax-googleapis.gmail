@@ -41,7 +41,7 @@ public function main() returns error? {
     stream<gmail:Message, error?>|error msgList = gmailClient->listMessages(filter = searchFilter);
 
     if (msgList is stream<gmail:Message, error?>) {
-        error? e = msgList.forEach(function(gmail:Message message) {
+        check msgList.forEach(function(gmail:Message message) {
             log:printInfo(message.toString());
         });
     } else {

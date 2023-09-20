@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'java'
+
+def graalvmFlag = ""
+
+task testExamples {
+    if (project.hasProperty("balGraalVMTest")) {
+        graalvmFlag = "--graalvm"
+    }
+    doLast {
+        try {
+            exec {
+                workingDir project.projectDir
+                println("Working dir: ${workingDir}")
+                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    commandLine 'sh', "/c", "chmod +x ./build.sh && ./build.sh run && exit %%ERRORLEVEL%%"
+                } else {
+                    commandLine 'sh', "-c", "chmod +x ./build.sh && ./build.sh run"
+                }
+            }
+        } catch (Exception e) {
+            println("Example Build failed: " + e.message)
+            throw e
+        }
+    }
+}
+
+task buildExamples {
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(":gmail-examples:test")) {
+            buildExamples.enabled = false
+        } else {
+            testExamples.enabled = false
+        }
+    }
+    doLast {
+        try {
+            exec {
+                workingDir project.projectDir
+                println("Working dir: ${workingDir}")
+                if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                    commandLine 'sh', "/c", "chmod +x ./build.s && ./build.sh build && exit %%ERRORLEVEL%%"
+                } else {
+                    commandLine 'sh', "-c", "chmod +x ./build.sh && ./build.sh build"
+                }
+            }
+        } catch (Exception e) {
+            println("Example Build failed: " + e.message)
+            throw e
+        }
+    }
+}
+
+buildExamples.dependsOn ":gmail-ballerina:build"
+testExamples.dependsOn ":gmail-ballerina:build"
+test.dependsOn testExamples
+build.dependsOn buildExamples

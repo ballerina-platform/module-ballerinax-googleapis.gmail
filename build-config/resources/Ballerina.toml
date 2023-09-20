@@ -1,0 +1,13 @@
+[package]
+distribution = "2201.7.0"
+org = "ballerinax"
+name = "googleapis.gmail"
+version = "@toml.version@"
+authors = ["Ballerina"]
+repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
+keywords = ["Communication/Email", "Cost/Free", "Vendor/Google"]
+icon = "icon.png"
+license = ["Apache-2.0"]
+
+[build-options]
+observabilityIncluded = true
