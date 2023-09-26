@@ -70,7 +70,7 @@ task buildExamples {
     }
 }
 
-buildExamples.dependsOn ":gmail-ballerina:build"
-testExamples.dependsOn ":gmail-ballerina:build"
+buildExamples.dependsOn ":googleapis.gmail-ballerina:build"
+testExamples.dependsOn ":googleapis.gmail-ballerina:build"
 test.dependsOn testExamples
 build.dependsOn buildExamples
