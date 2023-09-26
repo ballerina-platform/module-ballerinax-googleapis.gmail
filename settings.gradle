@@ -32,11 +32,11 @@ plugins {
 
 rootProject.name = 'module-ballerinax-googleapis.gmail'
 
-include ':gmail-ballerina'
-include ':gmail-examples'
+include ':googleapis.gmail-ballerina'
+include ':googleapis.gmail-examples'
 
-project(':gmail-ballerina').projectDir = file("ballerina")
-project(':gmail-examples').projectDir = file("examples")
+project(':googleapis.gmail-ballerina').projectDir = file("ballerina")
+project(':googleapis.gmail-examples').projectDir = file("examples")
 
 gradleEnterprise {
     buildScan {

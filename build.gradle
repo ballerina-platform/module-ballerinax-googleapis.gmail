@@ -61,8 +61,8 @@ allprojects {
 def moduleVersion = project.version.replace("-SNAPSHOT", "")
 
 task build {
-    dependsOn(':gmail-ballerina:build')
-    dependsOn(':gmail-examples:build')
+    dependsOn(':googleapis.gmail-ballerina:build')
+    dependsOn(':googleapis.gmail-examples:build')
 }
 
 release {
