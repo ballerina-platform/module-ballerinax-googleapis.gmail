@@ -1,4 +1,4 @@
-name: Publish to the Ballerina central
+name: Publish to the Ballerina Dev\Stage Central
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ on:
 
 jobs:
   call_workflow:
-    name: Run Central Publish Workflow
+    name: Run Dev\Stage Central Publish Workflow
     if: ${{ github.repository_owner == 'ballerina-platform' }}
     uses: ballerina-platform/ballerina-standard-library/.github/workflows/dev-stage-central-publish-connector-template.yml@main
     secrets: inherit
