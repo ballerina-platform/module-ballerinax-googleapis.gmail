@@ -26,8 +26,8 @@ BAL_PACKAGE_NAME=$(awk -F'"' '/^name/ {print $2}' "$BAL_HOME_DIR/Ballerina.toml"
 
 # Push the package to the local repository
 cd "$BAL_HOME_DIR" &&
-  bal pack &&
-  bal push --repository=local
+  sudo bal pack &&
+  sudo bal push --repository=local
 
 # Remove the cache directories in the repositories
 cacheDirs=($(ls -d "$BAL_CENTRAL_DIR"/cache-* 2>/dev/null))
@@ -48,10 +48,10 @@ echo "$BAL_SOURCE_DIR"
 
 # Loop through examples in the examples directory
 find "$BAL_EXAMPLES_DIR" -type f -name "*.bal" | while read -r BAL_EXAMPLE_FILE; do
-  bal "$BAL_CMD" --offline "$BAL_EXAMPLE_FILE"
+  sudo bal "$BAL_CMD" --offline "$BAL_EXAMPLE_FILE"
 done
 
 # Remove generated JAR files
 find "$BAL_HOME_DIR" -type f -name "*.jar" | while read -r JAR_FILE; do
-  rm "$JAR_FILE"
+  sudo rm "$JAR_FILE"
 done
