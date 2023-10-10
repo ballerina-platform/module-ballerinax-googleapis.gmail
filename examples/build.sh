@@ -52,6 +52,6 @@ find "$BAL_EXAMPLES_DIR" -type f -name "*.bal" | while read -r BAL_EXAMPLE_FILE;
 done
 
 # Remove generated JAR files
-find "$BAL_HOME_DIR" -type f -name "*.jar" | while read -r JAR_FILE; do
+find "$BAL_HOME_DIR" -maxdepth 1 -type f -name "*.jar" | while read -r JAR_FILE; do
   rm "$JAR_FILE"
 done
