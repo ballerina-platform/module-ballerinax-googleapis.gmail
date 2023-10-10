@@ -6,7 +6,7 @@ BAL_HOME_DIR="$BAL_EXAMPLES_DIR/../ballerina"
 
 set -e
 
-sudo -i
+su -i
 
 case "$1" in
 build)
