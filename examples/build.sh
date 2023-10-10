@@ -6,8 +6,6 @@ BAL_HOME_DIR="$BAL_EXAMPLES_DIR/../ballerina"
 
 set -e
 
-chmod 777 $BAL_HOME_DIR/* 
-
 case "$1" in
 build)
   BAL_CMD="build"
