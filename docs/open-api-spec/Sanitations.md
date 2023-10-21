@@ -6,3 +6,4 @@ This file records the sanitation done on top of the OAS from APIs guru. Google u
 
 2. Remove resource paths,
     * /users/{userId}/settings - This path has around 20 odd sub paths and does not add significant usability.
+    * /users/{userId}/watch & /users/{userId}/stop - This will be covered in Google PubSub
