@@ -1,5 +1,5 @@
 [package]
-distribution = "2201.7.0"
+distribution = "2201.8.0"
 org = "ballerinax"
 name = "googleapis.gmail"
 version = "@toml.version@"

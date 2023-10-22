@@ -1,8 +1,8 @@
 [package]
-distribution = "2201.7.0"
+distribution = "2201.8.0"
 org = "ballerinax"
 name = "googleapis.gmail"
-version = "3.5.0"
+version = "4.0.0"
 authors = ["Ballerina"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
 keywords = ["Communication/Email", "Cost/Free", "Vendor/Google"]
