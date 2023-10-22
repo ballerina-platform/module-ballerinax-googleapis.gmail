@@ -1755,10 +1755,7 @@ components:
       in: query
       name: $.xgafv
       schema:
-        enum:
-          - "1"
-          - "2"
-        type: string
+        $ref: "#/components/schemas/Xgafv"
     access_token:
       description: OAuth access token.
       in: query
@@ -1770,11 +1767,7 @@ components:
       in: query
       name: alt
       schema:
-        enum:
-          - json
-          - media
-          - proto
-        type: string
+        $ref: "#/components/schemas/Alt"
     callback:
       description: JSONP
       in: query
@@ -1824,6 +1817,13 @@ components:
       schema:
         type: string
   schemas:
+    Alt:
+      description: Data format for response.
+      type: string
+      enum:
+        - json
+        - media
+        - proto
     BatchDeleteMessagesRequest:
       properties:
         ids:
@@ -2199,6 +2199,12 @@ components:
           description: A short part of the message text.
           type: string
       type: object
+    Xgafv:
+      description: V1 error format.
+      type: string
+      enum:
+        - "1"
+        - "2"
   securitySchemes:
     Oauth2:
       description: Oauth 2.0 implicit authentication

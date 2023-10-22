@@ -9,3 +9,5 @@ This file records the sanitation done on top of the OAS from APIs guru. Google u
     * /users/{userId}/watch & /users/{userId}/stop - This will be covered in Google PubSub
 
 3. Streamline base path. Here the path `/gmail/v1` is moved to server url. This reduces complexity.
+
+4. Move parameters `xgafv` and `alt` definitions to schemas. This ensures ballerina enums are created for the parameters not inline string unions.
