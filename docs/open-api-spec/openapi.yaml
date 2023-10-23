@@ -113,64 +113,7 @@ paths:
             type: string
       requestBody:
         content:
-          message/cpim:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/delivery-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/external-body:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/feedback-report:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-delivery-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-headers:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/http:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/imdn+xml:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/news:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/partial:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/rfc822:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/s-http:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/sip:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/sipfrag:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/tracking-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/vnd.si.simp:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/vnd.wfa.wsc:
+          application/json:
             schema:
               $ref: "#/components/schemas/Draft"
       responses:
@@ -224,64 +167,7 @@ paths:
             type: string
       requestBody:
         content:
-          message/cpim:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/delivery-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/external-body:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/feedback-report:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-delivery-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-headers:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/http:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/imdn+xml:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/news:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/partial:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/rfc822:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/s-http:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/sip:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/sipfrag:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/tracking-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/vnd.si.simp:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/vnd.wfa.wsc:
+          application/json:
             schema:
               $ref: "#/components/schemas/Draft"
       responses:
@@ -431,64 +317,7 @@ paths:
             type: string
       requestBody:
         content:
-          message/cpim:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/delivery-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/external-body:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/feedback-report:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-delivery-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/global-headers:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/http:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/imdn+xml:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/news:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/partial:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/rfc822:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/s-http:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/sip:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/sipfrag:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/tracking-status:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/vnd.si.simp:
-            schema:
-              $ref: "#/components/schemas/Draft"
-          message/vnd.wfa.wsc:
+          application/json:
             schema:
               $ref: "#/components/schemas/Draft"
       responses:
@@ -972,64 +801,7 @@ paths:
             type: string
       requestBody:
         content:
-          message/cpim:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/delivery-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/external-body:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/feedback-report:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-delivery-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-headers:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/http:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/imdn+xml:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/news:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/partial:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/rfc822:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/s-http:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/sip:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/sipfrag:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/tracking-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/vnd.si.simp:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/vnd.wfa.wsc:
+          application/json:
             schema:
               $ref: "#/components/schemas/Message"
       responses:
@@ -1182,64 +954,7 @@ paths:
             type: boolean
       requestBody:
         content:
-          message/cpim:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/delivery-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/external-body:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/feedback-report:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-delivery-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-headers:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/http:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/imdn+xml:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/news:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/partial:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/rfc822:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/s-http:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/sip:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/sipfrag:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/tracking-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/vnd.si.simp:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/vnd.wfa.wsc:
+          application/json:
             schema:
               $ref: "#/components/schemas/Message"
       responses:
@@ -1289,64 +1004,7 @@ paths:
             type: string
       requestBody:
         content:
-          message/cpim:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/delivery-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/external-body:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/feedback-report:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-delivery-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-disposition-notification:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/global-headers:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/http:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/imdn+xml:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/news:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/partial:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/rfc822:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/s-http:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/sip:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/sipfrag:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/tracking-status:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/vnd.si.simp:
-            schema:
-              $ref: "#/components/schemas/Message"
-          message/vnd.wfa.wsc:
+          application/json:
             schema:
               $ref: "#/components/schemas/Message"
       responses:
