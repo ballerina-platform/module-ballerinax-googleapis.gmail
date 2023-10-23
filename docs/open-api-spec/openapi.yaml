@@ -1557,7 +1557,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Thread"
+                $ref: "#/components/schemas/MailThread"
           description: Successful response
       security:
         - Oauth2:
@@ -1641,7 +1641,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Thread"
+                $ref: "#/components/schemas/MailThread"
           description: Successful response
       security:
         - Oauth2:
@@ -1688,7 +1688,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Thread"
+                $ref: "#/components/schemas/MailThread"
           description: Successful response
       security:
         - Oauth2:
@@ -1735,7 +1735,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Thread"
+                $ref: "#/components/schemas/MailThread"
           description: Successful response
       security:
         - Oauth2:
@@ -2045,8 +2045,27 @@ components:
         threads:
           description: List of threads. Note that each thread resource does not contain a list of `messages`. The list of `messages` for a given thread can be fetched using the threads.get method.
           items:
-            $ref: "#/components/schemas/Thread"
+            $ref: "#/components/schemas/MailThread"
           type: array
+      type: object
+    MailThread:
+      description: A collection of messages representing a conversation.
+      properties:
+        historyId:
+          description: The ID of the last history record that modified this thread.
+          format: uint64
+          type: string
+        id:
+          description: The unique ID of the thread.
+          type: string
+        messages:
+          description: The list of messages in the thread.
+          items:
+            $ref: "#/components/schemas/Message"
+          type: array
+        snippet:
+          description: A short part of the message text.
+          type: string
       type: object
     Message:
       description: An email message.
@@ -2179,25 +2198,6 @@ components:
           description: The total number of threads in the mailbox.
           format: int32
           type: integer
-      type: object
-    Thread:
-      description: A collection of messages representing a conversation.
-      properties:
-        historyId:
-          description: The ID of the last history record that modified this thread.
-          format: uint64
-          type: string
-        id:
-          description: The unique ID of the thread.
-          type: string
-        messages:
-          description: The list of messages in the thread.
-          items:
-            $ref: "#/components/schemas/Message"
-          type: array
-        snippet:
-          description: A short part of the message text.
-          type: string
       type: object
     Xgafv:
       description: V1 error format.
