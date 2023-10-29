@@ -112,6 +112,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: The draft to create.
         content:
           application/json:
             schema:
@@ -166,6 +167,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: The ID of the existing draft to send. (Optional) Updated draft if necessary.
         content:
           application/json:
             schema:
@@ -316,6 +318,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: The updated draft to update.
         content:
           application/json:
             schema:
@@ -493,6 +496,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: The label to create.
         content:
           application/json:
             schema:
@@ -629,6 +633,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: The updated label to update.
         content:
           application/json:
             schema:
@@ -672,6 +677,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: The updated label to update.
         content:
           application/json:
             schema:
@@ -800,6 +806,7 @@ paths:
               - dateHeader
             type: string
       requestBody:
+        description: The message to be inserted.
         content:
           application/json:
             schema:
@@ -850,6 +857,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: The IDs of the messages to delete.
         content:
           application/json:
             schema:
@@ -888,6 +896,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: A list of labels to add/remove in messages.
         content:
           application/json:
             schema:
@@ -953,6 +962,7 @@ paths:
           schema:
             type: boolean
       requestBody:
+        description: The message to be imported.
         content:
           application/json:
             schema:
@@ -1003,6 +1013,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: The message to be sent.
         content:
           application/json:
             schema:
@@ -1179,6 +1190,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: A list of labels to add/remove on the message.
         content:
           application/json:
             schema:
@@ -1632,6 +1644,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: A list labels to add/remove on the thread.
         content:
           application/json:
             schema:
