@@ -22,6 +22,7 @@ The conforming implementation of the specification is released and included in t
 1. [Overview](#1-overview)
 2. [Client](#2-client)
     * 2.1 [Initializing the Client](#21-initializing-the-client)
+3. [`Profile` Resource](#3-profile-resource)
  
 ## 1. Overview
 
@@ -58,3 +59,22 @@ gmail:Client gmailClient = check new gmail:Client (
 ```
 
 The `gmail:Client` uses `http:Client` as its underlying implementation; this `http:Client` can be configured by providing the `gmail:ConnectionConfig` as a parameter via the `gmail:Client` init method.
+
+## 3. `Profile` Resource
+
+The details of the authenticated user can be retried by using `/users/[userId]/profile()` resource method. The `Profile` record inclues,
+
+```ballerina
+public type Profile record {
+    string emailAddress?;
+    string historyId?;
+    int:Signed32 messagesTotal?;
+    int:Signed32 threadsTotal?;
+};
+```
+
+###### Example: Retrieving Gmail profile 
+
+```ballerina
+Profile profile = check gmailClient->/users/me/profile();
+```
