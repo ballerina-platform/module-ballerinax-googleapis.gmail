@@ -79,3 +79,21 @@ public type OAuth2RefreshTokenGrantConfig record {|
     # Refresh URL
     string refreshUrl = "https://accounts.google.com/o/oauth2/token";
 |};
+
+# Data format for response.
+public type Alt "json"|"media"|"proto";
+
+# V1 error format.
+public type Xgafv "1"|"2";
+
+# Profile for a Gmail user.
+public type Profile record {
+    # The user's email address.
+    string emailAddress?;
+    # The ID of the mailbox's current history record.
+    string historyId?;
+    # The total number of messages in the mailbox.
+    int:Signed32 messagesTotal?;
+    # The total number of threads in the mailbox.
+    int:Signed32 threadsTotal?;
+};
