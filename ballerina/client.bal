@@ -31,4 +31,29 @@ public isolated client class Client {
         return;
     }
 
+    # Gets the current user's Gmail profile.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/profile(
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = ())
+    returns Profile|error {
+        return self.genClient->/users/[userId]/profile(xgafv, access_token, alt, callback, fields, 'key, oauth_token,
+            prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
 }
