@@ -4,6 +4,7 @@ org = "ballerinax"
 name = "googleapis.gmail"
 version = "4.0.0"
 authors = ["Ballerina"]
+export = ["googleapis.gmail"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
 keywords = ["Communication/Email", "Cost/Free", "Vendor/Google"]
 icon = "icon.png"
