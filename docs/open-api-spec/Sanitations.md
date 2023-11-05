@@ -15,3 +15,10 @@ This file records the sanitation done on top of the OAS from APIs guru. Google u
 5. Rename `Thread` schema to `MailThread`. This is done as a workaround for issue, [Openapi tool does not escape in built symbols ](https://github.com/ballerina-platform/ballerina-standard-library/issues/5067)
 
 6. Add description for `LabelColor` schema.
+
+
+### OpenAPI cli command
+
+```bash
+bal openapi -i docs/open-api-spec/openapi.yaml --mode client -o ballerina/generated/oas
+```
