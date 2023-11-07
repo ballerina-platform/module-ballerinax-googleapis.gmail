@@ -98,6 +98,9 @@ dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.value"}
 ]
+modules = [
+	{org = "ballerina", packageName = "io", moduleName = "io"}
+]
 
 [[package]]
 org = "ballerina"
@@ -134,6 +137,9 @@ version = "0.0.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.__internal"}
+]
+modules = [
+	{org = "ballerina", packageName = "lang.array", moduleName = "lang.array"}
 ]
 
 [[package]]
@@ -297,6 +303,20 @@ modules = [
 ]
 
 [[package]]
+org = "ballerina"
+name = "uuid"
+version = "1.7.0"
+dependencies = [
+	{org = "ballerina", name = "crypto"},
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.int"},
+	{org = "ballerina", name = "time"}
+]
+modules = [
+	{org = "ballerina", packageName = "uuid", moduleName = "uuid"}
+]
+
+[[package]]
 org = "ballerinai"
 name = "observe"
 version = "0.0.0"
@@ -314,9 +334,12 @@ name = "googleapis.gmail"
 version = "4.0.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "lang.array"},
 	{org = "ballerina", name = "os"},
 	{org = "ballerina", name = "test"},
 	{org = "ballerina", name = "url"},
+	{org = "ballerina", name = "uuid"},
 	{org = "ballerinai", name = "observe"}
 ]
 modules = [

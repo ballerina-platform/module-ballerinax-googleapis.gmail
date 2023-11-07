@@ -1,4 +1,3 @@
-import ballerina/os;
 // Copyright (c) 2023, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
@@ -14,13 +13,25 @@ import ballerina/os;
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+import googleapis.gmail.oas;
+
+import ballerina/io;
+import ballerina/os;
 import ballerina/test;
 
 configurable string refreshToken = os:getEnv("REFRESH_TOKEN");
 configurable string clientId = os:getEnv("CLIENT_ID");
 configurable string clientSecret = os:getEnv("CLIENT_SECRET");
+configurable string sender = os:getEnv("SENDER");
 
 configurable string userId = "me";
+
+//---------------DO NOT change the following variables-----------------------//
+//---------------Used in multiple tests-----------------------//
+//Holds value for message id of text mail sent in testSendTextMessage()
+string sentMessageId = "";
+string insertMessageId = "";
+string attachmentId = "";
 
 ConnectionConfig gmailConfig = {
     auth: {
@@ -35,6 +46,216 @@ final Client gmailClient = check new (gmailConfig);
 @test:Config {}
 isolated function testGmailGetProfile() returns error? {
     Profile profile = check gmailClient->/users/me/profile();
-    test:assertTrue(profile.emailAddress != "", msg = "/users/[userId]/profile");
+    test:assertTrue(profile.emailAddress != "", msg = "/users/[userId]/profile failed. email address nil");
 }
 
+@test:Config {}
+function testMessageInsert() returns error? {
+    MessageRequest request = {
+        'from: sender,
+        subject: "Gmail insert test"
+    };
+    Message message = check gmailClient->/users/me/messages.post(request);
+    test:assertTrue(message.id != "", msg = "/users/[userId]/messages/import failed");
+    insertMessageId = message.id;
+}
+
+@test:Config {
+    dependsOn: [testMessageInsert]
+}
+isolated function testListMessages() returns error? {
+    ListMessagesResponse msgPage = check gmailClient->/users/me/messages();
+    test:assertTrue(msgPage.messages is Message[], msg = "/users/[userId]/messages failed");
+}
+
+@test:Config {
+    dependsOn: [testListMessages]
+}
+function testMessageBatchModify() returns error? {
+    check gmailClient->/users/me/messages/batchModify.post(
+        {
+            ids: [insertMessageId],
+            addLabelIds: ["UNREAD"]
+        }
+    );
+    Message message = check gmailClient->/users/me/messages/[insertMessageId];
+    test:assertEquals(message.labelIds, ["UNREAD"],
+                    msg = "/users/[userId]/messages/batchModify failed UNREAD label not added");
+}
+
+@test:Config {
+    dependsOn: [testMessageBatchModify]
+}
+function testMessageBatchDelete() returns error? {
+    check gmailClient->/users/me/messages/batchDelete.post({ids: [insertMessageId]});
+    Message|error message = gmailClient->/users/me/messages/[insertMessageId];
+    test:assertTrue(message is error, msg = "/users/[userId]/messages/batchDelete failed. Msg not deleted");
+}
+
+@test:Config {
+    dependsOn: [testMessageBatchDelete]
+}
+function testPostMessage() returns error? {
+    MessageRequest request = {
+        to: [sender],
+        subject: "Test Gmail Revamp",
+        bodyInText: "This is text equivalent",
+        bodyInHtml: "<html><body><h1> Welcome!</h1><div><img src=\"cid:ii_lonq0gzm1\" alt=\"Test_image.jpeg\"><br></div></body></html>",
+        inlineImages: [
+            {
+                contentId: "ii_lonq0gzm1",
+                mimeType: "image/jpeg",
+                name: "Test_image.jpg",
+                path: "tests/resources/Test_image.jpg"
+            }
+        ],
+        attachments: [
+            {
+                mimeType: "text/plain",
+                name: "test.txt",
+                path: "tests/resources/test.txt"
+            }
+
+        ]
+    };
+    Message message = check gmailClient->/users/me/messages/send.post(request);
+    test:assertTrue(message.id != "", msg = "/users/[userId]/messages/send failed");
+    sentMessageId = message.id;
+}
+
+@test:Config {
+    dependsOn: [testPostMessage]
+}
+function testGetMessageRawFormat() returns error? {
+    Message message = check gmailClient->/users/me/messages/[sentMessageId](format = "raw");
+    test:assertTrue(message.raw is string, msg = "/users/[userId]/messages/[id]");
+}
+
+@test:Config {
+    dependsOn: [testGetMessageRawFormat]
+}
+function testGetMessageFullFormat() returns error? {
+    Message message = check gmailClient->/users/me/messages/[sentMessageId](format = "full");
+    test:assertTrue(message.to is string[], msg = "/users/[userId]/messages/[id failed");
+    MessagePart[]? messagesParts = message.payload?.parts;
+    if messagesParts is MessagePart[] {
+        attachmentId = messagesParts[1].attachmentId ?: "";
+        if attachmentId == "" {
+            test:assertFail("Message part for attachment id is ()");
+        }
+    } else {
+        test:assertFail("Message part for attachment not found");
+    }
+}
+
+@test:Config {
+    dependsOn: [testGetMessageFullFormat]
+}
+function testMessageModify() returns error? {
+    Message message = check gmailClient->/users/me/messages/[sentMessageId]/modify.post(
+        {
+            addLabelIds: ["UNREAD"]
+        }
+    );
+    test:assertTrue(message.labelIds != (), msg = "/users/[userId]/messages/[sentMessageId]/modify failed");
+    Message getMessage = check gmailClient->/users/me/messages/[sentMessageId];
+    test:assertEquals(getMessage.labelIds, ["UNREAD", "SENT"],
+                    msg = "/users/[userId]/messages/[sentMessageId]/modify failed UNREAD label not added");
+}
+
+@test:Config {
+    dependsOn: [testMessageModify]
+}
+function testMessageTrash() returns error? {
+    _ = check gmailClient->/users/me/messages/[sentMessageId]/trash.post();
+    Message getMessage = check gmailClient->/users/me/messages/[sentMessageId];
+    test:assertEquals(getMessage.labelIds, ["UNREAD", "TRASH", "SENT"],
+                    msg = "/users/[userId]/messages/[sentMessageId]/trash failed TRASH label not added");
+}
+
+@test:Config {
+    dependsOn: [testMessageTrash]
+}
+function testMessageUntrash() returns error? {
+    _ = check gmailClient->/users/me/messages/[sentMessageId]/untrash.post();
+    Message getMessage = check gmailClient->/users/me/messages/[sentMessageId];
+    test:assertEquals(getMessage.labelIds, ["UNREAD", "SENT"],
+                    msg = "/users/[userId]/messages/[sentMessageId]/untrash failed TRASH label not removed");
+}
+
+@test:Config {
+    dependsOn: [testMessageUntrash]
+}
+function testGetAttachment() returns error? {
+    Attachment attachment = check gmailClient->/users/me/messages/[sentMessageId]/attachments/[attachmentId];
+    test:assertTrue(attachment.data != "", msg = "/users/[userId]/messages/[sentMessageId]/attachments/[attachmentId] failed");
+}
+
+@test:Config {
+    dependsOn: [testGetAttachment]
+}
+function testMessageDelete() returns error? {
+    check gmailClient->/users/me/messages/[sentMessageId].delete();
+    Message|error message = gmailClient->/users/me/messages/[sentMessageId];
+    test:assertTrue(message is error, msg = "/users/[userId]/messages/[sentMessageId].delete failed. Msg not deleted");
+}
+
+@test:Config {}
+isolated function testPayloadConversion() returns error? {
+    json response = check io:fileReadJson("tests/resources/messagebody.json");
+    oas:MessagePart internalPayload = check response.fromJsonWithType(oas:MessagePart);
+    MessagePart convertedPayload = check convertOASMessagePartToMultipartMessageBody(internalPayload);
+    MessagePart messagePart = {
+        mimeType: "multipart/alternative",
+        filename: "",
+        headers: {
+            "Content-Type": "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
+        },
+        size: 0,
+        partId: "",
+        parts: [
+            {
+                mimeType: "multipart/alternative",
+                filename: "",
+                headers: {
+                    "Content-Type": "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
+                },
+                size: 0,
+                partId: "",
+                parts: [
+                    {
+                        partId: "0.0",
+                        mimeType: "text/plain",
+                        filename: "",
+                        headers: {
+                            "Content-Type": "text/plain; charset=UTF-8"
+                        },
+                        size: 9
+                    },
+                    {
+                        partId: "0.1",
+                        mimeType: "text/html",
+                        filename: "",
+                        headers: {
+                            "Content-Type": "text/html; charset=UTF-8"
+                        },
+                        size: 30
+                    }
+                ]
+            },
+            {
+                partId: "1",
+                mimeType: "image/jpeg",
+                filename: "feelthebern.jpg",
+                headers: {
+                    "Content-Type": "image/jpeg; name=\"feelthebern.jpg\"",
+                    "Content-Disposition": "attachment; filename=\"feelthebern.jpg\"",
+                    "Content-Transfer-Encoding": "base64",
+                    "X-Attachment-Id": "f_ieq3ev0i0"
+                },
+                size: 100446
+            }
+        ]
+    };
+    test:assertEquals(convertedPayload, messagePart, msg = "Payload conversion failed");
+}
