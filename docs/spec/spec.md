@@ -27,6 +27,7 @@ The conforming implementation of the specification is released and included in t
 5. [`Draft` Resource](#5-draft-resource)
 6. [`MailThread` Resource](#6-mailthread-resource)
 7. [`Label` Resource](#7-label-resource)
+8. [`History` Resource](#8-history-resource)
  
 ## 1. Overview
 
@@ -151,3 +152,6 @@ This resource can be retrieved and manipulated by methods such as,
 | `users/[userId]/labels/[labelId].delete()` | Immediately and permanently deletes the specified label and removes it from any messages and threads that it is applied to |
 | `users/[userId]/labels/[labelId].patch()` | Patch the specified label. Only requested fields are changed |
 
+## 8. `History` Resource
+
+The history of all changes to the given mailbox can be listed using `/users/[userId]/history()`. History results are returned in chronological order (increasing `historyId`)
