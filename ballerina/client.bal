@@ -576,4 +576,173 @@ public isolated client class Client {
         );
     }
 
+    # Lists the threads in the user's mailbox.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + includeSpamTrash - Include threads from `SPAM` and `TRASH` in the results.
+    # + labelIds - Only return threads with labels that match all of the specified label IDs.
+    # + maxResults - Maximum number of threads to return. This field defaults to 100. The maximum allowed value for this field is 500.
+    # + pageToken - Page token to retrieve a specific page of results in the list.
+    # + q - Only return threads matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/threads(
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = (), boolean? includeSpamTrash = (), string[]? labelIds = (),
+            int? maxResults = (), string? pageToken = (), string? q = ()) returns ThreadListPage|error {
+        oas:ListThreadsResponse response = check self.genClient->/users/[userId]/threads(xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType, includeSpamTrash,
+            labelIds, maxResults, pageToken, q
+        );
+        return convertListThreadsResponseToThreadListPage(response);
+    }
+
+    # Gets the specified thread.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the thread to retrieve.
+    # + format - The format to return the messages in.
+    # + metadataHeaders - When given and format is METADATA, only include headers specified.
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/threads/[string id](
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = (), "full"|"metadata"|"minimal"? format = (),
+            string[]? metadataHeaders = ())
+    returns MailThread|error {
+        oas:MailThread response = check self.genClient->/users/[userId]/threads/[id](xgafv, access_token, alt, callback,
+            fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType, format, metadataHeaders
+        );
+        return convertOASMailThreadToMailThread(response);
+    }
+
+    # Immediately and permanently deletes the specified thread. Any messages that belong to the thread are also deleted. This operation cannot be undone. Prefer `threads.trash` instead.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - ID of the Thread to delete.
+    # + return - Successful response 
+    resource isolated function delete users/[string userId]/threads/[string id](
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = ())
+    returns error? {
+        _ = check self.genClient->/users/[userId]/threads/[id].delete(xgafv, access_token, alt, callback, fields,
+            'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
+    # Modifies the labels applied to the thread. This applies to all messages in the thread.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the thread to modify.
+    # + payload - A list labels to add/remove on the thread.
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/threads/[string id]/modify(
+            ModifyThreadRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (),
+            string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (),
+            string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
+    returns MailThread|error {
+        oas:MailThread response = check self.genClient->/users/[userId]/threads/[id]/modify.post(payload, xgafv,
+            access_token, alt, callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+        return convertOASMailThreadToMailThread(response);
+    }
+
+    # Moves the specified thread to the trash. Any messages that belong to the thread are also moved to the trash.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the thread to Trash.
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/threads/[string id]/trash(
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = ())
+    returns MailThread|error {
+        oas:MailThread response = check self.genClient->/users/[userId]/threads/[id]/trash.post(xgafv, access_token,
+            alt, callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+        return convertOASMailThreadToMailThread(response);
+    }
+
+    # Removes the specified thread from the trash. Any messages that belong to the thread are also removed from the trash.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the thread to remove from Trash.
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/threads/[string id]/untrash(
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = ())
+    returns MailThread|error {
+        oas:MailThread response = check self.genClient->/users/[userId]/threads/[id]/untrash.post(xgafv, access_token,
+            alt, callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+        return convertOASMailThreadToMailThread(response);
+    }
 }

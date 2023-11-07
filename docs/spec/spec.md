@@ -25,7 +25,8 @@ The conforming implementation of the specification is released and included in t
 3. [`Profile` Resource](#3-profile-resource)
 4. [`Message` Resource](#4-message-resource)
 5. [`Draft` Resource](#5-draft-resource)
-
+6. [`MailThread` Resource](#6-mailthread-resource)
+ 
 ## 1. Overview
 
 The Ballerina language provides first-class support for writing network-oriented programs. The Gmal package uses these language constructs and creates the programming model to consume Gmail REST API.
@@ -114,4 +115,18 @@ This resource can be retrieved and manipulated by methods such as,
 | `users/[userId]/drafts/[draftId]()` | Gets the specified draft |
 | `users/[userId]/drafts/[draftId].put()` |  Replaces a draft's content |
 | `users/[userId]/drafts/[draftId].delete()` | Immediately and permanently deletes the specified draft. Does not simply trash it |
+
+## 6. `MailThread` Resource
+
+A collection of related messages forming a conversation. In an email client app, a thread is formed when one or more recipients respond to a message with their own message.
+
+This resource can be retrieved and manipulated by methods such as,
+| Method | Description |
+|---|---|
+| `users/[userId]/threads()` | Lists the threads in the user's mailbox |
+| `users/[userId]/threads/[threadId]()` | Gets the specified thread |
+| `users/[userId]/threads/[threadId].delete()` | Immediately and permanently deletes the specified thread. Any messages that belong to the thread are also deleted. This operation cannot be undone. Prefer `threads.trash` instead |
+| `users/[userId]/threads/[threadId].modify()` | Modifies the labels applied to the thread. This applies to all messages in the thread |
+| `users/[userId]/threads/[threadId]/trash.post()` | Moves the specified thread to the trash. Any messages that belong to the thread are also moved to the trash |
+| `users/[userId]/threads/[threadId]/untrash.post()` | Removes the specified thread from the trash. Any messages that belong to the thread are also removed from the trash |
 

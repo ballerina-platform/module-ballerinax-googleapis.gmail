@@ -260,3 +260,39 @@ public type DraftRequest record {|
     # An email message.
     MessageRequest message?;
 |};
+
+public type ThreadListPage record {
+    # Page token to retrieve the next page of results in the list.
+    string nextPageToken?;
+    # Estimated total number of results.
+    int resultSizeEstimate?;
+    # List of threads. Note that each thread resource does not contain a list of `messages`. The list of `messages` for a given thread can be fetched using the threads.get method.
+    MailThread[] threads?;
+};
+
+# A collection of messages representing a conversation.
+public type MailThread record {
+    # The ID of the last history record that modified this thread.
+    string historyId?;
+    # The unique ID of the thread.
+    string id?;
+    # The list of messages in the thread.
+    Message[] messages?;
+    # A short part of the message text.
+    string snippet?;
+};
+
+# Request payload used to create a collection of messages representing a conversation.
+public type MailThreadRequest record {|
+    # The unique ID of the thread.
+    string id?;
+    # The list of messages in the thread.
+    Message[] messages?;
+|};
+
+public type ModifyThreadRequest record {|
+    # A list of IDs of labels to add to this thread. You can add up to 100 labels with each update.
+    string[] addLabelIds?;
+    # A list of IDs of labels to remove from this thread. You can remove up to 100 labels with each update.
+    string[] removeLabelIds?;
+|};
