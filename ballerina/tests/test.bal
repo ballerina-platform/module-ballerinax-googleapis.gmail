@@ -32,6 +32,7 @@ configurable string userId = "me";
 string sentMessageId = "";
 string insertMessageId = "";
 string attachmentId = "";
+string draftId = "";
 
 ConnectionConfig gmailConfig = {
     auth: {
@@ -258,4 +259,81 @@ isolated function testPayloadConversion() returns error? {
         ]
     };
     test:assertEquals(convertedPayload, messagePart, msg = "Payload conversion failed");
+}
+
+@test:Config {
+    dependsOn: [testMessageDelete]
+}
+function createDraft() returns error? {
+    DraftRequest request = {
+        message: {
+            to: [sender],
+            subject: "Gmail draft test",
+            bodyInText: "This is a draft"
+        }
+    };
+    Draft draft = check gmailClient->/users/me/drafts.post(request);
+    test:assertTrue(draft.id != "", msg = "/users/[userId]/drafts failed");
+    draftId = check draft.id.ensureType(string);
+}
+
+@test:Config {
+    dependsOn: [createDraft]
+}
+isolated function testListDrafts() returns error? {
+    ListDraftsResponse draftListPage = check gmailClient->/users/me/drafts();
+    test:assertTrue(draftListPage.drafts is Draft[], msg = "/users/[userId]/drafts failed");
+}
+
+@test:Config {
+    dependsOn: [testListDrafts]
+}
+function testSendDraft() returns error? {
+    DraftRequest request = {
+        message: {
+            to: [sender],
+            subject: "Gmail draft test"
+        }
+    };
+    Draft draft = check gmailClient->/users/me/drafts.post(request);
+    test:assertTrue(draft.id != "", msg = "/users/[userId]/drafts failed");
+
+    string id = check draft.id.ensureType(string);
+    Message message = check gmailClient->/users/me/drafts/send.post({
+        id: id
+    });
+    test:assertTrue(message.id != "", msg = "/users/[userId]/drafts/send failed");
+}
+
+@test:Config {
+    dependsOn: [testSendDraft]
+}
+function testGetDraft() returns error? {
+    Draft draft = check gmailClient->/users/me/drafts/[draftId];
+    test:assertTrue(draft.id != "", msg = "/users/[userId]/drafts/[draftId] failed");
+}
+
+@test:Config {
+    dependsOn: [testGetDraft]
+}
+function testPutDraft() returns error? {
+    Draft updatedDraft = check gmailClient->/users/me/drafts/[draftId].put({
+        id: draftId,
+        message: {
+            to: [sender],
+            subject: "Gmail draft test updated"
+        }
+    });
+    test:assertTrue(updatedDraft.id != "", msg = "/users/[userId]/drafts/[draftId] failed");
+    Draft draft = check gmailClient->/users/me/drafts/[draftId];
+    test:assertTrue(draft.message?.subject == "Gmail draft test updated", msg = "/users/[userId]/drafts/[draftId] failed");
+}
+
+@test:Config {
+    dependsOn: [testPutDraft]
+}
+function testDeleteDraft() returns error? {
+    check gmailClient->/users/me/drafts/[draftId].delete();
+    Draft|error draft = gmailClient->/users/me/drafts/[draftId];
+    test:assertTrue(draft is error, msg = "/users/[userId]/drafts/[draftId].delete failed. Draft not deleted");
 }

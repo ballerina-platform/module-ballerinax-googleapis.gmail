@@ -235,3 +235,28 @@ public type ImageFile record {|
     # The content id of the image. This will be used to refer the image in the mail body.
     string contentId;
 |};
+
+# A draft email in the user's mailbox.
+public type Draft record {
+    # The immutable ID of the draft.
+    string id?;
+    # An email message.
+    Message message?;
+};
+
+public type ListDraftsResponse record {
+    # List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details.
+    Draft[] drafts?;
+    # Token to retrieve the next page of results in the list.
+    string nextPageToken?;
+    # Estimated total number of results.
+    int resultSizeEstimate?;
+};
+
+# Request payload to create a draft. 
+public type DraftRequest record {|
+    # The immutable ID of the draft.
+    string id?;
+    # An email message.
+    MessageRequest message?;
+|};

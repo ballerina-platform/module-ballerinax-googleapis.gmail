@@ -255,3 +255,52 @@ isolated function convertOASMessagePartBodyToAttachment(oas:MessagePartBody body
     }
     return attachment;
 }
+
+isolated function convertOASListDraftsResponseToListDraftsResponse(oas:ListDraftsResponse response)
+returns ListDraftsResponse|error {
+    ListDraftsResponse draftListPage = {};
+    oas:Draft[]? drafts = response.drafts;
+    if drafts is oas:Draft[] {
+        Draft[] processedDrafts = [];
+        foreach oas:Draft draft in drafts {
+            Draft draftEmail = {
+                id: draft.id ?: EMPTY_STRING
+            };
+            oas:Message? message = draft.message;
+            if message is oas:Message {
+                draftEmail.message = {
+                    // list response does not return any other info.
+                    threadId: message.threadId ?: EMPTY_STRING,
+                    id: message.id ?: EMPTY_STRING
+                };
+            }
+            processedDrafts.push(draftEmail);
+        }
+        draftListPage.drafts = processedDrafts;
+    }
+    draftListPage.nextPageToken = response.nextPageToken ?: draftListPage.nextPageToken;
+    draftListPage.resultSizeEstimate = response.resultSizeEstimate ?: draftListPage.resultSizeEstimate;
+    return draftListPage;
+}
+
+isolated function convertOASDraftToDraft(oas:Draft oasDraft) returns Draft|error {
+    Draft draft = {
+        id: oasDraft.id ?: EMPTY_STRING
+    };
+    oas:Message? message = oasDraft.message;
+    if message is oas:Message {
+        draft.message = check convertOASMessageToMessage(message);
+    }
+    return draft;
+}
+
+isolated function convertDraftRequestToOASDraft(DraftRequest payload) returns oas:Draft|error {
+    oas:Draft draft = {
+        id: payload.id
+    };
+    MessageRequest? updatedDraft = payload.message;
+    if updatedDraft is MessageRequest {
+        draft.message = check convertMessageRequestToOASMessage(updatedDraft);
+    }
+    return draft;
+}
