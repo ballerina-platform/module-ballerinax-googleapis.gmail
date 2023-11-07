@@ -33,6 +33,7 @@ string sentMessageId = "";
 string insertMessageId = "";
 string attachmentId = "";
 string draftId = "";
+string threadId = "";
 
 ConnectionConfig gmailConfig = {
     auth: {
@@ -336,4 +337,87 @@ function testDeleteDraft() returns error? {
     check gmailClient->/users/me/drafts/[draftId].delete();
     Draft|error draft = gmailClient->/users/me/drafts/[draftId];
     test:assertTrue(draft is error, msg = "/users/[userId]/drafts/[draftId].delete failed. Draft not deleted");
+}
+
+@test:Config {
+    dependsOn: [testDeleteDraft]
+}
+function testListMailThreads() returns error? {
+    MessageRequest request = {
+        to: [sender],
+        subject: "Test Gmail Revamp Thread"
+    };
+    Message message = check gmailClient->/users/me/messages/send.post(request);
+    test:assertTrue(message.id != "", msg = "/users/[userId]/messages/send failed");
+    threadId = message.threadId;
+
+    ThreadListPage threadListPage = check gmailClient->/users/me/threads();
+    test:assertTrue(threadListPage.threads is MailThread[], msg = "/users/[userId]/threads failed");
+}
+
+@test:Config {
+    dependsOn: [testListMailThreads]
+}
+function testGetMailThread() returns error? {
+    MailThread mailThread = check gmailClient->/users/me/threads/[threadId];
+    test:assertTrue(mailThread.id != "", msg = "/users/[userId]/threads/[threadId] failed");
+}
+
+@test:Config {
+    dependsOn: [testGetMailThread]
+}
+function testModifyMailThread() returns error? {
+    MailThread mailThread = check gmailClient->/users/me/threads/[threadId]/modify.post({
+        addLabelIds: ["UNREAD"]
+    });
+    test:assertTrue(mailThread.historyId != (), msg = "/users/[userId]/threads/[threadId]/modify failed");
+    MailThread getMailThread = check gmailClient->/users/me/threads/[threadId];
+    Message[]? firstMesssage = getMailThread.messages;
+    if firstMesssage is Message[] {
+        test:assertEquals(firstMesssage[0].labelIds, ["UNREAD", "SENT"],
+                    msg = "/users/[userId]/threads/[threadId]/modify failed UNREAD label not added");
+    } else {
+        test:assertFail("Message not found");
+    }
+}
+
+@test:Config {
+    dependsOn: [testModifyMailThread]
+}
+function testTrashMailThread() returns error? {
+    MailThread mailThread = check gmailClient->/users/me/threads/[threadId]/trash.post();
+    test:assertTrue(mailThread.historyId != (), msg = "/users/[userId]/threads/[threadId]/trash failed");
+    MailThread getMailThread = check gmailClient->/users/me/threads/[threadId];
+    Message[]? firstMesssage = getMailThread.messages;
+    if firstMesssage is Message[] {
+        test:assertEquals(firstMesssage[0].labelIds, ["UNREAD", "TRASH", "SENT"],
+                    msg = "/users/[userId]/threads/[threadId]/trash failed TRASH label not added");
+    } else {
+        test:assertFail("Message not found");
+    }
+}
+
+@test:Config {
+    dependsOn: [testTrashMailThread]
+}
+function testUntrashMailThread() returns error? {
+    MailThread mailThread = check gmailClient->/users/me/threads/[threadId]/untrash.post();
+    test:assertTrue(mailThread.historyId != (), msg = "/users/[userId]/threads/[threadId]/untrash failed");
+    MailThread getMailThread = check gmailClient->/users/me/threads/[threadId];
+    Message[]? firstMesssage = getMailThread.messages;
+    if firstMesssage is Message[] {
+        test:assertEquals(firstMesssage[0].labelIds, ["UNREAD", "SENT"],
+                    msg = "/users/[userId]/threads/[threadId]/untrash failed TRASH label not removed");
+    } else {
+        test:assertFail("Message not found");
+    }
+}
+
+@test:Config {
+    dependsOn: [testUntrashMailThread]
+}
+function testDeleteMailThread() returns error? {
+    check gmailClient->/users/me/threads/[threadId].delete();
+    MailThread|error mailThread = gmailClient->/users/me/threads/[threadId];
+    test:assertTrue(mailThread is error, msg = "/users/[userId]/threads/[threadId].delete failed. Thread not deleted");
 }
