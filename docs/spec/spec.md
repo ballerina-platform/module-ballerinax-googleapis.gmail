@@ -23,6 +23,7 @@ The conforming implementation of the specification is released and included in t
 2. [Client](#2-client)
     * 2.1 [Initializing the Client](#21-initializing-the-client)
 3. [`Profile` Resource](#3-profile-resource)
+4. [`Message` Resource](#4-message-resource)
  
 ## 1. Overview
 
@@ -78,3 +79,25 @@ public type Profile record {
 ```ballerina
 Profile profile = check gmailClient->/users/me/profile();
 ```
+
+## 4. `Message` Resource
+
+An email message containing the sender, recipients, subject, and body. After a message has been created, a message cannot be changed. 
+
+This resource can be retrieved and manipulated by methods such as,
+| Method | Description |
+|---|---|
+| `/users/[userId]/messages()` | Lists the messages in the user's mailbox |
+| `/users/[userId]/messages.post()` | Directly inserts a message into only this user's mailbox similar to `IMAP APPEND`, bypassing most scanning and classification. Does not send a message. |
+| `/users/[userId]/messages/batchDelete.post()` | Deletes many messages by message ID |
+| `/users/[userId]/messages/batchModify.post()` | Modifies the labels on the specified messages |
+| `/users/[userId]/messages/'import.post()` | Imports a message into only this user's mailbox, with standard email delivery scanning and classification similar to receiving via SMTP. This method doesn't perform SPF checks, so it might not work for some spam messages, such as those attempting to perform domain spoofing. This method does not send a message. |
+| `/users/[userId]/messages/send.post()` | Sends the specified message to the recipients in the `To`, `Cc`, and `Bcc` headers. |
+| `/users/[userId]/messages/[messageId]()` | Gets the specified message. |
+| `/users/[userId]/messages/[messageId].deleted()` | Immediately and permanently deletes the specified message |
+| `/users/[userId]/messages/[messageId]/modify.post()` | Modifies the labels on the specified message |
+| `/users/[userId]/messages/[messageId]/trash.post()` | Moves the specified message to the trash |
+| `/users/[userId]/messages/[messageId]/untrash.post()` | Removes the specified message from the trash |
+| `/users/[userId]/messages/[messageId]/attachments/[attachmentId]()` | Gets the specified message attachment |
+
+
