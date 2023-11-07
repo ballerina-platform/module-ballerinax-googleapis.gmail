@@ -202,6 +202,163 @@ public isolated client class Client {
         );
     }
 
+    # Lists all labels in the user's mailbox.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/labels(
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = ())
+    returns LabelListPage|error {
+        return self.genClient->/users/[userId]/labels(xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
+    # Creates a new label.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + payload - The label to create.
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/labels(
+            Label payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (),
+            string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (),
+            string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
+    returns Label|error {
+        return self.genClient->/users/[userId]/labels.post(payload, xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
+    # Gets the specified label.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the label to retrieve.
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/labels/[string id](
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = ())
+    returns Label|error {
+        return self.genClient->/users/[userId]/labels/[id](xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
+    # Updates the specified label.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the label to update.
+    # + payload - The updated label to update.
+    # + return - Successful response 
+    resource isolated function put users/[string userId]/labels/[string id](
+            Label payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (),
+            string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (),
+            string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
+    returns Label|error {
+        return self.genClient->/users/[userId]/labels/[id].put(payload, xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
+    # Immediately and permanently deletes the specified label and removes it from any messages and threads that it is applied to.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the label to delete.
+    # + return - Successful response 
+    resource isolated function delete users/[string userId]/labels/[string id](
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = ())
+    returns error? {
+        _ = check self.genClient->/users/[userId]/labels/[id].delete(xgafv, access_token, alt, callback, fields,
+            'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
+    # Patch the specified label.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the label to update.
+    # + payload - The updated label to update.
+    # + return - Successful response 
+    resource isolated function patch users/[string userId]/labels/[string id](
+            Label payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (),
+            string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (),
+            string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
+    returns Label|error {
+        return self.genClient->/users/[userId]/labels/[id].patch(payload, xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
     # Lists the messages in the user's mailbox.
     #
     # + xgafv - V1 error format.

@@ -26,6 +26,7 @@ The conforming implementation of the specification is released and included in t
 4. [`Message` Resource](#4-message-resource)
 5. [`Draft` Resource](#5-draft-resource)
 6. [`MailThread` Resource](#6-mailthread-resource)
+7. [`Label` Resource](#7-label-resource)
  
 ## 1. Overview
 
@@ -129,4 +130,24 @@ This resource can be retrieved and manipulated by methods such as,
 | `users/[userId]/threads/[threadId].modify()` | Modifies the labels applied to the thread. This applies to all messages in the thread |
 | `users/[userId]/threads/[threadId]/trash.post()` | Moves the specified thread to the trash. Any messages that belong to the thread are also moved to the trash |
 | `users/[userId]/threads/[threadId]/untrash.post()` | Removes the specified thread from the trash. Any messages that belong to the thread are also removed from the trash |
+
+## 7. `Label` Resource
+
+A mechanism for organizing messages and threads. For example, the label "taxes" might be created and applied to all messages and threads having to do with a user's taxes. There are two types of labels:
+
+1. System labels
+    Internally-created labels, such as INBOX, TRASH, or SPAM. These labels cannot be deleted or modified. However, some system labels, such as INBOX can be applied to, or removed from, messages and threads.
+
+2. User labels
+    Labels created by a user. These labels can be deleted or modified by the user or an application. A user label is represented by a label resource.
+
+This resource can be retrieved and manipulated by methods such as,
+| Method | Description |
+|---|---|
+| `users/[userId]/labels()` | Lists all labels in the user's mailbox |
+| `users/[userId]/labels.post()` | Creates a new label |
+| `users/[userId]/labels/[labelId]()` | Gets the specified label |
+| `users/[userId]/labels/[labelId].put()` | Updates the specified label |
+| `users/[userId]/labels/[labelId].delete()` | Immediately and permanently deletes the specified label and removes it from any messages and threads that it is applied to |
+| `users/[userId]/labels/[labelId].patch()` | Patch the specified label. Only requested fields are changed |
 
