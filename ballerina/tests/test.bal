@@ -34,6 +34,7 @@ string insertMessageId = "";
 string attachmentId = "";
 string draftId = "";
 string threadId = "";
+string labelId = "";
 
 ConnectionConfig gmailConfig = {
     auth: {
@@ -420,4 +421,66 @@ function testDeleteMailThread() returns error? {
     check gmailClient->/users/me/threads/[threadId].delete();
     MailThread|error mailThread = gmailClient->/users/me/threads/[threadId];
     test:assertTrue(mailThread is error, msg = "/users/[userId]/threads/[threadId].delete failed. Thread not deleted");
+}
+
+@test:Config {
+    dependsOn: [testDeleteMailThread]
+}
+function testCreateNewLabel() returns error? {
+    Label label = check gmailClient->/users/me/labels.post({
+        name: "Test Label"
+    });
+    test:assertTrue(label.id != "", msg = "/users/[userId]/labels failed");
+    labelId = label.id ?: "";
+}
+
+@test:Config {
+    dependsOn: [testCreateNewLabel]
+}
+function testListAllLabels() returns error? {
+    ListLabelsResponse labelListPage = check gmailClient->/users/me/labels();
+    test:assertTrue(labelListPage.labels is Label[], msg = "/users/[userId]/labels failed");
+}
+
+@test:Config {
+    dependsOn: [testListAllLabels]
+}
+function testGetLabel() returns error? {
+    Label label = check gmailClient->/users/me/labels/[labelId];
+    test:assertTrue(label.id != "", msg = "/users/[userId]/labels/[label.id] failed");
+}
+
+@test:Config {
+    dependsOn: [testGetLabel]
+}
+function testUpdateLabel() returns error? {
+    Label label = check gmailClient->/users/me/labels/[labelId].put({
+        id: labelId,
+        name: "Test Label Updated"
+    });
+    test:assertTrue(label.id != "", msg = "/users/[userId]/labels/[label.id] failed");
+    Label getLabel = check gmailClient->/users/me/labels/[labelId];
+    test:assertTrue(getLabel.name == "Test Label Updated", msg = "/users/[userId]/labels/[label.id] failed");
+}
+
+@test:Config {
+    dependsOn: [testUpdateLabel]
+}
+function testPatchLabel() returns error? {
+    Label label = check gmailClient->/users/me/labels/[labelId].patch({
+        id: labelId,
+        name: "Test Label Patched"
+    });
+    test:assertTrue(label.id != "", msg = "/users/[userId]/labels/[label.id] failed");
+    Label getLabel = check gmailClient->/users/me/labels/[labelId];
+    test:assertTrue(getLabel.name == "Test Label Patched", msg = "/users/[userId]/labels/[label.id] failed");
+}
+
+@test:Config {
+    dependsOn: [testPatchLabel]
+}
+function testDeleteLabel() returns error? {
+    check gmailClient->/users/me/labels/[labelId].delete();
+    Label|error label = gmailClient->/users/me/labels/[labelId];
+    test:assertTrue(label is error, msg = "/users/[userId]/labels/[label.id].delete failed. Label not deleted");
 }
