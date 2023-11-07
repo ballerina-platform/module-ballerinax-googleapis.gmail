@@ -304,3 +304,39 @@ isolated function convertDraftRequestToOASDraft(DraftRequest payload) returns oa
     }
     return draft;
 }
+
+isolated function convertOASListThreadsResponseToListThreadsResponse(oas:ListThreadsResponse response) returns ListThreadsResponse {
+    ListThreadsResponse threadListPage = {};
+    oas:MailThread[]? threads = response.threads;
+    if threads is oas:MailThread[] {
+        MailThread[] processedThreads = [];
+        foreach oas:MailThread thread in threads {
+            MailThread emailThread = {
+                // list response does not return any other info.
+                id: thread.id ?: EMPTY_STRING,
+                historyId: thread.historyId ?: EMPTY_STRING
+            };
+            processedThreads.push(emailThread);
+        }
+        threadListPage.threads = processedThreads;
+    }
+    threadListPage.nextPageToken = response.nextPageToken ?: threadListPage.nextPageToken;
+    threadListPage.resultSizeEstimate = response.resultSizeEstimate ?: threadListPage.resultSizeEstimate;
+    return threadListPage;
+}
+
+isolated function convertOASMailThreadToMailThread(oas:MailThread oasThread) returns MailThread|error {
+    MailThread thread = {
+        id: oasThread.id ?: EMPTY_STRING,
+        historyId: oasThread.historyId ?: EMPTY_STRING
+    };
+    oas:Message[]? messages = oasThread.messages;
+    if messages is oas:Message[] {
+        Message[] processedMessages = [];
+        foreach oas:Message msg in messages {
+            processedMessages.push(check convertOASMessageToMessage(msg));
+        }
+        thread.messages = processedMessages;
+    }
+    return thread;
+}
