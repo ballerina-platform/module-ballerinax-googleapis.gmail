@@ -202,6 +202,40 @@ public isolated client class Client {
         );
     }
 
+    # Lists the history of all changes to the given mailbox. History results are returned in chronological order (increasing `historyId`).
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + historyTypes - History types to be returned by the function
+    # + labelId - Only return messages with a label matching the ID.
+    # + maxResults - Maximum number of history records to return. This field defaults to 100. The maximum allowed value for this field is 500.
+    # + pageToken - Page token to retrieve a specific page of results in the list.
+    # + startHistoryId - Required. Returns history records after the specified `startHistoryId`. The supplied `startHistoryId` should be obtained from the `historyId` of a message, thread, or previous `list` response. History IDs increase chronologically but are not contiguous with random gaps in between valid IDs. Supplying an invalid or out of date `startHistoryId` typically returns an `HTTP 404` error code. A `historyId` is typically valid for at least a week, but in some rare circumstances may be valid for only a few hours. If you receive an `HTTP 404` error response, your application should perform a full sync. If you receive no `nextPageToken` in the response, there are no updates to retrieve and you can store the returned `historyId` for a future request.
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/history(
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = (),
+            ("messageAdded"|"messageDeleted"|"labelAdded"|"labelRemoved")[]? historyTypes = (), string? labelId = (),
+            int? maxResults = (), string? pageToken = (), string? startHistoryId = ())
+    returns HistoryListPage|error {
+        oas:ListHistoryResponse historyList = check self.genClient->/users/[userId]/history(xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType, historyTypes,
+            labelId, maxResults, pageToken, startHistoryId
+        );
+        return convertListHistoryResponseToHistoryListPage(historyList);
+    }
+
     # Lists all labels in the user's mailbox.
     #
     # + xgafv - V1 error format.

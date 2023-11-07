@@ -35,6 +35,7 @@ string attachmentId = "";
 string draftId = "";
 string threadId = "";
 string labelId = "";
+string historyId = "";
 
 ConnectionConfig gmailConfig = {
     auth: {
@@ -47,9 +48,10 @@ ConnectionConfig gmailConfig = {
 final Client gmailClient = check new (gmailConfig);
 
 @test:Config {}
-isolated function testGmailGetProfile() returns error? {
+function testGmailGetProfile() returns error? {
     Profile profile = check gmailClient->/users/me/profile();
     test:assertTrue(profile.emailAddress != "", msg = "/users/[userId]/profile failed. email address nil");
+    historyId = check profile.historyId.ensureType(string);
 }
 
 @test:Config {}
@@ -483,4 +485,12 @@ function testDeleteLabel() returns error? {
     check gmailClient->/users/me/labels/[labelId].delete();
     Label|error label = gmailClient->/users/me/labels/[labelId];
     test:assertTrue(label is error, msg = "/users/[userId]/labels/[label.id].delete failed. Label not deleted");
+}
+
+@test:Config {
+    dependsOn: [testDeleteLabel, testGmailGetProfile]
+}
+function testListHistory() returns error? {
+    HistoryListPage historyListPage = check gmailClient->/users/me/history(startHistoryId = historyId);
+    test:assertTrue(historyListPage.history is History[], msg = "/users/[userId]/history failed");
 }
