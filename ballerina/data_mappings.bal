@@ -340,3 +340,96 @@ isolated function convertOASMailThreadToMailThread(oas:MailThread oasThread) ret
     }
     return thread;
 }
+
+isolated function convertOASListHistoryResponseToListHistoryResponse(oas:ListHistoryResponse response) returns ListHistoryResponse {
+    ListHistoryResponse historyListPage = {};
+    oas:History[]? histories = response.history;
+    if histories is oas:History[] {
+        History[] processedHistories = [];
+        foreach oas:History history in histories {
+            History emailHistory = {
+                id: history.id ?: EMPTY_STRING
+            };
+            oas:Message[]? messages = history.messages;
+            if messages is oas:Message[] {
+                Message[] processedMessages = [];
+                foreach oas:Message msg in messages {
+                    processedMessages.push({
+                        // list response does not return any other info.
+                        threadId: msg.threadId ?: EMPTY_STRING,
+                        id: msg.id ?: EMPTY_STRING
+                    });
+                }
+                emailHistory.messages = processedMessages;
+            }
+
+            oas:HistoryLabelAdded[]? labelAddedMessages = history.labelsAdded;
+            if labelAddedMessages is oas:HistoryLabelAdded[] {
+                HistoryLabelAdded[] processedLabelAddedMessages = [];
+                foreach oas:HistoryLabelAdded labelAddedMessage in labelAddedMessages {
+                    processedLabelAddedMessages.push({
+                        // list response does not return any other info.
+                        labelIds: labelAddedMessage.labelIds ?: [],
+                        message: {
+                            threadId: labelAddedMessage.message?.threadId ?: EMPTY_STRING,
+                            id: labelAddedMessage.message?.id ?: EMPTY_STRING
+                        }
+                    });
+                }
+                emailHistory.labelsAdded = processedLabelAddedMessages;
+            }
+
+            oas:HistoryLabelRemoved[]? labelRemovedMessages = history.labelsRemoved;
+            if labelRemovedMessages is oas:HistoryLabelRemoved[] {
+                HistoryLabelRemoved[] processedLabelRemovedMessages = [];
+                foreach oas:HistoryLabelRemoved labelRemovedMessage in labelRemovedMessages {
+                    processedLabelRemovedMessages.push({
+                        // list response does not return any other info.
+                        labelIds: labelRemovedMessage.labelIds ?: [],
+                        message: {
+                            threadId: labelRemovedMessage.message?.threadId ?: EMPTY_STRING,
+                            id: labelRemovedMessage.message?.id ?: EMPTY_STRING
+                        }
+                    });
+                }
+                emailHistory.labelsRemoved = processedLabelRemovedMessages;
+            }
+
+            oas:HistoryMessageAdded[]? messageAddedMessages = history.messagesAdded;
+            if messageAddedMessages is oas:HistoryMessageAdded[] {
+                HistoryMessageAdded[] processedMessageAddedMessages = [];
+                foreach oas:HistoryMessageAdded messageAddedMessage in messageAddedMessages {
+                    processedMessageAddedMessages.push({
+                        // list response does not return any other info.
+                        message: {
+                            threadId: messageAddedMessage.message?.threadId ?: EMPTY_STRING,
+                            id: messageAddedMessage.message?.id ?: EMPTY_STRING
+                        }
+                    });
+                }
+                emailHistory.messagesAdded = processedMessageAddedMessages;
+            }
+
+            oas:HistoryMessageDeleted[]? messageDeletedMessages = history.messagesDeleted;
+            if messageDeletedMessages is oas:HistoryMessageDeleted[] {
+                HistoryMessageDeleted[] processedMessageDeletedMessages = [];
+                foreach oas:HistoryMessageDeleted messageDeletedMessage in messageDeletedMessages {
+                    processedMessageDeletedMessages.push({
+                        // list response does not return any other info.
+                        message: {
+                            threadId: messageDeletedMessage.message?.threadId ?: EMPTY_STRING,
+                            id: messageDeletedMessage.message?.id ?: EMPTY_STRING
+                        }
+                    });
+                }
+                emailHistory.messagesDeleted = processedMessageDeletedMessages;
+            }
+
+            processedHistories.push(emailHistory);
+        }
+        historyListPage.history = processedHistories;
+    }
+    historyListPage.historyId = response.historyId ?: historyListPage.historyId;
+    historyListPage.nextPageToken = response.nextPageToken ?: historyListPage.nextPageToken;
+    return historyListPage;
+}
