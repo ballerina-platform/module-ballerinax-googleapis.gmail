@@ -1,0 +1,84 @@
+{
+    "mimeType": "multipart/alternative",
+    "filename": "",
+    "headers": [
+        {
+            "name": "Content-Type",
+            "value": "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
+        }
+    ],
+    "body": {
+        "size": 0
+    },
+    "parts": [
+        {
+            "mimeType": "multipart/alternative",
+            "filename": "",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
+                }
+            ],
+            "body": {
+                "size": 0
+            },
+            "parts": [
+                {
+                    "partId": "0.0",
+                    "mimeType": "text/plain",
+                    "filename": "",
+                    "headers": [
+                        {
+                            "name": "Content-Type",
+                            "value": "text/plain; charset=UTF-8"
+                        }
+                    ],
+                    "body": {
+                        "size": 9
+                    }
+                },
+                {
+                    "partId": "0.1",
+                    "mimeType": "text/html",
+                    "filename": "",
+                    "headers": [
+                        {
+                            "name": "Content-Type",
+                            "value": "text/html; charset=UTF-8"
+                        }
+                    ],
+                    "body": {
+                        "size": 30
+                    }
+                }
+            ]
+        },
+        {
+            "partId": "1",
+            "mimeType": "image/jpeg",
+            "filename": "feelthebern.jpg",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "image/jpeg; name=\"feelthebern.jpg\""
+                },
+                {
+                    "name": "Content-Disposition",
+                    "value": "attachment; filename=\"feelthebern.jpg\""
+                },
+                {
+                    "name": "Content-Transfer-Encoding",
+                    "value": "base64"
+                },
+                {
+                    "name": "X-Attachment-Id",
+                    "value": "f_ieq3ev0i0"
+                }
+            ],
+            "body": {
+                "size": 100446
+            }
+        }
+    ]
+}
