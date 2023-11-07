@@ -24,7 +24,8 @@ The conforming implementation of the specification is released and included in t
     * 2.1 [Initializing the Client](#21-initializing-the-client)
 3. [`Profile` Resource](#3-profile-resource)
 4. [`Message` Resource](#4-message-resource)
- 
+5. [`Draft` Resource](#5-draft-resource)
+
 ## 1. Overview
 
 The Ballerina language provides first-class support for writing network-oriented programs. The Gmal package uses these language constructs and creates the programming model to consume Gmail REST API.
@@ -100,4 +101,17 @@ This resource can be retrieved and manipulated by methods such as,
 | `/users/[userId]/messages/[messageId]/untrash.post()` | Removes the specified message from the trash |
 | `/users/[userId]/messages/[messageId]/attachments/[attachmentId]()` | Gets the specified message attachment |
 
+## 5. `Draft` Resource
+
+An unsent message. A message contained within the draft can be replaced. Sending a draft automatically deletes the draft and creates a message with the SENT system label.
+
+This resource can be retrieved and manipulated by methods such as,
+| Method | Description |
+|---|---|
+| `users/[userId]/drafts()` | Lists the drafts in the user's mailbox |
+| `users/[userId]/drafts.post()` | Creates a new draft with the `DRAFT` label |
+| `users/[userId]/drafts/send.post()` | Sends the specified, existing draft to the recipients in the `To`, `Cc`, and `Bcc` headers |
+| `users/[userId]/drafts/[draftId]()` | Gets the specified draft |
+| `users/[userId]/drafts/[draftId].put()` |  Replaces a draft's content |
+| `users/[userId]/drafts/[draftId].delete()` | Immediately and permanently deletes the specified draft. Does not simply trash it |
 

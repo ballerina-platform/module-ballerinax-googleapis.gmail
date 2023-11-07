@@ -31,6 +31,177 @@ public isolated client class Client {
         return;
     }
 
+    # Lists the drafts in the user's mailbox.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + includeSpamTrash - Include drafts from `SPAM` and `TRASH` in the results.
+    # + maxResults - Maximum number of drafts to return. This field defaults to 100. The maximum allowed value for this field is 500.
+    # + pageToken - Page token to retrieve a specific page of results in the list.
+    # + q - Only return draft messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`.
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/drafts(
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = (), boolean? includeSpamTrash = (), int? maxResults = (),
+            string? pageToken = (), string? q = ())
+    returns DraftListPage|error {
+        oas:ListDraftsResponse draftList = check self.genClient->/users/[userId]/drafts(xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType, includeSpamTrash,
+            maxResults, pageToken, q
+        );
+        return convertListDraftsResponseToDraftListPage(draftList);
+    }
+
+    # Creates a new draft with the `DRAFT` label.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + payload - The draft to create.
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/drafts(
+            DraftRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (),
+            string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (),
+            string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
+    returns Draft|error {
+        oas:Draft newDraft = check convertDraftRequestToOASDraft(payload);
+        oas:Draft response = check self.genClient->/users/[userId]/drafts.post(newDraft, xgafv, access_token, alt,
+            callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+        return convertOASDraftToDraft(response);
+    }
+
+    # Sends the specified, existing draft to the recipients in the `To`, `Cc`, and `Bcc` headers.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + payload - The ID of the existing draft to send. (Optional) Updated draft if necessary.
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/drafts/send(
+            DraftRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (),
+            string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (),
+            string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
+    returns Message|error {
+        oas:Draft updatedDraft = check convertDraftRequestToOASDraft(payload);
+        oas:Message response = check self.genClient->/users/[userId]/drafts/send.post(updatedDraft, xgafv, access_token,
+            alt, callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+        return convertOASMessageToMessage(response);
+    }
+
+    # Gets the specified draft.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the draft to retrieve.
+    # + format - The format to return the draft in.
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/drafts/[string id](
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = (), "minimal"|"full"|"raw"|"metadata"? format = ())
+    returns Draft|error {
+        oas:Draft response = check self.genClient->/users/[userId]/drafts/[id](xgafv, access_token, alt, callback,
+            fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType, format
+        );
+        return convertOASDraftToDraft(response);
+    }
+
+    # Replaces a draft's content.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the draft to update.
+    # + payload - The updated draft to update.
+    # + return - Successful response 
+    resource isolated function put users/[string userId]/drafts/[string id](
+            DraftRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (),
+            string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (),
+            string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
+    returns Draft|error {
+        oas:Draft updatedDraft = check convertDraftRequestToOASDraft(payload);
+        oas:Draft response = check self.genClient->/users/[userId]/drafts/[id].put(updatedDraft, xgafv, access_token,
+            alt, callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+        return convertOASDraftToDraft(response);
+    }
+
+    # Immediately and permanently deletes the specified draft. Does not simply trash it.
+    #
+    # + xgafv - V1 error format.
+    # + access_token - OAuth access token.
+    # + alt - Data format for response.
+    # + callback - JSONP
+    # + fields - Selector specifying which fields to include in a partial response.
+    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # + oauth_token - OAuth 2.0 token for the current user.
+    # + prettyPrint - Returns response with indentations and line breaks.
+    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
+    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the draft to delete.
+    # + return - Successful response 
+    resource isolated function delete users/[string userId]/drafts/[string id](
+            Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (),
+            string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
+            string? upload_protocol = (), string? uploadType = ())
+    returns error? {
+        _ = check self.genClient->/users/[userId]/drafts/[id].delete(xgafv, access_token, alt, callback, fields,
+            'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
+        );
+    }
+
     # Lists the messages in the user's mailbox.
     #
     # + xgafv - V1 error format.
