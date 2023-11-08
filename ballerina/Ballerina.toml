@@ -12,3 +12,6 @@ license = ["Apache-2.0"]
 
 [build-options]
 observabilityIncluded = true
+
+[platform.java17]
+graalvmCompatible = true
