@@ -36,6 +36,8 @@ for dir in "${cacheDirs[@]}"; do
 done
 echo "Successfully cleaned the cache directories"
 
+ls -R "$HOME/.ballerina/repositories"
+
 # Update the central repository
 BAL_DESTINATION_DIR="$HOME/.ballerina/repositories/central.ballerina.io/bala/ballerinax/$BAL_PACKAGE_NAME"
 BAL_SOURCE_DIR="$HOME/.ballerina/repositories/local/bala/ballerinax/$BAL_PACKAGE_NAME"
