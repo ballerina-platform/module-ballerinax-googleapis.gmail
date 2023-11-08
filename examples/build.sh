@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BAL_EXAMPLES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BAL_CENTRAL_DIR="$HOME/.ballerina/repositories/central.ballerina.io/"
+BAL_CENTRAL_DIR="$HOME/.ballerina/repositories/central.ballerina.io"
 BAL_HOME_DIR="$BAL_EXAMPLES_DIR/../ballerina"
 
 set -e
@@ -28,7 +28,9 @@ cd "$BAL_HOME_DIR" &&
   bal push --repository=local
 
 # Remove the cache directories in the repositories
-cacheDirs=($(ls -d "$BAL_CENTRAL_DIR"/cache-* 2>/dev/null))
+# Exit status of the comman subsitution  is error even though the value is ignored
+# Thus the or true is added to avoid the script from exiting
+cacheDirs=$(ls -d $BAL_CENTRAL_DIR/cache-* 2>/dev/null) || true
 for dir in "${cacheDirs[@]}"; do
   [ -d "$dir" ] && rm -r "$dir"
 done
