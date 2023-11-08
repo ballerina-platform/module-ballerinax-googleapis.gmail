@@ -38,6 +38,8 @@ echo "Successfully cleaned the cache directories"
 
 ls -R "$HOME/.ballerina/repositories"
 
+mkdir -p "$BAL_CENTRAL_DIR/bala/ballerinax/$BAL_PACKAGE_NAME"
+
 # Update the central repository
 BAL_DESTINATION_DIR="$HOME/.ballerina/repositories/central.ballerina.io/bala/ballerinax/$BAL_PACKAGE_NAME"
 BAL_SOURCE_DIR="$HOME/.ballerina/repositories/local/bala/ballerinax/$BAL_PACKAGE_NAME"
