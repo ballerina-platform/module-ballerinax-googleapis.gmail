@@ -1,13 +1,11 @@
 # Compiled class file
 *.class
-*.balx
+
 # Log file
 *.log
 
 #Config file
 Config.toml
-# Modules
-/modules/googleapis.gmail
 
 # BlueJ files
 *.ctxt
@@ -17,7 +15,7 @@ Config.toml
 
 # Package Files #
 *.jar
-!gradle/wrapper/gradle-wrapper.jar
+!gradle-wrapper/*.jar
 *.war
 *.ear
 *.zip
@@ -29,26 +27,23 @@ hs_err_pid*
 
 # Ignore everything in this directory
 target
+
+# mac
+.DS_Store
+
 .classpath
 .settings
 .project
-*.iml
-*.iws
-*.ipr
+
+.vscode
+
+target
 .idea
-.m2
-.vscode/
-# Ignore ballerina files
-accessToken.bal
-temp.bal.ballerina/
-target/
-.DS_Store
-*Ballerina.lock
-gmail/modules/gmail/resources
-.ballerina
-
-# Ignore Gradle project-specific cache directory
+*.iml
+*.ipr
+*.iws
 .gradle
-
-# Ignore Gradle build output directory
 build
+
+# Environment files
+*.env
