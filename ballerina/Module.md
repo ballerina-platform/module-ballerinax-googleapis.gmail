@@ -1,4 +1,4 @@
-## Package overview
+## Overview
 
 [Gmail](https://blog.google/products/gmail/), a product of Google LLC, is a widely-used email service that enables users to send and receive emails over the internet.
 
@@ -62,10 +62,3 @@ Inorder to use `gmail` connector, You need to first create Gmail credentials for
 3. **Get Access Token and Refresh Token**: You need to generate an access token and a refresh token. Oauth playground can be used to easily exchang the authorization code for tokens.
 
 For detailed steps including the necessary links refer [Setup Guide](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/docs/setup/setup.md).
-
-## Report Issues
-To report bugs, request new features, start new discussions, view project boards, etc., go to the [Ballerina library parent repository](https://github.com/ballerina-platform/ballerina-library).
-
-## Useful Links
-- Chat live with us via our [Discord server](https://discord.gg/ballerinalang).
-- Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.
