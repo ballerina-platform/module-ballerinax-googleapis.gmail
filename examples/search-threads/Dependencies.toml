@@ -310,7 +310,7 @@ modules = [
 
 [[package]]
 org = "wso2"
-name = "send_mails"
+name = "search_threads"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
@@ -318,6 +318,6 @@ dependencies = [
 	{org = "ballerinax", name = "googleapis.gmail"}
 ]
 modules = [
-	{org = "wso2", packageName = "send_mails", moduleName = "send_mails"}
+	{org = "wso2", packageName = "search_threads", moduleName = "search_threads"}
 ]
 

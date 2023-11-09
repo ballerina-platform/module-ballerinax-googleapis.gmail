@@ -9,6 +9,9 @@ use cases of the module.
 2. Send Maintenance Break Mail (send-mails)
    The example might be used to automatically send emails to users or administrators when a scheduled maintenance break is about to occur or has started. This includes code to embed inline images in the email. 
 
+3. Get relevant threads for search query (search-threads)
+   The example can be used to interact with the Gmail API to search for email threads based on a specific query.
+
 ## Prerequisite
 
 1. If you don't already have one, create a [Google account](https://accounts.google.com/signup/v2/webcreateaccount?utm_source=ga-ob-search&utm_medium=google-account&flowName=GlifWebSignIn&flowEntry=SignUp).
