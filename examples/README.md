@@ -6,6 +6,9 @@ use cases of the module.
 1. Process Customer Feedback Mails (process-mails)
    This example demonstrates how to keep track of customer feedback mails. This project checks for unread emails in the INBOX, processes the mails, and adds details such as subject and sender to a CSV file. Finally, all processed mails will be marked as read.
 
+2. Send Maintenance Break Mail (send-mails)
+   The example might be used to automatically send emails to users or administrators when a scheduled maintenance break is about to occur or has started. This includes code to embed inline images in the email. 
+
 ## Prerequisite
 
 1. If you don't already have one, create a [Google account](https://accounts.google.com/signup/v2/webcreateaccount?utm_source=ga-ob-search&utm_medium=google-account&flowName=GlifWebSignIn&flowEntry=SignUp).
