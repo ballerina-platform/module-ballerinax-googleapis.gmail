@@ -3,6 +3,9 @@
 This directory contains a collection of sample code examples for `ballerinax/googleapis.gmail` module. These examples demonstrate various
 use cases of the module.
 
+1. Process Customer Feedback Mails (process-mails)
+   This example demonstrates how to keep track of customer feedback mails. This project checks for unread emails in the INBOX, processes the mails, and adds details such as subject and sender to a CSV file. Finally, all processed mails will be marked as read.
+
 ## Prerequisite
 
 1. If you don't already have one, create a [Google account](https://accounts.google.com/signup/v2/webcreateaccount?utm_source=ga-ob-search&utm_medium=google-account&flowName=GlifWebSignIn&flowEntry=SignUp).
