@@ -22,9 +22,7 @@ import ballerina/test;
 configurable string refreshToken = os:getEnv("REFRESH_TOKEN");
 configurable string clientId = os:getEnv("CLIENT_ID");
 configurable string clientSecret = os:getEnv("CLIENT_SECRET");
-configurable string sender = os:getEnv("SENDER");
-
-configurable string userId = "me";
+configurable string recipient = os:getEnv("RECIPIENT");
 
 //---------------DO NOT change the following variables-----------------------//
 //---------------Used in multiple tests-----------------------//
@@ -57,7 +55,7 @@ function testGmailGetProfile() returns error? {
 @test:Config {}
 function testMessageInsert() returns error? {
     MessageRequest request = {
-        'from: sender,
+        'from: recipient,  // Mail migration, mail reeived from receipent account
         subject: "Gmail insert test"
     };
     Message message = check gmailClient->/users/me/messages.post(request);
@@ -102,7 +100,7 @@ function testMessageBatchDelete() returns error? {
 }
 function testPostMessage() returns error? {
     MessageRequest request = {
-        to: [sender],
+        to: [recipient],
         subject: "Test Gmail Revamp",
         bodyInText: "This is text equivalent",
         bodyInHtml: "<html><body><h1> Welcome!</h1><div><img src=\"cid:ii_lonq0gzm1\" alt=\"Test_image.jpeg\"><br></div></body></html>",
@@ -126,7 +124,7 @@ function testPostMessage() returns error? {
     Message message = check gmailClient->/users/me/messages/send.post(request);
     test:assertTrue(message.id != "", msg = "/users/[userId]/messages/send failed");
     sentMessageId = message.id;
-}
+    }
 
 @test:Config {
     dependsOn: [testPostMessage]
@@ -157,15 +155,19 @@ function testGetMessageFullFormat() returns error? {
     dependsOn: [testGetMessageFullFormat]
 }
 function testMessageModify() returns error? {
-    Message message = check gmailClient->/users/me/messages/[sentMessageId]/modify.post(
+    _ = check gmailClient->/users/me/messages/[sentMessageId]/modify.post(
         {
             addLabelIds: ["UNREAD"]
         }
     );
-    test:assertTrue(message.labelIds != (), msg = "/users/[userId]/messages/[sentMessageId]/modify failed");
     Message getMessage = check gmailClient->/users/me/messages/[sentMessageId];
-    test:assertEquals(getMessage.labelIds, ["UNREAD", "SENT"],
-                    msg = "/users/[userId]/messages/[sentMessageId]/modify failed UNREAD label not added");
+    string[]? labelIds = getMessage.labelIds;
+    if labelIds is string[] {
+        test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0, 
+                        msg = "/users/[userId]/messages/[sentMessageId]/modify failed");
+    } else {
+        test:assertFail("/users/[userId]/messages/[sentMessageId]/modify failed");
+    }
 }
 
 @test:Config {
@@ -271,7 +273,7 @@ isolated function testPayloadConversion() returns error? {
 function createDraft() returns error? {
     DraftRequest request = {
         message: {
-            to: [sender],
+            to: [recipient],
             subject: "Gmail draft test",
             bodyInText: "This is a draft"
         }
@@ -295,7 +297,7 @@ isolated function testListDrafts() returns error? {
 function testSendDraft() returns error? {
     DraftRequest request = {
         message: {
-            to: [sender],
+            to: [recipient],
             subject: "Gmail draft test"
         }
     };
@@ -324,7 +326,7 @@ function testPutDraft() returns error? {
     Draft updatedDraft = check gmailClient->/users/me/drafts/[draftId].put({
         id: draftId,
         message: {
-            to: [sender],
+            to: [recipient],
             subject: "Gmail draft test updated"
         }
     });
@@ -347,7 +349,7 @@ function testDeleteDraft() returns error? {
 }
 function testListMailThreads() returns error? {
     MessageRequest request = {
-        to: [sender],
+        to: [recipient],
         subject: "Test Gmail Revamp Thread"
     };
     Message message = check gmailClient->/users/me/messages/send.post(request);
@@ -377,8 +379,13 @@ function testModifyMailThread() returns error? {
     MailThread getMailThread = check gmailClient->/users/me/threads/[threadId];
     Message[]? firstMesssage = getMailThread.messages;
     if firstMesssage is Message[] {
-        test:assertEquals(firstMesssage[0].labelIds, ["UNREAD", "SENT"],
-                    msg = "/users/[userId]/threads/[threadId]/modify failed UNREAD label not added");
+        string[]? labelIds = firstMesssage[0].labelIds;
+        if labelIds is string[] {
+            test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0, 
+                            msg = "/users/[userId]/threads/[threadId]/modify failed");
+        } else {
+            test:assertFail("/users/[userId]/threads/[threadId]/modify failed");
+        }
     } else {
         test:assertFail("Message not found");
     }

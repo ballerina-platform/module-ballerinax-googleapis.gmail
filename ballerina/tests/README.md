@@ -10,7 +10,7 @@ Create a `Config.toml` file in the tests directory and add your authentication c
 refreshToken = "<your-refresh-token>"
 clientId = "<your-client-id>"
 clientSecret = "<your-client-secret>"
-sender = "<recipient-email-address>"
+recipient = "<recipient-email-address>"
 ```
 
 #### Using Environment Variables
@@ -20,5 +20,5 @@ Alternatively, you can set your authentication credentials as environment variab
 export REFRESH_TOKEN="<your-refresh-token>"
 export CLIENT_ID="<your-client-id>"
 export CLIENT_SECRET="<your-client-secret>"
-export SENDER="<recipient-email-address>"
+export RECIPIENT="<recipient-email-address>"
 ```
