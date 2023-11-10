@@ -20,7 +20,7 @@ import ballerinax/googleapis.gmail;
 configurable string refreshToken = os:getEnv("REFRESH_TOKEN");
 configurable string clientId = os:getEnv("CLIENT_ID");
 configurable string clientSecret = os:getEnv("CLIENT_SECRET");
-configurable string sender = os:getEnv("SENDER");
+configurable string recipient = os:getEnv("RECIPIENT");
 
 public function main() returns error? {
     gmail:Client gmailClient = check new ({
@@ -52,7 +52,7 @@ public function main() returns error? {
     </html>`;
 
     gmail:MessageRequest message = {
-        to: [sender],
+        to: [recipient],
         subject: "Scheduled Maintenance Break Notification",
         bodyInHtml: htmlContent,
         inlineImages: [

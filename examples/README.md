@@ -20,8 +20,8 @@ The `gmail` connector provides several practical examples that illustrate its us
   refreshToken="<Refresh Token>"
   clientId="<Client Id>"
   clientSecret="<Client Secret>" 
-  # The sender detail is only needed for the send-mails example
-  sender="<Recipient Email Address>"
+  # The recipient detail is only needed for the send-mails example
+  recipient="<Recipient Email Address>"
   ```
 
 ## Running an Example
