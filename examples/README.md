@@ -1,15 +1,17 @@
 # Examples
 
-The `gmail` connector provides several practical examples that illustrate its use in various scenarios. These examples, located in this directory, cover a variety of use cases, including sending emails, retrieving messages, and managing labels.
+The `gmail` connector provides several practical examples that illustrate its usage in various scenarios. These [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples) cover a variety of use cases including sending emails, retrieving messages, and managing labels.
 
-1. [Process Customer Feedback Emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails)
-    This example shows how to manage customer feedback emails. It checks for unread emails in the INBOX, processes these emails, and adds details such as the subject and sender to a CSV file. After processing, all emails are marked as read.
+1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails)
+    This example shows how to manage customer feedback emails. It checks for unread emails in the inbox, processes these emails, and adds details such as the subject and sender to a CSV file. After processing, all emails will be marked as read.
 
-2. [Send Maintenance Break Notification](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails)
+2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails)
     This example demonstrates how to automatically send emails to users or administrators when a scheduled maintenance break is imminent or has begun. It includes code to embed inline images in the email.
 
-3. [Search for Relevant Email Threads](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads)
+3. [Search for relevant email threads](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads)
     This example shows how to use the Gmail API to search for email threads based on a specific query.
+
+For more detailed information about the connector's functionality including how to configure and use it in your Ballerina programs, go to the comprehensive reference guide for the `gmail` connector available in [Ballerina Central](https://central.ballerina.io/ballerinax/googleapis.gmail/latest).
 
 ## Prerequisites
 
