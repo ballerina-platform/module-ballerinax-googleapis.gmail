@@ -55,7 +55,7 @@ function testGmailGetProfile() returns error? {
 @test:Config {}
 function testMessageInsert() returns error? {
     MessageRequest request = {
-        'from: recipient,  // Mail migration, mail reeived from receipent account
+        'from: recipient, // Mail migration, mail reeived from receipent account
         subject: "Gmail insert test"
     };
     Message message = check gmailClient->/users/me/messages.post(request);
@@ -124,7 +124,7 @@ function testPostMessage() returns error? {
     Message message = check gmailClient->/users/me/messages/send.post(request);
     test:assertTrue(message.id != "", msg = "/users/[userId]/messages/send failed");
     sentMessageId = message.id;
-    }
+}
 
 @test:Config {
     dependsOn: [testPostMessage]
@@ -163,7 +163,7 @@ function testMessageModify() returns error? {
     Message getMessage = check gmailClient->/users/me/messages/[sentMessageId];
     string[]? labelIds = getMessage.labelIds;
     if labelIds is string[] {
-        test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0, 
+        test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0,
                         msg = "/users/[userId]/messages/[sentMessageId]/modify failed");
     } else {
         test:assertFail("/users/[userId]/messages/[sentMessageId]/modify failed");
@@ -381,7 +381,7 @@ function testModifyMailThread() returns error? {
     if firstMesssage is Message[] {
         string[]? labelIds = firstMesssage[0].labelIds;
         if labelIds is string[] {
-            test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0, 
+            test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0,
                             msg = "/users/[userId]/threads/[threadId]/modify failed");
         } else {
             test:assertFail("/users/[userId]/threads/[threadId]/modify failed");

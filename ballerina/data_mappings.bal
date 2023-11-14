@@ -112,7 +112,7 @@ returns MessagePart|error {
 }
 
 isolated function convertMessageRequestToOASMessage(MessageRequest req) returns oas:Message|error {
-    string message = check getRFC822MessageString(req); 
+    string message = check getRFC822MessageString(req);
     oas:Message apiMessage = {
         raw: base64UrlEncode(message)
     };
@@ -120,7 +120,7 @@ isolated function convertMessageRequestToOASMessage(MessageRequest req) returns 
 }
 
 isolated function getRFC822MessageString(MessageRequest req) returns string|error {
-        //Raw string of message
+    //Raw string of message
     string messageString = EMPTY_STRING;
 
     //Set the general headers of the message
