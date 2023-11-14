@@ -49,6 +49,7 @@ ballerina {
     module = packageName
     testCoverageParam = "--code-coverage --coverage-format=xml --excludes=\"modules/oas/**\""
     buildOnDockerImage = "nightly"
+    platform = "any"
 }
 
 task updateTomlFiles {
