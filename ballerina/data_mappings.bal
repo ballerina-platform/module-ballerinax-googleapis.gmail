@@ -112,7 +112,15 @@ returns MessagePart|error {
 }
 
 isolated function convertMessageRequestToOASMessage(MessageRequest req) returns oas:Message|error {
-    //Raw string of message
+    string message = check getRFC822MessageString(req); 
+    oas:Message apiMessage = {
+        raw: base64UrlEncode(message)
+    };
+    return apiMessage;
+}
+
+isolated function getRFC822MessageString(MessageRequest req) returns string|error {
+        //Raw string of message
     string messageString = EMPTY_STRING;
 
     //Set the general headers of the message
@@ -184,10 +192,7 @@ isolated function convertMessageRequestToOASMessage(MessageRequest req) returns 
         }
     }
     messageString += bodyString;
-    oas:Message apiMessage = {
-        raw: base64UrlEncode(messageString)
-    };
-    return apiMessage;
+    return messageString;
 }
 
 isolated function getMultipartMessageString(string headers, string... parts) returns string {
