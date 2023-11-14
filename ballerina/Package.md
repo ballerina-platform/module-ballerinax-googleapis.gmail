@@ -6,7 +6,7 @@ The `ballerinax/googleapis.gmail` package provides APIs to connect and interact 
 
 ## Quickstart
 
-**Note**: Ensure to follow the [prerequisites](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail#setting-up-gmail-api) to set up the Gmail API.
+**Note**: Ensure to follow the [prerequisites](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail#set-up-gmail-api) to set up the Gmail API.
 
 To utilize the `gmail` connector in your Ballerina application, modify the `.bal` file as follows:
 
@@ -40,13 +40,13 @@ gmail:MessageListPage messageList = check gmailClient->/users/me/messages(q = "l
 
 The `gmail` connector provides several practical examples that illustrate its usage in various scenarios. These [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples) cover a variety of use cases including sending emails, retrieving messages, and managing labels.
 
-1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails)
+1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails/main.bal)
     This example shows how to manage customer feedback emails. It checks for unread emails in the inbox, processes these emails, and adds details such as the subject and sender to a CSV file. After processing, all emails will be marked as read.
 
-2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails)
+2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails/main.bal)
     This example demonstrates how to automatically send emails to users or administrators when a scheduled maintenance break is imminent or has begun. It includes code to embed inline images in the email.
 
-3. [Search for relevant email threads](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads)
+3. [Search for relevant email threads](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads/main.bal)
     This example shows how to use the Gmail API to search for email threads based on a specific query.
 
 For more detailed information about the connector's functionality including how to configure and use it in your Ballerina programs, go to the comprehensive reference guide for the `gmail` connector available in [Ballerina Central](https://central.ballerina.io/ballerinax/googleapis.gmail/latest).
