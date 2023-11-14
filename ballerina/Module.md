@@ -1,62 +1,65 @@
 ## Overview
-Ballerina Gmail Connector provides the capability to send, read, and delete emails through the Gmail REST API. It also provides the ability to read, trash, untrash, and delete threads, as well as the ability to get the Gmail profile and mailbox history, etc. The connector supports OAuth 2.0 authentication.
 
-This module supports [Gmail API v1](https://developers.google.com/gmail/api).
 
-## Prerequisites
+[Gmail](https://blog.google/products/gmail/) is a product of Google LLC, which is a widely-used email service that enables users to send and receive emails over the internet.
 
-Before using this connector in your Ballerina application, complete the following:
-
-1. Create a [Google account](https://accounts.google.com/signup/v2/webcreateaccount?utm_source=ga-ob-search&utm_medium=google-account&flowName=GlifWebSignIn&flowEntry=SignUp). (If you already have one, you can use that.)
-
-2. Obtain tokens 
-    - Follow [this guide](https://developers.google.com/identity/protocols/oauth2)
+The `ballerinax/googleapis.gmail` package provides APIs to connect and interact with [Gmail API](https://developers.google.com/gmail/api/guides) endpoints.
 
 ## Quickstart
 
-To use the Gmail connector in your Ballerina application, update the .bal file as follows:
+**Note**: Ensure to follow the [prerequisites](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail#setting-up-gmail-api) to set up the Gmail API.
 
-### Step 1: Import connector
-Import the `ballerinax/googleapis.gmail` module into the Ballerina project.
+To utilize the `gmail` connector in your Ballerina application, modify the `.bal` file as follows:
+
+### Step 1: Import the connector
+Import the `ballerinax/googleapis.gmail` package into your Ballerina project.
 ```ballerina
 import ballerinax/googleapis.gmail;
 ```
 
-### Step 2: Create a new connector instance
-Create a `gmail:ConnectionConfig` with the OAuth 2.0 tokens obtained, and initialize the connector with it.
-
+### Step 2: Instantiate a new connector
+Create a `gmail:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
 ```ballerina
-gmail:ConnectionConfig gmailConfig = {
-    auth: {
-        refreshUrl: gmail:REFRESH_URL,
-        refreshToken: <REFRESH_TOKEN>,
-        clientId: <CLIENT_ID>,
-        clientSecret: <CLIENT_SECRET>
-    }
-};
-
-gmail:Client gmailClient = check new (gmailConfig);
+gmail:Client gmailClient = check new gmail:Client (
+        config = {
+            auth: {
+                refreshToken: refreshToken,
+                clientId: clientId,
+                clientSecret: clientSecret
+            }
+        }
+    );
 ```
 
-### Step 3: Invoke connector operation
-1. Now you can use the operations available within the connector. Note that they are in the form of remote operations.  
-Following is an example on how to send an email using the connector.
+### Step 3: Invoke the connector operation
+You can now utilize the operations available within the connector.
+```ballerina
+gmail:MessageListPage messageList = check gmailClient->/users/me/messages(q = "label:INBOX is:unread");
+```
 
-    ```ballerina
-    public function main() returns error? {
-        string userId = "me";
-        gmail:MessageRequest messageRequest = {
-            recipient : "aa@gmail.com",
-            cc : "cc@gmail.com",
-            subject : "Email-Subject",
-            messageBody : "Email Message Body Text",
-            // Set the content type of the mail as TEXT_PLAIN or TEXT_HTML.
-            contentType : gmail:TEXT_PLAIN
-        };
+## Examples
 
-        gmail:Message sendMessageResponse = check gmailClient->sendMessage(messageRequest, userId = userId);
-    }
-    ```
-2. Use `bal run` command to compile and run the Ballerina program.
+The `gmail` connector provides several practical examples that illustrate its usage in various scenarios. These [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples) cover a variety of use cases including sending emails, retrieving messages, and managing labels.
 
-**[You can find a list of samples here](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples)**
+1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails)
+    This example shows how to manage customer feedback emails. It checks for unread emails in the inbox, processes these emails, and adds details such as the subject and sender to a CSV file. After processing, all emails will be marked as read.
+
+2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails)
+    This example demonstrates how to automatically send emails to users or administrators when a scheduled maintenance break is imminent or has begun. It includes code to embed inline images in the email.
+
+3. [Search for relevant email threads](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads)
+    This example shows how to use the Gmail API to search for email threads based on a specific query.
+
+For more detailed information about the connector's functionality including how to configure and use it in your Ballerina programs, go to the comprehensive reference guide for the `gmail` connector available in [Ballerina Central](https://central.ballerina.io/ballerinax/googleapis.gmail/latest).
+
+## Set up Gmail API
+
+In order to use the `gmail` connector, you need to first create the Gmail credentials for the connector to interact with Gmail.
+
+1. **Create a Google Cloud Platform project**: You need to create a new project on the Google Cloud Platform (GCP). Once the project is created, you can enable the Gmail API for this project.
+
+2. **Create OAuth client ID**: In the GCP console, you need to create credentials for the OAuth client ID. This process involves setting up the OAuth consent screen and creating the credentials for the OAuth client ID.
+
+3. **Get the access token and refresh token**: You need to generate an access token and a refresh token. The Oauth playground can be used to easily exchange the authorization code for the tokens.
+
+For detailed steps including the necessary links, go to the [Setup guide](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/docs/setup/setup.md).

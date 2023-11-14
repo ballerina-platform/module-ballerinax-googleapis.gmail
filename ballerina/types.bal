@@ -1,4 +1,4 @@
-// Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+// Copyright (c) 2023, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 //
 // WSO2 Inc. licenses this file to you under the Apache License,
 // Version 2.0 (the "License"); you may not use this file except
@@ -13,443 +13,372 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 import ballerina/http;
-import ballerinax/'client.config;
 
-# Client configuration details.
+# Provides a set of configurations for controlling the behaviours when communicating with a remote HTTP endpoint.
 @display {label: "Connection Config"}
 public type ConnectionConfig record {|
-    *config:ConnectionConfig;
     # Configurations related to client authentication
-    http:BearerTokenConfig|config:OAuth2RefreshTokenGrantConfig auth;
+    http:BearerTokenConfig|OAuth2RefreshTokenGrantConfig auth;
+    # The HTTP version understood by the client
+    http:HttpVersion httpVersion = http:HTTP_2_0;
+    # Configurations related to HTTP/1.x protocol
+    ClientHttp1Settings http1Settings?;
+    # Configurations related to HTTP/2 protocol
+    http:ClientHttp2Settings http2Settings?;
+    # The maximum time to wait (in seconds) for a response before closing the connection
+    decimal timeout = 60;
+    # The choice of setting `forwarded`/`x-forwarded` header
+    string forwarded = "disable";
+    # Configurations associated with request pooling
+    http:PoolConfiguration poolConfig?;
+    # HTTP caching related configurations
+    http:CacheConfig cache?;
+    # Specifies the way of handling compression (`accept-encoding`) header
+    http:Compression compression = http:COMPRESSION_AUTO;
+    # Configurations associated with the behaviour of the Circuit Breaker
+    http:CircuitBreakerConfig circuitBreaker?;
+    # Configurations associated with retrying
+    http:RetryConfig retryConfig?;
+    # Configurations associated with inbound response size limits
+    http:ResponseLimitConfigs responseLimits?;
+    # SSL/TLS-related options
+    http:ClientSecureSocket secureSocket?;
+    # Proxy server related options
+    http:ProxyConfig proxy?;
+    # Enables the inbound payload validation functionality which provided by the constraint package. Enabled by default
+    boolean validation = true;
 |};
 
-# Represents Gmail UserProfile.
-#
-# + emailAddress - The user's email address
-# + messagesTotal - The total number of messages in the mailbox
-# + threadsTotal - The total number of threads in the mailbox
-# + historyId - The ID of the mailbox's current history record
-@display {label: "User Profile"}
-public type UserProfile record {
-    @display {label: "Email Address"}
-    string emailAddress;
-    @display {label: "Total Messages"}
-    int messagesTotal;
-    @display {label: "Total Threads"}
-    int threadsTotal;
-    @display {label: "History ID"}
-    string historyId;
-};
+# Provides settings related to HTTP/1.x protocol.
+public type ClientHttp1Settings record {|
+    # Specifies whether to reuse a connection for multiple requests
+    http:KeepAlive keepAlive = http:KEEPALIVE_AUTO;
+    # The chunking behaviour of the request
+    http:Chunking chunking = http:CHUNKING_AUTO;
+    # Proxy server related options
+    ProxyConfig proxy?;
+|};
 
-# Represents mail thread resource.
-#
-# + id - The unique ID of the thread
-# + snippet - A short part of the message text
-# + historyId - The ID of the last history record that modified this thread
-# + messages - The list of messages in the thread
-@display {label: "Mail Thread"}
-public type MailThread record {
-    @display {label: "Thread ID"}
-    string id ;
-    @display {label: "History ID"}
+# Proxy server configurations to be used with the HTTP client endpoint.
+public type ProxyConfig record {|
+    # Host name of the proxy server
+    string host = "";
+    # Proxy server port
+    int port = 0;
+    # Proxy server username
+    string userName = "";
+    # Proxy server password
+    @display {label: "", kind: "password"}
+    string password = "";
+|};
+
+# OAuth2 Refresh Token Grant Configs
+public type OAuth2RefreshTokenGrantConfig record {|
+    *http:OAuth2RefreshTokenGrantConfig;
+    # Refresh URL
+    string refreshUrl = "https://accounts.google.com/o/oauth2/token";
+|};
+
+# Data format for response.
+public type Alt "json"|"media"|"proto";
+
+# V1 error format.
+public type Xgafv "1"|"2";
+
+# Profile for a Gmail user.
+public type Profile record {
+    # The user's email address.
+    string emailAddress?;
+    # The ID of the mailbox's current history record.
     string historyId?;
-    @display {label: "Snippet"}
-    string snippet?;
-    @display {label: "Messages"}
-    Message[] messages?;
+    # The total number of messages in the mailbox.
+    int:Signed32 messagesTotal?;
+    # The total number of threads in the mailbox.
+    int:Signed32 threadsTotal?;
 };
 
-# Represents message request to send a mail.
-#
-# + recipient - The recipient of the mail
-# + subject - The subject of the mail
-# + messageBody - The message body of the mail. Can be either plain text or html text.
-# + contentType - The content type of the mail, whether it is text/plain or text/html. Only pass one of the
-#                 constant values defined in the module; `TEXT_PLAIN` or `TEXT_HTML`. If the message contains some rich
-#                 content (Eg: inline image, table etc), then it should be text/html (`TEXT_HTML`) other wise it will
-#                 be text/plain (`TEXT_PLAIN`).
-# + cc - The cc recipient of the mail. Optional.
-# + bcc - The bcc recipient of the mail. Optional.
-# + sender - The sender of the mail. Optional
-# + inlineImagePaths - The InlineImagePath array consisting the inline image file paths and mime types. Optional.
-#                            Note that inline images can only be send for `TEXT_HTML` messages.
-# + attachmentPaths - The AttachmentPath array consisting the attachment file paths and mime types. Optional.
-@display {label: "Message Request"}
-public type MessageRequest record {
-    @display {label: "Recipient"}
-    string recipient;
-    @display {label: "Subject"}
-    string subject;
-    @display {label: "Message Body"}
-    string messageBody;
-    @display {label: "Content Type"}
-    string contentType?;
-    @display {label: "Cc"}
-    string cc?;
-    @display {label: "Bcc"}
-    string bcc?;
-    @display {label: "Sender"}
-    string sender?;
-    @display {label: "Inline Image Paths"}
-    InlineImagePath[] inlineImagePaths?;
-    @display {label: "Attachment Paths"}
-    AttachmentPath[] attachmentPaths?;
-};
-
-# Represents image file path and mime type of an inline image in a message request.
-#
-# + imagePath - The file path of the image
-# + mimeType - The mime type of the image. The primary type should be `image`.
-#                  For ex: If you are sending a jpg image, give the mime type as `image/jpeg`.
-#                          If you are sending a png image, give the mime type as `image/png`.
-@display {label: "Inline Image Path"}
-public type InlineImagePath record {
-    @display {label: "Image Path"}
-    string imagePath;
-    @display {label: "Mime Type"}
-    string mimeType;
-};
-
-# Represents an attachment file path and mime type of an attachment in a message request.
-#
-# + attachmentPath - The file path of the attachment
-# + mimeType - The mime type of the attachment
-#                  For ex: If you are sending a pdf document, give the mime type as `application/pdf`.
-#                  If you are sending a text file, give the mime type as `text/plain`.
-@display {label: "Attachment Path"}
-public type AttachmentPath record {
-    @display {label: "Attachment Path"}
-    string attachmentPath;
-    @display {label: "Mime Type"}
-    string mimeType;
-};
-
-# Represents message resource which will be received as a response from the Gmail API.
-#
-# + threadId - Thread ID which the message belongs to
-# + id - Message ID
-# + labelIds - The label ids of the message
-# + raw - Represent the entire message in base64 encoded string
-# + snippet - Short part of the message text
-# + historyId - The ID of the last history record that modified the message
-# + internalDate - The internal message creation timestamp(epoch ms)
-# + sizeEstimate - Estimated size of the message in bytes
-# + headers - The map of headers in the top level message part representing the entire message payload in a
-#             standard RFC 2822 message. The key of the map is the header name and the value is the header value.
-# + headerTo - Email header **To**
-# + headerFrom - Email header **From**
-# + headerBcc - Email header **Bcc**
-# + headerCc - Email header **Cc**
-# + headerSubject - Email header **Subject**
-# + headerDate - Email header **Date**
-# + headerContentType - Email header **ContentType**
-# + mimeType - MIME type of the top level message part
-# + emailBodyInText - MIME Message Part with text/plain content type
-# + emailBodyInHTML - MIME Message Part with text/html content type
-# + emailInlineImages - MIME Message Parts with inline images with the image/* content type. Note: Here attachments 
-#                       need to be less than 25MB.
-# + msgAttachments - MIME Message Parts of the message consisting the attachments. Note: Here attachments need to be 
-#                    less than 25MB.
-@display {label: "Message"}
+# An email message.
 public type Message record {
-    @display {label: "Thread ID"}
+    # The ID of the thread the message belongs to. 
     string threadId;
-    @display {label: "Message ID"}
+    # The immutable ID of the message.
     string id;
-    @display {label: "Label Ids"}
+    # List of IDs of labels applied to this message.
     string[] labelIds?;
-    @display {label: "Raw"}
+    # The entire email message in an RFC 2822 formatted. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied.
     string raw?;
-    @display {label: "Snippet"}
+    # A short part of the message text.
     string snippet?;
-    @display {label: "History ID"}
+    # The ID of the last history record that modified this message.
     string historyId?;
-    @display {label: "Internal Date"}
+    # The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header.
     string internalDate?;
-    @display {label: "Size Estimate"}
-    string sizeEstimate?;
-    @display {label: "Headers"}
+    # Estimated size in bytes of the message.
+    int:Signed32 sizeEstimate?;
+    # Email header **To**
+    string[] to?;
+    # Email header **From**
+    string 'from?;
+    # Email header **Bcc**
+    string[] bcc?;
+    # Email header **Cc**
+    string[] cc?;
+    # Email header **Subject**
+    string subject?;
+    # Email header **Date**
+    string date?;
+    # Email header **ContentType**
+    string contentType?;
+    # MIME type of the top level message part. Values in `multipart/alternative` such as `text/plain` and `text/html` and in `multipart/*` including `multipart/mixed` and `multipart/related` indicate that the message contains a structured body with MIME parts. Values in `message/rfc822` indicate that the message is a container for the message parts that follow after the header.    
+    string mimeType?;
+    # Body of the message.
+    MessagePart payload?;
+};
+
+# A single MIME message part.
+public type MessagePart record {
+    # The filename of the attachment. Only present if this message part represents an attachment.
+    string filename?;
+    # List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`.
     map<string> headers?;
-    @display {label: "To"}
-    string headerTo?;
-    @display {label: "From"}
-    string headerFrom?;
-    @display {label: "Bcc"}
-    string headerBcc?;
-    @display {label: "Cc"}
-    string headerCc?;
-    @display {label: "Subject"}
-    string headerSubject?;
-    @display {label: "Date"}
-    string headerDate?;
-    @display {label: "Content Type"}
-    string headerContentType?;
-    @display {label: "Mime Type"}
+    # The MIME type of the message part.
     string mimeType?;
-    @display {label: "Email Body in Text"}
-    MessageBodyPart emailBodyInText?;
-    @display {label: "Email Body in HTML"}
-    MessageBodyPart emailBodyInHTML?;
-    @display {label: "Email Inline Images"}
-    MessageBodyPart[] emailInlineImages?;
-    @display {label: "Message Attachments"}
-    MessageBodyPart[] msgAttachments?;
-};
-
-# Represents the email message body part of a message resource response.
-#
-# + data - The body data of the message part. This is a base64 encoded string
-# + mimeType - MIME type of the message part
-# + bodyHeaders - Headers of the MIME Message Part
-# + fileId - The file ID of the attachment/inline image in message part *(This is empty unless the message part
-#            represent an inline image/attachment)*
-# + fileName - The file name of the attachment/inline image in message part *(This is empty unless the message part
-#            represent an inline image/attachment)*
-# + partId - The part ID of the message part
-# + size - Number of bytes of message part data
-@display {label: "Message Body Part"}
-public type MessageBodyPart record {
-    @display {label: "Data"}
+    # The immutable ID of the message part.
+    string partId;
+    # When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field.
+    string attachmentId?;
+    # The body data of a MIME message part. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
     string data?;
-    @display {label: "Mime Type"}
-    string mimeType?;
-    @display {label: "Body Headers"}
-    map<string> bodyHeaders?;
-    @display {label: "File ID"}
-    string fileId?;
-    @display {label: "File Name"}
-    string fileName?;
-    @display {label: "Part ID"}
-    string partId?;
-    @display {label: "Size"}
-    int size?;
+    # Number of bytes for the message part data.
+    int:Signed32 size?;
+    # The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.
+    MessagePart[] parts?;
 };
 
-# Represents the optional search message filter fields.
-#
-# + includeSpamTrash - Specifies whether to include messages/threads from SPAM and TRASH in the results
-# + labelIds - Array of label ids. Only return messages/threads with labels that match all of the specified
-#              label Ids.
-# + maxResults - Maximum number of messages/threads to return in the page for a single request
-# + pageToken - Page token to retrieve a specific page of results in the list
-# + q - Query for searching messages/threads. Only returns messages/threads matching the specified query. Supports
-#       the same query format as the Gmail search box.
-@display {label: "Message Search Filter"}
-public type MsgSearchFilter record {
-    @display {label: "Include Spam Trash"}
-    boolean includeSpamTrash?;
-    @display {label: "Label Ids"}
-    string[] labelIds?;
-    @display {label: "Maximum Results"}
-    int maxResults?;
-    @display {label: "Page Token"}
-    string pageToken?;
-    @display {label: "Query"}
-    string q?;
-};
-
-# Represents the optional search drafts filter fields.
-#
-# + includeSpamTrash - Specifies whether to include drafts from SPAM and TRASH in the results
-# + maxResults - Maximum number of drafts to return in the page for a single request
-# + pageToken - Page token to retrieve a specific page of results in the list
-# + q - Query for searching . Only returns drafts matching the specified query. Supports
-#       the same query format as the Gmail search box.
-@display {label: "Draft Search Filter"}
-public type DraftSearchFilter record {
-    @display {label: "Include Spam Trash"}
-    boolean includeSpamTrash?;
-    @display {label: "Maximum Results"}
-    int maxResults?;
-    @display {label: "Page Token"}
-    string pageToken?;
-    @display {label: "Query"}
-    string q?;
-};
-
-# Represents a page of the message list received as response for list messages api call.
-#
-# + messages - Array of message maps with messageId and threadId as keys
-# + resultSizeEstimate - Estimated size of the whole list
-# + nextPageToken - Token for next page of message list
-@display {label: "Message List Page"}
-public type MessageListPage record {
-    @display {label: "Messages"}
+# List of messages.
+public type ListMessagesResponse record {
+    # List of messages. Note that each message resource contains only an `id` and a `threadId`. Additional message details can be fetched using the messages.get method.
     Message[] messages?;
-    @display {label: "Result Size Estimate"}
-    int resultSizeEstimate;
-    @display {label: "Next Page Token"}
+    # Token to retrieve the next page of results in the list.
     string nextPageToken?;
+    # Estimated total number of results.
+    int resultSizeEstimate?;
 };
 
-# Represents a page of the mail thread list received as response for list threads api call.
-#
-# + threads - Array of thread maps with threadId, snippet and historyId as keys
-# + resultSizeEstimate - Estimated size of the whole list
-# + nextPageToken - Token for next page of mail thread list
-@display {label: "Thread List Page"}
-public type ThreadListPage record {
-    @display {label: "Threads"}
-    MailThread[] threads?;
-    @display {label: "Result Size Estimate"}
-    int resultSizeEstimate;
-    @display {label: "Next Page Token"}
-    string nextPageToken?;
+public type BatchDeleteMessagesRequest record {|
+    # The IDs of the messages to delete.
+    string[] ids?;
+|};
+
+public type BatchModifyMessagesRequest record {|
+    # A list of label IDs to add to messages.
+    string[] addLabelIds?;
+    # The IDs of the messages to modify. There is a limit of 1000 ids per request.
+    string[] ids?;
+    # A list of label IDs to remove from messages.
+    string[] removeLabelIds?;
+|};
+
+public type ModifyMessageRequest record {|
+    # A list of IDs of labels to add to this message. You can add up to 100 labels with each update.
+    string[] addLabelIds?;
+    # A list IDs of labels to remove from this message. You can remove up to 100 labels with each update.
+    string[] removeLabelIds?;
+|};
+
+# An Attachment.
+public type Attachment record {
+    # Id of the attachment.
+    string attachmentId?;
+    # The body data of a MIME message part. 
+    string data?;
+    # Number of bytes for the message part data (encoding notwithstanding).
+    int:Signed32 size?;
 };
 
-# Represents a page of the drafts list received as response for list drafts api call.
-#
-# + drafts - Array of draft maps with draftId, messageId and threadId as keys
-# + resultSizeEstimate - Estimated size of the whole list
-# + nextPageToken - Token for next page of mail drafts list
-@display {label: "Draft List Page"}
-public type DraftListPage record {
-    @display {label: "Drafts"}
-    Draft[] drafts?;
-    @display {label: "Result Size Estimate"}
-    int resultSizeEstimate;
-    @display {label: "Next Page Token"}
-    string nextPageToken?;
-};
+# Message Send Request-Payload (Charset UTF-8 will be used to encode the message body).
+public type MessageRequest record {|
+    # The recipients of the mail
+    string[] to?;
+    # The sender of the mail
+    string 'from?;
+    # The subject of the mail
+    string subject?;
+    # The cc recipients of the mail.
+    string[] cc?;
+    # The bcc recipients of the mail.
+    string[] bcc?;
+    # Message body of content type ```text/plain```. 
+    string bodyInText?;
+    # Message body of content type ```text/html```.
+    string bodyInHtml?;
+    # The file array consisting the inline images.
+    ImageFile[] inlineImages?;
+    # The file array consisting the attachments.
+    AttachmentFile[] attachments?;
+|};
 
-# Represents a Label which is used to categorize messaages and threads within the user's mailbox.
-#
-# + id - The immutable ID of the label
-# + name - The display name of the label
-# + messageListVisibility - The visibility of messages with this label in the message list in the Gmail web interface.
-#                           Acceptable values are:
-#
-#                            *hide*: Do not show the label in the message list.
-#                            *show*: Show the label in the message list (Default)
-# + labelListVisibility - The visibility of the label in the label list in the Gmail web interface.
-#                         Acceptable values are:
-#
-#                            *labelHide*: Do not show the label in the label list
-#                            *labelShow*: Show the label in the label list (Default)
-#                            *labelShowIfUnread*: Show the label if there are any unread messages with that label
-# + type - The owner type for the label.
-#               Acceptable values are:
-#                    *system*: Labels created by Gmail
-#                    *user*: Custom labels created by the user or application
-#
-# + messagesTotal - The total number of messages with the label
-# + messagesUnread - The number of unread messages with the label
-# + threadsTotal - The total number of threads with the label
-# + threadsUnread - The number of unread threads with the label
-# + color - Reperesents the color of label
-@display {label: "Label"}
-public type Label record {
-    @display {label: "Label ID"}
-    string id;
-    @display {label: "Label Name"}
+# A file record to indicate attachment
+public type AttachmentFile record {|
+    # The mime type of the file (ex. application/pdf, text/plain)
+    string mimeType;
+    # The file name with extension. This will be used name the attachment/image in the mail.
     string name;
-    @display {label: "Message List Visibility"}
-    string messageListVisibility?;
-    @display {label: "Label List Visibility"}
-    string labelListVisibility?;
-    @display {label: "Type"}
-    string 'type?;
-    @display {label: "Total Messages"}
-    int messagesTotal?;
-    @display {label: "Unread Messages"}
-    int messagesUnread?;
-    @display {label: "Total Threads"}
-    int threadsTotal?;
-    @display {label: "Unread Threads"}
-    int threadsUnread?;
-    @display {label: "Color"}
-    Color color?;
-};
+    # The file path
+    string path;
+|};
 
-# Represents the list of labels.
-#
-# + labels - The array of labels
-@display {label: "Label List"}
-public type LabelList record {
-    @display {label: "Labels"}
-    Label[] labels;
-};
+# A file record to indicate inline image
+public type ImageFile record {|
+    *AttachmentFile;
+    # The content id of the image. This will be used to refer the image in the mail body.
+    string contentId;
+|};
 
-# Represents the color of label.
-#
-# + textColor - The text color of the label, represented as hex string
-# + backgroundColor - The background color represented as hex string
-@display {label: "Color"}
-public type Color record {
-    @display {label: "Text Color"}
-    string textColor;
-    @display {label: "Background Color"}
-    string backgroundColor;
-};
-
-# Represents a page of the history list received as response for list history api call.
-#
-# + history - List of history records. Any messages contained in the response will typically only have ID and
-#                    threadId fields populated.
-# + nextPageToken - Page token to retrieve the next page of results in the list
-# + historyId - The ID of the mailbox's current history record
-@display {label: "Mailbox History Page"}
-public type MailboxHistoryPage record {
-    @display {label: "History List"}
-    History[] history?;
-    @display {label: "Next Page Token"}
-    string nextPageToken?;
-    @display {label: "History ID"}
-    string historyId;
-};
-
-# Represents a history reoced in MailboxHistoryPage.
-#
-# + historyId - The ID of the mailbox's current history record
-# + id - The mailbox sequence ID
-# + messages - List of messages changed in this history record
-# + messagesAdded - 	Messages added to the mailbox in this history record
-# + messagesDeleted - Messages deleted (not Trashed) from the mailbox in this history record
-# + labelsAdded - Array of maps of Labels added to messages in this history record
-# + labelsRemoved - Array of maps of Labels removed from messages in this history record
-@display {label: "History"}
-public type History record {
-    @display {label: "History ID"}
-    string historyId?;
-    @display {label: "History Sequence ID"}
-    string id?;
-    @display {label: "Messages"}
-    Message[] messages?;
-    @display {label: "Messages Added"}
-    HistoryEvent[] messagesAdded?;
-    @display {label: "Messages Deleted"}
-    HistoryEvent[] messagesDeleted?;
-    @display {label: "Labels Added"}
-    HistoryEvent[] labelsAdded?;
-    @display {label: "Labels Removed"}
-    HistoryEvent[] labelsRemoved?;
-};
-
-# Represents changes of messages in history record.
-# 
-# + message - The message changed  
-# + labelIds - The label ids of the message  
-@display {label: "History Event"}
-public type HistoryEvent record {
-    @display {label: "Message"}
-    Message message;
-    @display {label: "Label Ids"}
-    string [] labelIds?;
-};
-
-# Represents a draft email in user's mailbox.
-#
-# + id - The immutable ID of the draft
-# + message - The message content of the draft
-@display {label: "Draft"}
+# A draft email in the user's mailbox.
 public type Draft record {
-    @display {label: "Draft ID"}
-    string id;
-    @display {label: "Message"}
+    # The immutable ID of the draft.
+    string id?;
+    # An email message.
     Message message?;
 };
 
-# Represents union of MsgSearchFilter and DraftSearchFilter.
-public type Filter MsgSearchFilter|DraftSearchFilter;
+public type ListDraftsResponse record {
+    # List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details.
+    Draft[] drafts?;
+    # Token to retrieve the next page of results in the list.
+    string nextPageToken?;
+    # Estimated total number of results.
+    int resultSizeEstimate?;
+};
+
+# Request payload to create a draft. 
+public type DraftRequest record {|
+    # The immutable ID of the draft.
+    string id?;
+    # An email message.
+    MessageRequest message?;
+|};
+
+public type ListThreadsResponse record {
+    # Page token to retrieve the next page of results in the list.
+    string nextPageToken?;
+    # Estimated total number of results.
+    int resultSizeEstimate?;
+    # List of threads. Note that each thread resource does not contain a list of `messages`. The list of `messages` for a given thread can be fetched using the threads.get method.
+    MailThread[] threads?;
+};
+
+# A collection of messages representing a conversation.
+public type MailThread record {
+    # The ID of the last history record that modified this thread.
+    string historyId?;
+    # The unique ID of the thread.
+    string id?;
+    # The list of messages in the thread.
+    Message[] messages?;
+    # A short part of the message text.
+    string snippet?;
+};
+
+# Request payload used to create a collection of messages representing a conversation.
+public type MailThreadRequest record {|
+    # The unique ID of the thread.
+    string id?;
+    # The list of messages in the thread.
+    Message[] messages?;
+|};
+
+public type ModifyThreadRequest record {|
+    # A list of IDs of labels to add to this thread. You can add up to 100 labels with each update.
+    string[] addLabelIds?;
+    # A list of IDs of labels to remove from this thread. You can remove up to 100 labels with each update.
+    string[] removeLabelIds?;
+|};
+
+# Labels are used to categorize messages and threads within the user's mailbox. The maximum number of labels supported for a user's mailbox is 10,000.
+public type Label record {
+    # The color to assign to the label. Color is only available for labels that have their `type` set to `user`.
+    LabelColor color?;
+    # The immutable ID of the label.
+    string id?;
+    # The visibility of the label in the label list in the Gmail web interface.
+    "labelShow"|"labelShowIfUnread"|"labelHide" labelListVisibility?;
+    # The visibility of messages with this label in the message list in the Gmail web interface.
+    "show"|"hide" messageListVisibility?;
+    # The total number of messages with the label.
+    int:Signed32 messagesTotal?;
+    # The number of unread messages with the label.
+    int:Signed32 messagesUnread?;
+    # The display name of the label.
+    string name?;
+    # The total number of threads with the label.
+    int:Signed32 threadsTotal?;
+    # The number of unread threads with the label.
+    int:Signed32 threadsUnread?;
+    # The owner type for the label. User labels are created by the user and can be modified and deleted by the user and can be applied to any message or thread. System labels are internally created and cannot be added, modified, or deleted. System labels may be able to be applied to or removed from messages and threads under some circumstances but this is not guaranteed. For example, users can apply and remove the `INBOX` and `UNREAD` labels from messages and threads, but cannot apply or remove the `DRAFTS` or `SENT` labels from messages or threads.
+    "system"|"user" 'type?;
+};
+
+public type ListLabelsResponse record {
+    # List of labels. Note that each label resource only contains an `id`, `name`, `messageListVisibility`, `labelListVisibility`, and `type`. The labels.get method can fetch additional label details.
+    Label[] labels?;
+};
+
+# The color to assign to the label. Color is only available for labels that have their `type` set to `user`.
+public type LabelColor record {
+    # The background color represented as hex string #RRGGBB (ex #000000). This field is required in order to set the color of a label. Only the following predefined set of color values are allowed: \#000000, #434343, #666666, #999999, #cccccc, #efefef, #f3f3f3, #ffffff, \#fb4c2f, #ffad47, #fad165, #16a766, #43d692, #4a86e8, #a479e2, #f691b3, \#f6c5be, #ffe6c7, #fef1d1, #b9e4d0, #c6f3de, #c9daf8, #e4d7f5, #fcdee8, \#efa093, #ffd6a2, #fce8b3, #89d3b2, #a0eac9, #a4c2f4, #d0bcf1, #fbc8d9, \#e66550, #ffbc6b, #fcda83, #44b984, #68dfa9, #6d9eeb, #b694e8, #f7a7c0, \#cc3a21, #eaa041, #f2c960, #149e60, #3dc789, #3c78d8, #8e63ce, #e07798, \#ac2b16, #cf8933, #d5ae49, #0b804b, #2a9c68, #285bac, #653e9b, #b65775, \#822111, #a46a21, #aa8831, #076239, #1a764d, #1c4587, #41236d, #83334c \#464646, #e7e7e7, #0d3472, #b6cff5, #0d3b44, #98d7e4, #3d188e, #e3d7ff, \#711a36, #fbd3e0, #8a1c0a, #f2b2a8, #7a2e0b, #ffc8af, #7a4706, #ffdeb5, \#594c05, #fbe983, #684e07, #fdedc1, #0b4f30, #b3efd3, #04502e, #a2dcc1, \#c2c2c2, #4986e7, #2da2bb, #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \#662e37, #ebdbde, #cca6ac, #094228, #42d692, #16a765
+    string backgroundColor?;
+    # The text color of the label, represented as hex string. This field is required in order to set the color of a label. Only the following predefined set of color values are allowed: \#000000, #434343, #666666, #999999, #cccccc, #efefef, #f3f3f3, #ffffff, \#fb4c2f, #ffad47, #fad165, #16a766, #43d692, #4a86e8, #a479e2, #f691b3, \#f6c5be, #ffe6c7, #fef1d1, #b9e4d0, #c6f3de, #c9daf8, #e4d7f5, #fcdee8, \#efa093, #ffd6a2, #fce8b3, #89d3b2, #a0eac9, #a4c2f4, #d0bcf1, #fbc8d9, \#e66550, #ffbc6b, #fcda83, #44b984, #68dfa9, #6d9eeb, #b694e8, #f7a7c0, \#cc3a21, #eaa041, #f2c960, #149e60, #3dc789, #3c78d8, #8e63ce, #e07798, \#ac2b16, #cf8933, #d5ae49, #0b804b, #2a9c68, #285bac, #653e9b, #b65775, \#822111, #a46a21, #aa8831, #076239, #1a764d, #1c4587, #41236d, #83334c \#464646, #e7e7e7, #0d3472, #b6cff5, #0d3b44, #98d7e4, #3d188e, #e3d7ff, \#711a36, #fbd3e0, #8a1c0a, #f2b2a8, #7a2e0b, #ffc8af, #7a4706, #ffdeb5, \#594c05, #fbe983, #684e07, #fdedc1, #0b4f30, #b3efd3, #04502e, #a2dcc1, \#c2c2c2, #4986e7, #2da2bb, #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \#662e37, #ebdbde, #cca6ac, #094228, #42d692, #16a765
+    string textColor?;
+};
+
+public type ListHistoryResponse record {
+    # List of history records. Any `messages` contained in the response will typically only have `id` and `threadId` fields populated.
+    History[] history?;
+    # The ID of the mailbox's current history record.
+    string historyId?;
+    # Page token to retrieve the next page of results in the list.
+    string nextPageToken?;
+};
+
+# A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways.
+public type History record {
+    # The mailbox sequence ID.
+    string id?;
+    # Labels added to messages in this history record.
+    HistoryLabelAdded[] labelsAdded?;
+    # Labels removed from messages in this history record.
+    HistoryLabelRemoved[] labelsRemoved?;
+    # List of messages changed in this history record. The fields for specific change types, such as `messagesAdded` may duplicate messages in this field. We recommend using the specific change-type fields instead of this.
+    Message[] messages?;
+    # Messages added to the mailbox in this history record.
+    HistoryMessageAdded[] messagesAdded?;
+    # Messages deleted (not Trashed) from the mailbox in this history record.
+    HistoryMessageDeleted[] messagesDeleted?;
+};
+
+public type HistoryMessageAdded record {
+    # An email message.
+    Message message?;
+};
+
+public type HistoryMessageDeleted record {
+    # An email message.
+    Message message?;
+};
+
+public type HistoryLabelAdded record {
+    # Label IDs added to the message.
+    string[] labelIds?;
+    # An email message.
+    Message message?;
+};
+
+public type HistoryLabelRemoved record {
+    # Label IDs removed from the message.
+    string[] labelIds?;
+    # An email message.
+    Message message?;
+};

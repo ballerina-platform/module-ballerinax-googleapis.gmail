@@ -1,0 +1,5 @@
+[package]
+org = "wso2"
+name = "process_mails"
+version = "0.1.0"
+distribution = "2201.8.2"

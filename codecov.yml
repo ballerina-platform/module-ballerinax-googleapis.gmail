@@ -1,3 +1,6 @@
+ignore:
+  - "examples"
+
 coverage:
   precision: 2
   round: down
@@ -6,5 +9,3 @@ coverage:
     project:
       default:
         target: 80
-ignore:
-  - "examples"
