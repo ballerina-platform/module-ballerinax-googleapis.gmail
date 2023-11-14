@@ -6,7 +6,7 @@ The `ballerinax/googleapis.gmail` package provides APIs to connect and interact 
 
 ## Quickstart
 
-**Note**: Ensure to follow the [prerequisites](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail#setting-up-gmail-api) to set up the Gmail API.
+**Note**: Ensure to follow the [prerequisites](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail#set-up-gmail-api) to set up the Gmail API.
 
 To utilize the `gmail` connector in your Ballerina application, modify the `.bal` file as follows:
 
