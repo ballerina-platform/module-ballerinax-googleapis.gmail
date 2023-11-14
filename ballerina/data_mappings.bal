@@ -196,13 +196,13 @@ isolated function getRFC822MessageString(MessageRequest req) returns string|erro
 }
 
 isolated function getMultipartMessageString(string headers, string... parts) returns string {
-    string boundry = uuid:createType4AsString();
-    string messageString = headers + boundry + DOUBLE_QUOTE + NEW_LINE;
+    string boundary = uuid:createType4AsString();
+    string messageString = headers + boundary + DOUBLE_QUOTE + NEW_LINE;
     foreach string part in parts {
-        messageString += NEW_LINE + DASH + DASH + boundry + NEW_LINE;
+        messageString += NEW_LINE + DASH + DASH + boundary + NEW_LINE;
         messageString += part + NEW_LINE;
     }
-    messageString += NEW_LINE + DASH + DASH + boundry + DASH + DASH + NEW_LINE;
+    messageString += NEW_LINE + DASH + DASH + boundary + DASH + DASH + NEW_LINE;
     return messageString;
 }
 
@@ -224,8 +224,8 @@ isolated function getFileMessageString(AttachmentFile|ImageFile file, string emb
 isolated function getEncodedFileContent(string filePath) returns string|error {
     io:ReadableByteChannel fileChannel = check io:openReadableFile(filePath);
     io:ReadableByteChannel fileContent = check fileChannel.base64Encode();
-    io:ReadableByteChannel encodedfileChannel = fileContent;
-    byte[] readChannel = check encodedfileChannel.read(100000000);
+    io:ReadableByteChannel encodedFileChannel = fileContent;
+    byte[] readChannel = check encodedFileChannel.read(100000000);
     return string:fromBytes(readChannel);
 }
 
