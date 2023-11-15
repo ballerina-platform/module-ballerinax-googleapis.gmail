@@ -544,3 +544,41 @@ function testReplyTo() returns error? {
     }
     check gmailClient->/users/me/threads/[threadId].delete();
 }
+
+@test:Config {
+}
+function testUrlDecodeFailure() returns error? {
+    oas:Message receivedMsg = {
+        threadId: "qweqweqdqd",
+        id: "saDSASDASDA",
+        raw: "ASDADSADADADADADAD"
+    };
+    Message|error result = convertOASMessageToMessage(receivedMsg);
+    if result is error {
+        test:assertEquals(result.message(), "Returned message raw field is not a valid Base64 URL encoded value.",
+        msg = "Error decoding message");
+    } else {
+        test:assertFail("Expected decoded error");
+    }
+}
+
+@test:Config {
+}
+function testAttachmentSendFailure() returns error? {
+    MessageRequest sendMsg = {
+        attachments: [
+            {
+                name: "test.txt",
+                path: "asdadsa",
+                mimeType: "text/plain"
+            }
+        ]
+    };
+    oas:Message|error result = convertMessageRequestToOASMessage(sendMsg);
+    if result is error {
+        test:assertEquals(result.message(),
+        "Unable to retrieve attachment: asdadsa", msg = "Error decoding message");
+    } else {
+        test:assertFail("Expected decoded error");
+    }
+}

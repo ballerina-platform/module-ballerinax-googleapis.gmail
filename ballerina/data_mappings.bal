@@ -26,7 +26,12 @@ isolated function convertOASMessageToMessage(oas:Message response) returns Messa
 
     string? rawMessage = response.raw;
     if rawMessage is string {
-        email.raw = check base64UrlDecode(rawMessage);
+        string|error decodedMessage = base64UrlDecode(rawMessage);
+        if decodedMessage is error {
+            return error InvalidEncodedValue(
+                string `Returned message raw field${decodedMessage.message()}`, decodedMessage.cause());
+        }
+        email.raw = decodedMessage;
     }
 
     email.labelIds = response.labelIds ?: email.labelIds;
@@ -102,7 +107,13 @@ returns MessagePart|error {
         messagePart.attachmentId = body.attachmentId ?: messagePart.attachmentId;
         messagePart.size = body.size ?: messagePart.size;
         if body.data is string {
-            messagePart.data = check base64UrlDecode(body.data ?: EMPTY_STRING);
+            string|error decodedBody = base64UrlDecode(body.data ?: EMPTY_STRING);
+            if decodedBody is error {
+                return error InvalidEncodedValue(
+                    string `Returned message body part of id '${messagePart.partId}'${decodedBody.message()}`,
+                    decodedBody.cause());
+            }
+            messagePart.data = decodedBody;
         }
     }
 
@@ -234,17 +245,22 @@ isolated function getFileMessageString(AttachmentFile|ImageFile file, string emb
     if file is ImageFile {
         fileString += CONTENT_ID + COLON + file.contentId + NEW_LINE;
     }
-    fileString += NEW_LINE + check getEncodedFileContent(file.path) + NEW_LINE;
+    fileString += NEW_LINE + check getEncodedFileContent(file.path, embedType) + NEW_LINE;
     return fileString;
 }
 
 // todo check error usages
-isolated function getEncodedFileContent(string filePath) returns string|error {
-    io:ReadableByteChannel fileChannel = check io:openReadableFile(filePath);
-    io:ReadableByteChannel fileContent = check fileChannel.base64Encode();
-    io:ReadableByteChannel encodedFileChannel = fileContent;
-    byte[] readChannel = check encodedFileChannel.read(100000000);
-    return string:fromBytes(readChannel);
+isolated function getEncodedFileContent(string filePath, string embedType) returns string|error {
+    do {
+        io:ReadableByteChannel fileChannel = check io:openReadableFile(filePath);
+        io:ReadableByteChannel fileContent = check fileChannel.base64Encode();
+        io:ReadableByteChannel encodedFileChannel = fileContent;
+        byte[] readChannel = check encodedFileChannel.read(100000000);
+        return string:fromBytes(readChannel);
+    } on fail error e {
+        return error FileGenericError(
+            string `Unable to retrieve ${embedType}: ${filePath}`, e);
+    }
 }
 
 isolated function convertOASListMessagesResponseToListMessageResponse(oas:ListMessagesResponse response)
@@ -274,7 +290,13 @@ isolated function convertOASMessagePartBodyToAttachment(oas:MessagePartBody body
     attachment.size = bodyPart.size ?: attachment.size;
     string? data = bodyPart.data;
     if data is string {
-        attachment.data = check base64UrlDecode(data);
+        string|error decodedData = base64UrlDecode(data);
+        if decodedData is error {
+            return error InvalidEncodedValue(
+                string `Returned attachment message body part of id '${attachment.attachmentId ?: EMPTY_STRING}'
+                ${decodedData.message()}`, decodedData.cause());
+        }
+        attachment.data = decodedData;
     }
     return attachment;
 }
