@@ -8,11 +8,11 @@ _Edition_: Swan Lake
 
 ## Introduction
 
-This is the specification for the `gmail` package of the [Ballerina language](https://ballerina.io). This package provides the client functionalities to interact with the [Google Gmail API v1](https://developers.google.com/gmail/api/guides).
+This is the specification for the `gmail` package of the [Ballerina language](https://ballerina.io). This package provides client functionalities to interact with the [Google Gmail API v1](https://developers.google.com/gmail/api/guides).
 
 The `gmail` package specification has evolved and may continue to evolve in the future. The released versions of the specification can be found under the relevant GitHub tag.
 
-If you have any feedback or suggestions about the package, start a discussion via a [GitHub issue](https://github.com/ballerina-platform/ballerina-standard-library/issues) or in the [Discord server](https://discord.gg/ballerinalang). Based on the outcome of the discussion, the specification and implementation can be updated. Community feedback is always welcome. Any accepted proposal, which affects the specification is stored under `/docs/proposals`. Proposals under discussion can be found with the label `type/proposal` on GitHub.
+If you have any feedback or suggestions about the package, start a discussion via a [GitHub issue](https://github.com/ballerina-platform/ballerina-standard-library/issues) or in the [Discord server](https://discord.gg/ballerinalang). Based on the outcome of the discussion, the specification and implementation can be updated. Community feedback is always welcome. Any accepted proposal, which affects the specification, is stored under `/docs/proposals`. Proposals under discussion can be found with the label `type/proposal` on GitHub.
 
 The conforming implementation of the specification is released and included in the distribution. Any deviation from the specification is considered a bug.
 
@@ -38,7 +38,7 @@ It offers intuitive resource methods to interact with the [Gmail API v1](https:/
 
 This section outlines the client of the Ballerina `gmail` package. To utilize the Ballerina `gmail` package, a user must first import it.
 
-###### Example: Importing the Gmail package
+#### Example: Importing the Gmail package
 
 ```ballerina
 import ballerinax/googleapis.gmail;
@@ -77,7 +77,7 @@ public type Profile record {
 };
 ```
 
-###### Example: Retrieving the Gmail profile 
+#### Example: Retrieving the Gmail profile 
 
 ```ballerina
 Profile profile = check gmailClient->/users/me/profile();
@@ -87,9 +87,9 @@ In this example, the `getProfile` method retrieves the profile of the authentica
 
 ## 4. `Message` Resource
 
-The `Message` resource represents an email message, which includes the sender, recipients, subject, and body. Once a message is created, it cannot be modified. 
+The `Message` resource represents an email message, encompassing the sender, recipients, subject, and body. Once a message is created, its content cannot be modified.
 
-This resource can be accessed and manipulated using the following methods:
+This resource provides various methods for accessing and manipulating email messages:
 
 | Method | Description |
 |---|---|
@@ -108,9 +108,9 @@ This resource can be accessed and manipulated using the following methods:
 
 ## 5. `Draft` Resource
 
-A `Draft` represents an unsent message. You can replace the message contained within the draft. When you send a draft, it automatically deletes the draft and creates a message with the `SENT` system label.
+A `Draft` in the context of the Gmail API represents an unsent message. The content of a draft can be replaced, and when you decide to send a draft, it automatically deletes the draft itself and generates a message with the `SENT` system label.
 
-You can access and manipulate this resource using the following methods:
+This resource provides several methods for accessing and manipulating drafts:
 | Method | Description |
 |---|---|
 | `users/[userId]/drafts()` | Lists all the drafts in the user's mailbox. |
@@ -122,9 +122,9 @@ You can access and manipulate this resource using the following methods:
 
 ## 6. `MailThread` Resource
 
-A `MailThread` represents a conversation, which is a collection of related messages. In an email client app, a thread is formed when one or more recipients respond to a message with their own message.
+A `MailThread` in the context of the Gmail API represents a conversation, serving as a collection of related messages. In an email client application, a thread is formed when one or more recipients respond to a message with their own replies.
 
-You can access and manipulate this resource using the following methods:
+This resource provides various methods for accessing and manipulating email threads:
 
 | Method | Description |
 |---|---|
@@ -137,13 +137,13 @@ You can access and manipulate this resource using the following methods:
 
 ## 7. `Label` Resource
 
-Labels are a mechanism for categorizing and organizing messages and threads. For instance, you might create a label named `taxes` and apply it to all the messages and threads related to your taxes. There are two types of labels:
+Labels within the Gmail API serve as a mechanism for categorizing and organizing both messages and threads. For example, you might create a label named `taxes` and apply it to all the messages and threads related to your taxes. There are two primary types of labels:
 
-1. **System labels**: These are internally-created labels, such as `INBOX`, `TRASH`, or `SPAM`. These labels cannot be deleted or modified. However, some system labels such as `INBOX` can be applied to or removed from messages and threads.
+1. **System labels**: These are internally-created labels, including `INBOX`, `TRASH`, or `SPAM`. System labels cannot be deleted or modified. However, certain system labels, such as `INBOX`, can be applied to or removed from messages and threads.
 
-2. **User labels**: These are labels created by a user. These labels can be deleted or modified by the user or an application. A user label is represented by a label resource.
+2. **User labels**: User labels are labels created by a user. These labels are subject to deletion or modification by the user or an application. A user label is represented by a label resource.
 
-You can access and manipulate this resource using the following methods:
+This resource provides various methods for accessing and manipulating labels:
 | Method | Description |
 |---|---|
 | `users/[userId]/labels()` | Lists all the labels in the user's mailbox. |
@@ -155,4 +155,4 @@ You can access and manipulate this resource using the following methods:
 
 ## 8. `History` Resource
 
-The `History` resource allows you to track all the changes made to a specific mailbox. You can retrieve a list of these changes using the `/users/[userId]/history()` method. The results are returned in chronological order with the `historyId` increasing over time. This allows you to easily track the sequence of events and changes made to the mailbox.
+The `History` resource provides a means to track all changes made to a specific mailbox within the Gmail API. To access a list of these changes, you can use the `/users/[userId]/history()` method. The results are returned in chronological order, with the `historyId` increasing over time. This chronological ordering facilitates the tracking of the sequence of events and changes made to the mailbox.

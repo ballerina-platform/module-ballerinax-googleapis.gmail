@@ -7,12 +7,12 @@ _Updated_: 2023/11/13 \
 
 ## Introduction
 
-To use the Gmail connector, you need to have access to the Gmail REST API via a [Google Cloud Platform (GCP)](https://console.cloud.google.com/) account and a project under it. If you do not have a GCP account, you can sign up for one [here](https://cloud.google.com/).
+To utilize the Gmail connector, you must have access to the Gmail REST API through a [Google Cloud Platform (GCP)](https://console.cloud.google.com/) account and a project under it. If you do not have a GCP account, you can sign up for one [here](https://cloud.google.com/).
 
 ## Step 1: Create a Google Cloud Platform Project
 
 1. Open the [GCP Console](https://console.cloud.google.com/).
-2. Click on the project drop-down and select or create the project for which you want to add an API key.
+2. Click on the project drop-down and either select an existing project or create a new one for which you want to add an API key.
 
     ![GCP Console](resources/gcp-console-project-view.png)
 
@@ -52,6 +52,6 @@ To use the Gmail connector, you need to have access to the Gmail REST API via a 
 
     ![Authorize APIs](resources/authorize-apis.png)
 
-2. Exchange the authorization code for tokens.
+3. Exchange the authorization code for tokens.
 
     ![Exchange Tokens](resources/exchange-tokens.png)
