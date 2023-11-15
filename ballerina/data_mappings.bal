@@ -134,7 +134,7 @@ isolated function getRFC822MessageString(MessageRequest req) returns string|erro
     //Set the general headers of the message
     string[]? to = req.to;
     if to is string[] && to.length() > 0 {
-        messageString += TO + COLON + string:'join(",", ...to) + NEW_LINE;
+        messageString += TO + COLON + string:'join(COMMA, ...to) + NEW_LINE;
     }
     if req.subject is string {
         messageString += SUBJECT + COLON + <string>req.subject + NEW_LINE;
@@ -145,11 +145,11 @@ isolated function getRFC822MessageString(MessageRequest req) returns string|erro
     }
     string[]? cc = req.cc;
     if cc is string[] && cc.length() > 0 {
-        messageString += CC + COLON + string:'join(",", ...cc) + NEW_LINE;
+        messageString += CC + COLON + string:'join(COMMA, ...cc) + NEW_LINE;
     }
     string[]? bcc = req.bcc;
     if bcc is string[] && bcc.length() > 0 {
-        messageString += BCC + COLON + string:'join(",", ...bcc) + NEW_LINE;
+        messageString += BCC + COLON + string:'join(COMMA, ...bcc) + NEW_LINE;
     }
 
     string? messageId = req.initialMessageId;
