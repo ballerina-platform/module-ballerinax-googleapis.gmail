@@ -1,6 +1,7 @@
 # Ballerina Gmail Connector
 
-[![CI](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/actions/workflows/ci.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/actions/workflows/ci.yml)
+[![Build](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/actions/workflows/ci.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/actions/workflows/ci.yml)
+[![Trivy](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/actions/workflows/trivy-scan.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/actions/workflows/trivy-scan.yml)
 [![codecov](https://codecov.io/gh/ballerina-platform/module-ballerinax-googleapis.gmail/branch/master/graph/badge.svg)](https://codecov.io/gh/ballerina-platform/module-ballerinax-googleapis.gmail)
 [![GraalVM Check](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/actions/workflows/build-with-bal-test-graalvm.yml/badge.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/actions/workflows/build-with-bal-test-graalvm.yml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/ballerina-platform/module-ballerinax-googleapis.gmail.svg)](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/commits/master)
