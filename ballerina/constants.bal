@@ -36,25 +36,25 @@ const string SEMICOLON = ";";
 const string DOUBLE_QUOTE = "\"";
 
 # Holds name for header To.
-const string TO = "To";
+const string TO = "to";
 # Holds name for header From.
-const string FROM = "From";
+const string FROM = "from";
 # Holds name for header Cc.
-const string CC = "Cc";
+const string CC = "cc";
 # Holds name for header Bcc.
-const string BCC = "Bcc";
+const string BCC = "bcc";
 # Holds name for header Subject.
-const string SUBJECT = "Subject";
+const string SUBJECT = "subject";
 # Holds name for header Date.
-const string DATE = "Date";
+const string DATE = "date";
 # Holds value for Content-Type.
-const string CONTENT_TYPE = "Content-Type";
+const string CONTENT_TYPE = "content-type";
 # Holds value for Content-Disposition.
-const string CONTENT_DISPOSITION = "Content-Disposition";
+const string CONTENT_DISPOSITION = "content-disposition";
 # Holds value for Content-Transfer-Encoding.
-const string CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
+const string CONTENT_TRANSFER_ENCODING = "content-transfer-encoding";
 # Holds value for Content-ID.
-const string CONTENT_ID = "Content-ID";
+const string CONTENT_ID = "content-id";
 # Holds value for attachment.
 const string ATTACHMENT = "attachment";
 # Holds value for base 64 encoding.

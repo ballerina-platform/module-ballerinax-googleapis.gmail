@@ -41,8 +41,11 @@ isolated function convertOASMessageToMessage(oas:Message response) returns Messa
         email.mimeType = response.payload?.mimeType;
 
         oas:MessagePartHeader[] headers = response.payload?.headers ?: [];
-        map<string> headersMap = map from oas:MessagePartHeader h in headers
-            select [h.name ?: EMPTY_STRING, h.value ?: EMPTY_STRING];
+        map<string> headersMap = {};
+        foreach oas:MessagePartHeader h in headers {
+            string originalKey = h.name ?: EMPTY_STRING;
+            headersMap[originalKey.toLowerAscii()] = h.value ?: EMPTY_STRING;
+        }
 
         if headersMap.hasKey(TO) {
             email.to = re `,`.split(headersMap.get(TO));
