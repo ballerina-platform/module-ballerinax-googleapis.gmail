@@ -34,6 +34,8 @@ const string UNDERSCORE = "_";
 const string SEMICOLON = ";";
 # Holds the value for "\"" string.
 const string DOUBLE_QUOTE = "\"";
+# Holds the value for "," string.
+const string COMMA = ",";
 
 # Holds name for header To.
 const string TO = "to";
@@ -47,6 +49,8 @@ const string BCC = "bcc";
 const string SUBJECT = "subject";
 # Holds name for header Date.
 const string DATE = "date";
+# Holds name for header Message-ID.
+const string MESSAGE_ID = "message-id";
 # Holds value for Content-Type.
 const string CONTENT_TYPE = "content-type";
 # Holds value for Content-Disposition.
@@ -55,6 +59,11 @@ const string CONTENT_DISPOSITION = "content-disposition";
 const string CONTENT_TRANSFER_ENCODING = "content-transfer-encoding";
 # Holds value for Content-ID.
 const string CONTENT_ID = "content-id";
+# Holds value for 'References' header.
+const string REFERENCES = "references";
+# RepHolds value for 'In-Reply-To' header.
+const string IN_REPLY_TO = "in-reply-to";
+
 # Holds value for attachment.
 const string ATTACHMENT = "attachment";
 # Holds value for base 64 encoding.

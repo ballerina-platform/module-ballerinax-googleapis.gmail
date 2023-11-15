@@ -501,3 +501,46 @@ function testListHistory() returns error? {
     ListHistoryResponse historyListPage = check gmailClient->/users/me/history(startHistoryId = historyId);
     test:assertTrue(historyListPage.history is History[], msg = "/users/[userId]/history failed");
 }
+
+@test:Config {
+    dependsOn: [testListHistory]
+}
+function testReplyTo() returns error? {
+    MessageRequest request = {
+        to: [recipient],
+        subject: "Test Gmail Reply To",
+        bodyInText: "This is text equivalent",
+        bodyInHtml: "<html><body><h1> Welcome!</h1></body></html>"
+    };
+    Message message = check gmailClient->/users/me/messages/send.post(request);
+
+    Message completeMsg = check gmailClient->/users/me/messages/[message.id](format = "metadata");
+
+    // Create a new MessageRequest for the reply
+    MessageRequest replyRequest = {
+        to: [recipient],
+        subject: "Test Gmail Reply To",
+        bodyInText: "This is a reply",
+        bodyInHtml: "<html><body><h1> This is a reply </h1></body></html>",
+        threadId: message.threadId,
+        initialMessageId: completeMsg.messageId,
+        references: [completeMsg.messageId ?: EMPTY_STRING]
+    };
+
+    // Send the reply
+    Message replyMessage = check gmailClient->/users/me/messages/send.post(replyRequest);
+
+    // Get the message thread
+    MailThread mailThread = check gmailClient->/users/me/threads/[message.threadId];
+
+    Message[]? threadMessages = mailThread.messages;
+
+    if threadMessages is Message[] {
+        test:assertTrue(threadMessages.length() == 2, "Mail thread should contain two messages");
+        test:assertTrue(threadMessages[0].id == message.id, "Mail thread should contain message with ID <message1-id>");
+        test:assertTrue(threadMessages[1].id == replyMessage.id, "Mail thread should contain message with ID <message2-id>");
+    } else {
+        test:assertFail("Message not found");
+    }
+    check gmailClient->/users/me/threads/[threadId].delete();
+}

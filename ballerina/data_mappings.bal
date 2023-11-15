@@ -71,6 +71,10 @@ isolated function convertOASMessageToMessage(oas:Message response) returns Messa
             email.date = headersMap.get(DATE);
         }
 
+        if headersMap.hasKey(MESSAGE_ID) {
+            email.messageId = headersMap.get(MESSAGE_ID);
+        }
+
         if headersMap.hasKey(CONTENT_TYPE) {
             email.contentType = headersMap.get(CONTENT_TYPE);
         }
@@ -119,6 +123,7 @@ isolated function convertMessageRequestToOASMessage(MessageRequest req) returns 
     oas:Message apiMessage = {
         raw: base64UrlEncode(message)
     };
+    apiMessage.threadId = req.threadId ?: apiMessage.threadId;
     return apiMessage;
 }
 
@@ -145,6 +150,16 @@ isolated function getRFC822MessageString(MessageRequest req) returns string|erro
     string[]? bcc = req.bcc;
     if bcc is string[] && bcc.length() > 0 {
         messageString += BCC + COLON + string:'join(",", ...bcc) + NEW_LINE;
+    }
+
+    string? messageId = req.initialMessageId;
+    if messageId is string {
+        messageString += IN_REPLY_TO + COLON + <string>messageId + NEW_LINE;
+    }
+
+    string[]? references = req.references;
+    if references is string[] && references.length() > 0 {
+        messageString += REFERENCES + COLON + string:'join(COMMA, ...references) + NEW_LINE;
     }
 
     string bodyString = EMPTY_STRING;

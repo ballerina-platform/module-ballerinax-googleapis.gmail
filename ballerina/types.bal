@@ -128,6 +128,8 @@ public type Message record {
     string subject?;
     # Email header **Date**
     string date?;
+    # Email header **Message-ID**
+    string messageId?;
     # Email header **ContentType**
     string contentType?;
     # MIME type of the top level message part. Values in `multipart/alternative` such as `text/plain` and `text/html` and in `multipart/*` including `multipart/mixed` and `multipart/related` indicate that the message contains a structured body with MIME parts. Values in `message/rfc822` indicate that the message is a container for the message parts that follow after the header.    
@@ -217,6 +219,12 @@ public type MessageRequest record {|
     ImageFile[] inlineImages?;
     # The file array consisting the attachments.
     AttachmentFile[] attachments?;
+    # ID of the thread the message must be replied to.
+    string threadId?;
+    # **Message-ID** header of the message being replied to.
+    string initialMessageId?;
+    # List of **Message-ID** headers identifying ancestors of the message being replied to.
+    string[] references?;
 |};
 
 # A file record to indicate attachment
