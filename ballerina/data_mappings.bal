@@ -24,14 +24,13 @@ isolated function convertOASMessageToMessage(oas:Message response) returns Messa
         id: response.id ?: EMPTY_STRING
     };
 
-    string? rawMessage = response.raw;
-    if rawMessage is string {
-        string|error decodedMessage = base64UrlDecode(rawMessage);
-        if decodedMessage is error {
-            return error InvalidEncodedValue(
-                string `Returned message raw field${decodedMessage.message()}`, decodedMessage.cause());
+    do {
+        string? rawMessage = response.raw;
+        if rawMessage is string {
+            email.raw = check base64UrlDecode(rawMessage);
         }
-        email.raw = decodedMessage;
+    } on fail error err {
+        return error InvalidEncodedValue(string `Returned message raw field${err.message()}`, err.cause());
     }
 
     email.labelIds = response.labelIds ?: email.labelIds;
@@ -106,14 +105,14 @@ returns MessagePart|error {
     if body is oas:MessagePartBody {
         messagePart.attachmentId = body.attachmentId ?: messagePart.attachmentId;
         messagePart.size = body.size ?: messagePart.size;
-        if body.data is string {
-            string|error decodedBody = base64UrlDecode(body.data ?: EMPTY_STRING);
-            if decodedBody is error {
-                return error InvalidEncodedValue(
-                    string `Returned message body part of id '${messagePart.partId}'${decodedBody.message()}`,
-                    decodedBody.cause());
+        do {
+            string? data = body.data;
+            if data is string {
+                messagePart.data = check base64UrlDecode(data);
             }
-            messagePart.data = decodedBody;
+        } on fail error err {
+            check error InvalidEncodedValue(
+                string `Returned message body part of id '${messagePart.partId}'${err.message()}`, err.cause());
         }
     }
 
@@ -288,15 +287,15 @@ isolated function convertOASMessagePartBodyToAttachment(oas:MessagePartBody body
     Attachment attachment = {};
     attachment.attachmentId = bodyPart.attachmentId ?: attachment.attachmentId;
     attachment.size = bodyPart.size ?: attachment.size;
-    string? data = bodyPart.data;
-    if data is string {
-        string|error decodedData = base64UrlDecode(data);
-        if decodedData is error {
-            return error InvalidEncodedValue(
-                string `Returned attachment message body part of id '${attachment.attachmentId ?: EMPTY_STRING}'
-                ${decodedData.message()}`, decodedData.cause());
+    do {
+        string? data = bodyPart.data;
+        if data is string {
+            attachment.data = check base64UrlDecode(data);
         }
-        attachment.data = decodedData;
+    } on fail error err {
+        return error InvalidEncodedValue(
+                string `Returned attachment message body part of id '${attachment.attachmentId ?: EMPTY_STRING}'
+                ${err.message()}`, err.cause());
     }
     return attachment;
 }
