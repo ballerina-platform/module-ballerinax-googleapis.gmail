@@ -14,11 +14,15 @@ To utilize the Gmail connector, you must have access to the Gmail REST API throu
 1. Open the [GCP Console](https://console.cloud.google.com/).
 2. Click on the project drop-down and either select an existing project or create a new one for which you want to add an API key.
 
-    ![GCP Console](resources/gcp-console-project-view.png)
+    <div align="center">
+        <img src="resources/gcp-console-project-view.png" width="500">
+    </div>
 
 3. Navigate to the **Library** and enable the Gmail API.
 
-    ![Enable Gmail API](resources/enable-gmail-api.png)
+    <div align="center">
+        <img src="resources/enable-gmail-api.png" width="500">
+    </div>
 
 ## Step 2: Create OAuth Client ID
 
@@ -26,7 +30,9 @@ To utilize the Gmail connector, you must have access to the Gmail REST API throu
 
 2. Click  **Create credentials** and from the dropdown menu, select **OAuth client ID**.
 
-    ![Create Credentials](resources/create-credentials.png)
+    <div align="center">
+        <img src="resources/create-credentials.png" width="500">
+    </div>
 
 3. You will be directed to the **OAuth consent** screen, in which you need to fill in the necessary information below.
 
@@ -46,12 +52,18 @@ To utilize the Gmail connector, you must have access to the Gmail REST API throu
 
 1. Configure the OAuth playground with the OAuth client ID and client secret.
 
-    ![OAuth Playground](resources/oauth-playground.png)
+    <div align="center">
+        <img src="resources/oauth-playground.png" width="500">
+    </div>
 
 2. Authorize the Gmail APIs.
 
-    ![Authorize APIs](resources/authorize-apis.png)
+    <div align="center">
+        <img src="resources/authorize-apis.png" width="500">
+    </div>
 
 3. Exchange the authorization code for tokens.
 
-    ![Exchange Tokens](resources/exchange-tokens.png)
+    <div align="center">
+        <img src="resources/exchange-tokens.png" width="500">
+    </div>
