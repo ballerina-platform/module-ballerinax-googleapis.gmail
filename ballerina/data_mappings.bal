@@ -45,11 +45,9 @@ isolated function convertOASMessageToMessage(oas:Message response) returns Messa
         email.mimeType = response.payload?.mimeType;
 
         oas:MessagePartHeader[] headers = response.payload?.headers ?: [];
-        map<string> headersMap = {};
-        foreach oas:MessagePartHeader h in headers {
-            string originalKey = h.name ?: EMPTY_STRING;
-            headersMap[originalKey.toLowerAscii()] = h.value ?: EMPTY_STRING;
-        }
+        map<string> headersMap = map from oas:MessagePartHeader h in headers
+            let string key = h.name ?: EMPTY_STRING
+            select [key.toLowerAscii(), h.value ?: EMPTY_STRING];
 
         if headersMap.hasKey(TO) {
             email.to = re `,`.split(headersMap.get(TO));
@@ -116,12 +114,9 @@ returns MessagePart|error {
         }
     }
 
-    oas:MessagePart[] parts = response.parts ?: [];
-    if response.parts is oas:MessagePart[] {
-        MessagePart[] processedParts = [];
-        foreach oas:MessagePart part in parts {
-            processedParts.push(check convertOASMessagePartToMultipartMessageBody(part).ensureType(MessagePart));
-        }
+    MessagePart[] processedParts = from oas:MessagePart part in response.parts ?: []
+        select check convertOASMessagePartToMultipartMessageBody(part);
+    if processedParts.length() > 0 {
         messagePart.parts = processedParts;
     }
 
@@ -192,12 +187,8 @@ isolated function getRFC822MessageString(MessageRequest req) returns string|erro
         bodyString += bodyHtmlText;
     }
 
-    string[] inlineImageStrings = [];
-    ImageFile[] inlineImages = req.inlineImages ?: [];
-    foreach ImageFile image in inlineImages {
-        inlineImageStrings.push(check getFileMessageString(image, INLINE));
-    }
-
+    string[] inlineImageStrings = from ImageFile image in req.inlineImages ?: []
+        select check getFileMessageString(image, INLINE);
     if inlineImageStrings.length() > 0 {
         if bodyString != EMPTY_STRING {
             bodyString = getMultipartMessageString(MULTIPART_RELATED_HEADERS, bodyString, ...inlineImageStrings);
@@ -206,11 +197,8 @@ isolated function getRFC822MessageString(MessageRequest req) returns string|erro
         }
     }
 
-    string[] attachmentsStrings = [];
-    AttachmentFile[] attachments = req.attachments ?: [];
-    foreach AttachmentFile attachment in attachments {
-        attachmentsStrings.push(check getFileMessageString(attachment, ATTACHMENT));
-    }
+    string[] attachmentsStrings = from AttachmentFile attachment in req.attachments ?: []
+        select check getFileMessageString(attachment, ATTACHMENT);
 
     if attachmentsStrings.length() > 0 {
         if bodyString != EMPTY_STRING {
@@ -265,17 +253,13 @@ isolated function getEncodedFileContent(string filePath, string embedType) retur
 isolated function convertOASListMessagesResponseToListMessageResponse(oas:ListMessagesResponse response)
 returns ListMessagesResponse {
     ListMessagesResponse messageListPage = {};
-    oas:Message[]? messages = response.messages;
-    if messages is oas:Message[] {
-        Message[] processedMessages = [];
-        foreach oas:Message msg in messages {
-            // Only need to parse the ids as list response does not return any other info.
-            Message email = {
-                threadId: msg.threadId ?: EMPTY_STRING,
-                id: msg.id ?: EMPTY_STRING
-            };
-            processedMessages.push(email);
-        }
+    Message[] processedMessages = from oas:Message msg in response.messages ?: []
+        // Only need to parse the ids as list response does not return any other info.
+        select {
+            threadId: msg.threadId ?: EMPTY_STRING,
+            id: msg.id ?: EMPTY_STRING
+        };
+    if processedMessages.length() > 0 {
         messageListPage.messages = processedMessages;
     }
     messageListPage.nextPageToken = response.nextPageToken ?: messageListPage.nextPageToken;
@@ -303,23 +287,23 @@ isolated function convertOASMessagePartBodyToAttachment(oas:MessagePartBody body
 isolated function convertOASListDraftsResponseToListDraftsResponse(oas:ListDraftsResponse response)
 returns ListDraftsResponse|error {
     ListDraftsResponse draftListPage = {};
-    oas:Draft[]? drafts = response.drafts;
-    if drafts is oas:Draft[] {
-        Draft[] processedDrafts = [];
-        foreach oas:Draft draft in drafts {
-            Draft draftEmail = {
-                id: draft.id ?: EMPTY_STRING
+    Draft[] processedDrafts = [];
+    from oas:Draft draft in response.drafts ?: []
+    do {
+        Draft draftEmail = {
+            id: draft.id ?: EMPTY_STRING
+        };
+        oas:Message? message = draft.message;
+        if message is oas:Message {
+            draftEmail.message = {
+                // list response does not return any other info.
+                threadId: message.threadId ?: EMPTY_STRING,
+                id: message.id ?: EMPTY_STRING
             };
-            oas:Message? message = draft.message;
-            if message is oas:Message {
-                draftEmail.message = {
-                    // list response does not return any other info.
-                    threadId: message.threadId ?: EMPTY_STRING,
-                    id: message.id ?: EMPTY_STRING
-                };
-            }
-            processedDrafts.push(draftEmail);
         }
+        processedDrafts.push(draftEmail);
+    };
+    if processedDrafts.length() > 0 {
         draftListPage.drafts = processedDrafts;
     }
     draftListPage.nextPageToken = response.nextPageToken ?: draftListPage.nextPageToken;
@@ -351,17 +335,13 @@ isolated function convertDraftRequestToOASDraft(DraftRequest payload) returns oa
 
 isolated function convertOASListThreadsResponseToListThreadsResponse(oas:ListThreadsResponse response) returns ListThreadsResponse {
     ListThreadsResponse threadListPage = {};
-    oas:MailThread[]? threads = response.threads;
-    if threads is oas:MailThread[] {
-        MailThread[] processedThreads = [];
-        foreach oas:MailThread thread in threads {
-            MailThread emailThread = {
-                // list response does not return any other info.
-                id: thread.id ?: EMPTY_STRING,
-                historyId: thread.historyId ?: EMPTY_STRING
-            };
-            processedThreads.push(emailThread);
-        }
+    MailThread[] processedThreads = from oas:MailThread thread in response.threads ?: []
+        select {
+            // list response does not return any other info.
+            id: thread.id ?: EMPTY_STRING,
+            historyId: thread.historyId ?: EMPTY_STRING
+        };
+    if processedThreads.length() > 0 {
         threadListPage.threads = processedThreads;
     }
     threadListPage.nextPageToken = response.nextPageToken ?: threadListPage.nextPageToken;
@@ -374,12 +354,9 @@ isolated function convertOASMailThreadToMailThread(oas:MailThread oasThread) ret
         id: oasThread.id ?: EMPTY_STRING,
         historyId: oasThread.historyId ?: EMPTY_STRING
     };
-    oas:Message[]? messages = oasThread.messages;
-    if messages is oas:Message[] {
-        Message[] processedMessages = [];
-        foreach oas:Message msg in messages {
-            processedMessages.push(check convertOASMessageToMessage(msg));
-        }
+    Message[] processedMessages = from oas:Message message in oasThread.messages ?: []
+        select check convertOASMessageToMessage(message);
+    if processedMessages.length() > 0 {
         thread.messages = processedMessages;
     }
     return thread;
@@ -387,90 +364,76 @@ isolated function convertOASMailThreadToMailThread(oas:MailThread oasThread) ret
 
 isolated function convertOASListHistoryResponseToListHistoryResponse(oas:ListHistoryResponse response) returns ListHistoryResponse {
     ListHistoryResponse historyListPage = {};
-    oas:History[]? histories = response.history;
-    if histories is oas:History[] {
-        History[] processedHistories = [];
-        foreach oas:History history in histories {
-            History emailHistory = {
-                id: history.id ?: EMPTY_STRING
+
+    History[] processedHistories = [];
+    from oas:History history in response.history ?: []
+    do {
+        History emailHistory = {
+            id: history.id ?: EMPTY_STRING
+        };
+        Message[] processedMessages = from oas:Message message in history.messages ?: []
+            select {
+                // list response does not return any other info.
+                threadId: message.threadId ?: EMPTY_STRING,
+                id: message.id ?: EMPTY_STRING
             };
-            oas:Message[]? messages = history.messages;
-            if messages is oas:Message[] {
-                Message[] processedMessages = [];
-                foreach oas:Message msg in messages {
-                    processedMessages.push({
-                        // list response does not return any other info.
-                        threadId: msg.threadId ?: EMPTY_STRING,
-                        id: msg.id ?: EMPTY_STRING
-                    });
-                }
-                emailHistory.messages = processedMessages;
-            }
-
-            oas:HistoryLabelAdded[]? labelAddedMessages = history.labelsAdded;
-            if labelAddedMessages is oas:HistoryLabelAdded[] {
-                HistoryLabelAdded[] processedLabelAddedMessages = [];
-                foreach oas:HistoryLabelAdded labelAddedMessage in labelAddedMessages {
-                    processedLabelAddedMessages.push({
-                        // list response does not return any other info.
-                        labelIds: labelAddedMessage.labelIds ?: [],
-                        message: {
-                            threadId: labelAddedMessage.message?.threadId ?: EMPTY_STRING,
-                            id: labelAddedMessage.message?.id ?: EMPTY_STRING
-                        }
-                    });
-                }
-                emailHistory.labelsAdded = processedLabelAddedMessages;
-            }
-
-            oas:HistoryLabelRemoved[]? labelRemovedMessages = history.labelsRemoved;
-            if labelRemovedMessages is oas:HistoryLabelRemoved[] {
-                HistoryLabelRemoved[] processedLabelRemovedMessages = [];
-                foreach oas:HistoryLabelRemoved labelRemovedMessage in labelRemovedMessages {
-                    processedLabelRemovedMessages.push({
-                        // list response does not return any other info.
-                        labelIds: labelRemovedMessage.labelIds ?: [],
-                        message: {
-                            threadId: labelRemovedMessage.message?.threadId ?: EMPTY_STRING,
-                            id: labelRemovedMessage.message?.id ?: EMPTY_STRING
-                        }
-                    });
-                }
-                emailHistory.labelsRemoved = processedLabelRemovedMessages;
-            }
-
-            oas:HistoryMessageAdded[]? messageAddedMessages = history.messagesAdded;
-            if messageAddedMessages is oas:HistoryMessageAdded[] {
-                HistoryMessageAdded[] processedMessageAddedMessages = [];
-                foreach oas:HistoryMessageAdded messageAddedMessage in messageAddedMessages {
-                    processedMessageAddedMessages.push({
-                        // list response does not return any other info.
-                        message: {
-                            threadId: messageAddedMessage.message?.threadId ?: EMPTY_STRING,
-                            id: messageAddedMessage.message?.id ?: EMPTY_STRING
-                        }
-                    });
-                }
-                emailHistory.messagesAdded = processedMessageAddedMessages;
-            }
-
-            oas:HistoryMessageDeleted[]? messageDeletedMessages = history.messagesDeleted;
-            if messageDeletedMessages is oas:HistoryMessageDeleted[] {
-                HistoryMessageDeleted[] processedMessageDeletedMessages = [];
-                foreach oas:HistoryMessageDeleted messageDeletedMessage in messageDeletedMessages {
-                    processedMessageDeletedMessages.push({
-                        // list response does not return any other info.
-                        message: {
-                            threadId: messageDeletedMessage.message?.threadId ?: EMPTY_STRING,
-                            id: messageDeletedMessage.message?.id ?: EMPTY_STRING
-                        }
-                    });
-                }
-                emailHistory.messagesDeleted = processedMessageDeletedMessages;
-            }
-
-            processedHistories.push(emailHistory);
+        if processedMessages.length() > 0 {
+            emailHistory.messages = processedMessages;
         }
+
+        HistoryLabelAdded[] processedLabelAddedMessages = from oas:HistoryLabelAdded msg in history.labelsAdded ?: []
+            select {
+                // list response does not return any other info.
+                labelIds: msg.labelIds ?: [],
+                message: {
+                    threadId: msg.message?.threadId ?: EMPTY_STRING,
+                    id: msg.message?.id ?: EMPTY_STRING
+                }
+            };
+        if processedLabelAddedMessages.length() > 0 {
+            emailHistory.labelsAdded = processedLabelAddedMessages;
+        }
+
+        HistoryLabelRemoved[] processedLabelRemovedMessages = from oas:HistoryLabelRemoved msg in history.labelsRemoved ?: []
+            select {
+                // list response does not return any other info.
+                labelIds: msg.labelIds ?: [],
+                message: {
+                    threadId: msg.message?.threadId ?: EMPTY_STRING,
+                    id: msg.message?.id ?: EMPTY_STRING
+                }
+            };
+        if processedLabelRemovedMessages.length() > 0 {
+            emailHistory.labelsRemoved = processedLabelRemovedMessages;
+        }
+
+        HistoryMessageAdded[] processedMessageAddedMessages = from oas:HistoryMessageAdded msg in history.messagesAdded ?: []
+            select {
+                // list response does not return any other info.
+                message: {
+                    threadId: msg.message?.threadId ?: EMPTY_STRING,
+                    id: msg.message?.id ?: EMPTY_STRING
+                }
+            };
+        if processedMessageAddedMessages.length() > 0 {
+            emailHistory.messagesAdded = processedMessageAddedMessages;
+        }
+
+        HistoryMessageDeleted[] processedMessageDeletedMessages = from oas:HistoryMessageDeleted msg in history.messagesDeleted ?: []
+            select {
+                // list response does not return any other info.
+                message: {
+                    threadId: msg.message?.threadId ?: EMPTY_STRING,
+                    id: msg.message?.id ?: EMPTY_STRING
+                }
+            };
+        if processedMessageDeletedMessages.length() > 0 {
+            emailHistory.messagesDeleted = processedMessageDeletedMessages;
+        }
+
+        processedHistories.push(emailHistory);
+    };
+    if processedHistories.length() > 0 {
         historyListPage.history = processedHistories;
     }
     historyListPage.historyId = response.historyId ?: historyListPage.historyId;
