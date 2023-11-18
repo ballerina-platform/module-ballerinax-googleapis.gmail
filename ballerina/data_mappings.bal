@@ -33,11 +33,11 @@ isolated function convertOASMessageToMessage(oas:Message response) returns Messa
         return error InvalidEncodedValue(string `Returned message raw field${err.message()}`, err.cause());
     }
 
-    email.labelIds = response.labelIds ?: email.labelIds;
-    email.snippet = response.snippet ?: email.snippet;
-    email.historyId = response.historyId ?: email.historyId;
-    email.internalDate = response.internalDate ?: email.internalDate;
-    email.sizeEstimate = response.sizeEstimate ?: email.sizeEstimate;
+    email.labelIds = response.labelIds;
+    email.snippet = response.snippet;
+    email.historyId = response.historyId;
+    email.internalDate = response.internalDate;
+    email.sizeEstimate = response.sizeEstimate;
 
     oas:MessagePart? payload = response.payload;
     if payload is oas:MessagePart {
@@ -90,8 +90,8 @@ returns MessagePart|error {
     MessagePart messagePart = {
         partId: response.partId ?: EMPTY_STRING
     };
-    messagePart.filename = response.filename ?: messagePart.filename;
-    messagePart.mimeType = response.mimeType ?: messagePart.mimeType;
+    messagePart.filename = response.filename;
+    messagePart.mimeType = response.mimeType;
 
     oas:MessagePartHeader[] headers = response.headers ?: [];
     if response.headers is oas:MessagePartHeader[] {
@@ -101,8 +101,8 @@ returns MessagePart|error {
 
     oas:MessagePartBody? body = response.body;
     if body is oas:MessagePartBody {
-        messagePart.attachmentId = body.attachmentId ?: messagePart.attachmentId;
-        messagePart.size = body.size ?: messagePart.size;
+        messagePart.attachmentId = body.attachmentId;
+        messagePart.size = body.size;
         do {
             string? data = body.data;
             if data is string {
@@ -128,7 +128,7 @@ isolated function convertMessageRequestToOASMessage(MessageRequest req) returns 
     oas:Message apiMessage = {
         raw: base64UrlEncode(message)
     };
-    apiMessage.threadId = req.threadId ?: apiMessage.threadId;
+    apiMessage.threadId = req.threadId;
     return apiMessage;
 }
 
@@ -262,15 +262,15 @@ returns ListMessagesResponse {
     if processedMessages.length() > 0 {
         messageListPage.messages = processedMessages;
     }
-    messageListPage.nextPageToken = response.nextPageToken ?: messageListPage.nextPageToken;
-    messageListPage.resultSizeEstimate = response.resultSizeEstimate ?: messageListPage.resultSizeEstimate;
+    messageListPage.nextPageToken = response.nextPageToken;
+    messageListPage.resultSizeEstimate = response.resultSizeEstimate;
     return messageListPage;
 }
 
 isolated function convertOASMessagePartBodyToAttachment(oas:MessagePartBody bodyPart) returns Attachment|error {
     Attachment attachment = {};
-    attachment.attachmentId = bodyPart.attachmentId ?: attachment.attachmentId;
-    attachment.size = bodyPart.size ?: attachment.size;
+    attachment.attachmentId = bodyPart.attachmentId;
+    attachment.size = bodyPart.size;
     do {
         string? data = bodyPart.data;
         if data is string {
@@ -306,8 +306,8 @@ returns ListDraftsResponse|error {
     if processedDrafts.length() > 0 {
         draftListPage.drafts = processedDrafts;
     }
-    draftListPage.nextPageToken = response.nextPageToken ?: draftListPage.nextPageToken;
-    draftListPage.resultSizeEstimate = response.resultSizeEstimate ?: draftListPage.resultSizeEstimate;
+    draftListPage.nextPageToken = response.nextPageToken;
+    draftListPage.resultSizeEstimate = response.resultSizeEstimate;
     return draftListPage;
 }
 
@@ -344,8 +344,8 @@ isolated function convertOASListThreadsResponseToListThreadsResponse(oas:ListThr
     if processedThreads.length() > 0 {
         threadListPage.threads = processedThreads;
     }
-    threadListPage.nextPageToken = response.nextPageToken ?: threadListPage.nextPageToken;
-    threadListPage.resultSizeEstimate = response.resultSizeEstimate ?: threadListPage.resultSizeEstimate;
+    threadListPage.nextPageToken = response.nextPageToken;
+    threadListPage.resultSizeEstimate = response.resultSizeEstimate;
     return threadListPage;
 }
 
@@ -436,7 +436,7 @@ isolated function convertOASListHistoryResponseToListHistoryResponse(oas:ListHis
     if processedHistories.length() > 0 {
         historyListPage.history = processedHistories;
     }
-    historyListPage.historyId = response.historyId ?: historyListPage.historyId;
-    historyListPage.nextPageToken = response.nextPageToken ?: historyListPage.nextPageToken;
+    historyListPage.historyId = response.historyId;
+    historyListPage.nextPageToken = response.nextPageToken;
     return historyListPage;
 }
