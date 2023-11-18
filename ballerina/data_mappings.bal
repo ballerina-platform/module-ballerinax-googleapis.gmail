@@ -123,14 +123,10 @@ returns MessagePart|error {
     return messagePart;
 }
 
-isolated function convertMessageRequestToOASMessage(MessageRequest req) returns oas:Message|error {
-    string message = check getRFC822MessageString(req);
-    oas:Message apiMessage = {
-        raw: base64UrlEncode(message)
-    };
-    apiMessage.threadId = req.threadId;
-    return apiMessage;
-}
+isolated function convertMessageRequestToOASMessage(MessageRequest messageRequest) returns oas:Message|error => {
+    threadId: messageRequest.threadId,
+    raw: base64UrlEncode(check getRFC822MessageString(messageRequest))
+};
 
 isolated function getRFC822MessageString(MessageRequest req) returns string|error {
     //Raw string of message
