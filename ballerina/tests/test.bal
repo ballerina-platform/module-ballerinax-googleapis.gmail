@@ -38,9 +38,9 @@ string historyId = "";
 
 ConnectionConfig gmailConfig = {
     auth: {
-        refreshToken: refreshToken,
-        clientId: clientId,
-        clientSecret: clientSecret
+        refreshToken,
+        clientId,
+        clientSecret
     }
 };
 

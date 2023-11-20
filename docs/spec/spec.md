@@ -53,14 +53,14 @@ The `gmail:Client` initialization method requires valid authentication credentia
 
 ```ballerina
 gmail:Client gmailClient = check new gmail:Client (
-        config = {
-            auth: {
-                refreshToken: refreshToken,
-                clientId: clientId,
-                clientSecret: clientSecret
-            }
+    config = {
+        auth: {
+            refreshToken,
+            clientId,
+            clientSecret
         }
-    );
+    }
+);
 ```
 
 The `gmail:Client` uses an `http:Client` as its underlying implementation. You can configure this `http:Client` by providing the `gmail:ConnectionConfig` as a parameter during the `gmail:Client` initialization.

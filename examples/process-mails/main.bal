@@ -22,13 +22,15 @@ configurable string clientId = os:getEnv("CLIENT_ID");
 configurable string clientSecret = os:getEnv("CLIENT_SECRET");
 
 public function main() returns error? {
-    gmail:Client gmailClient = check new gmail:Client({
-        auth: {
-            refreshToken: refreshToken,
-            clientId: clientId,
-            clientSecret: clientSecret
+    gmail:Client gmailClient = check new gmail:Client(
+        config = {
+            auth: {
+                refreshToken,
+                clientId,
+                clientSecret
+            }
         }
-    });
+    );
 
     gmail:ListMessagesResponse messageList = check gmailClient->/users/me/messages(q = "label:INBOX is:unread");
 

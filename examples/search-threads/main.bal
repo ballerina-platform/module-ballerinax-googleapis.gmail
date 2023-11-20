@@ -23,13 +23,15 @@ configurable string clientSecret = os:getEnv("CLIENT_SECRET");
 
 public function main() returns error? {
 
-    gmail:Client gmailClient = check new ({
-        auth: {
-            refreshToken: refreshToken,
-            clientId: clientId,
-            clientSecret: clientSecret
+    gmail:Client gmailClient = check new gmail:Client(
+        config = {
+            auth: {
+                refreshToken,
+                clientId,
+                clientSecret
+            }
         }
-    });
+    );
 
     // Search query string
     string query = "setup database";
