@@ -18,13 +18,17 @@ The `ballerinax/googleapis.gmail` package offers APIs to connect and interact wi
 To use the `gmail` connector in your Ballerina application, modify the `.bal` file as follows:
 
 ### Step 1: Import the connector
+
 Import the `ballerinax/googleapis.gmail` package into your Ballerina project.
+
 ```ballerina
 import ballerinax/googleapis.gmail;
 ```
 
 ### Step 2: Instantiate a new connector
+
 Create a `gmail:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
+
 ```ballerina
 gmail:Client gmailClient = check new gmail:Client (
         config = {
@@ -38,7 +42,9 @@ gmail:Client gmailClient = check new gmail:Client (
 ```
 
 ### Step 3: Invoke the connector operation
+
 Now, utilize the available connector operations.
+
 ```ballerina
 gmail:MessageListPage messageList = check gmailClient->/users/me/messages(q = "label:INBOX is:unread");
 ```
@@ -49,7 +55,6 @@ The `gmail` connector provides practical examples illustrating usage in various 
 
 1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails/main.bal)
     Manage customer feedback emails by processing unread emails in the inbox, extracting details, and marking them as read.
-
 
 2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails/main.bal)
     Automatically send emails for scheduled maintenance breaks.
@@ -74,9 +79,9 @@ To use the `gmail` connector, create Gmail credentials to interact with Gmail.
 
 For detailed steps, including necessary links, refer to the [Setup guide](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/docs/setup/setup.md).
 
-## Issues and projects 
+## Issues and projects
 
-The **Issues** and **Projects** tabs are disabled for this repository as this is part of the Ballerina library. To report bugs, request new features, start new discussions, view project boards, etc., visit the Ballerina library [parent repository](https://github.com/ballerina-platform/ballerina-library). 
+The **Issues** and **Projects** tabs are disabled for this repository as this is part of the Ballerina library. To report bugs, request new features, start new discussions, view project boards, etc., visit the Ballerina library [parent repository](https://github.com/ballerina-platform/ballerina-library).
 
 This repository only contains the source code for the package.
 
@@ -102,37 +107,44 @@ This repository only contains the source code for the package.
 Execute the commands below to build from the source.
 
 1. To build the package:
-   ```
+
+   ```bash
    ./gradlew clean build
    ```
 
 2. To run the tests:
-   ```
+
+   ```bash
    ./gradlew clean test
    ```
 
 3. To build the without the tests:
-   ```
+
+   ```bash
    ./gradlew clean build -x test
    ```
 
-5. To debug package with a remote debugger:
-   ```
+4. To debug package with a remote debugger:
+
+   ```bash
    ./gradlew clean build -Pdebug=<port>
    ```
 
-6. To debug with the Ballerina language:
-   ```
+5. To debug with the Ballerina language:
+
+   ```bash
    ./gradlew clean build -PbalJavaDebug=<port>
    ```
 
-7. Publish the generated artifacts to the local Ballerina Central repository:
-    ```
+6. Publish the generated artifacts to the local Ballerina Central repository:
+
+    ```bash
     ./gradlew clean build -PpublishToLocalCentral=true
     ```
 
-8. Publish the generated artifacts to the Ballerina Central repository:
-   ```
+7. Publish the generated artifacts to the Ballerina Central repository:
+
+   ```bash
    ./gradlew clean build -PpublishToCentral=true
    ```
 

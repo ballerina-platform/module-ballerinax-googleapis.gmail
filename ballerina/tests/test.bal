@@ -16,6 +16,7 @@
 import googleapis.gmail.oas;
 
 import ballerina/io;
+import ballerina/lang.runtime;
 import ballerina/os;
 import ballerina/test;
 
@@ -55,7 +56,7 @@ function testGmailGetProfile() returns error? {
 @test:Config {}
 function testMessageInsert() returns error? {
     MessageRequest request = {
-        'from: recipient,  // Mail migration, mail reeived from receipent account
+        'from: recipient, // Mail migration, mail reeived from receipent account
         subject: "Gmail insert test"
     };
     Message message = check gmailClient->/users/me/messages.post(request);
@@ -124,7 +125,7 @@ function testPostMessage() returns error? {
     Message message = check gmailClient->/users/me/messages/send.post(request);
     test:assertTrue(message.id != "", msg = "/users/[userId]/messages/send failed");
     sentMessageId = message.id;
-    }
+}
 
 @test:Config {
     dependsOn: [testPostMessage]
@@ -163,7 +164,7 @@ function testMessageModify() returns error? {
     Message getMessage = check gmailClient->/users/me/messages/[sentMessageId];
     string[]? labelIds = getMessage.labelIds;
     if labelIds is string[] {
-        test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0, 
+        test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0,
                         msg = "/users/[userId]/messages/[sentMessageId]/modify failed");
     } else {
         test:assertFail("/users/[userId]/messages/[sentMessageId]/modify failed");
@@ -381,7 +382,7 @@ function testModifyMailThread() returns error? {
     if firstMesssage is Message[] {
         string[]? labelIds = firstMesssage[0].labelIds;
         if labelIds is string[] {
-            test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0, 
+            test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0,
                             msg = "/users/[userId]/threads/[threadId]/modify failed");
         } else {
             test:assertFail("/users/[userId]/threads/[threadId]/modify failed");
@@ -500,4 +501,88 @@ function testDeleteLabel() returns error? {
 function testListHistory() returns error? {
     ListHistoryResponse historyListPage = check gmailClient->/users/me/history(startHistoryId = historyId);
     test:assertTrue(historyListPage.history is History[], msg = "/users/[userId]/history failed");
+}
+
+@test:Config {
+    dependsOn: [testListHistory]
+}
+function testReplyTo() returns error? {
+    MessageRequest request = {
+        to: [recipient],
+        subject: "Test Gmail Reply To",
+        bodyInText: "This is text equivalent",
+        bodyInHtml: "<html><body><h1> Welcome!</h1></body></html>"
+    };
+    Message message = check gmailClient->/users/me/messages/send.post(request);
+
+    runtime:sleep(10);
+
+    Message completeMsg = check gmailClient->/users/me/messages/[message.id](format = "metadata");
+
+    // Create a new MessageRequest for the reply
+    MessageRequest replyRequest = {
+        to: [recipient],
+        subject: "Test Gmail Reply To",
+        bodyInText: "This is a reply",
+        bodyInHtml: "<html><body><h1> This is a reply </h1></body></html>",
+        threadId: message.threadId,
+        initialMessageId: completeMsg.messageId,
+        references: [completeMsg.messageId ?: EMPTY_STRING]
+    };
+
+    // Send the reply
+    Message replyMessage = check gmailClient->/users/me/messages/send.post(replyRequest);
+    runtime:sleep(10);
+
+    // Get the message thread
+    MailThread mailThread = check gmailClient->/users/me/threads/[message.threadId];
+
+    Message[]? threadMessages = mailThread.messages;
+
+    if threadMessages is Message[] {
+        test:assertTrue(threadMessages.length() == 2, "Mail thread should contain two messages");
+        test:assertTrue(threadMessages[0].id == message.id, "Mail thread should contain message with ID <message1-id>");
+        test:assertTrue(threadMessages[1].id == replyMessage.id, "Mail thread should contain message with ID <message2-id>");
+    } else {
+        test:assertFail("Message not found");
+    }
+    check gmailClient->/users/me/threads/[threadId].delete();
+}
+
+@test:Config {
+}
+function testUrlDecodeFailure() returns error? {
+    oas:Message receivedMsg = {
+        threadId: "qweqweqdqd",
+        id: "saDSASDASDA",
+        raw: "ASDADSADADADADADAD"
+    };
+    Message|error result = convertOASMessageToMessage(receivedMsg);
+    if result is error {
+        test:assertEquals(result.message(), "Returned message raw field is not a valid Base64 URL encoded value.",
+        msg = "Error decoding message");
+    } else {
+        test:assertFail("Expected decoded error");
+    }
+}
+
+@test:Config {
+}
+function testAttachmentSendFailure() returns error? {
+    MessageRequest sendMsg = {
+        attachments: [
+            {
+                name: "test.txt",
+                path: "asdadsa",
+                mimeType: "text/plain"
+            }
+        ]
+    };
+    oas:Message|error result = convertMessageRequestToOASMessage(sendMsg);
+    if result is error {
+        test:assertEquals(result.message(),
+        "Unable to retrieve attachment: asdadsa", msg = "Error decoding message");
+    } else {
+        test:assertFail("Expected decoded error");
+    }
 }

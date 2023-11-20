@@ -21,6 +21,10 @@ isolated function base64UrlEncode(string contentToBeEncoded) returns string {
 }
 
 isolated function base64UrlDecode(string contentToBeDecoded) returns string|error {
-    string base64Encoded = re `_`.replaceAll(re `-`.replaceAll(contentToBeDecoded, PLUS), FORWARD_SLASH);
-    return check string:fromBytes(check array:fromBase64(base64Encoded));
+    do {
+        string base64Encoded = re `_`.replaceAll(re `-`.replaceAll(contentToBeDecoded, PLUS), FORWARD_SLASH);
+        return check string:fromBytes(check array:fromBase64(base64Encoded));
+    } on fail error e {
+        return error ValueEncodeError(" is not a valid Base64 URL encoded value.", e);
+    }
 }

@@ -1,3 +1,5 @@
+# Package overview
+
 [Gmail](https://blog.google/products/gmail/) is a widely-used email service provided by Google LLC, enabling users to send and receive emails over the internet.
 
 The `ballerinax/googleapis.gmail` package offers APIs to connect and interact with [Gmail API](https://developers.google.com/gmail/api/guides) endpoints.
@@ -9,13 +11,17 @@ The `ballerinax/googleapis.gmail` package offers APIs to connect and interact wi
 To use the `gmail` connector in your Ballerina application, modify the `.bal` file as follows:
 
 ### Step 1: Import the connector
+
 Import the `ballerinax/googleapis.gmail` package into your Ballerina project.
+
 ```ballerina
 import ballerinax/googleapis.gmail;
 ```
 
 ### Step 2: Instantiate a new connector
+
 Create a `gmail:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
+
 ```ballerina
 gmail:Client gmailClient = check new gmail:Client (
         config = {
@@ -29,7 +35,9 @@ gmail:Client gmailClient = check new gmail:Client (
 ```
 
 ### Step 3: Invoke the connector operation
+
 Now, utilize the available connector operations.
+
 ```ballerina
 gmail:MessageListPage messageList = check gmailClient->/users/me/messages(q = "label:INBOX is:unread");
 ```
@@ -40,7 +48,6 @@ The `gmail` connector provides practical examples illustrating usage in various 
 
 1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails/main.bal)
     Manage customer feedback emails by processing unread emails in the inbox, extracting details, and marking them as read.
-
 
 2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails/main.bal)
     Automatically send emails for scheduled maintenance breaks.
@@ -66,8 +73,10 @@ To use the `gmail` connector, create Gmail credentials to interact with Gmail.
 For detailed steps, including necessary links, refer to the [Setup guide](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/docs/setup/setup.md).
 
 ## Report Issues
+
 To report bugs, request new features, start new discussions, view project boards, etc., go to the [Ballerina library parent repository](https://github.com/ballerina-platform/ballerina-library).
 
 ## Useful Links
+
 - Chat live with us via our [Discord server](https://discord.gg/ballerinalang).
 - Post all technical questions on Stack Overflow with the [#ballerina](https://stackoverflow.com/questions/tagged/ballerina) tag.

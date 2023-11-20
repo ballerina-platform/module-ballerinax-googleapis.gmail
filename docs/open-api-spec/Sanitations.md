@@ -1,4 +1,4 @@
-## Introduction
+# Introduction
 
 This file records the sanitation done on top of the OAS from APIs guru. Google uses Google discovery format to expose API details. APIs guru uses a conversion tool to change the discovery documentation to OAS. These sanitation's are done for improving usability and as workaround for known limitations in language side.
 
@@ -12,12 +12,11 @@ This file records the sanitation done on top of the OAS from APIs guru. Google u
 
 4. Move parameters `xgafv` and `alt` definitions to schemas. This ensures ballerina enums are created for the parameters not inline string unions.
 
-5. Rename `Thread` schema to `MailThread`. This is done as a workaround for issue, [Openapi tool does not escape in built symbols ](https://github.com/ballerina-platform/ballerina-standard-library/issues/5067)
+5. Rename `Thread` schema to `MailThread`. This is done as a workaround for issue, [Openapi tool does not escape in built symbols](https://github.com/ballerina-platform/ballerina-standard-library/issues/5067)
 
 6. Add description for `LabelColor` schema.
 
-
-### OpenAPI cli command
+## OpenAPI cli command
 
 ```bash
 bal openapi -i docs/open-api-spec/openapi.yaml --mode client -o ballerina/generated/oas
