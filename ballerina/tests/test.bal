@@ -16,6 +16,7 @@
 import googleapis.gmail.oas;
 
 import ballerina/io;
+import ballerina/lang.runtime;
 import ballerina/os;
 import ballerina/test;
 
@@ -514,6 +515,8 @@ function testReplyTo() returns error? {
     };
     Message message = check gmailClient->/users/me/messages/send.post(request);
 
+    runtime:sleep(10);
+
     Message completeMsg = check gmailClient->/users/me/messages/[message.id](format = "metadata");
 
     // Create a new MessageRequest for the reply
@@ -529,6 +532,7 @@ function testReplyTo() returns error? {
 
     // Send the reply
     Message replyMessage = check gmailClient->/users/me/messages/send.post(replyRequest);
+    runtime:sleep(10);
 
     // Get the message thread
     MailThread mailThread = check gmailClient->/users/me/threads/[message.threadId];
