@@ -166,5 +166,5 @@ The `gmail` package includes the following error types:
 └── Error                               # Defines the generic error type for the `gmail` module. 
     ├── FileGenericError                # Error that occurs when there is an issue with inline images or attachments. 
                                         # This could be due to issues like file not found, unsupported file type, etc.
-    └── InvalidEncodedValue             # Error that occurs when an invalid encoded value is provided for the `data` fields.
+    └── ValueEncodeError               # Error that occurs when an invalid encoded value is provided for the `data` fields.
 ```

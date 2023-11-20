@@ -21,4 +21,4 @@ public type Error distinct error;
 public type FileGenericError distinct Error;
 
 # Error that occurs when an invalid encoded value is provided for the `data` fields.
-public type InvalidEncodedValue distinct Error;
+public type ValueEncodeError distinct Error;

@@ -30,7 +30,7 @@ isolated function convertOASMessageToMessage(oas:Message response) returns Messa
             email.raw = check base64UrlDecode(rawMessage);
         }
     } on fail error err {
-        return error InvalidEncodedValue(string `Returned message raw field${err.message()}`, err.cause());
+        return error ValueEncodeError(string `Returned message raw field${err.message()}`, err.cause());
     }
 
     email.labelIds = response.labelIds;
@@ -109,7 +109,7 @@ returns MessagePart|error {
                 messagePart.data = check base64UrlDecode(data);
             }
         } on fail error err {
-            check error InvalidEncodedValue(
+            check error ValueEncodeError(
                 string `Returned message body part of id '${messagePart.partId}'${err.message()}`, err.cause());
         }
     }
@@ -273,7 +273,7 @@ isolated function convertOASMessagePartBodyToAttachment(oas:MessagePartBody body
             attachment.data = check base64UrlDecode(data);
         }
     } on fail error err {
-        return error InvalidEncodedValue(
+        return error ValueEncodeError(
                 string `Returned attachment message body part of id '${attachment.attachmentId ?: EMPTY_STRING}'
                 ${err.message()}`, err.cause());
     }
