@@ -4,7 +4,7 @@ _Owners_: @niveathika \
 _Reviewers_: @daneshk \
 _Created_: 2022/10/31 \
 _Updated_: 2023/10/31 \
-_Edition_: Swan Lake 
+_Edition_: Swan Lake  
 
 ## Introduction
 
@@ -28,7 +28,7 @@ The conforming implementation of the specification is released and included in t
 7. [`Label` Resource](#7-label-resource)
 8. [`History` Resource](#8-history-resource)
 9. [Errors](#9-errors)
- 
+
 ## 1. Overview
 
 The Ballerina language offers first-class support for writing network-oriented programs. The `gmail` package leverages these language features to create a programming model for consuming the Gmail REST API.
@@ -39,7 +39,7 @@ It offers intuitive resource methods to interact with the [Gmail API v1](https:/
 
 This section outlines the client of the Ballerina `gmail` package. To utilize the Ballerina `gmail` package, a user must first import it.
 
-#### Example: Importing the Gmail package
+### Example: Importing the Gmail package
 
 ```ballerina
 import ballerinax/googleapis.gmail;
@@ -47,7 +47,7 @@ import ballerinax/googleapis.gmail;
 
 The `gmail:Client` allows you to connect to the Gmail RESTful API. The client currently supports the processing of the `Profile`, `Message`, `Draft`, `Thread`, and `Label` resources. The client employs HTTP as the underlying protocol for communication with the API.
 
-#### 2.1 Initializing the client
+### 2.1 Initializing the client
 
 The `gmail:Client` initialization method requires valid authentication credentials.
 
@@ -78,7 +78,7 @@ public type Profile record {
 };
 ```
 
-#### Example: Retrieving the Gmail profile 
+### Example: Retrieving the Gmail profile
 
 ```ballerina
 Profile profile = check gmailClient->/users/me/profile();
@@ -161,6 +161,7 @@ The `History` resource provides a means to track all changes made to a specific 
 ## 9. Errors
 
 The `gmail` package includes the following error types:
+
 ```bash
 .
 └── Error                               # Defines the generic error type for the `gmail` module. 

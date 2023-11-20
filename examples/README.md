@@ -5,7 +5,6 @@ The `gmail` connector provides practical examples illustrating usage in various 
 1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails/main.bal)
     Manage customer feedback emails by processing unread emails in the inbox, extracting details, and marking them as read.
 
-
 2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails/main.bal)
     Automatically send emails for scheduled maintenance breaks.
 
