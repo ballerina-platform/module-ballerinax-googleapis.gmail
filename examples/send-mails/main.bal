@@ -25,9 +25,9 @@ configurable string recipient = os:getEnv("RECIPIENT");
 public function main() returns error? {
     gmail:Client gmailClient = check new ({
         auth: {
-            refreshToken: refreshToken,
-            clientId: clientId,
-            clientSecret: clientSecret
+            refreshToken,
+            clientId,
+            clientSecret
         }
     });
 

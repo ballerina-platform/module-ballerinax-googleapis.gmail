@@ -24,14 +24,14 @@ Create a `gmail:ConnectionConfig` with the obtained OAuth2.0 tokens and initiali
 
 ```ballerina
 gmail:Client gmailClient = check new gmail:Client (
-        config = {
-            auth: {
-                refreshToken: refreshToken,
-                clientId: clientId,
-                clientSecret: clientSecret
-            }
+    config = {
+        auth: {
+            refreshToken,
+            clientId,
+            clientSecret
         }
-    );
+    }
+);
 ```
 
 ### Step 3: Invoke the connector operation

@@ -197,7 +197,7 @@ public isolated client class Client {
             string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
             string? upload_protocol = (), string? uploadType = ())
     returns error? {
-        _ = check self.genClient->/users/[userId]/drafts/[id].delete(xgafv, access_token, alt, callback, fields,
+        return self.genClient->/users/[userId]/drafts/[id].delete(xgafv, access_token, alt, callback, fields,
             'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
         );
     }
@@ -361,7 +361,7 @@ public isolated client class Client {
             string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
             string? upload_protocol = (), string? uploadType = ())
     returns error? {
-        _ = check self.genClient->/users/[userId]/labels/[id].delete(xgafv, access_token, alt, callback, fields,
+        return self.genClient->/users/[userId]/labels/[id].delete(xgafv, access_token, alt, callback, fields,
             'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
         );
     }
@@ -479,7 +479,7 @@ public isolated client class Client {
             string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (),
             boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
     returns error? {
-        _ = check self.genClient->/users/[userId]/messages/batchDelete.post(payload, xgafv, access_token,
+        return self.genClient->/users/[userId]/messages/batchDelete.post(payload, xgafv, access_token,
             alt, callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
         );
     }
@@ -505,7 +505,7 @@ public isolated client class Client {
             string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (),
             boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ())
     returns error? {
-        _ = check self.genClient->/users/[userId]/messages/batchModify.post(payload, xgafv, access_token,
+        return self.genClient->/users/[userId]/messages/batchModify.post(payload, xgafv, access_token,
             alt, callback, fields, 'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
         );
     }
@@ -626,7 +626,7 @@ public isolated client class Client {
             string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
             string? upload_protocol = (), string? uploadType = ())
     returns error? {
-        _ = check self.genClient->/users/[userId]/messages/[id].delete(xgafv, access_token, alt, callback, fields,
+        return self.genClient->/users/[userId]/messages/[id].delete(xgafv, access_token, alt, callback, fields,
             'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
         );
     }
@@ -850,7 +850,7 @@ public isolated client class Client {
             string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (),
             string? upload_protocol = (), string? uploadType = ())
     returns error? {
-        _ = check self.genClient->/users/[userId]/threads/[id].delete(xgafv, access_token, alt, callback, fields,
+        return self.genClient->/users/[userId]/threads/[id].delete(xgafv, access_token, alt, callback, fields,
             'key, oauth_token, prettyPrint, quotaUser, upload_protocol, uploadType
         );
     }

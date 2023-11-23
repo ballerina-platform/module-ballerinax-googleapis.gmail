@@ -38,9 +38,9 @@ string historyId = "";
 
 ConnectionConfig gmailConfig = {
     auth: {
-        refreshToken: refreshToken,
-        clientId: clientId,
-        clientSecret: clientSecret
+        refreshToken,
+        clientId,
+        clientSecret
     }
 };
 
@@ -535,7 +535,7 @@ function testReplyTo() returns error? {
     runtime:sleep(10);
 
     // Get the message thread
-    MailThread mailThread = check gmailClient->/users/me/threads/[message.threadId];
+    MailThread mailThread = check gmailClient->/users/me/threads/[replyMessage.threadId];
 
     Message[]? threadMessages = mailThread.messages;
 
@@ -546,7 +546,7 @@ function testReplyTo() returns error? {
     } else {
         test:assertFail("Message not found");
     }
-    check gmailClient->/users/me/threads/[threadId].delete();
+    check gmailClient->/users/me/threads/[replyMessage.threadId].delete();
 }
 
 @test:Config {

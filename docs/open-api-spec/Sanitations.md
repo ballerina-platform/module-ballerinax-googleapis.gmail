@@ -19,5 +19,5 @@ This file records the sanitation done on top of the OAS from APIs guru. Google u
 ## OpenAPI cli command
 
 ```bash
-bal openapi -i docs/open-api-spec/openapi.yaml --mode client -o ballerina/generated/oas
+bal openapi -i docs/open-api-spec/openapi.yaml --mode client -o ballerina/modules/oas
 ```

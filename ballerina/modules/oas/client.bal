@@ -183,12 +183,11 @@ public isolated client class Client {
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the draft to delete.
     # + return - Successful response 
-    resource isolated function delete users/[string userId]/drafts/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns http:Response|error {
+    resource isolated function delete users/[string userId]/drafts/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/drafts/${getEncodedUri(id)}`;
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Response response = check self.clientEp-> delete(resourcePath);
-        return response;
+        return self.clientEp->delete(resourcePath);
     }
     # Lists the history of all changes to the given mailbox. History results are returned in chronological order (increasing `historyId`).
     #
@@ -332,12 +331,11 @@ public isolated client class Client {
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the label to delete.
     # + return - Successful response 
-    resource isolated function delete users/[string userId]/labels/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns http:Response|error {
+    resource isolated function delete users/[string userId]/labels/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/labels/${getEncodedUri(id)}`;
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Response response = check self.clientEp-> delete(resourcePath);
-        return response;
+        return self.clientEp->delete(resourcePath);
     }
     # Patch the specified label.
     #
@@ -438,15 +436,14 @@ public isolated client class Client {
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + payload - The IDs of the messages to delete.
     # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/batchDelete(BatchDeleteMessagesRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns http:Response|error {
+    resource isolated function post users/[string userId]/messages/batchDelete(BatchDeleteMessagesRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/messages/batchDelete`;
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
         http:Request request = new;
         json jsonBody = payload.toJson();
         request.setPayload(jsonBody, "application/json");
-        http:Response response = check self.clientEp->post(resourcePath, request);
-        return response;
+        return self.clientEp->post(resourcePath, request);
     }
     # Modifies the labels on the specified messages.
     #
@@ -464,15 +461,14 @@ public isolated client class Client {
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + payload - A list of labels to add/remove in messages.
     # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/batchModify(BatchModifyMessagesRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns http:Response|error {
+    resource isolated function post users/[string userId]/messages/batchModify(BatchModifyMessagesRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/messages/batchModify`;
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
         http:Request request = new;
         json jsonBody = payload.toJson();
         request.setPayload(jsonBody, "application/json");
-        http:Response response = check self.clientEp->post(resourcePath, request);
-        return response;
+        return self.clientEp->post(resourcePath, request);
     }
     # Imports a message into only this user's mailbox, with standard email delivery scanning and classification similar to receiving via SMTP. This method doesn't perform SPF checks, so it might not work for some spam messages, such as those attempting to perform domain spoofing. This method does not send a message.
     #
@@ -572,12 +568,11 @@ public isolated client class Client {
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the message to delete.
     # + return - Successful response 
-    resource isolated function delete users/[string userId]/messages/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns http:Response|error {
+    resource isolated function delete users/[string userId]/messages/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}`;
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Response response = check self.clientEp-> delete(resourcePath);
-        return response;
+        return self.clientEp->delete(resourcePath);
     }
     # Modifies the labels on the specified message.
     #
@@ -627,7 +622,7 @@ public isolated client class Client {
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
         http:Request request = new;
-        Message response = check self.clientEp-> post(resourcePath, request);
+        Message response = check self.clientEp->post(resourcePath, request);
         return response;
     }
     # Removes the specified message from the trash.
@@ -651,7 +646,7 @@ public isolated client class Client {
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
         http:Request request = new;
-        Message response = check self.clientEp-> post(resourcePath, request);
+        Message response = check self.clientEp->post(resourcePath, request);
         return response;
     }
     # Gets the specified message attachment.
@@ -770,12 +765,11 @@ public isolated client class Client {
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - ID of the Thread to delete.
     # + return - Successful response 
-    resource isolated function delete users/[string userId]/threads/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns http:Response|error {
+    resource isolated function delete users/[string userId]/threads/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/threads/${getEncodedUri(id)}`;
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Response response = check self.clientEp-> delete(resourcePath);
-        return response;
+        return self.clientEp->delete(resourcePath);
     }
     # Modifies the labels applied to the thread. This applies to all messages in the thread.
     #
@@ -825,7 +819,7 @@ public isolated client class Client {
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
         http:Request request = new;
-        MailThread response = check self.clientEp-> post(resourcePath, request);
+        MailThread response = check self.clientEp->post(resourcePath, request);
         return response;
     }
     # Removes the specified thread from the trash. Any messages that belong to the thread are also removed from the trash.
@@ -849,7 +843,7 @@ public isolated client class Client {
         map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
         resourcePath = resourcePath + check getPathForQueryParam(queryParam);
         http:Request request = new;
-        MailThread response = check self.clientEp-> post(resourcePath, request);
+        MailThread response = check self.clientEp->post(resourcePath, request);
         return response;
     }
 }
