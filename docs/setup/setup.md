@@ -15,19 +15,19 @@ To utilize the Gmail connector, you must have access to the Gmail REST API throu
 
 2. Click on the project drop-down menu and select an existing project or create a new one for which you want to add an API key.
 
-    ![gcp-console-project-view](resources/gcp-console-project-view.png)
+    ![gcp-console-project-view](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.gmail/master/docs/setup/resources/gcp-console-project-view.png)
 
 ### Step 2: Enable Gmail API
 
 1. Navigate to the **Library** tab and enable the Gmail API.
 
-    ![enable-gmail-api](resources/enable-gmail-api.png)
+    ![enable-gmail-api](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.gmail/master/docs/setup/resources/enable-gmail-api.png)
 
 ### Step 3: Configure OAuth consent
 
 1. Click on the **Configure consent screen** tab in the Google Cloud Platform console.
 
-    ![consent-screen](resources/consent-screen.png)
+    ![consent-screen](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.gmail/master/docs/setup/resources/consent-screen.png)
 
 2. Provide a name for the consent application and save your changes.
 
@@ -37,7 +37,7 @@ To utilize the Gmail connector, you must have access to the Gmail REST API throu
 
 2. Click on **Create credentials** and select **OAuth client ID** from the dropdown menu.
 
-    ![create-credentials](resources/create-credentials.png)
+    ![create-credentials](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.gmail/master/docs/setup/resources/create-credentials.png)
 
 3. You will be directed to the **Create OAuth client ID** screen, where you need to fill in the necessary information as follows:
 
@@ -57,12 +57,12 @@ To utilize the Gmail connector, you must have access to the Gmail REST API throu
 
 1. Configure the OAuth playground with the OAuth client ID and client secret.
 
-    ![oauth-playground](resources/oauth-playground.png)
+    ![oauth-playground](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.gmail/master/docs/setup/resources/oauth-playground.png)
 
 2. Authorize the Gmail APIs (Select all except the metadata scope).
 
-    ![authorize-apis](resources/authorize-apis.png)
+    ![authorize-apis](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.gmail/master/docs/setup/resources/authorize-apis.png)
 
 3. Exchange the authorization code for tokens.
 
-    ![exchange-tokens](resources/exchange-tokens.png)
+    ![exchange-tokens](https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-googleapis.gmail/master/docs/setup/resources/exchange-tokens.png)
