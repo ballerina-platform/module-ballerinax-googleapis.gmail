@@ -14,56 +14,44 @@ To utilize the Gmail connector, you must have access to the Gmail REST API throu
 1. Open the [GCP Console](https://console.cloud.google.com/).
 2. Click on the project drop-down and either select an existing project or create a new one for which you want to add an API key.
 
-    <div align="center">
-        <img src="resources/gcp-console-project-view.png" width="500">
-    </div>
+    ![gcp-console-project-view](resources/gcp-console-project-view.png)
 
 3. Navigate to the **Library** and enable the Gmail API.
 
-    <div align="center">
-        <img src="resources/enable-gmail-api.png" width="500">
-    </div>
+    ![enable-gmail-api](resources/enable-gmail-api.png)
 
-## Step 2: Create OAuth Client ID
+### Create OAuth Client ID
 
 1. Navigate to the **Credentials** tab in your Google Cloud Platform console.
 
 2. Click  **Create credentials** and from the dropdown menu, select **OAuth client ID**.
 
-    <div align="center">
-        <img src="resources/create-credentials.png" width="500">
-    </div>
+    ![create-credentials](resources/create-credentials.png)
 
 3. You will be directed to the **OAuth consent** screen, in which you need to fill in the necessary information below.
 
-    | Field                     | Value |
-    | ------------------------- | ----- |
-    | Application type          | Web Application |
-    | Name                      | GmailConnector  |
-    | Authorized redirect URIs  | https://developers.google.com/oauthplayground |
+        | Field                     | Value |
+        | ------------------------- | ----- |
+        | Application type          | Web Application |
+        | Name                      | GmailConnector  |
+        | Authorized redirect URIs  | https://developers.google.com/oauthplayground |
 
-    After filling in these details, click **Create**.
+        After filling in these details, click **Create**.
 
-    **Note**: Save the provided Client ID and Client secret.
+        **Note**: Save the provided Client ID and Client secret.
 
-## Step 3: Get the access token and refresh token
+### Get the access token and refresh token
 
 **Note**: It is recommended to use the OAuth 2.0 playground to obtain the tokens.
 
 1. Configure the OAuth playground with the OAuth client ID and client secret.
 
-    <div align="center">
-        <img src="resources/oauth-playground.png" width="500">
-    </div>
+    ![oauth-playground](resources/oauth-playground.png)
 
 2. Authorize the Gmail APIs.
 
-    <div align="center">
-        <img src="resources/authorize-apis.png" width="500">
-    </div>
+    ![authorize-apis](resources/authorize-apis.png)
 
 3. Exchange the authorization code for tokens.
 
-    <div align="center">
-        <img src="resources/exchange-tokens.png" width="500">
-    </div>
+    ![exchange-tokens](resources/exchange-tokens.png)
