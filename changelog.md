@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- [Revamp Gmail connector](https://github.com/ballerina-platform/ballerina-library/issues/4874)
-
 ### Changed
 
+## [4.0.0] - 2023-12-01
+
+### Added
+
+- [Revamp Gmail connector](https://github.com/ballerina-platform/ballerina-library/issues/4874)

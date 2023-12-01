@@ -16,4 +16,4 @@ jobs:
       package-org: ballerinax
       additional-build-flags: "-x :googleapis.gmail-examples:build"
       additional-release-flags: "-x :googleapis.gmail-examples:build"
-      additional-publish-flag: "-x :googleapis.gmail-examples:build"
+      additional-publish-flags: "-x :googleapis.gmail-examples:build"
