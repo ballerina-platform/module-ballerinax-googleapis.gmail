@@ -50,27 +50,7 @@ service /gmail/v1 on ep0 {
                 id: "1",
                 message: {
                     id: "1",
-                    threadId: "1",
-                    labelIds: ["CUSTOMER"],
-                    snippet: "snippet",
-                    historyId: "1",
-                    payload: {
-                        partId: "1",
-                        mimeType: "text/plain",
-                        filename: "filename",
-                        headers: [{name: "name", value: "value updated"}],
-                        body: {size: 1, data: "data"},
-                        parts: [
-                            {
-                                partId: "1",
-                                mimeType: "text/plain",
-                                filename: "filename",
-                                headers: [{name: "name", value: "value"}],
-                                body: {size: 1, data: "data"},
-                                parts: []
-                            }
-                        ]
-                    }
+                    threadId: "1"
                 }
             }
         };
