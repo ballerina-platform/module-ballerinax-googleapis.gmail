@@ -17,24 +17,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
         ListDraftsResponse response = {drafts: [draft]};
@@ -66,24 +49,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value updated"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -99,24 +65,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -132,24 +81,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value updated"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -177,24 +109,7 @@ service /gmail/v1 on ep0 {
                             threadId: "1",
                             labelIds: ["CUSTOMER"],
                             snippet: "snippet",
-                            historyId: "1",
-                            payload: {
-                                partId: "1",
-                                mimeType: "text/plain",
-                                filename: "filename",
-                                headers: [{name: "name", value: "value"}],
-                                body: {size: 1, data: "data"},
-                                parts: [
-                                    {
-                                        partId: "1",
-                                        mimeType: "text/plain",
-                                        filename: "filename",
-                                        headers: [{name: "name", value: "value"}],
-                                        body: {size: 1, data: "data"},
-                                        parts: []
-                                    }
-                                ]
-                            }
+                            historyId: "1"
                         }
                     ]
                 }
@@ -276,27 +191,7 @@ service /gmail/v1 on ep0 {
             messages: [
                 {
                     id: "1",
-                    threadId: "1",
-                    labelIds: ["CUSTOMER"],
-                    snippet: "snippet",
-                    historyId: "1",
-                    payload: {
-                        partId: "1",
-                        mimeType: "text/plain",
-                        filename: "filename",
-                        headers: [{name: "name", value: "value"}],
-                        body: {size: 1, data: "data"},
-                        parts: [
-                            {
-                                partId: "1",
-                                mimeType: "text/plain",
-                                filename: "filename",
-                                headers: [{name: "name", value: "value"}],
-                                body: {size: 1, data: "data"},
-                                parts: []
-                            }
-                        ]
-                    }
+                    threadId: "1"
                 }
             ],
             nextPageToken: "nextPageToken"
@@ -314,24 +209,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -361,24 +239,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -393,24 +254,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -426,23 +270,7 @@ service /gmail/v1 on ep0 {
             labelIds: ["CUSTOMER"],
             snippet: "snippet",
             historyId: "1",
-            payload: {
-                partId: "1",
-                mimeType: "text/plain",
-                filename: "filename",
-                headers: [{name: "name", value: "value"}],
-                body: {size: 1, data: "data"},
-                parts: [
-                    {
-                        partId: "1",
-                        mimeType: "text/plain",
-                        filename: "filename",
-                        headers: [{name: "name", value: "value"}],
-                        body: {size: 1, data: "data"},
-                        parts: []
-                    }
-                ]
-            }
+            raw: ""
         };
     }
 
@@ -463,24 +291,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -493,26 +304,9 @@ service /gmail/v1 on ep0 {
             body: {
                 id: "1",
                 threadId: "1",
-                labelIds: ["CUSTOMER"],
+                labelIds: ["CUSTOMER", "TRASH"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -527,24 +321,7 @@ service /gmail/v1 on ep0 {
                 threadId: "1",
                 labelIds: ["CUSTOMER"],
                 snippet: "snippet",
-                historyId: "1",
-                payload: {
-                    partId: "1",
-                    mimeType: "text/plain",
-                    filename: "filename",
-                    headers: [{name: "name", value: "value"}],
-                    body: {size: 1, data: "data"},
-                    parts: [
-                        {
-                            partId: "1",
-                            mimeType: "text/plain",
-                            filename: "filename",
-                            headers: [{name: "name", value: "value"}],
-                            body: {size: 1, data: "data"},
-                            parts: []
-                        }
-                    ]
-                }
+                historyId: "1"
             }
         };
     }
@@ -556,7 +333,7 @@ service /gmail/v1 on ep0 {
         return {
             attachmentId: "1",
             size: 1,
-            data: "data"
+            data: "aW1hZ2U="
         };
     }
 

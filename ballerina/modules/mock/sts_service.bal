@@ -17,7 +17,7 @@ import ballerina/http;
 import ballerina/log;
 
 configurable int HTTP_SERVER_PORT = 9444;
-configurable int TOKEN_VALIDITY_PERIOD = 100; // in seconds
+configurable int TOKEN_VALIDITY_PERIOD = 10000; // in seconds
 
 listener http:Listener sts = new (HTTP_SERVER_PORT);
 
