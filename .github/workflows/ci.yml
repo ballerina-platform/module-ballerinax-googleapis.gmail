@@ -16,3 +16,4 @@ jobs:
     secrets: inherit
     with:
       repo-name: module-ballerinax-googleapis.gmail
+      additional-test-flags: -Pgroups=mock

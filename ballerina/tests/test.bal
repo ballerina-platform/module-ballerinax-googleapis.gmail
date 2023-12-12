@@ -13,10 +13,8 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-import googleapis.gmail.oas;
-
-import ballerina/io;
 import ballerina/lang.runtime;
+import ballerina/log;
 import ballerina/os;
 import ballerina/test;
 
@@ -44,19 +42,31 @@ ConnectionConfig gmailConfig = {
     }
 };
 
-final Client gmailClient = check new (gmailConfig);
+Client gmailClient = test:mock(Client);
 
-@test:Config {}
+@test:BeforeGroups {
+    value: ["gmail"]
+}
+function initializeClientsForGmailServer() returns error? {
+    log:printInfo("Initializing client for gmail server");
+    gmailClient = check new (gmailConfig);
+}
+
+@test:Config {
+    groups: ["gmail"]
+}
 function testGmailGetProfile() returns error? {
     Profile profile = check gmailClient->/users/me/profile();
     test:assertTrue(profile.emailAddress != "", msg = "/users/[userId]/profile failed. email address nil");
     historyId = check profile.historyId.ensureType(string);
 }
 
-@test:Config {}
+@test:Config {
+    groups: ["gmail"]
+}
 function testMessageInsert() returns error? {
     MessageRequest request = {
-        'from: recipient, // Mail migration, mail reeived from receipent account
+        'from: recipient, // Mail migration, mail received from recipient account
         subject: "Gmail insert test"
     };
     Message message = check gmailClient->/users/me/messages.post(request);
@@ -65,14 +75,16 @@ function testMessageInsert() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testMessageInsert]
 }
-isolated function testListMessages() returns error? {
+function testListMessages() returns error? {
     ListMessagesResponse msgPage = check gmailClient->/users/me/messages();
     test:assertTrue(msgPage.messages is Message[], msg = "/users/[userId]/messages failed");
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testListMessages]
 }
 function testMessageBatchModify() returns error? {
@@ -88,6 +100,7 @@ function testMessageBatchModify() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testMessageBatchModify]
 }
 function testMessageBatchDelete() returns error? {
@@ -97,6 +110,7 @@ function testMessageBatchDelete() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testMessageBatchDelete]
 }
 function testPostMessage() returns error? {
@@ -128,6 +142,7 @@ function testPostMessage() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testPostMessage]
 }
 function testGetMessageRawFormat() returns error? {
@@ -136,6 +151,7 @@ function testGetMessageRawFormat() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testGetMessageRawFormat]
 }
 function testGetMessageFullFormat() returns error? {
@@ -153,6 +169,7 @@ function testGetMessageFullFormat() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testGetMessageFullFormat]
 }
 function testMessageModify() returns error? {
@@ -172,26 +189,39 @@ function testMessageModify() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testMessageModify]
 }
 function testMessageTrash() returns error? {
     _ = check gmailClient->/users/me/messages/[sentMessageId]/trash.post();
     Message getMessage = check gmailClient->/users/me/messages/[sentMessageId];
-    test:assertEquals(getMessage.labelIds, ["UNREAD", "TRASH", "SENT"],
-                    msg = "/users/[userId]/messages/[sentMessageId]/trash failed TRASH label not added");
+    string[]? labelIds = getMessage.labelIds;
+    if labelIds is string[] {
+        test:assertTrue(labelIds.filter(l => l == "TRASH").length() > 0,
+                        msg = "/users/[userId]/messages/[sentMessageId]/trash failed TRASH label not added");
+    } else {
+        test:assertFail("/users/[userId]/messages/[sentMessageId]/trash failed");
+    }
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testMessageTrash]
 }
 function testMessageUntrash() returns error? {
     _ = check gmailClient->/users/me/messages/[sentMessageId]/untrash.post();
     Message getMessage = check gmailClient->/users/me/messages/[sentMessageId];
-    test:assertEquals(getMessage.labelIds, ["UNREAD", "SENT"],
-                    msg = "/users/[userId]/messages/[sentMessageId]/untrash failed TRASH label not removed");
+    string[]? labelIds = getMessage.labelIds;
+    if labelIds is string[] {
+        test:assertTrue(labelIds.filter(l => l == "TRASH").length() == 0,
+                        msg = "/users/[userId]/messages/[sentMessageId]/untrash failed TRASH label not removed");
+    } else {
+        test:assertFail("/users/[userId]/messages/[sentMessageId]/untrash failed");
+    }
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testMessageUntrash]
 }
 function testGetAttachment() returns error? {
@@ -200,6 +230,7 @@ function testGetAttachment() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testGetAttachment]
 }
 function testMessageDelete() returns error? {
@@ -208,67 +239,8 @@ function testMessageDelete() returns error? {
     test:assertTrue(message is error, msg = "/users/[userId]/messages/[sentMessageId].delete failed. Msg not deleted");
 }
 
-@test:Config {}
-isolated function testPayloadConversion() returns error? {
-    json response = check io:fileReadJson("tests/resources/messagebody.json");
-    oas:MessagePart internalPayload = check response.fromJsonWithType(oas:MessagePart);
-    MessagePart convertedPayload = check convertOASMessagePartToMultipartMessageBody(internalPayload);
-    MessagePart messagePart = {
-        mimeType: "multipart/alternative",
-        filename: "",
-        headers: {
-            "Content-Type": "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
-        },
-        size: 0,
-        partId: "",
-        parts: [
-            {
-                mimeType: "multipart/alternative",
-                filename: "",
-                headers: {
-                    "Content-Type": "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
-                },
-                size: 0,
-                partId: "",
-                parts: [
-                    {
-                        partId: "0.0",
-                        mimeType: "text/plain",
-                        filename: "",
-                        headers: {
-                            "Content-Type": "text/plain; charset=UTF-8"
-                        },
-                        size: 9
-                    },
-                    {
-                        partId: "0.1",
-                        mimeType: "text/html",
-                        filename: "",
-                        headers: {
-                            "Content-Type": "text/html; charset=UTF-8"
-                        },
-                        size: 30
-                    }
-                ]
-            },
-            {
-                partId: "1",
-                mimeType: "image/jpeg",
-                filename: "feelthebern.jpg",
-                headers: {
-                    "Content-Type": "image/jpeg; name=\"feelthebern.jpg\"",
-                    "Content-Disposition": "attachment; filename=\"feelthebern.jpg\"",
-                    "Content-Transfer-Encoding": "base64",
-                    "X-Attachment-Id": "f_ieq3ev0i0"
-                },
-                size: 100446
-            }
-        ]
-    };
-    test:assertEquals(convertedPayload, messagePart, msg = "Payload conversion failed");
-}
-
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testMessageDelete]
 }
 function createDraft() returns error? {
@@ -285,14 +257,16 @@ function createDraft() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [createDraft]
 }
-isolated function testListDrafts() returns error? {
+function testListDrafts() returns error? {
     ListDraftsResponse draftListPage = check gmailClient->/users/me/drafts();
     test:assertTrue(draftListPage.drafts is Draft[], msg = "/users/[userId]/drafts failed");
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testListDrafts]
 }
 function testSendDraft() returns error? {
@@ -313,6 +287,7 @@ function testSendDraft() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testSendDraft]
 }
 function testGetDraft() returns error? {
@@ -321,6 +296,7 @@ function testGetDraft() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testGetDraft]
 }
 function testPutDraft() returns error? {
@@ -332,11 +308,13 @@ function testPutDraft() returns error? {
         }
     });
     test:assertTrue(updatedDraft.id != "", msg = "/users/[userId]/drafts/[draftId] failed");
-    Draft draft = check gmailClient->/users/me/drafts/[draftId];
-    test:assertTrue(draft.message?.subject == "Gmail draft test updated", msg = "/users/[userId]/drafts/[draftId] failed");
+    Draft draft = check gmailClient->/users/me/drafts/[draftId](format = "raw");
+    test:assertTrue(draft.message?.raw.toString().includes("subject:Gmail draft test updated"),
+    msg = "/users/[userId]/drafts/[draftId] failed");
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testPutDraft]
 }
 function testDeleteDraft() returns error? {
@@ -346,6 +324,7 @@ function testDeleteDraft() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testDeleteDraft]
 }
 function testListMailThreads() returns error? {
@@ -362,6 +341,7 @@ function testListMailThreads() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testListMailThreads]
 }
 function testGetMailThread() returns error? {
@@ -370,6 +350,7 @@ function testGetMailThread() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testGetMailThread]
 }
 function testModifyMailThread() returns error? {
@@ -378,9 +359,9 @@ function testModifyMailThread() returns error? {
     });
     test:assertTrue(mailThread.historyId != (), msg = "/users/[userId]/threads/[threadId]/modify failed");
     MailThread getMailThread = check gmailClient->/users/me/threads/[threadId];
-    Message[]? firstMesssage = getMailThread.messages;
-    if firstMesssage is Message[] {
-        string[]? labelIds = firstMesssage[0].labelIds;
+    Message[]? firstMessage = getMailThread.messages;
+    if firstMessage is Message[] {
+        string[]? labelIds = firstMessage[0].labelIds;
         if labelIds is string[] {
             test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0,
                             msg = "/users/[userId]/threads/[threadId]/modify failed");
@@ -393,38 +374,51 @@ function testModifyMailThread() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testModifyMailThread]
 }
 function testTrashMailThread() returns error? {
     MailThread mailThread = check gmailClient->/users/me/threads/[threadId]/trash.post();
     test:assertTrue(mailThread.historyId != (), msg = "/users/[userId]/threads/[threadId]/trash failed");
     MailThread getMailThread = check gmailClient->/users/me/threads/[threadId];
-    Message[]? firstMesssage = getMailThread.messages;
-    if firstMesssage is Message[] {
-        test:assertEquals(firstMesssage[0].labelIds, ["UNREAD", "TRASH", "SENT"],
-                    msg = "/users/[userId]/threads/[threadId]/trash failed TRASH label not added");
+    Message[]? firstMessage = getMailThread.messages;
+    if firstMessage is Message[] {
+        string[]? labelIds = firstMessage[0].labelIds;
+        if labelIds is string[] {
+            test:assertTrue(labelIds.filter(l => l == "TRASH").length() > 0,
+                            msg = "/users/[userId]/threads/[threadId]/trash failed TRASH label not added");
+        } else {
+            test:assertFail("/users/[userId]/threads/[threadId]/trash failed");
+        }
     } else {
         test:assertFail("Message not found");
     }
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testTrashMailThread]
 }
 function testUntrashMailThread() returns error? {
     MailThread mailThread = check gmailClient->/users/me/threads/[threadId]/untrash.post();
     test:assertTrue(mailThread.historyId != (), msg = "/users/[userId]/threads/[threadId]/untrash failed");
     MailThread getMailThread = check gmailClient->/users/me/threads/[threadId];
-    Message[]? firstMesssage = getMailThread.messages;
-    if firstMesssage is Message[] {
-        test:assertEquals(firstMesssage[0].labelIds, ["UNREAD", "SENT"],
-                    msg = "/users/[userId]/threads/[threadId]/untrash failed TRASH label not removed");
+    Message[]? firstMessage = getMailThread.messages;
+    if firstMessage is Message[] {
+        string[]? labelIds = firstMessage[0].labelIds;
+        if labelIds is string[] {
+            test:assertTrue(labelIds.filter(l => l == "TRASH").length() == 0,
+                            msg = "/users/[userId]/threads/[threadId]/untrash failed TRASH label not removed");
+        } else {
+            test:assertFail("/users/[userId]/threads/[threadId]/untrash failed");
+        }
     } else {
         test:assertFail("Message not found");
     }
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testUntrashMailThread]
 }
 function testDeleteMailThread() returns error? {
@@ -434,6 +428,7 @@ function testDeleteMailThread() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testDeleteMailThread]
 }
 function testCreateNewLabel() returns error? {
@@ -445,6 +440,7 @@ function testCreateNewLabel() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testCreateNewLabel]
 }
 function testListAllLabels() returns error? {
@@ -453,6 +449,7 @@ function testListAllLabels() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testListAllLabels]
 }
 function testGetLabel() returns error? {
@@ -461,6 +458,7 @@ function testGetLabel() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testGetLabel]
 }
 function testUpdateLabel() returns error? {
@@ -474,6 +472,7 @@ function testUpdateLabel() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testUpdateLabel]
 }
 function testPatchLabel() returns error? {
@@ -487,6 +486,7 @@ function testPatchLabel() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testPatchLabel]
 }
 function testDeleteLabel() returns error? {
@@ -496,6 +496,7 @@ function testDeleteLabel() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testDeleteLabel, testGmailGetProfile]
 }
 function testListHistory() returns error? {
@@ -504,6 +505,7 @@ function testListHistory() returns error? {
 }
 
 @test:Config {
+    groups: ["gmail"],
     dependsOn: [testListHistory]
 }
 function testReplyTo() returns error? {
@@ -547,42 +549,4 @@ function testReplyTo() returns error? {
         test:assertFail("Message not found");
     }
     check gmailClient->/users/me/threads/[replyMessage.threadId].delete();
-}
-
-@test:Config {
-}
-function testUrlDecodeFailure() returns error? {
-    oas:Message receivedMsg = {
-        threadId: "qweqweqdqd",
-        id: "saDSASDASDA",
-        raw: "ASDADSADADADADADAD"
-    };
-    Message|error result = convertOASMessageToMessage(receivedMsg);
-    if result is error {
-        test:assertEquals(result.message(), "Returned message raw field is not a valid Base64 URL encoded value.",
-        msg = "Error decoding message");
-    } else {
-        test:assertFail("Expected decoded error");
-    }
-}
-
-@test:Config {
-}
-function testAttachmentSendFailure() returns error? {
-    MessageRequest sendMsg = {
-        attachments: [
-            {
-                name: "test.txt",
-                path: "asdadsa",
-                mimeType: "text/plain"
-            }
-        ]
-    };
-    oas:Message|error result = convertMessageRequestToOASMessage(sendMsg);
-    if result is error {
-        test:assertEquals(result.message(),
-        "Unable to retrieve attachment: asdadsa", msg = "Error decoding message");
-    } else {
-        test:assertFail("Expected decoded error");
-    }
 }

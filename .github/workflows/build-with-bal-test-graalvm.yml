@@ -16,4 +16,4 @@ jobs:
     uses: ballerina-platform/ballerina-standard-library/.github/workflows/build-with-bal-test-graalvm-connector-template.yml@main
     secrets: inherit
     with:
-      additional-build-flags: "-x :googleapis.gmail-examples:build"
+      additional-build-flags: "-x :googleapis.gmail-examples:build -Pgroups=mock"

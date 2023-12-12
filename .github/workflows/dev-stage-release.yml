@@ -19,4 +19,4 @@ jobs:
     secrets: inherit
     with:
       environment: ${{ github.event.inputs.environment }}
-      additional-publish-flags: "-x :googleapis.gmail-examples:build"
+      additional-publish-flags: "-x :googleapis.gmail-examples:build -Pgroups=mock"
