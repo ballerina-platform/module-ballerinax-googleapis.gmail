@@ -2,7 +2,7 @@
 distribution = "2201.8.0"
 org = "ballerinax"
 name = "googleapis.gmail"
-version = "4.0.0"
+version = "4.0.1"
 authors = ["Ballerina"]
 export = ["googleapis.gmail"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
