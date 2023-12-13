@@ -1,10 +1,10 @@
-# Overview
+## Overview
 
 [Gmail](https://blog.google/products/gmail/) is a widely-used email service provided by Google LLC, enabling users to send and receive emails over the internet.
 
-The `ballerinax/googleapis.gmail` package offers APIs to connect and interact with [Gmail API](https://developers.google.com/gmail/api/guides) endpoints.
+The `ballerinax/googleapis.gmail` package offers APIs to connect and interact with [Gmail API](https://developers.google.com/gmail/api/guides) endpoints, specifically based on [Gmail API v1](https://gmail.googleapis.com/$discovery/rest?version=v1).
 
-## Set up Gmail API
+## Set up guide
 
 To use the Gmail connector, you must have access to the Gmail REST API through a [Google Cloud Platform (GCP)](https://console.cloud.google.com/) account and a project under it. If you do not have a GCP account, you can sign up for one [here](https://cloud.google.com/).
 
@@ -120,18 +120,15 @@ gmail:MessageRequest message = {
 gmail:Message sendResult = check gmailClient->/users/me/messages/send.post(message);
 ```
 
-## Samples
+## Examples
 
-The `gmail` connector provides practical examples illustrating usage in various scenarios. Explore these [samples](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples), covering use cases like sending emails, retrieving messages, and managing labels.
+The `gmail` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples), covering use cases like sending emails, retrieving messages, and managing labels.
 
-1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails/main.bal)
-    Manage customer feedback emails by processing unread emails in the inbox, extracting details, and marking them as read.
+1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails) - Manage customer feedback emails by processing unread emails in the inbox, extracting details, and marking them as read.
 
-2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails/main.bal)
-    Automatically send emails for scheduled maintenance breaks.
+2. [Send maintenance break emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails) - Send emails for scheduled maintenance breaks
 
-3. [Send automated response to emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/reply-mails/main.bal)
-    Automate fetching unread emails from the Inbox and send personalized responses to customers.
+3. [Automated Email Responses](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/reply-mails) - Retrieve unread emails from the Inbox and subsequently send personalized responses.
 
-4. [Search for relevant email threads](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads/main.bal)
-    Use the Gmail API to search for email threads based on a specific query.
+4. [Email Thread Search](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads)
+    Search for email threads based on a specified query.
