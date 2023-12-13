@@ -124,17 +124,14 @@ gmail:Message sendResult = check gmailClient->/users/me/messages/send.post(messa
 
 The `gmail` connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples), covering use cases like sending emails, retrieving messages, and managing labels.
 
-1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails)
-    Manage customer feedback emails by processing unread emails in the inbox, extracting details, and marking them as read.
+1. [Process customer feedback emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/process-mails) - Manage customer feedback emails by processing unread emails in the inbox, extracting details, and marking them as read.
 
-2. [Send maintenance break notifications](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails)
-    Automatically send emails for scheduled maintenance breaks.
+2. [Send maintenance break emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/send-mails) - Send emails for scheduled maintenance breaks
 
-3. [Send automated response to emails](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/reply-mails)
-    Automate fetching unread emails from the Inbox and send personalized responses to customers.
+3. [Automated Email Responses](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/reply-mails) - Retrieve unread emails from the Inbox and subsequently send personalized responses.
 
-4. [Search for relevant email threads](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads)
-    Use the Gmail API to search for email threads based on a specific query.
+4. [Email Thread Search](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail/tree/master/examples/search-threads)
+    Search for email threads based on a specified query.
 
 ## Report Issues
 
