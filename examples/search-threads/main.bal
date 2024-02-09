@@ -23,7 +23,7 @@ configurable string clientSecret = os:getEnv("CLIENT_SECRET");
 
 public function main() returns error? {
 
-    gmail:Client gmailClient = check new gmail:Client(
+    gmail:Client gmail = check new gmail:Client(
         config = {
             auth: {
                 refreshToken,
@@ -36,7 +36,7 @@ public function main() returns error? {
     // Search query string
     string query = "setup database";
 
-    gmail:ListThreadsResponse threadListPage = check gmailClient->/users/me/threads(q = query, maxResults = 10);
+    gmail:ListThreadsResponse threadListPage = check gmail->/users/me/threads(q = query, maxResults = 10);
 
     // List of threads only has id and threadId. To get the messages, we need to get the thread details.
     gmail:MailThread[]? resultThreads = threadListPage.threads;
@@ -45,7 +45,7 @@ public function main() returns error? {
             select thread.id ?: "";
 
         foreach string threadId in threadIds {
-            gmail:MailThread mailThread = check gmailClient->/users/me/threads/[threadId]();
+            gmail:MailThread mailThread = check gmail->/users/me/threads/[threadId]();
             gmail:Message[] messages = mailThread.messages ?: [];
             if messages.length() > 0 {
                 io:println(string `Subject: ${messages[0].subject ?: ""}`);

@@ -83,7 +83,7 @@ import ballerinax/googleapis.gmail;
 Create a `gmail:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
 
 ```ballerina
-gmail:Client gmailClient = check new gmail:Client(
+gmail:Client gmail = check new gmail:Client(
     config = {
         auth: {
             refreshToken,
@@ -101,7 +101,7 @@ Now, utilize the available connector operations.
 #### Get unread emails in INBOX
 
 ```ballerina
-gmail:MessageListPage messageList = check gmailClient->/users/me/messages(q = "label:INBOX is:unread");
+gmail:MessageListPage messageList = check gmail->/users/me/messages(q = "label:INBOX is:unread");
 ```
 
 #### Send email
@@ -117,7 +117,7 @@ gmail:MessageRequest message = {
                         </html>`;
 };
 
-gmail:Message sendResult = check gmailClient->/users/me/messages/send.post(message);
+gmail:Message sendResult = check gmail->/users/me/messages/send.post(message);
 ```
 
 ## Examples
