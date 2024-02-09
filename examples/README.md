@@ -13,7 +13,7 @@ The `gmail` connector provides practical examples illustrating usage in various 
 
 ## Prerequisites
 
-1. Follow the [instructions](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail#set-up-guide) to set up the Gmail API.
+1. Follow the [instructions](https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail#setup-guide) to set up the Gmail API.
 
 2. For each example, create a `config.toml` file with your OAuth2 tokens, client ID, and client secret. Here's an example of how your `config.toml` file should look:
 

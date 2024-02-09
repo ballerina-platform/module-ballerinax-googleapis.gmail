@@ -4,9 +4,9 @@ This example demonstrates how to efficiently manage customer feedback emails. Th
 
 ## Prerequisites
 
-### 1. Set up Gmail API
+### 1. Setup Gmail API
 
-Refer to the [Set up Guide](https://central.ballerina.io/ballerinax/googleapis.gmail/latest#set-up-guide) for necessary credentials (client ID, secret, tokens).
+Refer to the [Setup Guide](https://central.ballerina.io/ballerinax/googleapis.gmail/latest#setup-guide) for necessary credentials (client ID, secret, tokens).
 
 ### 2. Configuration
 
