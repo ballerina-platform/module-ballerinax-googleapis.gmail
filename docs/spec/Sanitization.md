@@ -19,5 +19,7 @@ This file records the sanitation done on top of the OAS from APIs guru. Google u
 ## OpenAPI cli command
 
 ```bash
-bal openapi -i docs/open-api-spec/openapi.yaml --mode client -o ballerina/modules/oas
+bal openapi -i docs/spec/openapi.yaml --mode client  --license docs/license.txt -o ballerina/modules/oas
 ```
+
+Note: The license year is hardcoded to 2024, change if necessary
