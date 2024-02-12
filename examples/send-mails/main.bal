@@ -23,7 +23,7 @@ configurable string clientSecret = os:getEnv("CLIENT_SECRET");
 configurable string recipient = os:getEnv("RECIPIENT");
 
 public function main() returns error? {
-    gmail:Client gmailClient = check new ({
+    gmail:Client gmail = check new ({
         auth: {
             refreshToken,
             clientId,
@@ -66,7 +66,7 @@ public function main() returns error? {
     };
 
     // Send the email message.
-    gmail:Message sendResult = check gmailClient->/users/me/messages/send.post(message);
+    gmail:Message sendResult = check gmail->/users/me/messages/send.post(message);
     io:println("Email sent. Message ID: " + sendResult.id);
 }
 

@@ -52,7 +52,7 @@ The `gmail:Client` allows you to connect to the Gmail RESTful API. The client cu
 The `gmail:Client` initialization method requires valid authentication credentials.
 
 ```ballerina
-gmail:Client gmailClient = check new gmail:Client (
+gmail:Client gmail = check new gmail:Client (
     config = {
         auth: {
             refreshToken,
@@ -81,7 +81,7 @@ public type Profile record {
 ### Example: Retrieving the Gmail profile
 
 ```ballerina
-Profile profile = check gmailClient->/users/me/profile();
+Profile profile = check gmail->/users/me/profile();
 ```
 
 In this example, the `getProfile` method retrieves the profile of the authenticated user. The `me` parameter represents the authenticated user.

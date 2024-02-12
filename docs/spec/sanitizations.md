@@ -1,6 +1,6 @@
 # Introduction
 
-This file records the sanitation done on top of the OAS from APIs guru. Google uses Google discovery format to expose API details. APIs guru uses a conversion tool to change the discovery documentation to OAS. These sanitation's are done for improving usability and as workaround for known limitations in language side.
+This file records the sanitization done on top of the OAS from APIs guru. Google uses Google discovery format to expose API details. APIs guru uses a conversion tool to change the discovery documentation to OAS. These sanitization's are done for improving usability and as workaround for known limitations in language side.
 
 1. Fix request body content types. Here, Gmail API accepts all content type. AS per [Discovery Doc](https://developers.google.com/discovery/v1/reference/apis) only media upload content type is specified. This is mistakenly mapped to request body content type in APIs guru transformation.
 
@@ -19,5 +19,7 @@ This file records the sanitation done on top of the OAS from APIs guru. Google u
 ## OpenAPI cli command
 
 ```bash
-bal openapi -i docs/open-api-spec/openapi.yaml --mode client -o ballerina/modules/oas
+bal openapi -i docs/spec/openapi.yaml --mode client  --license docs/license.txt -o ballerina/modules/oas
 ```
+
+Note: The license year is hardcoded to 2024, change if necessary

@@ -22,7 +22,7 @@ configurable string clientId = os:getEnv("CLIENT_ID");
 configurable string clientSecret = os:getEnv("CLIENT_SECRET");
 
 public function main() returns error? {
-    gmail:Client gmailClient = check new gmail:Client(
+    gmail:Client gmail = check new gmail:Client(
         config = {
             auth: {
                 refreshToken,
@@ -32,7 +32,7 @@ public function main() returns error? {
         }
     );
 
-    gmail:ListMessagesResponse messageList = check gmailClient->/users/me/messages(q = "label:INBOX is:unread");
+    gmail:ListMessagesResponse messageList = check gmail->/users/me/messages(q = "label:INBOX is:unread");
 
     // Results from list messages only contains id and threadId.
     gmail:Message[] messageIds = messageList.messages ?: [];
@@ -40,7 +40,7 @@ public function main() returns error? {
     string[] ids = [];
     gmail:Message[] completeMessages = [];
     foreach gmail:Message message in messageIds {
-        gmail:Message completeMsg = check gmailClient->/users/me/messages/[message.id](format = "full");
+        gmail:Message completeMsg = check gmail->/users/me/messages/[message.id](format = "full");
         ids.push(message.id);
         completeMessages.push(completeMsg);
     }
@@ -52,7 +52,7 @@ public function main() returns error? {
     check io:fileWriteCsv("feedback.csv", processedData, io:APPEND);
 
     // Mark the messages as read.
-    check gmailClient->/users/me/messages/batchModify.post({
+    check gmail->/users/me/messages/batchModify.post({
         ids: ids,
         removeLabelIds: ["UNREAD"]
     });
