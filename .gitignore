@@ -48,3 +48,6 @@ generated
 
 # Environment files
 *.env
+
+# Files from bal Github action
+*.deb 
