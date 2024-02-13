@@ -72,7 +72,7 @@ To use the `gmail` connector in your Ballerina application, modify the `.bal` fi
 
 ### Step 1: Import the connector
 
-Import the `ballerinax/googleapis.gmail` package.
+Import the `ballerinax/googleapis.gmail` module.
 
 ```ballerina
 import ballerinax/googleapis.gmail;
