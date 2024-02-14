@@ -1,3 +1,8 @@
+_Author_: @niveathika \
+_Created_: 2024/02/14 \
+_Updated_: 2024/02/14 \
+_Edition_: Swan Lake  
+
 # Sanitation for OpenAPI specification
 
 This records the sanitization done on top of the OAS from APIs guru. Google uses Google discovery format to expose API details. APIs guru uses a conversion tool to change the discovery documentation to OAS. These sanitation's are done for improving usability and as workaround for known limitations in language side.
