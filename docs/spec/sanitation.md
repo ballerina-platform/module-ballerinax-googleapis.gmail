@@ -1,8 +1,39 @@
-# Introduction
+_Author_: @niveathika \
+_Created_: 2024/02/14 \
+_Updated_: 2024/02/14 \
+_Edition_: Swan Lake  
 
-This document outlines significant enhancements made to the OpenAPI specification for the wrapper client. These updates introduce new functionalities and modify existing ones to enhance useability.
+# Sanitation for OpenAPI specification
 
-## `MessageRequest` parameter
+This records the sanitization done on top of the OAS from APIs guru. Google uses Google discovery format to expose API details. APIs guru uses a conversion tool to change the discovery documentation to OAS. These sanitation's are done for improving usability and as workaround for known limitations in language side.
+
+1. Fix request body content types. Here, Gmail API accepts all content type. AS per [Discovery Doc](https://developers.google.com/discovery/v1/reference/apis) only media upload content type is specified. This is mistakenly mapped to request body content type in APIs guru transformation.
+
+2. Remove resource paths,
+    * /users/{userId}/settings - This path has around 20 odd sub paths and does not add significant usability.
+    * /users/{userId}/watch & /users/{userId}/stop - This will be covered in Google PubSub
+
+3. Streamline base path. Here the path `/gmail/v1` is moved to server url. This reduces complexity.
+
+4. Move parameters `xgafv` and `alt` definitions to schemas. This ensures ballerina enums are created for the parameters not inline string unions.
+
+5. Rename `Thread` schema to `MailThread`. This is done as a workaround for issue, [Openapi tool does not escape in built symbols](https://github.com/ballerina-platform/ballerina-standard-library/issues/5067)
+
+6. Add description for `LabelColor` schema.
+
+## OpenAPI cli command
+
+```bash
+bal openapi -i docs/spec/openapi.yaml --mode client  --license docs/license.txt -o ballerina/modules/oas
+```
+
+Note: The license year is hardcoded to 2024, change if necessary
+
+## Changes introduced through wrapper client
+
+This outlines significant enhancements made to the OpenAPI specification for the wrapper client. These updates introduce new functionalities and modify existing ones to enhance useability.
+
+### `MessageRequest` parameter
 
 The module will require `MessageRequest` record for users to give email data easily. These inputs are then transformed into RFC822 formatted encoded strings, facilitating integration with the generated client's operations. This enhancement has been applied across various resource functions, including draft, message, and thread.
 
@@ -36,7 +67,7 @@ public type MessageRequest record {|
 |};
 ```
 
-## `Message` payload
+### `Message` payload
 
 The module will return `Message` record for any retrieved emails. This record includes wider array of email-related data, ensuring comprehensive coverage of email attributes. This refinement affects resource functions such as draft, message, and thread, ensuring a more structured and accessible presentation of email data.
 

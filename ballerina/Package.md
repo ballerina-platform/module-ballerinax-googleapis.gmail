@@ -70,9 +70,9 @@ To use the Gmail connector, you must have access to the Gmail REST API through a
 
 To use the `gmail` connector in your Ballerina application, modify the `.bal` file as follows:
 
-### Step 1: Import the connector
+### Step 1: Import the module
 
-Import the `ballerinax/googleapis.gmail` package.
+Import the `gmail` module.
 
 ```ballerina
 import ballerinax/googleapis.gmail;
@@ -118,6 +118,12 @@ gmail:MessageRequest message = {
 };
 
 gmail:Message sendResult = check gmail->/users/me/messages/send.post(message);
+```
+
+### Step 4: Run the Ballerina application
+
+```bash
+bal run
 ```
 
 ## Examples

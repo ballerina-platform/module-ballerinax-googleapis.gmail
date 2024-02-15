@@ -8,7 +8,7 @@ The `ballerinax/googleapis.gmail` package offers APIs to connect and interact wi
 
 To use the Gmail connector, you must have access to the Gmail REST API through a [Google Cloud Platform (GCP)](https://console.cloud.google.com/) account and a project under it. If you do not have a GCP account, you can sign up for one [here](https://cloud.google.com/).
 
-### Step 1: Create a Google Cloud Platform Project
+### Step 1: Create a Google Cloud Platform project
 
 1. Open the [Google Cloud Platform Console](https://console.cloud.google.com/).
 
@@ -70,9 +70,9 @@ To use the Gmail connector, you must have access to the Gmail REST API through a
 
 To use the `gmail` connector in your Ballerina application, modify the `.bal` file as follows:
 
-### Step 1: Import the connector
+### Step 1: Import the module
 
-Import the `ballerinax/googleapis.gmail` package.
+Import the `gmail` module.
 
 ```ballerina
 import ballerinax/googleapis.gmail;
@@ -118,6 +118,12 @@ gmail:MessageRequest message = {
 };
 
 gmail:Message sendResult = check gmail->/users/me/messages/send.post(message);
+```
+
+### Step 4: Run the Ballerina application
+
+```bash
+bal run
 ```
 
 ## Examples
