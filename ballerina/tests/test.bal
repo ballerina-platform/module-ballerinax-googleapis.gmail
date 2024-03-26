@@ -105,6 +105,7 @@ function testMessageBatchModify() returns error? {
 }
 function testMessageBatchDelete() returns error? {
     check gmailClient->/users/me/messages/batchDelete.post({ids: [insertMessageId]});
+    runtime:sleep(10);
     Message|error message = gmailClient->/users/me/messages/[insertMessageId];
     test:assertTrue(message is error, msg = "/users/[userId]/messages/batchDelete failed. Msg not deleted");
 }
@@ -235,6 +236,7 @@ function testGetAttachment() returns error? {
 }
 function testMessageDelete() returns error? {
     check gmailClient->/users/me/messages/[sentMessageId].delete();
+    runtime:sleep(10);
     Message|error message = gmailClient->/users/me/messages/[sentMessageId];
     test:assertTrue(message is error, msg = "/users/[userId]/messages/[sentMessageId].delete failed. Msg not deleted");
 }
@@ -319,6 +321,7 @@ function testPutDraft() returns error? {
 }
 function testDeleteDraft() returns error? {
     check gmailClient->/users/me/drafts/[draftId].delete();
+    runtime:sleep(10);
     Draft|error draft = gmailClient->/users/me/drafts/[draftId];
     test:assertTrue(draft is error, msg = "/users/[userId]/drafts/[draftId].delete failed. Draft not deleted");
 }
@@ -423,6 +426,7 @@ function testUntrashMailThread() returns error? {
 }
 function testDeleteMailThread() returns error? {
     check gmailClient->/users/me/threads/[threadId].delete();
+    runtime:sleep(10);
     MailThread|error mailThread = gmailClient->/users/me/threads/[threadId];
     test:assertTrue(mailThread is error, msg = "/users/[userId]/threads/[threadId].delete failed. Thread not deleted");
 }
@@ -491,6 +495,7 @@ function testPatchLabel() returns error? {
 }
 function testDeleteLabel() returns error? {
     check gmailClient->/users/me/labels/[labelId].delete();
+    runtime:sleep(10);
     Label|error label = gmailClient->/users/me/labels/[labelId];
     test:assertTrue(label is error, msg = "/users/[userId]/labels/[label.id].delete failed. Label not deleted");
 }
