@@ -12,3 +12,4 @@ jobs:
     secrets: inherit
     with:
       repo-name: module-ballerinax-googleapis.gmail
+      additional-build-flags: "-x :googleapis.gmail-examples:build"
