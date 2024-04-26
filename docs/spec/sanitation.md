@@ -17,7 +17,7 @@ This records the sanitization done on top of the OAS from APIs guru. Google uses
 
 4. Move parameters `xgafv` and `alt` definitions to schemas. This ensures ballerina enums are created for the parameters not inline string unions.
 
-5. Rename `Thread` schema to `MailThread`. This is done as a workaround for issue, [Openapi tool does not escape in built symbols](https://github.com/ballerina-platform/ballerina-standard-library/issues/5067)
+5. Rename `Thread` schema to `MailThread`. This is done as a workaround for issue, [Openapi tool does not escape in built symbols](https://github.com/ballerina-platform/ballerina-library/issues/5067)
 
 6. Add description for `LabelColor` schema.
 
