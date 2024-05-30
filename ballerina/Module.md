@@ -83,6 +83,10 @@ import ballerinax/googleapis.gmail;
 Create a `gmail:ConnectionConfig` with the obtained OAuth2.0 tokens and initialize the connector with it.
 
 ```ballerina
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+
 gmail:Client gmail = check new gmail:Client(
     config = {
         auth: {
