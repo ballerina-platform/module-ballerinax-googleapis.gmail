@@ -17,3 +17,4 @@ jobs:
     secrets: inherit
     with:
       additional-build-flags: "-x :googleapis.gmail-examples:build -Pgroups=mock"
+      additional-test-flags: "-Pgroups=mock"
