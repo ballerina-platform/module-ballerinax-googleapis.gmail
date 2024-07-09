@@ -13,4 +13,4 @@ jobs:
     uses: ballerina-platform/ballerina-library/.github/workflows/pr-build-connector-template.yml@main
     secrets: inherit
     with:
-      additional-test-flags: -Pgroups=mock
+      additional-test-flags: -x :googleapis.gmail-examples:test -Pgroups=mock

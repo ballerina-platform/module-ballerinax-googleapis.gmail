@@ -18,14 +18,7 @@
 
 import org.apache.tools.ant.taskdefs.condition.Os
 
-apply plugin: 'java'
-
-def graalvmFlag = ""
-
-task testExamples {
-    if (project.hasProperty("balGraalVMTest")) {
-        graalvmFlag = "--graalvm"
-    }
+task test {
     doLast {
         try {
             exec {
@@ -38,18 +31,16 @@ task testExamples {
                 }
             }
         } catch (Exception e) {
-            println("Example Build failed: " + e.message)
+            println("Example Run failed: " + e.message)
             throw e
         }
     }
 }
 
-task buildExamples {
+task build {
     gradle.taskGraph.whenReady { graph ->
-        if (graph.hasTask(":gmail-examples:test")) {
-            buildExamples.enabled = false
-        } else {
-            testExamples.enabled = false
+        if (graph.hasTask(":sap.s4hana.googleapis.gmail-examples:test")) {
+            build.enabled = false
         }
     }
     doLast {
@@ -58,7 +49,7 @@ task buildExamples {
                 workingDir project.projectDir
                 println("Working dir: ${workingDir}")
                 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                    commandLine 'sh', "/c", "chmod +x ./build.s && ./build.sh build && exit %%ERRORLEVEL%%"
+                    commandLine 'sh', "/c", "chmod +x ./build.sh && ./build.sh build && exit %%ERRORLEVEL%%"
                 } else {
                     commandLine 'sh', "-c", "chmod +x ./build.sh && ./build.sh build"
                 }
@@ -70,7 +61,5 @@ task buildExamples {
     }
 }
 
-buildExamples.dependsOn ":googleapis.gmail-ballerina:build"
-testExamples.dependsOn ":googleapis.gmail-ballerina:build"
-test.dependsOn testExamples
-build.dependsOn buildExamples
+test.dependsOn ":googleapis.gmail-ballerina:build"
+build.dependsOn ":googleapis.gmail-ballerina:build"
