@@ -17,10 +17,12 @@ Config.toml
 *.jar
 !gradle-wrapper/*.jar
 *.war
+*.nar
 *.ear
 *.zip
 *.tar.gz
 *.rar
+*.deb
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
@@ -28,26 +30,39 @@ hs_err_pid*
 # Ignore everything in this directory
 target
 
-# mac
-.DS_Store
+# Ballerina
+Ballerina.lock
 
-.classpath
-.settings
-.project
-
-.vscode
-
-target
+#Idea files
 .idea
 *.iml
 *.ipr
 *.iws
-.gradle
-build
+
+# generated files
+target
+.ballerina
+/compiler-plugin-tests/bin/
 generated
+
+# gradle
+.gradle
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# mac
+.DS_Store
+
+.classpath
+.project
+.settings
+.vscode
+
+#Ignore examples auto generated files
+examples/**/Dependencies.toml
+examples/**/Config.toml
 
 # Environment files
 *.env
-
-# Files from bal Github action
-*.deb 
