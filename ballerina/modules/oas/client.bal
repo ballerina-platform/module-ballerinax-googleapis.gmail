@@ -54,812 +54,461 @@ public isolated client class Client {
         self.clientEp = httpEp;
         return;
     }
-    # Lists the drafts in the user's mailbox.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + includeSpamTrash - Include drafts from `SPAM` and `TRASH` in the results.
-    # + maxResults - Maximum number of drafts to return. This field defaults to 100. The maximum allowed value for this field is 500.
-    # + pageToken - Page token to retrieve a specific page of results in the list.
-    # + q - Only return draft messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`.
-    # + return - Successful response 
-    resource isolated function get users/[string userId]/drafts(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), boolean? includeSpamTrash = (), int? maxResults = (), string? pageToken = (), string? q = ()) returns ListDraftsResponse|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "includeSpamTrash": includeSpamTrash, "maxResults": maxResults, "pageToken": pageToken, "q": q};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        ListDraftsResponse response = check self.clientEp->get(resourcePath);
-        return response;
-    }
-    # Creates a new draft with the `DRAFT` label.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + payload - The draft to create.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/drafts(Draft payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Draft|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Draft response = check self.clientEp->post(resourcePath, request);
-        return response;
-    }
-    # Sends the specified, existing draft to the recipients in the `To`, `Cc`, and `Bcc` headers.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + payload - The ID of the existing draft to send. (Optional) Updated draft if necessary.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/drafts/send(Draft payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Message|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts/send`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Message response = check self.clientEp->post(resourcePath, request);
-        return response;
-    }
-    # Gets the specified draft.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the draft to retrieve.
-    # + format - The format to return the draft in.
-    # + return - Successful response 
-    resource isolated function get users/[string userId]/drafts/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), "minimal"|"full"|"raw"|"metadata"? format = ()) returns Draft|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "format": format};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        Draft response = check self.clientEp->get(resourcePath);
-        return response;
-    }
-    # Replaces a draft's content.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the draft to update.
-    # + payload - The updated draft to update.
-    # + return - Successful response 
-    resource isolated function put users/[string userId]/drafts/[string id](Draft payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Draft|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Draft response = check self.clientEp->put(resourcePath, request);
-        return response;
-    }
+
     # Immediately and permanently deletes the specified draft. Does not simply trash it.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the draft to delete.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function delete users/[string userId]/drafts/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
+    resource isolated function delete users/[string userId]/drafts/[string id](map<string|string[]> headers = {}, *GmailUsersDraftsDeleteQueries queries) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/drafts/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        return self.clientEp->delete(resourcePath);
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->delete(resourcePath, headers = headers);
     }
-    # Lists the history of all changes to the given mailbox. History results are returned in chronological order (increasing `historyId`).
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + historyTypes - History types to be returned by the function
-    # + labelId - Only return messages with a label matching the ID.
-    # + maxResults - Maximum number of history records to return. This field defaults to 100. The maximum allowed value for this field is 500.
-    # + pageToken - Page token to retrieve a specific page of results in the list.
-    # + startHistoryId - Required. Returns history records after the specified `startHistoryId`. The supplied `startHistoryId` should be obtained from the `historyId` of a message, thread, or previous `list` response. History IDs increase chronologically but are not contiguous with random gaps in between valid IDs. Supplying an invalid or out of date `startHistoryId` typically returns an `HTTP 404` error code. A `historyId` is typically valid for at least a week, but in some rare circumstances may be valid for only a few hours. If you receive an `HTTP 404` error response, your application should perform a full sync. If you receive no `nextPageToken` in the response, there are no updates to retrieve and you can store the returned `historyId` for a future request.
-    # + return - Successful response 
-    resource isolated function get users/[string userId]/history(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), ("messageAdded"|"messageDeleted"|"labelAdded"|"labelRemoved")[]? historyTypes = (), string? labelId = (), int? maxResults = (), string? pageToken = (), string? startHistoryId = ()) returns ListHistoryResponse|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/history`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "historyTypes": historyTypes, "labelId": labelId, "maxResults": maxResults, "pageToken": pageToken, "startHistoryId": startHistoryId};
-        map<Encoding> queryParamEncoding = {"historyTypes": {style: FORM, explode: true}};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam, queryParamEncoding);
-        ListHistoryResponse response = check self.clientEp->get(resourcePath);
-        return response;
-    }
-    # Lists all labels in the user's mailbox.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + return - Successful response 
-    resource isolated function get users/[string userId]/labels(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns ListLabelsResponse|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/labels`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        ListLabelsResponse response = check self.clientEp->get(resourcePath);
-        return response;
-    }
-    # Creates a new label.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + payload - The label to create.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/labels(Label payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Label|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/labels`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Label response = check self.clientEp->post(resourcePath, request);
-        return response;
-    }
-    # Gets the specified label.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the label to retrieve.
-    # + return - Successful response 
-    resource isolated function get users/[string userId]/labels/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Label|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/labels/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        Label response = check self.clientEp->get(resourcePath);
-        return response;
-    }
-    # Updates the specified label.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the label to update.
-    # + payload - The updated label to update.
-    # + return - Successful response 
-    resource isolated function put users/[string userId]/labels/[string id](Label payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Label|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/labels/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Label response = check self.clientEp->put(resourcePath, request);
-        return response;
-    }
+
     # Immediately and permanently deletes the specified label and removes it from any messages and threads that it is applied to.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the label to delete.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function delete users/[string userId]/labels/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
+    resource isolated function delete users/[string userId]/labels/[string id](map<string|string[]> headers = {}, *GmailUsersLabelsDeleteQueries queries) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/labels/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        return self.clientEp->delete(resourcePath);
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->delete(resourcePath, headers = headers);
     }
-    # Patch the specified label.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the label to update.
-    # + payload - The updated label to update.
-    # + return - Successful response 
-    resource isolated function patch users/[string userId]/labels/[string id](Label payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Label|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/labels/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Label response = check self.clientEp->patch(resourcePath, request);
-        return response;
-    }
-    # Lists the messages in the user's mailbox.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + includeSpamTrash - Include messages from `SPAM` and `TRASH` in the results.
-    # + labelIds - Only return messages with labels that match all of the specified label IDs. Messages in a thread might have labels that other messages in the same thread don't have. To learn more, see [Manage labels on messages and threads](https://developers.google.com/gmail/api/guides/labels#manage_labels_on_messages_threads).
-    # + maxResults - Maximum number of messages to return. This field defaults to 100. The maximum allowed value for this field is 500.
-    # + pageToken - Page token to retrieve a specific page of results in the list.
-    # + q - Only return messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.
-    # + return - Successful response 
-    resource isolated function get users/[string userId]/messages(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), boolean? includeSpamTrash = (), string[]? labelIds = (), int? maxResults = (), string? pageToken = (), string? q = ()) returns ListMessagesResponse|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "includeSpamTrash": includeSpamTrash, "labelIds": labelIds, "maxResults": maxResults, "pageToken": pageToken, "q": q};
-        map<Encoding> queryParamEncoding = {"labelIds": {style: FORM, explode: true}};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam, queryParamEncoding);
-        ListMessagesResponse response = check self.clientEp->get(resourcePath);
-        return response;
-    }
-    # Directly inserts a message into only this user's mailbox similar to `IMAP APPEND`, bypassing most scanning and classification. Does not send a message.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + deleted - Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.
-    # + internalDateSource - Source for Gmail's internal date of the message.
-    # + payload - The message to be inserted.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/messages(Message payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), boolean? deleted = (), "receivedTime"|"dateHeader"? internalDateSource = ()) returns Message|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "deleted": deleted, "internalDateSource": internalDateSource};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Message response = check self.clientEp->post(resourcePath, request);
-        return response;
-    }
-    # Deletes many messages by message ID. Provides no guarantees that messages were not already deleted or even existed at all.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + payload - The IDs of the messages to delete.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/batchDelete(BatchDeleteMessagesRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/batchDelete`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        return self.clientEp->post(resourcePath, request);
-    }
-    # Modifies the labels on the specified messages.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + payload - A list of labels to add/remove in messages.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/batchModify(BatchModifyMessagesRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/batchModify`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        return self.clientEp->post(resourcePath, request);
-    }
-    # Imports a message into only this user's mailbox, with standard email delivery scanning and classification similar to receiving via SMTP. This method doesn't perform SPF checks, so it might not work for some spam messages, such as those attempting to perform domain spoofing. This method does not send a message.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + deleted - Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.
-    # + internalDateSource - Source for Gmail's internal date of the message.
-    # + neverMarkSpam - Ignore the Gmail spam classifier decision and never mark this email as SPAM in the mailbox.
-    # + processForCalendar - Process calendar invites in the email and add any extracted meetings to the Google Calendar for this user.
-    # + payload - The message to be imported.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/'import(Message payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), boolean? deleted = (), "receivedTime"|"dateHeader"? internalDateSource = (), boolean? neverMarkSpam = (), boolean? processForCalendar = ()) returns Message|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/import`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "deleted": deleted, "internalDateSource": internalDateSource, "neverMarkSpam": neverMarkSpam, "processForCalendar": processForCalendar};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Message response = check self.clientEp->post(resourcePath, request);
-        return response;
-    }
-    # Sends the specified message to the recipients in the `To`, `Cc`, and `Bcc` headers. For example usage, see [Sending email](https://developers.google.com/gmail/api/guides/sending).
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + payload - The message to be sent.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/send(Message payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Message|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/send`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Message response = check self.clientEp->post(resourcePath, request);
-        return response;
-    }
-    # Gets the specified message.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to retrieve. This ID is usually retrieved using `messages.list`. The ID is also contained in the result when a message is inserted (`messages.insert`) or imported (`messages.import`).
-    # + format - The format to return the message in.
-    # + metadataHeaders - When given and format is `METADATA`, only include headers specified.
-    # + return - Successful response 
-    resource isolated function get users/[string userId]/messages/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), "minimal"|"full"|"raw"|"metadata"? format = (), string[]? metadataHeaders = ()) returns Message|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "format": format, "metadataHeaders": metadataHeaders};
-        map<Encoding> queryParamEncoding = {"metadataHeaders": {style: FORM, explode: true}};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam, queryParamEncoding);
-        Message response = check self.clientEp->get(resourcePath);
-        return response;
-    }
+
     # Immediately and permanently deletes the specified message. This operation cannot be undone. Prefer `messages.trash` instead.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the message to delete.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function delete users/[string userId]/messages/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
+    resource isolated function delete users/[string userId]/messages/[string id](map<string|string[]> headers = {}, *GmailUsersMessagesDeleteQueries queries) returns error? {
         string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        return self.clientEp->delete(resourcePath);
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->delete(resourcePath, headers = headers);
     }
-    # Modifies the labels on the specified message.
+
+    # Immediately and permanently deletes the specified thread. Any messages that belong to the thread are also deleted. This operation cannot be undone. Prefer `threads.trash` instead.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to modify.
-    # + payload - A list of labels to add/remove on the message.
+    # + id - ID of the Thread to delete.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/[string id]/modify(ModifyMessageRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Message|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}/modify`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        json jsonBody = payload.toJson();
-        request.setPayload(jsonBody, "application/json");
-        Message response = check self.clientEp->post(resourcePath, request);
-        return response;
+    resource isolated function delete users/[string userId]/threads/[string id](map<string|string[]> headers = {}, *GmailUsersThreadsDeleteQueries queries) returns error? {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/threads/${getEncodedUri(id)}`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->delete(resourcePath, headers = headers);
     }
-    # Moves the specified message to the trash.
+
+    # Lists the drafts in the user's mailbox.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to Trash.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/[string id]/trash(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Message|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}/trash`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        Message response = check self.clientEp->post(resourcePath, request);
-        return response;
+    resource isolated function get users/[string userId]/drafts(map<string|string[]> headers = {}, *GmailUsersDraftsListQueries queries) returns ListDraftsResponse|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
     }
-    # Removes the specified message from the trash.
+
+    # Gets the specified draft.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to remove from Trash.
+    # + id - The ID of the draft to retrieve.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function post users/[string userId]/messages/[string id]/untrash(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Message|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}/untrash`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        http:Request request = new;
-        Message response = check self.clientEp->post(resourcePath, request);
-        return response;
+    resource isolated function get users/[string userId]/drafts/[string id](map<string|string[]> headers = {}, *GmailUsersDraftsGetQueries queries) returns Draft|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts/${getEncodedUri(id)}`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
     }
+
+    # Lists the history of all changes to the given mailbox. History results are returned in chronological order (increasing `historyId`).
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/history(map<string|string[]> headers = {}, *GmailUsersHistoryListQueries queries) returns ListHistoryResponse|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/history`;
+        map<Encoding> queryParamEncoding = {"historyTypes": {style: FORM, explode: true}};
+        resourcePath = resourcePath + check getPathForQueryParam(queries, queryParamEncoding);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Lists all labels in the user's mailbox.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/labels(map<string|string[]> headers = {}, *GmailUsersLabelsListQueries queries) returns ListLabelsResponse|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/labels`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Gets the specified label.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the label to retrieve.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/labels/[string id](map<string|string[]> headers = {}, *GmailUsersLabelsGetQueries queries) returns Label|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/labels/${getEncodedUri(id)}`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Lists the messages in the user's mailbox.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/messages(map<string|string[]> headers = {}, *GmailUsersMessagesListQueries queries) returns ListMessagesResponse|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages`;
+        map<Encoding> queryParamEncoding = {"labelIds": {style: FORM, explode: true}};
+        resourcePath = resourcePath + check getPathForQueryParam(queries, queryParamEncoding);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
+    # Gets the specified message.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the message to retrieve. This ID is usually retrieved using `messages.list`. The ID is also contained in the result when a message is inserted (`messages.insert`) or imported (`messages.import`).
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Successful response 
+    resource isolated function get users/[string userId]/messages/[string id](map<string|string[]> headers = {}, *GmailUsersMessagesGetQueries queries) returns Message|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}`;
+        map<Encoding> queryParamEncoding = {"metadataHeaders": {style: FORM, explode: true}};
+        resourcePath = resourcePath + check getPathForQueryParam(queries, queryParamEncoding);
+        return self.clientEp->get(resourcePath, headers);
+    }
+
     # Gets the specified message attachment.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + messageId - The ID of the message containing the attachment.
     # + id - The ID of the attachment.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function get users/[string userId]/messages/[string messageId]/attachments/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns MessagePartBody|error {
+    resource isolated function get users/[string userId]/messages/[string messageId]/attachments/[string id](map<string|string[]> headers = {}, *GmailUsersMessagesAttachmentsGetQueries queries) returns MessagePartBody|error {
         string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(messageId)}/attachments/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        MessagePartBody response = check self.clientEp->get(resourcePath);
-        return response;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
     }
+
     # Gets the current user's Gmail profile.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function get users/[string userId]/profile(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns Profile|error {
+    resource isolated function get users/[string userId]/profile(map<string|string[]> headers = {}, *GmailUsersGetProfileQueries queries) returns Profile|error {
         string resourcePath = string `/users/${getEncodedUri(userId)}/profile`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        Profile response = check self.clientEp->get(resourcePath);
-        return response;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        return self.clientEp->get(resourcePath, headers);
     }
+
     # Lists the threads in the user's mailbox.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + includeSpamTrash - Include threads from `SPAM` and `TRASH` in the results.
-    # + labelIds - Only return threads with labels that match all of the specified label IDs.
-    # + maxResults - Maximum number of threads to return. This field defaults to 100. The maximum allowed value for this field is 500.
-    # + pageToken - Page token to retrieve a specific page of results in the list.
-    # + q - Only return threads matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function get users/[string userId]/threads(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), boolean? includeSpamTrash = (), string[]? labelIds = (), int? maxResults = (), string? pageToken = (), string? q = ()) returns ListThreadsResponse|error {
+    resource isolated function get users/[string userId]/threads(map<string|string[]> headers = {}, *GmailUsersThreadsListQueries queries) returns ListThreadsResponse|error {
         string resourcePath = string `/users/${getEncodedUri(userId)}/threads`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "includeSpamTrash": includeSpamTrash, "labelIds": labelIds, "maxResults": maxResults, "pageToken": pageToken, "q": q};
         map<Encoding> queryParamEncoding = {"labelIds": {style: FORM, explode: true}};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam, queryParamEncoding);
-        ListThreadsResponse response = check self.clientEp->get(resourcePath);
-        return response;
+        resourcePath = resourcePath + check getPathForQueryParam(queries, queryParamEncoding);
+        return self.clientEp->get(resourcePath, headers);
     }
+
     # Gets the specified thread.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the thread to retrieve.
-    # + format - The format to return the messages in.
-    # + metadataHeaders - When given and format is METADATA, only include headers specified.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function get users/[string userId]/threads/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = (), "full"|"metadata"|"minimal"? format = (), string[]? metadataHeaders = ()) returns MailThread|error {
+    resource isolated function get users/[string userId]/threads/[string id](map<string|string[]> headers = {}, *GmailUsersThreadsGetQueries queries) returns MailThread|error {
         string resourcePath = string `/users/${getEncodedUri(userId)}/threads/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType, "format": format, "metadataHeaders": metadataHeaders};
         map<Encoding> queryParamEncoding = {"metadataHeaders": {style: FORM, explode: true}};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam, queryParamEncoding);
-        MailThread response = check self.clientEp->get(resourcePath);
-        return response;
+        resourcePath = resourcePath + check getPathForQueryParam(queries, queryParamEncoding);
+        return self.clientEp->get(resourcePath, headers);
     }
-    # Immediately and permanently deletes the specified thread. Any messages that belong to the thread are also deleted. This operation cannot be undone. Prefer `threads.trash` instead.
+
+    # Patch the specified label.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - ID of the Thread to delete.
+    # + id - The ID of the label to update.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The updated label to update. 
     # + return - Successful response 
-    resource isolated function delete users/[string userId]/threads/[string id](Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns error? {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/threads/${getEncodedUri(id)}`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
-        return self.clientEp->delete(resourcePath);
-    }
-    # Modifies the labels applied to the thread. This applies to all messages in the thread.
-    #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the thread to modify.
-    # + payload - A list labels to add/remove on the thread.
-    # + return - Successful response 
-    resource isolated function post users/[string userId]/threads/[string id]/modify(ModifyThreadRequest payload, Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns MailThread|error {
-        string resourcePath = string `/users/${getEncodedUri(userId)}/threads/${getEncodedUri(id)}/modify`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
+    resource isolated function patch users/[string userId]/labels/[string id](Label payload, map<string|string[]> headers = {}, *GmailUsersLabelsPatchQueries queries) returns Label|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/labels/${getEncodedUri(id)}`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
         http:Request request = new;
         json jsonBody = payload.toJson();
         request.setPayload(jsonBody, "application/json");
-        MailThread response = check self.clientEp->post(resourcePath, request);
-        return response;
+        return self.clientEp->patch(resourcePath, request, headers);
     }
+
+    # Creates a new draft with the `DRAFT` label.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The draft to create. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/drafts(Draft payload, map<string|string[]> headers = {}, *GmailUsersDraftsCreateQueries queries) returns Draft|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Sends the specified, existing draft to the recipients in the `To`, `Cc`, and `Bcc` headers.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The ID of the existing draft to send. (Optional) Updated draft if necessary. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/drafts/send(Draft payload, map<string|string[]> headers = {}, *GmailUsersDraftsSendQueries queries) returns Message|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts/send`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Creates a new label.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The label to create. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/labels(Label payload, map<string|string[]> headers = {}, *GmailUsersLabelsCreateQueries queries) returns Label|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/labels`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Directly inserts a message into only this user's mailbox similar to `IMAP APPEND`, bypassing most scanning and classification. Does not send a message.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The message to be inserted. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/messages(Message payload, map<string|string[]> headers = {}, *GmailUsersMessagesInsertQueries queries) returns Message|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    resource isolated function post users/[string userId]/messages/'import(Message payload, map<string|string[]> headers = {}, *GmailUsersMessagesImportQueries queries) returns Message|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/import`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Modifies the labels on the specified message.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the message to modify.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - A list of labels to add/remove on the message. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/messages/[string id]/modify(ModifyMessageRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesModifyQueries queries) returns Message|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}/modify`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Moves the specified message to the trash.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the message to Trash.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/messages/[string id]/trash(map<string|string[]> headers = {}, *GmailUsersMessagesTrashQueries queries) returns Message|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}/trash`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Removes the specified message from the trash.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the message to remove from Trash.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/messages/[string id]/untrash(map<string|string[]> headers = {}, *GmailUsersMessagesUntrashQueries queries) returns Message|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/${getEncodedUri(id)}/untrash`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Deletes many messages by message ID. Provides no guarantees that messages were not already deleted or even existed at all.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The IDs of the messages to delete. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/messages/batchDelete(BatchDeleteMessagesRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesBatchDeleteQueries queries) returns error? {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/batchDelete`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Modifies the labels on the specified messages.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - A list of labels to add/remove in messages. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/messages/batchModify(BatchModifyMessagesRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesBatchModifyQueries queries) returns error? {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/batchModify`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Sends the specified message to the recipients in the `To`, `Cc`, and `Bcc` headers. For example usage, see [Sending email](https://developers.google.com/gmail/api/guides/sending).
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The message to be sent. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/messages/send(Message payload, map<string|string[]> headers = {}, *GmailUsersMessagesSendQueries queries) returns Message|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/messages/send`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Modifies the labels applied to the thread. This applies to all messages in the thread.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the thread to modify.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - A list labels to add/remove on the thread. 
+    # + return - Successful response 
+    resource isolated function post users/[string userId]/threads/[string id]/modify(ModifyThreadRequest payload, map<string|string[]> headers = {}, *GmailUsersThreadsModifyQueries queries) returns MailThread|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/threads/${getEncodedUri(id)}/modify`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
     # Moves the specified thread to the trash. Any messages that belong to the thread are also moved to the trash.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the thread to Trash.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function post users/[string userId]/threads/[string id]/trash(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns MailThread|error {
+    resource isolated function post users/[string userId]/threads/[string id]/trash(map<string|string[]> headers = {}, *GmailUsersThreadsTrashQueries queries) returns MailThread|error {
         string resourcePath = string `/users/${getEncodedUri(userId)}/threads/${getEncodedUri(id)}/trash`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
         http:Request request = new;
-        MailThread response = check self.clientEp->post(resourcePath, request);
-        return response;
+        return self.clientEp->post(resourcePath, request, headers);
     }
+
     # Removes the specified thread from the trash. Any messages that belong to the thread are also removed from the trash.
     #
-    # + xgafv - V1 error format.
-    # + access_token - OAuth access token.
-    # + alt - Data format for response.
-    # + callback - JSONP
-    # + fields - Selector specifying which fields to include in a partial response.
-    # + 'key - API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-    # + oauth_token - OAuth 2.0 token for the current user.
-    # + prettyPrint - Returns response with indentations and line breaks.
-    # + quotaUser - Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-    # + upload_protocol - Upload protocol for media (e.g. "raw", "multipart").
-    # + uploadType - Legacy upload protocol for media (e.g. "media", "multipart").
     # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
     # + id - The ID of the thread to remove from Trash.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
     # + return - Successful response 
-    resource isolated function post users/[string userId]/threads/[string id]/untrash(Xgafv? xgafv = (), string? access_token = (), Alt? alt = (), string? callback = (), string? fields = (), string? 'key = (), string? oauth_token = (), boolean? prettyPrint = (), string? quotaUser = (), string? upload_protocol = (), string? uploadType = ()) returns MailThread|error {
+    resource isolated function post users/[string userId]/threads/[string id]/untrash(map<string|string[]> headers = {}, *GmailUsersThreadsUntrashQueries queries) returns MailThread|error {
         string resourcePath = string `/users/${getEncodedUri(userId)}/threads/${getEncodedUri(id)}/untrash`;
-        map<anydata> queryParam = {"$.xgafv": xgafv, "access_token": access_token, "alt": alt, "callback": callback, "fields": fields, "key": 'key, "oauth_token": oauth_token, "prettyPrint": prettyPrint, "quotaUser": quotaUser, "upload_protocol": upload_protocol, "uploadType": uploadType};
-        resourcePath = resourcePath + check getPathForQueryParam(queryParam);
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
         http:Request request = new;
-        MailThread response = check self.clientEp->post(resourcePath, request);
-        return response;
+        return self.clientEp->post(resourcePath, request, headers);
+    }
+
+    # Replaces a draft's content.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the draft to update.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The updated draft to update. 
+    # + return - Successful response 
+    resource isolated function put users/[string userId]/drafts/[string id](Draft payload, map<string|string[]> headers = {}, *GmailUsersDraftsUpdateQueries queries) returns Draft|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/drafts/${getEncodedUri(id)}`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->put(resourcePath, request, headers);
+    }
+
+    # Updates the specified label.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + id - The ID of the label to update.
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The updated label to update. 
+    # + return - Successful response 
+    resource isolated function put users/[string userId]/labels/[string id](Label payload, map<string|string[]> headers = {}, *GmailUsersLabelsUpdateQueries queries) returns Label|error {
+        string resourcePath = string `/users/${getEncodedUri(userId)}/labels/${getEncodedUri(id)}`;
+        resourcePath = resourcePath + check getPathForQueryParam(queries);
+        http:Request request = new;
+        json jsonBody = payload.toJson();
+        request.setPayload(jsonBody, "application/json");
+        return self.clientEp->put(resourcePath, request, headers);
     }
 }
