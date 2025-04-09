@@ -1,0 +1,66 @@
+name: Regenerate OpenAPI Connector
+
+on:
+  workflow_dispatch:
+    inputs:
+      openapi-url:
+        description: "URL of the OpenAPI JSON"
+        required: false
+        type: string
+      flatten-openapi:
+        description: "Enable OpenAPI Flattening"
+        required: false
+        type: boolean
+        default: true
+      additional-flatten-flags:
+        description: "Additional flags for OpenAPI Flattening"
+        required: false
+        type: string
+        default: ""
+      align-openapi:
+        description: "Enable OpenAPI Alignment"
+        required: false
+        type: boolean
+        default: true
+      additional-align-flags:
+        description: "Additional flags for OpenAPI Alignment"
+        required: false
+        type: string
+        default: ""
+      additional-generation-flags:
+        description: "Additional flags for OpenAPI Generation"
+        required: false
+        type: string
+        default: ""
+      distribution-zip:
+        description: "Distribution of the Ballerina version to be used"
+        required: false
+        type: string
+        default: ""
+      auto-merge:
+        description: "Enable auto-merge of the PR"
+        required: false
+        type: boolean
+        default: true
+      ballerina-version:
+        description: "Ballerina Language Version"
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  call_workflow:
+    name: Run Regenerate Connector Workflow
+    if: ${{ github.repository_owner == 'ballerina-platform' }}
+    uses: ballerina-platform/ballerina-library/.github/workflows/regenerate-connector-template.yml@main
+    secrets: inherit
+    with:
+      openapi-url: ${{ inputs.openapi-url }}
+      flatten-openapi: ${{ inputs.flatten-openapi }}
+      additional-flatten-flags: ${{ inputs.additional-flatten-flags }}
+      align-openapi: ${{ inputs.align-openapi }}
+      additional-align-flags: ${{ inputs.additional-align-flags  }}
+      additional-generation-flags: ${{ inputs.additional-generation-flags }}
+      distribution-zip: ${{ inputs.distribution-zip }}
+      auto-merge: ${{ inputs.auto-merge }}
+      ballerina-version: ${{ inputs.ballerina-version }}
