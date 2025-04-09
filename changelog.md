@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Improve APIs to align with ballerina standards
+
 ## [4.0.1] - 2024-02-13
 
 ### Changed
