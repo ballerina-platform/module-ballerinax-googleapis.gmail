@@ -2,4 +2,4 @@
 org = "wso2"
 name = "send_mails"
 version = "0.1.0"
-distribution = "2201.8.2"
+distribution = "2201.12.0"
