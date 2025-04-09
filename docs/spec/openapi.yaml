@@ -1,2265 +1,2683 @@
 openapi: 3.0.0
-servers:
-  - url: https://gmail.googleapis.com/gmail/v1
-x-hasEquivalentPaths: true
 info:
+  title: Gmail API
+  description: "The Gmail API lets you view and manage Gmail mailbox data like threads,\
+    \ messages, and labels."
+  termsOfService: https://developers.google.com/terms/
   contact:
     name: Google
     url: https://google.com
     x-twitter: youtube
-  description: The Gmail API lets you view and manage Gmail mailbox data like threads, messages, and labels.
   license:
     name: Creative Commons Attribution 3.0
     url: http://creativecommons.org/licenses/by/3.0/
-  termsOfService: https://developers.google.com/terms/
-  title: Gmail API
   version: v1
   x-apiClientRegistration:
     url: https://console.developers.google.com
   x-apisguru-categories:
-    - analytics
-    - media
+  - analytics
+  - media
   x-logo:
     url: https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png
   x-origin:
-    - format: google
-      url: https://gmail.googleapis.com/$discovery/rest?version=v1
-      version: v1
+  - format: google
+    url: https://gmail.googleapis.com/$discovery/rest?version=v1
+    version: v1
   x-providerName: googleapis.com
   x-serviceName: gmail
 externalDocs:
   url: https://developers.google.com/gmail/api/
+servers:
+- url: https://gmail.googleapis.com/gmail/v1
 tags:
-  - name: users
+- name: users
 paths:
   /users/{userId}/drafts:
     get:
+      tags:
+      - users
       description: Lists the drafts in the user's mailbox.
       operationId: gmail.users.drafts.list
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: Include drafts from `SPAM` and `TRASH` in the results.
-          in: query
-          name: includeSpamTrash
-          schema:
-            type: boolean
-        - description: Maximum number of drafts to return. This field defaults to 100. The maximum allowed value for this field is 500.
-          in: query
-          name: maxResults
-          schema:
-            type: integer
-        - description: Page token to retrieve a specific page of results in the list.
-          in: query
-          name: pageToken
-          schema:
-            type: string
-        - description: 'Only return draft messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`.'
-          in: query
-          name: q
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: includeSpamTrash
+        in: query
+        description: Include drafts from `SPAM` and `TRASH` in the results
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: maxResults
+        in: query
+        description: Maximum number of drafts to return. This field defaults to 100.
+          The maximum allowed value for this field is 500
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: pageToken
+        in: query
+        description: Page token to retrieve a specific page of results in the list
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: q
+        in: query
+        description: "Only return draft messages matching the specified query. Supports\
+          \ the same query format as the Gmail search box. For example, `\"from:someuser@example.com\
+          \ rfc822msgid: is:unread\"`"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListDraftsResponse"
-          description: Successful response
+                $ref: '#/components/schemas/ListDraftsResponse'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
-    parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     post:
+      tags:
+      - users
       description: Creates a new draft with the `DRAFT` label.
       operationId: gmail.users.drafts.create
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: The draft to create.
+        description: The draft to create
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Draft"
+              $ref: '#/components/schemas/Draft'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Draft"
-          description: Successful response
+                $ref: '#/components/schemas/Draft'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
-  /users/{userId}/drafts/send:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/drafts/send:
     post:
-      description: Sends the specified, existing draft to the recipients in the `To`, `Cc`, and `Bcc` headers.
+      tags:
+      - users
+      description: "Sends the specified, existing draft to the recipients in the `To`,\
+        \ `Cc`, and `Bcc` headers."
       operationId: gmail.users.drafts.send
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: The ID of the existing draft to send. (Optional) Updated draft if necessary.
+        description: The ID of the existing draft to send. (Optional) Updated draft
+          if necessary
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Draft"
+              $ref: '#/components/schemas/Draft'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
-          description: Successful response
+                $ref: '#/components/schemas/Message'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    parameters:
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/drafts/{id}:
-    delete:
-      description: Immediately and permanently deletes the specified draft. Does not simply trash it.
-      operationId: gmail.users.drafts.delete
-      parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the draft to delete.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Successful response
-      security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
     get:
+      tags:
+      - users
       description: Gets the specified draft.
       operationId: gmail.users.drafts.get
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the draft to retrieve.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-        - description: The format to return the draft in.
-          in: query
-          name: format
-          schema:
-            enum:
-              - minimal
-              - full
-              - raw
-              - metadata
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the draft to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: format
+        in: query
+        description: The format to return the draft in
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+          - full
+          - raw
+          - metadata
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Draft"
-          description: Successful response
+                $ref: '#/components/schemas/Draft'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
-    parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     put:
+      tags:
+      - users
       description: Replaces a draft's content.
       operationId: gmail.users.drafts.update
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the draft to update.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the draft to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: The updated draft to update.
+        description: The updated draft to update
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Draft"
+              $ref: '#/components/schemas/Draft'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Draft"
+                $ref: '#/components/schemas/Draft'
+      security:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    delete:
+      tags:
+      - users
+      description: Immediately and permanently deletes the specified draft. Does not
+        simply trash it.
+      operationId: gmail.users.drafts.delete
+      parameters:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the draft to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
           description: Successful response
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    parameters:
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/history:
     get:
-      description: Lists the history of all changes to the given mailbox. History results are returned in chronological order (increasing `historyId`).
+      tags:
+      - users
+      description: Lists the history of all changes to the given mailbox. History
+        results are returned in chronological order (increasing `historyId`).
       operationId: gmail.users.history.list
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: historyTypes
+        in: query
+        description: History types to be returned by the function
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
             type: string
-        - description: History types to be returned by the function
-          explode: true
-          in: query
-          name: historyTypes
-          schema:
-            items:
-              enum:
-                - messageAdded
-                - messageDeleted
-                - labelAdded
-                - labelRemoved
-              type: string
-            type: array
-          style: form
-        - description: Only return messages with a label matching the ID.
-          in: query
-          name: labelId
-          schema:
-            type: string
-        - description: Maximum number of history records to return. This field defaults to 100. The maximum allowed value for this field is 500.
-          in: query
-          name: maxResults
-          schema:
-            type: integer
-        - description: Page token to retrieve a specific page of results in the list.
-          in: query
-          name: pageToken
-          schema:
-            type: string
-        - description: Required. Returns history records after the specified `startHistoryId`. The supplied `startHistoryId` should be obtained from the `historyId` of a message, thread, or previous `list` response. History IDs increase chronologically but are not contiguous with random gaps in between valid IDs. Supplying an invalid or out of date `startHistoryId` typically returns an `HTTP 404` error code. A `historyId` is typically valid for at least a week, but in some rare circumstances may be valid for only a few hours. If you receive an `HTTP 404` error response, your application should perform a full sync. If you receive no `nextPageToken` in the response, there are no updates to retrieve and you can store the returned `historyId` for a future request.
-          in: query
-          name: startHistoryId
-          schema:
-            type: string
+            enum:
+            - messageAdded
+            - messageDeleted
+            - labelAdded
+            - labelRemoved
+      - name: labelId
+        in: query
+        description: Only return messages with a label matching the ID
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: maxResults
+        in: query
+        description: Maximum number of history records to return. This field defaults
+          to 100. The maximum allowed value for this field is 500
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: pageToken
+        in: query
+        description: Page token to retrieve a specific page of results in the list
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: startHistoryId
+        in: query
+        description: "Required. Returns history records after the specified `startHistoryId`.\
+          \ The supplied `startHistoryId` should be obtained from the `historyId`\
+          \ of a message, thread, or previous `list` response. History IDs increase\
+          \ chronologically but are not contiguous with random gaps in between valid\
+          \ IDs. Supplying an invalid or out of date `startHistoryId` typically returns\
+          \ an `HTTP 404` error code. A `historyId` is typically valid for at least\
+          \ a week, but in some rare circumstances may be valid for only a few hours.\
+          \ If you receive an `HTTP 404` error response, your application should perform\
+          \ a full sync. If you receive no `nextPageToken` in the response, there\
+          \ are no updates to retrieve and you can store the returned `historyId`\
+          \ for a future request"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListHistoryResponse"
-          description: Successful response
+                $ref: '#/components/schemas/ListHistoryResponse'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/labels:
     get:
+      tags:
+      - users
       description: Lists all labels in the user's mailbox.
       operationId: gmail.users.labels.list
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListLabelsResponse"
-          description: Successful response
+                $ref: '#/components/schemas/ListLabelsResponse'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.labels
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.labels
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
-    parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.labels
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.labels
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     post:
+      tags:
+      - users
       description: Creates a new label.
       operationId: gmail.users.labels.create
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: The label to create.
+        description: The label to create
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Label"
+              $ref: '#/components/schemas/Label'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Label"
-          description: Successful response
+                $ref: '#/components/schemas/Label'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.labels
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.labels
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.labels
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.labels
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    parameters:
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/labels/{id}:
-    delete:
-      description: Immediately and permanently deletes the specified label and removes it from any messages and threads that it is applied to.
-      operationId: gmail.users.labels.delete
-      parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the label to delete.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Successful response
-      security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.labels
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.labels
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
     get:
+      tags:
+      - users
       description: Gets the specified label.
       operationId: gmail.users.labels.get
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the label to retrieve.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the label to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Label"
-          description: Successful response
+                $ref: '#/components/schemas/Label'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.labels
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.labels
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
-    parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
-    patch:
-      description: Patch the specified label.
-      operationId: gmail.users.labels.patch
-      parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the label to update.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      requestBody:
-        description: The updated label to update.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Label"
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Label"
-          description: Successful response
-      security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.labels
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.labels
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.labels
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.labels
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     put:
+      tags:
+      - users
       description: Updates the specified label.
       operationId: gmail.users.labels.update
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the label to update.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the label to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: The updated label to update.
+        description: The updated label to update
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Label"
+              $ref: '#/components/schemas/Label'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Label"
+                $ref: '#/components/schemas/Label'
+      security:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.labels
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.labels
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    delete:
+      tags:
+      - users
+      description: Immediately and permanently deletes the specified label and removes
+        it from any messages and threads that it is applied to.
+      operationId: gmail.users.labels.delete
+      parameters:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the label to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
           description: Successful response
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.labels
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.labels
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.labels
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.labels
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    patch:
       tags:
-        - users
+      - users
+      description: Patch the specified label.
+      operationId: gmail.users.labels.patch
+      parameters:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the label to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: The updated label to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Label'
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Label'
+      security:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.labels
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.labels
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    parameters:
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/messages:
     get:
+      tags:
+      - users
       description: Lists the messages in the user's mailbox.
       operationId: gmail.users.messages.list
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: includeSpamTrash
+        in: query
+        description: Include messages from `SPAM` and `TRASH` in the results
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: labelIds
+        in: query
+        description: "Only return messages with labels that match all of the specified\
+          \ label IDs. Messages in a thread might have labels that other messages\
+          \ in the same thread don't have. To learn more, see [Manage labels on messages\
+          \ and threads](https://developers.google.com/gmail/api/guides/labels#manage_labels_on_messages_threads)"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
             type: string
-        - description: Include messages from `SPAM` and `TRASH` in the results.
-          in: query
-          name: includeSpamTrash
-          schema:
-            type: boolean
-        - description: Only return messages with labels that match all of the specified label IDs. Messages in a thread might have labels that other messages in the same thread don't have. To learn more, see [Manage labels on messages and threads](https://developers.google.com/gmail/api/guides/labels#manage_labels_on_messages_threads).
-          explode: true
-          in: query
-          name: labelIds
-          schema:
-            items:
-              type: string
-            type: array
-          style: form
-        - description: Maximum number of messages to return. This field defaults to 100. The maximum allowed value for this field is 500.
-          in: query
-          name: maxResults
-          schema:
-            type: integer
-        - description: Page token to retrieve a specific page of results in the list.
-          in: query
-          name: pageToken
-          schema:
-            type: string
-        - description: 'Only return messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.'
-          in: query
-          name: q
-          schema:
-            type: string
+      - name: maxResults
+        in: query
+        description: Maximum number of messages to return. This field defaults to
+          100. The maximum allowed value for this field is 500
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: pageToken
+        in: query
+        description: Page token to retrieve a specific page of results in the list
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: q
+        in: query
+        description: "Only return messages matching the specified query. Supports\
+          \ the same query format as the Gmail search box. For example, `\"from:someuser@example.com\
+          \ rfc822msgid: is:unread\"`. Parameter cannot be used when accessing the\
+          \ api using the gmail.metadata scope"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListMessagesResponse"
-          description: Successful response
+                $ref: '#/components/schemas/ListMessagesResponse'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
-    parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     post:
-      description: Directly inserts a message into only this user's mailbox similar to `IMAP APPEND`, bypassing most scanning and classification. Does not send a message.
+      tags:
+      - users
+      description: "Directly inserts a message into only this user's mailbox similar\
+        \ to `IMAP APPEND`, bypassing most scanning and classification. Does not send\
+        \ a message."
       operationId: gmail.users.messages.insert
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.
-          in: query
-          name: deleted
-          schema:
-            type: boolean
-        - description: Source for Gmail's internal date of the message.
-          in: query
-          name: internalDateSource
-          schema:
-            enum:
-              - receivedTime
-              - dateHeader
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: deleted
+        in: query
+        description: Mark the email as permanently deleted (not TRASH) and only visible
+          in Google Vault to a Vault administrator. Only used for Google Workspace
+          accounts
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: internalDateSource
+        in: query
+        description: Source for Gmail's internal date of the message
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - receivedTime
+          - dateHeader
       requestBody:
-        description: The message to be inserted.
+        description: The message to be inserted
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Message"
+              $ref: '#/components/schemas/Message'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
-          description: Successful response
+                $ref: '#/components/schemas/Message'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.insert
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.insert
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
-  /users/{userId}/messages/batchDelete:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.insert
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.insert
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/messages/batchDelete:
     post:
-      description: Deletes many messages by message ID. Provides no guarantees that messages were not already deleted or even existed at all.
+      tags:
+      - users
+      description: Deletes many messages by message ID. Provides no guarantees that
+        messages were not already deleted or even existed at all.
       operationId: gmail.users.messages.batchDelete
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: The IDs of the messages to delete.
+        description: The IDs of the messages to delete
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BatchDeleteMessagesRequest"
+              $ref: '#/components/schemas/BatchDeleteMessagesRequest'
       responses:
         "200":
           description: Successful response
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-      tags:
-        - users
-  /users/{userId}/messages/batchModify:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/messages/batchModify:
     post:
+      tags:
+      - users
       description: Modifies the labels on the specified messages.
       operationId: gmail.users.messages.batchModify
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: A list of labels to add/remove in messages.
+        description: A list of labels to add/remove in messages
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BatchModifyMessagesRequest"
+              $ref: '#/components/schemas/BatchModifyMessagesRequest'
       responses:
         "200":
           description: Successful response
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
-  /users/{userId}/messages/import:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/messages/import:
     post:
-      description: Imports a message into only this user's mailbox, with standard email delivery scanning and classification similar to receiving via SMTP. This method doesn't perform SPF checks, so it might not work for some spam messages, such as those attempting to perform domain spoofing. This method does not send a message.
+      tags:
+      - users
+      description: "Imports a message into only this user's mailbox, with standard\
+        \ email delivery scanning and classification similar to receiving via SMTP.\
+        \ This method doesn't perform SPF checks, so it might not work for some spam\
+        \ messages, such as those attempting to perform domain spoofing. This method\
+        \ does not send a message."
       operationId: gmail.users.messages.import
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.
-          in: query
-          name: deleted
-          schema:
-            type: boolean
-        - description: Source for Gmail's internal date of the message.
-          in: query
-          name: internalDateSource
-          schema:
-            enum:
-              - receivedTime
-              - dateHeader
-            type: string
-        - description: Ignore the Gmail spam classifier decision and never mark this email as SPAM in the mailbox.
-          in: query
-          name: neverMarkSpam
-          schema:
-            type: boolean
-        - description: Process calendar invites in the email and add any extracted meetings to the Google Calendar for this user.
-          in: query
-          name: processForCalendar
-          schema:
-            type: boolean
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: deleted
+        in: query
+        description: Mark the email as permanently deleted (not TRASH) and only visible
+          in Google Vault to a Vault administrator. Only used for Google Workspace
+          accounts
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: internalDateSource
+        in: query
+        description: Source for Gmail's internal date of the message
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - receivedTime
+          - dateHeader
+      - name: neverMarkSpam
+        in: query
+        description: Ignore the Gmail spam classifier decision and never mark this
+          email as SPAM in the mailbox
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: processForCalendar
+        in: query
+        description: Process calendar invites in the email and add any extracted meetings
+          to the Google Calendar for this user
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
       requestBody:
-        description: The message to be imported.
+        description: The message to be imported
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Message"
+              $ref: '#/components/schemas/Message'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
-          description: Successful response
+                $ref: '#/components/schemas/Message'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.insert
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.insert
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
-  /users/{userId}/messages/send:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.insert
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.insert
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/messages/send:
     post:
-      description: Sends the specified message to the recipients in the `To`, `Cc`, and `Bcc` headers. For example usage, see [Sending email](https://developers.google.com/gmail/api/guides/sending).
+      tags:
+      - users
+      description: "Sends the specified message to the recipients in the `To`, `Cc`,\
+        \ and `Bcc` headers. For example usage, see [Sending email](https://developers.google.com/gmail/api/guides/sending)."
       operationId: gmail.users.messages.send
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: The message to be sent.
+        description: The message to be sent
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Message"
+              $ref: '#/components/schemas/Message'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
-          description: Successful response
+                $ref: '#/components/schemas/Message'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.action.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.send
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.send
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.action.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.send
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.send
+    parameters:
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/messages/{id}:
-    delete:
-      description: Immediately and permanently deletes the specified message. This operation cannot be undone. Prefer `messages.trash` instead.
-      operationId: gmail.users.messages.delete
-      parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the message to delete.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Successful response
-      security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-      tags:
-        - users
     get:
+      tags:
+      - users
       description: Gets the specified message.
       operationId: gmail.users.messages.get
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the message to retrieve. This ID is usually retrieved
+          using `messages.list`. The ID is also contained in the result when a message
+          is inserted (`messages.insert`) or imported (`messages.import`)
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: format
+        in: query
+        description: The format to return the message in
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - minimal
+          - full
+          - raw
+          - metadata
+      - name: metadataHeaders
+        in: query
+        description: "When given and format is `METADATA`, only include headers specified"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
             type: string
-        - description: The ID of the message to retrieve. This ID is usually retrieved using `messages.list`. The ID is also contained in the result when a message is inserted (`messages.insert`) or imported (`messages.import`).
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-        - description: The format to return the message in.
-          in: query
-          name: format
-          schema:
-            enum:
-              - minimal
-              - full
-              - raw
-              - metadata
-            type: string
-        - description: When given and format is `METADATA`, only include headers specified.
-          explode: true
-          in: query
-          name: metadataHeaders
-          schema:
-            items:
-              type: string
-            type: array
-          style: form
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
+                $ref: '#/components/schemas/Message'
+      security:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.action
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.action
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
+    delete:
+      tags:
+      - users
+      description: Immediately and permanently deletes the specified message. This
+        operation cannot be undone. Prefer `messages.trash` instead.
+      operationId: gmail.users.messages.delete
+      parameters:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the message to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
           description: Successful response
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.action
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.action
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/messages/{id}/modify:
-    parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
     post:
+      tags:
+      - users
       description: Modifies the labels on the specified message.
       operationId: gmail.users.messages.modify
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the message to modify.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the message to modify
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: A list of labels to add/remove on the message.
+        description: A list of labels to add/remove on the message
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ModifyMessageRequest"
+              $ref: '#/components/schemas/ModifyMessageRequest'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
-          description: Successful response
+                $ref: '#/components/schemas/Message'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
-  /users/{userId}/messages/{id}/trash:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/messages/{id}/trash:
     post:
+      tags:
+      - users
       description: Moves the specified message to the trash.
       operationId: gmail.users.messages.trash
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the message to Trash.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the message to Trash
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
-          description: Successful response
+                $ref: '#/components/schemas/Message'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
-  /users/{userId}/messages/{id}/untrash:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/messages/{id}/untrash:
     post:
+      tags:
+      - users
       description: Removes the specified message from the trash.
       operationId: gmail.users.messages.untrash
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the message to remove from Trash.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the message to remove from Trash
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
-          description: Successful response
+                $ref: '#/components/schemas/Message'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    parameters:
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/messages/{messageId}/attachments/{id}:
     get:
+      tags:
+      - users
       description: Gets the specified message attachment.
       operationId: gmail.users.messages.attachments.get
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the message containing the attachment.
-          in: path
-          name: messageId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the attachment.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: messageId
+        in: path
+        description: The ID of the message containing the attachment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the attachment
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MessagePartBody"
-          description: Successful response
+                $ref: '#/components/schemas/MessagePartBody'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.action
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.action
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.action
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.action
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/profile:
     get:
+      tags:
+      - users
       description: Gets the current user's Gmail profile.
       operationId: gmail.users.getProfile
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Profile"
-          description: Successful response
+                $ref: '#/components/schemas/Profile'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.compose
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.compose
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.compose
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.compose
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/threads:
     get:
+      tags:
+      - users
       description: Lists the threads in the user's mailbox.
       operationId: gmail.users.threads.list
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: includeSpamTrash
+        in: query
+        description: Include threads from `SPAM` and `TRASH` in the results
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: labelIds
+        in: query
+        description: Only return threads with labels that match all of the specified
+          label IDs
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
             type: string
-        - description: Include threads from `SPAM` and `TRASH` in the results.
-          in: query
-          name: includeSpamTrash
-          schema:
-            type: boolean
-        - description: Only return threads with labels that match all of the specified label IDs.
-          explode: true
-          in: query
-          name: labelIds
-          schema:
-            items:
-              type: string
-            type: array
-          style: form
-        - description: Maximum number of threads to return. This field defaults to 100. The maximum allowed value for this field is 500.
-          in: query
-          name: maxResults
-          schema:
-            type: integer
-        - description: Page token to retrieve a specific page of results in the list.
-          in: query
-          name: pageToken
-          schema:
-            type: string
-        - description: 'Only return threads matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.'
-          in: query
-          name: q
-          schema:
-            type: string
+      - name: maxResults
+        in: query
+        description: Maximum number of threads to return. This field defaults to 100.
+          The maximum allowed value for this field is 500
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: pageToken
+        in: query
+        description: Page token to retrieve a specific page of results in the list
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: q
+        in: query
+        description: "Only return threads matching the specified query. Supports the\
+          \ same query format as the Gmail search box. For example, `\"from:someuser@example.com\
+          \ rfc822msgid: is:unread\"`. Parameter cannot be used when accessing the\
+          \ api using the gmail.metadata scope"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListThreadsResponse"
-          description: Successful response
+                $ref: '#/components/schemas/ListThreadsResponse'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/threads/{id}:
-    delete:
-      description: Immediately and permanently deletes the specified thread. Any messages that belong to the thread are also deleted. This operation cannot be undone. Prefer `threads.trash` instead.
-      operationId: gmail.users.threads.delete
-      parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: ID of the Thread to delete.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Successful response
-      security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-      tags:
-        - users
     get:
+      tags:
+      - users
       description: Gets the specified thread.
       operationId: gmail.users.threads.get
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the thread to retrieve
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: format
+        in: query
+        description: The format to return the messages in
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - full
+          - metadata
+          - minimal
+      - name: metadataHeaders
+        in: query
+        description: "When given and format is METADATA, only include headers specified"
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
             type: string
-        - description: The ID of the thread to retrieve.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
-        - description: The format to return the messages in.
-          in: query
-          name: format
-          schema:
-            enum:
-              - full
-              - metadata
-              - minimal
-            type: string
-        - description: When given and format is METADATA, only include headers specified.
-          explode: true
-          in: query
-          name: metadataHeaders
-          schema:
-            items:
-              type: string
-            type: array
-          style: form
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MailThread"
+                $ref: '#/components/schemas/MailThread'
+      security:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.action
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.action
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.metadata
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.metadata
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.readonly
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.readonly
+    delete:
+      tags:
+      - users
+      description: Immediately and permanently deletes the specified thread. Any messages
+        that belong to the thread are also deleted. This operation cannot be undone.
+        Prefer `threads.trash` instead.
+      operationId: gmail.users.threads.delete
+      parameters:
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ID of the Thread to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
           description: Successful response
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.action
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.action
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.addons.current.message.readonly
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.metadata
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.metadata
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.readonly
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.readonly
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
   /users/{userId}/threads/{id}/modify:
-    parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
     post:
-      description: Modifies the labels applied to the thread. This applies to all messages in the thread.
+      tags:
+      - users
+      description: Modifies the labels applied to the thread. This applies to all
+        messages in the thread.
       operationId: gmail.users.threads.modify
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the thread to modify.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the thread to modify
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: A list labels to add/remove on the thread.
+        description: A list labels to add/remove on the thread
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ModifyThreadRequest"
+              $ref: '#/components/schemas/ModifyThreadRequest'
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MailThread"
-          description: Successful response
+                $ref: '#/components/schemas/MailThread'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
-  /users/{userId}/threads/{id}/trash:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/threads/{id}/trash:
     post:
-      description: Moves the specified thread to the trash. Any messages that belong to the thread are also moved to the trash.
+      tags:
+      - users
+      description: Moves the specified thread to the trash. Any messages that belong
+        to the thread are also moved to the trash.
       operationId: gmail.users.threads.trash
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the thread to Trash.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the thread to Trash
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MailThread"
-          description: Successful response
+                $ref: '#/components/schemas/MailThread'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
-  /users/{userId}/threads/{id}/untrash:
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
     parameters:
-      - $ref: "#/components/parameters/_.xgafv"
-      - $ref: "#/components/parameters/access_token"
-      - $ref: "#/components/parameters/alt"
-      - $ref: "#/components/parameters/callback"
-      - $ref: "#/components/parameters/fields"
-      - $ref: "#/components/parameters/key"
-      - $ref: "#/components/parameters/oauth_token"
-      - $ref: "#/components/parameters/prettyPrint"
-      - $ref: "#/components/parameters/quotaUser"
-      - $ref: "#/components/parameters/upload_protocol"
-      - $ref: "#/components/parameters/uploadType"
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
+  /users/{userId}/threads/{id}/untrash:
     post:
-      description: Removes the specified thread from the trash. Any messages that belong to the thread are also removed from the trash.
+      tags:
+      - users
+      description: Removes the specified thread from the trash. Any messages that
+        belong to the thread are also removed from the trash.
       operationId: gmail.users.threads.untrash
       parameters:
-        - description: The user's email address. The special value `me` can be used to indicate the authenticated user.
-          in: path
-          name: userId
-          required: true
-          schema:
-            type: string
-        - description: The ID of the thread to remove from Trash.
-          in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      - name: userId
+        in: path
+        description: The user's email address. The special value `me` can be used
+          to indicate the authenticated user
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: The ID of the thread to remove from Trash
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
+          description: Successful response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MailThread"
-          description: Successful response
+                $ref: '#/components/schemas/MailThread'
       security:
-        - Oauth2:
-            - https://mail.google.com/
-          Oauth2c:
-            - https://mail.google.com/
-        - Oauth2:
-            - https://www.googleapis.com/auth/gmail.modify
-          Oauth2c:
-            - https://www.googleapis.com/auth/gmail.modify
-      tags:
-        - users
+      - Oauth2:
+        - https://mail.google.com/
+        Oauth2c:
+        - https://mail.google.com/
+      - Oauth2:
+        - https://www.googleapis.com/auth/gmail.modify
+        Oauth2c:
+        - https://www.googleapis.com/auth/gmail.modify
+    parameters:
+    - $ref: '#/components/parameters/_.xgafv'
+    - $ref: '#/components/parameters/access_token'
+    - $ref: '#/components/parameters/alt'
+    - $ref: '#/components/parameters/callback'
+    - $ref: '#/components/parameters/fields'
+    - $ref: '#/components/parameters/key'
+    - $ref: '#/components/parameters/oauth_token'
+    - $ref: '#/components/parameters/prettyPrint'
+    - $ref: '#/components/parameters/quotaUser'
+    - $ref: '#/components/parameters/upload_protocol'
+    - $ref: '#/components/parameters/uploadType'
 components:
+  schemas:
+    HistoryLabelAdded:
+      type: object
+      properties:
+        labelIds:
+          type: array
+          description: Label IDs added to the message
+          items:
+            type: string
+        message:
+          $ref: '#/components/schemas/Message'
+    HistoryMessageDeleted:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+    ListDraftsResponse:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: Token to retrieve the next page of results in the list
+        drafts:
+          type: array
+          description: List of drafts. Note that the `Message` property in each `Draft`
+            resource only contains an `id` and a `threadId`. The messages.get method
+            can fetch additional message details
+          items:
+            $ref: '#/components/schemas/Draft'
+        resultSizeEstimate:
+          type: integer
+          description: Estimated total number of results
+          format: uint32
+    Message:
+      type: object
+      properties:
+        snippet:
+          type: string
+          description: A short part of the message text
+        threadId:
+          type: string
+          description: "The ID of the thread the message belongs to. To add a message\
+            \ or draft to a thread, the following criteria must be met: 1. The requested\
+            \ `threadId` must be specified on the `Message` or `Draft.Message` you\
+            \ supply with your request. 2. The `References` and `In-Reply-To` headers\
+            \ must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822)\
+            \ standard. 3. The `Subject` headers must match. "
+        labelIds:
+          type: array
+          description: List of IDs of labels applied to this message
+          items:
+            type: string
+        payload:
+          $ref: '#/components/schemas/MessagePart'
+        historyId:
+          type: string
+          description: The ID of the last history record that modified this message
+          format: uint64
+        raw:
+          type: string
+          description: The entire email message in an RFC 2822 formatted and base64url
+            encoded string. Returned in `messages.get` and `drafts.get` responses
+            when the `format=RAW` parameter is supplied
+          format: byte
+        id:
+          type: string
+          description: The immutable ID of the message
+        sizeEstimate:
+          type: integer
+          description: Estimated size in bytes of the message
+          format: int32
+        internalDate:
+          type: string
+          description: "The internal message creation timestamp (epoch ms), which\
+            \ determines ordering in the inbox. For normal SMTP-received email, this\
+            \ represents the time the message was originally accepted by Google, which\
+            \ is more reliable than the `Date` header. However, for API-migrated mail,\
+            \ it can be configured by client to be based on the `Date` header"
+          format: int64
+      description: An email message
+    MailThread:
+      type: object
+      properties:
+        snippet:
+          type: string
+          description: A short part of the message text
+        historyId:
+          type: string
+          description: The ID of the last history record that modified this thread
+          format: uint64
+        messages:
+          type: array
+          description: The list of messages in the thread
+          items:
+            $ref: '#/components/schemas/Message'
+        id:
+          type: string
+          description: The unique ID of the thread
+      description: A collection of messages representing a conversation
+    BatchModifyMessagesRequest:
+      type: object
+      properties:
+        addLabelIds:
+          type: array
+          description: A list of label IDs to add to messages
+          items:
+            type: string
+        removeLabelIds:
+          type: array
+          description: A list of label IDs to remove from messages
+          items:
+            type: string
+        ids:
+          type: array
+          description: The IDs of the messages to modify. There is a limit of 1000
+            ids per request
+          items:
+            type: string
+    Alt:
+      type: string
+      description: Data format for response
+      enum:
+      - json
+      - media
+      - proto
+    Label:
+      type: object
+      properties:
+        messageListVisibility:
+          type: string
+          description: The visibility of messages with this label in the message list
+            in the Gmail web interface
+          enum:
+          - show
+          - hide
+        messagesUnread:
+          type: integer
+          description: The number of unread messages with the label
+          format: int32
+        threadsUnread:
+          type: integer
+          description: The number of unread threads with the label
+          format: int32
+        color:
+          $ref: '#/components/schemas/LabelColor'
+        threadsTotal:
+          type: integer
+          description: The total number of threads with the label
+          format: int32
+        name:
+          type: string
+          description: The display name of the label
+        id:
+          type: string
+          description: The immutable ID of the label
+        labelListVisibility:
+          type: string
+          description: The visibility of the label in the label list in the Gmail
+            web interface
+          enum:
+          - labelShow
+          - labelShowIfUnread
+          - labelHide
+        type:
+          type: string
+          description: "The owner type for the label. User labels are created by the\
+            \ user and can be modified and deleted by the user and can be applied\
+            \ to any message or thread. System labels are internally created and cannot\
+            \ be added, modified, or deleted. System labels may be able to be applied\
+            \ to or removed from messages and threads under some circumstances but\
+            \ this is not guaranteed. For example, users can apply and remove the\
+            \ `INBOX` and `UNREAD` labels from messages and threads, but cannot apply\
+            \ or remove the `DRAFTS` or `SENT` labels from messages or threads"
+          enum:
+          - system
+          - user
+        messagesTotal:
+          type: integer
+          description: The total number of messages with the label
+          format: int32
+      description: "Labels are used to categorize messages and threads within the\
+        \ user's mailbox. The maximum number of labels supported for a user's mailbox\
+        \ is 10,000"
+    Xgafv:
+      type: string
+      description: V1 error format
+      enum:
+      - "1"
+      - "2"
+    History:
+      type: object
+      properties:
+        messagesAdded:
+          type: array
+          description: Messages added to the mailbox in this history record
+          items:
+            $ref: '#/components/schemas/HistoryMessageAdded'
+        labelsAdded:
+          type: array
+          description: Labels added to messages in this history record
+          items:
+            $ref: '#/components/schemas/HistoryLabelAdded'
+        messages:
+          type: array
+          description: "List of messages changed in this history record. The fields\
+            \ for specific change types, such as `messagesAdded` may duplicate messages\
+            \ in this field. We recommend using the specific change-type fields instead\
+            \ of this"
+          items:
+            $ref: '#/components/schemas/Message'
+        id:
+          type: string
+          description: The mailbox sequence ID
+          format: uint64
+        labelsRemoved:
+          type: array
+          description: Labels removed from messages in this history record
+          items:
+            $ref: '#/components/schemas/HistoryLabelRemoved'
+        messagesDeleted:
+          type: array
+          description: Messages deleted (not Trashed) from the mailbox in this history
+            record
+          items:
+            $ref: '#/components/schemas/HistoryMessageDeleted'
+      description: A record of a change to the user's mailbox. Each history change
+        may affect multiple messages in multiple ways
+    ListLabelsResponse:
+      type: object
+      properties:
+        labels:
+          type: array
+          description: "List of labels. Note that each label resource only contains\
+            \ an `id`, `name`, `messageListVisibility`, `labelListVisibility`, and\
+            \ `type`. The labels.get method can fetch additional label details"
+          items:
+            $ref: '#/components/schemas/Label'
+    Profile:
+      type: object
+      properties:
+        emailAddress:
+          type: string
+          description: The user's email address
+        threadsTotal:
+          type: integer
+          description: The total number of threads in the mailbox
+          format: int32
+        historyId:
+          type: string
+          description: The ID of the mailbox's current history record
+          format: uint64
+        messagesTotal:
+          type: integer
+          description: The total number of messages in the mailbox
+          format: int32
+      description: Profile for a Gmail user
+    LabelColor:
+      type: object
+      properties:
+        backgroundColor:
+          type: string
+          description: "The background color represented as hex string #RRGGBB (ex\
+            \ #000000). This field is required in order to set the color of a label.\
+            \ Only the following predefined set of color values are allowed: \\#000000,\
+            \ #434343, #666666, #999999, #cccccc, #efefef, #f3f3f3, #ffffff, \\#fb4c2f,\
+            \ #ffad47, #fad165, #16a766, #43d692, #4a86e8, #a479e2, #f691b3, \\#f6c5be,\
+            \ #ffe6c7, #fef1d1, #b9e4d0, #c6f3de, #c9daf8, #e4d7f5, #fcdee8, \\#efa093,\
+            \ #ffd6a2, #fce8b3, #89d3b2, #a0eac9, #a4c2f4, #d0bcf1, #fbc8d9, \\#e66550,\
+            \ #ffbc6b, #fcda83, #44b984, #68dfa9, #6d9eeb, #b694e8, #f7a7c0, \\#cc3a21,\
+            \ #eaa041, #f2c960, #149e60, #3dc789, #3c78d8, #8e63ce, #e07798, \\#ac2b16,\
+            \ #cf8933, #d5ae49, #0b804b, #2a9c68, #285bac, #653e9b, #b65775, \\#822111,\
+            \ #a46a21, #aa8831, #076239, #1a764d, #1c4587, #41236d, #83334c \\#464646,\
+            \ #e7e7e7, #0d3472, #b6cff5, #0d3b44, #98d7e4, #3d188e, #e3d7ff, \\#711a36,\
+            \ #fbd3e0, #8a1c0a, #f2b2a8, #7a2e0b, #ffc8af, #7a4706, #ffdeb5, \\#594c05,\
+            \ #fbe983, #684e07, #fdedc1, #0b4f30, #b3efd3, #04502e, #a2dcc1, \\#c2c2c2,\
+            \ #4986e7, #2da2bb, #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \\#662e37,\
+            \ #ebdbde, #cca6ac, #094228, #42d692, #16a765"
+        textColor:
+          type: string
+          description: "The text color of the label, represented as hex string. This\
+            \ field is required in order to set the color of a label. Only the following\
+            \ predefined set of color values are allowed: \\#000000, #434343, #666666,\
+            \ #999999, #cccccc, #efefef, #f3f3f3, #ffffff, \\#fb4c2f, #ffad47, #fad165,\
+            \ #16a766, #43d692, #4a86e8, #a479e2, #f691b3, \\#f6c5be, #ffe6c7, #fef1d1,\
+            \ #b9e4d0, #c6f3de, #c9daf8, #e4d7f5, #fcdee8, \\#efa093, #ffd6a2, #fce8b3,\
+            \ #89d3b2, #a0eac9, #a4c2f4, #d0bcf1, #fbc8d9, \\#e66550, #ffbc6b, #fcda83,\
+            \ #44b984, #68dfa9, #6d9eeb, #b694e8, #f7a7c0, \\#cc3a21, #eaa041, #f2c960,\
+            \ #149e60, #3dc789, #3c78d8, #8e63ce, #e07798, \\#ac2b16, #cf8933, #d5ae49,\
+            \ #0b804b, #2a9c68, #285bac, #653e9b, #b65775, \\#822111, #a46a21, #aa8831,\
+            \ #076239, #1a764d, #1c4587, #41236d, #83334c \\#464646, #e7e7e7, #0d3472,\
+            \ #b6cff5, #0d3b44, #98d7e4, #3d188e, #e3d7ff, \\#711a36, #fbd3e0, #8a1c0a,\
+            \ #f2b2a8, #7a2e0b, #ffc8af, #7a4706, #ffdeb5, \\#594c05, #fbe983, #684e07,\
+            \ #fdedc1, #0b4f30, #b3efd3, #04502e, #a2dcc1, \\#c2c2c2, #4986e7, #2da2bb,\
+            \ #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \\#662e37, #ebdbde, #cca6ac,\
+            \ #094228, #42d692, #16a765"
+      description: The color to assign to the label. Color is only available for labels
+        that have their `type` set to `user`
+    MessagePartHeader:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "The name of the header before the `:` separator. For example,\
+            \ `To`"
+        value:
+          type: string
+          description: "The value of the header after the `:` separator. For example,\
+            \ `someuser@example.com`"
+    MessagePart:
+      type: object
+      properties:
+        headers:
+          type: array
+          description: "List of headers on this message part. For the top-level message\
+            \ part, representing the entire message payload, it will contain the standard\
+            \ RFC 2822 email headers such as `To`, `From`, and `Subject`"
+          items:
+            $ref: '#/components/schemas/MessagePartHeader'
+        filename:
+          type: string
+          description: The filename of the attachment. Only present if this message
+            part represents an attachment
+        partId:
+          type: string
+          description: The immutable ID of the message part
+        parts:
+          type: array
+          description: "The child MIME message parts of this part. This only applies\
+            \ to container MIME message parts, for example `multipart/*`. For non-\
+            \ container MIME message part types, such as `text/plain`, this field\
+            \ is empty. For more information, see RFC 1521"
+          items:
+            $ref: '#/components/schemas/MessagePart'
+        mimeType:
+          type: string
+          description: The MIME type of the message part
+        body:
+          $ref: '#/components/schemas/MessagePartBody'
+      description: A single MIME message part
+    HistoryLabelRemoved:
+      type: object
+      properties:
+        labelIds:
+          type: array
+          description: Label IDs removed from the message
+          items:
+            type: string
+        message:
+          $ref: '#/components/schemas/Message'
+    ListThreadsResponse:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: Page token to retrieve the next page of results in the list
+        threads:
+          type: array
+          description: List of threads. Note that each thread resource does not contain
+            a list of `messages`. The list of `messages` for a given thread can be
+            fetched using the threads.get method
+          items:
+            $ref: '#/components/schemas/MailThread'
+        resultSizeEstimate:
+          type: integer
+          description: Estimated total number of results
+          format: uint32
+    Draft:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The immutable ID of the draft
+        message:
+          $ref: '#/components/schemas/Message'
+      description: A draft email in the user's mailbox
+    ListMessagesResponse:
+      type: object
+      properties:
+        nextPageToken:
+          type: string
+          description: Token to retrieve the next page of results in the list
+        messages:
+          type: array
+          description: List of messages. Note that each message resource contains
+            only an `id` and a `threadId`. Additional message details can be fetched
+            using the messages.get method
+          items:
+            $ref: '#/components/schemas/Message'
+        resultSizeEstimate:
+          type: integer
+          description: Estimated total number of results
+          format: uint32
+    ListHistoryResponse:
+      type: object
+      properties:
+        historyId:
+          type: string
+          description: The ID of the mailbox's current history record
+          format: uint64
+        nextPageToken:
+          type: string
+          description: Page token to retrieve the next page of results in the list
+        history:
+          type: array
+          description: List of history records. Any `messages` contained in the response
+            will typically only have `id` and `threadId` fields populated
+          items:
+            $ref: '#/components/schemas/History'
+    ModifyMessageRequest:
+      type: object
+      properties:
+        addLabelIds:
+          type: array
+          description: A list of IDs of labels to add to this message. You can add
+            up to 100 labels with each update
+          items:
+            type: string
+        removeLabelIds:
+          type: array
+          description: A list IDs of labels to remove from this message. You can remove
+            up to 100 labels with each update
+          items:
+            type: string
+    BatchDeleteMessagesRequest:
+      type: object
+      properties:
+        ids:
+          type: array
+          description: The IDs of the messages to delete
+          items:
+            type: string
+    MessagePartBody:
+      type: object
+      properties:
+        data:
+          type: string
+          description: The body data of a MIME message part as a base64url encoded
+            string. May be empty for MIME container types that have no message body
+            or when the body data is sent as a separate attachment. An attachment
+            ID is present if the body data is contained in a separate attachment
+          format: byte
+        size:
+          type: integer
+          description: Number of bytes for the message part data (encoding notwithstanding)
+          format: int32
+        attachmentId:
+          type: string
+          description: "When present, contains the ID of an external attachment that\
+            \ can be retrieved in a separate `messages.attachments.get` request. When\
+            \ not present, the entire content of the message part body is contained\
+            \ in the data field"
+      description: The body of a single MIME message part
+    ModifyThreadRequest:
+      type: object
+      properties:
+        addLabelIds:
+          type: array
+          description: A list of IDs of labels to add to this thread. You can add
+            up to 100 labels with each update
+          items:
+            type: string
+        removeLabelIds:
+          type: array
+          description: A list of IDs of labels to remove from this thread. You can
+            remove up to 100 labels with each update
+          items:
+            type: string
+    HistoryMessageAdded:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
   parameters:
     _.xgafv:
-      description: V1 error format.
-      in: query
       name: $.xgafv
-      schema:
-        $ref: "#/components/schemas/Xgafv"
-    access_token:
-      description: OAuth access token.
       in: query
+      description: V1 error format
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/Xgafv'
+      x-ballerina-name: xgafv
+    access_token:
       name: access_token
+      in: query
+      description: OAuth access token
+      required: false
+      style: form
+      explode: true
       schema:
         type: string
+      x-ballerina-name: accessToken
     alt:
-      description: Data format for response.
-      in: query
       name: alt
-      schema:
-        $ref: "#/components/schemas/Alt"
-    callback:
-      description: JSONP
       in: query
+      description: Data format for response
+      required: false
+      style: form
+      explode: true
+      schema:
+        $ref: '#/components/schemas/Alt'
+    callback:
       name: callback
+      in: query
+      description: JSONP
+      required: false
+      style: form
+      explode: true
       schema:
         type: string
     fields:
-      description: Selector specifying which fields to include in a partial response.
-      in: query
       name: fields
+      in: query
+      description: Selector specifying which fields to include in a partial response
+      required: false
+      style: form
+      explode: true
       schema:
         type: string
     key:
-      description: API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
-      in: query
       name: key
+      in: query
+      description: "API key. Your API key identifies your project and provides you\
+        \ with API access, quota, and reports. Required unless you provide an OAuth\
+        \ 2.0 token"
+      required: false
+      style: form
+      explode: true
       schema:
         type: string
     oauth_token:
-      description: OAuth 2.0 token for the current user.
-      in: query
       name: oauth_token
+      in: query
+      description: OAuth 2.0 token for the current user
+      required: false
+      style: form
+      explode: true
       schema:
         type: string
+      x-ballerina-name: oauthToken
     prettyPrint:
-      description: Returns response with indentations and line breaks.
-      in: query
       name: prettyPrint
+      in: query
+      description: Returns response with indentations and line breaks
+      required: false
+      style: form
+      explode: true
       schema:
         type: boolean
     quotaUser:
-      description: Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
-      in: query
       name: quotaUser
+      in: query
+      description: "Available to use for quota purposes for server-side applications.\
+        \ Can be any arbitrary string assigned to a user, but should not exceed 40\
+        \ characters"
+      required: false
+      style: form
+      explode: true
       schema:
         type: string
     uploadType:
-      description: Legacy upload protocol for media (e.g. "media", "multipart").
-      in: query
       name: uploadType
+      in: query
+      description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
+        )"
+      required: false
+      style: form
+      explode: true
       schema:
         type: string
     upload_protocol:
-      description: Upload protocol for media (e.g. "raw", "multipart").
-      in: query
       name: upload_protocol
+      in: query
+      description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
+      required: false
+      style: form
+      explode: true
       schema:
         type: string
-  schemas:
-    Alt:
-      description: Data format for response.
-      type: string
-      enum:
-        - json
-        - media
-        - proto
-    BatchDeleteMessagesRequest:
-      properties:
-        ids:
-          description: The IDs of the messages to delete.
-          items:
-            type: string
-          type: array
-      type: object
-    BatchModifyMessagesRequest:
-      properties:
-        addLabelIds:
-          description: A list of label IDs to add to messages.
-          items:
-            type: string
-          type: array
-        ids:
-          description: The IDs of the messages to modify. There is a limit of 1000 ids per request.
-          items:
-            type: string
-          type: array
-        removeLabelIds:
-          description: A list of label IDs to remove from messages.
-          items:
-            type: string
-          type: array
-      type: object
-    Draft:
-      description: A draft email in the user's mailbox.
-      properties:
-        id:
-          description: The immutable ID of the draft.
-          type: string
-        message:
-          $ref: "#/components/schemas/Message"
-          description: The message content of the draft.
-      type: object
-    History:
-      description: A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways.
-      properties:
-        id:
-          description: The mailbox sequence ID.
-          format: uint64
-          type: string
-        labelsAdded:
-          description: Labels added to messages in this history record.
-          items:
-            $ref: "#/components/schemas/HistoryLabelAdded"
-          type: array
-        labelsRemoved:
-          description: Labels removed from messages in this history record.
-          items:
-            $ref: "#/components/schemas/HistoryLabelRemoved"
-          type: array
-        messages:
-          description: List of messages changed in this history record. The fields for specific change types, such as `messagesAdded` may duplicate messages in this field. We recommend using the specific change-type fields instead of this.
-          items:
-            $ref: "#/components/schemas/Message"
-          type: array
-        messagesAdded:
-          description: Messages added to the mailbox in this history record.
-          items:
-            $ref: "#/components/schemas/HistoryMessageAdded"
-          type: array
-        messagesDeleted:
-          description: Messages deleted (not Trashed) from the mailbox in this history record.
-          items:
-            $ref: "#/components/schemas/HistoryMessageDeleted"
-          type: array
-      type: object
-    HistoryLabelAdded:
-      properties:
-        labelIds:
-          description: Label IDs added to the message.
-          items:
-            type: string
-          type: array
-        message:
-          $ref: "#/components/schemas/Message"
-      type: object
-    HistoryLabelRemoved:
-      properties:
-        labelIds:
-          description: Label IDs removed from the message.
-          items:
-            type: string
-          type: array
-        message:
-          $ref: "#/components/schemas/Message"
-      type: object
-    HistoryMessageAdded:
-      properties:
-        message:
-          $ref: "#/components/schemas/Message"
-      type: object
-    HistoryMessageDeleted:
-      properties:
-        message:
-          $ref: "#/components/schemas/Message"
-      type: object
-    Label:
-      description: Labels are used to categorize messages and threads within the user's mailbox. The maximum number of labels supported for a user's mailbox is 10,000.
-      properties:
-        color:
-          $ref: "#/components/schemas/LabelColor"
-          description: The color to assign to the label. Color is only available for labels that have their `type` set to `user`.
-        id:
-          description: The immutable ID of the label.
-          type: string
-        labelListVisibility:
-          description: The visibility of the label in the label list in the Gmail web interface.
-          enum:
-            - labelShow
-            - labelShowIfUnread
-            - labelHide
-          type: string
-        messageListVisibility:
-          description: The visibility of messages with this label in the message list in the Gmail web interface.
-          enum:
-            - show
-            - hide
-          type: string
-        messagesTotal:
-          description: The total number of messages with the label.
-          format: int32
-          type: integer
-        messagesUnread:
-          description: The number of unread messages with the label.
-          format: int32
-          type: integer
-        name:
-          description: The display name of the label.
-          type: string
-        threadsTotal:
-          description: The total number of threads with the label.
-          format: int32
-          type: integer
-        threadsUnread:
-          description: The number of unread threads with the label.
-          format: int32
-          type: integer
-        type:
-          description: The owner type for the label. User labels are created by the user and can be modified and deleted by the user and can be applied to any message or thread. System labels are internally created and cannot be added, modified, or deleted. System labels may be able to be applied to or removed from messages and threads under some circumstances but this is not guaranteed. For example, users can apply and remove the `INBOX` and `UNREAD` labels from messages and threads, but cannot apply or remove the `DRAFTS` or `SENT` labels from messages or threads.
-          enum:
-            - system
-            - user
-          type: string
-      type: object
-    LabelColor:
-      description: The color to assign to the label. Color is only available for labels that have their `type` set to `user`.
-      properties:
-        backgroundColor:
-          description: "The background color represented as hex string #RRGGBB (ex #000000). This field is required in order to set the color of a label. Only the following predefined set of color values are allowed: \\#000000, #434343, #666666, #999999, #cccccc, #efefef, #f3f3f3, #ffffff, \\#fb4c2f, #ffad47, #fad165, #16a766, #43d692, #4a86e8, #a479e2, #f691b3, \\#f6c5be, #ffe6c7, #fef1d1, #b9e4d0, #c6f3de, #c9daf8, #e4d7f5, #fcdee8, \\#efa093, #ffd6a2, #fce8b3, #89d3b2, #a0eac9, #a4c2f4, #d0bcf1, #fbc8d9, \\#e66550, #ffbc6b, #fcda83, #44b984, #68dfa9, #6d9eeb, #b694e8, #f7a7c0, \\#cc3a21, #eaa041, #f2c960, #149e60, #3dc789, #3c78d8, #8e63ce, #e07798, \\#ac2b16, #cf8933, #d5ae49, #0b804b, #2a9c68, #285bac, #653e9b, #b65775, \\#822111, #a46a21, #aa8831, #076239, #1a764d, #1c4587, #41236d, #83334c \\#464646, #e7e7e7, #0d3472, #b6cff5, #0d3b44, #98d7e4, #3d188e, #e3d7ff, \\#711a36, #fbd3e0, #8a1c0a, #f2b2a8, #7a2e0b, #ffc8af, #7a4706, #ffdeb5, \\#594c05, #fbe983, #684e07, #fdedc1, #0b4f30, #b3efd3, #04502e, #a2dcc1, \\#c2c2c2, #4986e7, #2da2bb, #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \\#662e37, #ebdbde, #cca6ac, #094228, #42d692, #16a765"
-          type: string
-        textColor:
-          description: "The text color of the label, represented as hex string. This field is required in order to set the color of a label. Only the following predefined set of color values are allowed: \\#000000, #434343, #666666, #999999, #cccccc, #efefef, #f3f3f3, #ffffff, \\#fb4c2f, #ffad47, #fad165, #16a766, #43d692, #4a86e8, #a479e2, #f691b3, \\#f6c5be, #ffe6c7, #fef1d1, #b9e4d0, #c6f3de, #c9daf8, #e4d7f5, #fcdee8, \\#efa093, #ffd6a2, #fce8b3, #89d3b2, #a0eac9, #a4c2f4, #d0bcf1, #fbc8d9, \\#e66550, #ffbc6b, #fcda83, #44b984, #68dfa9, #6d9eeb, #b694e8, #f7a7c0, \\#cc3a21, #eaa041, #f2c960, #149e60, #3dc789, #3c78d8, #8e63ce, #e07798, \\#ac2b16, #cf8933, #d5ae49, #0b804b, #2a9c68, #285bac, #653e9b, #b65775, \\#822111, #a46a21, #aa8831, #076239, #1a764d, #1c4587, #41236d, #83334c \\#464646, #e7e7e7, #0d3472, #b6cff5, #0d3b44, #98d7e4, #3d188e, #e3d7ff, \\#711a36, #fbd3e0, #8a1c0a, #f2b2a8, #7a2e0b, #ffc8af, #7a4706, #ffdeb5, \\#594c05, #fbe983, #684e07, #fdedc1, #0b4f30, #b3efd3, #04502e, #a2dcc1, \\#c2c2c2, #4986e7, #2da2bb, #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \\#662e37, #ebdbde, #cca6ac, #094228, #42d692, #16a765"
-          type: string
-      type: object
-    ListDraftsResponse:
-      properties:
-        drafts:
-          description: List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details.
-          items:
-            $ref: "#/components/schemas/Draft"
-          type: array
-        nextPageToken:
-          description: Token to retrieve the next page of results in the list.
-          type: string
-        resultSizeEstimate:
-          description: Estimated total number of results.
-          format: uint32
-          type: integer
-      type: object
-    ListHistoryResponse:
-      properties:
-        history:
-          description: List of history records. Any `messages` contained in the response will typically only have `id` and `threadId` fields populated.
-          items:
-            $ref: "#/components/schemas/History"
-          type: array
-        historyId:
-          description: The ID of the mailbox's current history record.
-          format: uint64
-          type: string
-        nextPageToken:
-          description: Page token to retrieve the next page of results in the list.
-          type: string
-      type: object
-    ListLabelsResponse:
-      properties:
-        labels:
-          description: List of labels. Note that each label resource only contains an `id`, `name`, `messageListVisibility`, `labelListVisibility`, and `type`. The labels.get method can fetch additional label details.
-          items:
-            $ref: "#/components/schemas/Label"
-          type: array
-      type: object
-    ListMessagesResponse:
-      properties:
-        messages:
-          description: List of messages. Note that each message resource contains only an `id` and a `threadId`. Additional message details can be fetched using the messages.get method.
-          items:
-            $ref: "#/components/schemas/Message"
-          type: array
-        nextPageToken:
-          description: Token to retrieve the next page of results in the list.
-          type: string
-        resultSizeEstimate:
-          description: Estimated total number of results.
-          format: uint32
-          type: integer
-      type: object
-    ListThreadsResponse:
-      properties:
-        nextPageToken:
-          description: Page token to retrieve the next page of results in the list.
-          type: string
-        resultSizeEstimate:
-          description: Estimated total number of results.
-          format: uint32
-          type: integer
-        threads:
-          description: List of threads. Note that each thread resource does not contain a list of `messages`. The list of `messages` for a given thread can be fetched using the threads.get method.
-          items:
-            $ref: "#/components/schemas/MailThread"
-          type: array
-      type: object
-    MailThread:
-      description: A collection of messages representing a conversation.
-      properties:
-        historyId:
-          description: The ID of the last history record that modified this thread.
-          format: uint64
-          type: string
-        id:
-          description: The unique ID of the thread.
-          type: string
-        messages:
-          description: The list of messages in the thread.
-          items:
-            $ref: "#/components/schemas/Message"
-          type: array
-        snippet:
-          description: A short part of the message text.
-          type: string
-      type: object
-    Message:
-      description: An email message.
-      properties:
-        historyId:
-          description: The ID of the last history record that modified this message.
-          format: uint64
-          type: string
-        id:
-          description: The immutable ID of the message.
-          type: string
-        internalDate:
-          description: The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header.
-          format: int64
-          type: string
-        labelIds:
-          description: List of IDs of labels applied to this message.
-          items:
-            type: string
-          type: array
-        payload:
-          $ref: "#/components/schemas/MessagePart"
-          description: The parsed email structure in the message parts.
-        raw:
-          description: The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied.
-          format: byte
-          type: string
-        sizeEstimate:
-          description: Estimated size in bytes of the message.
-          format: int32
-          type: integer
-        snippet:
-          description: A short part of the message text.
-          type: string
-        threadId:
-          description: "The ID of the thread the message belongs to. To add a message or draft to a thread, the following criteria must be met: 1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 3. The `Subject` headers must match. "
-          type: string
-      type: object
-    MessagePart:
-      description: A single MIME message part.
-      properties:
-        body:
-          $ref: "#/components/schemas/MessagePartBody"
-          description: The message part body for this part, which may be empty for container MIME message parts.
-        filename:
-          description: The filename of the attachment. Only present if this message part represents an attachment.
-          type: string
-        headers:
-          description: List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`.
-          items:
-            $ref: "#/components/schemas/MessagePartHeader"
-          type: array
-        mimeType:
-          description: The MIME type of the message part.
-          type: string
-        partId:
-          description: The immutable ID of the message part.
-          type: string
-        parts:
-          description: The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.
-          items:
-            $ref: "#/components/schemas/MessagePart"
-          type: array
-      type: object
-    MessagePartBody:
-      description: The body of a single MIME message part.
-      properties:
-        attachmentId:
-          description: When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field.
-          type: string
-        data:
-          description: The body data of a MIME message part as a base64url encoded string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
-          format: byte
-          type: string
-        size:
-          description: Number of bytes for the message part data (encoding notwithstanding).
-          format: int32
-          type: integer
-      type: object
-    MessagePartHeader:
-      properties:
-        name:
-          description: The name of the header before the `:` separator. For example, `To`.
-          type: string
-        value:
-          description: The value of the header after the `:` separator. For example, `someuser@example.com`.
-          type: string
-      type: object
-    ModifyMessageRequest:
-      properties:
-        addLabelIds:
-          description: A list of IDs of labels to add to this message. You can add up to 100 labels with each update.
-          items:
-            type: string
-          type: array
-        removeLabelIds:
-          description: A list IDs of labels to remove from this message. You can remove up to 100 labels with each update.
-          items:
-            type: string
-          type: array
-      type: object
-    ModifyThreadRequest:
-      properties:
-        addLabelIds:
-          description: A list of IDs of labels to add to this thread. You can add up to 100 labels with each update.
-          items:
-            type: string
-          type: array
-        removeLabelIds:
-          description: A list of IDs of labels to remove from this thread. You can remove up to 100 labels with each update.
-          items:
-            type: string
-          type: array
-      type: object
-    Profile:
-      description: Profile for a Gmail user.
-      properties:
-        emailAddress:
-          description: The user's email address.
-          type: string
-        historyId:
-          description: The ID of the mailbox's current history record.
-          format: uint64
-          type: string
-        messagesTotal:
-          description: The total number of messages in the mailbox.
-          format: int32
-          type: integer
-        threadsTotal:
-          description: The total number of threads in the mailbox.
-          format: int32
-          type: integer
-      type: object
-    Xgafv:
-      description: V1 error format.
-      type: string
-      enum:
-        - "1"
-        - "2"
+      x-ballerina-name: uploadProtocol
   securitySchemes:
     Oauth2:
+      type: oauth2
       description: Oauth 2.0 implicit authentication
       flows:
         implicit:
           authorizationUrl: https://accounts.google.com/o/oauth2/auth
           scopes:
-            https://mail.google.com/: Read, compose, send, and permanently delete all your email from Gmail
-            https://www.googleapis.com/auth/gmail.addons.current.action.compose: Manage drafts and send emails when you interact with the add-on
-            https://www.googleapis.com/auth/gmail.addons.current.message.action: View your email messages when you interact with the add-on
-            https://www.googleapis.com/auth/gmail.addons.current.message.metadata: View your email message metadata when the add-on is running
-            https://www.googleapis.com/auth/gmail.addons.current.message.readonly: View your email messages when the add-on is running
-            https://www.googleapis.com/auth/gmail.compose: Manage drafts and send emails
-            https://www.googleapis.com/auth/gmail.insert: Add emails into your Gmail mailbox
-            https://www.googleapis.com/auth/gmail.labels: See and edit your email labels
-            https://www.googleapis.com/auth/gmail.metadata: View your email message metadata such as labels and headers, but not the email body
-            https://www.googleapis.com/auth/gmail.modify: Read, compose, and send emails from your Gmail account
-            https://www.googleapis.com/auth/gmail.readonly: View your email messages and settings
+            https://mail.google.com/: "Read, compose, send, and permanently delete\
+              \ all your email from Gmail"
+            https://www.googleapis.com/auth/gmail.addons.current.action.compose: Manage
+              drafts and send emails when you interact with the add-on
+            https://www.googleapis.com/auth/gmail.addons.current.message.action: View
+              your email messages when you interact with the add-on
+            https://www.googleapis.com/auth/gmail.addons.current.message.metadata: View
+              your email message metadata when the add-on is running
+            https://www.googleapis.com/auth/gmail.addons.current.message.readonly: View
+              your email messages when the add-on is running
+            https://www.googleapis.com/auth/gmail.compose: Manage drafts and send
+              emails
+            https://www.googleapis.com/auth/gmail.insert: Add emails into your Gmail
+              mailbox
+            https://www.googleapis.com/auth/gmail.labels: See and edit your email
+              labels
+            https://www.googleapis.com/auth/gmail.metadata: "View your email message\
+              \ metadata such as labels and headers, but not the email body"
+            https://www.googleapis.com/auth/gmail.modify: "Read, compose, and send\
+              \ emails from your Gmail account"
+            https://www.googleapis.com/auth/gmail.readonly: View your email messages
+              and settings
             https://www.googleapis.com/auth/gmail.send: Send email on your behalf
-            https://www.googleapis.com/auth/gmail.settings.basic: See, edit, create, or change your email settings and filters in Gmail
-            https://www.googleapis.com/auth/gmail.settings.sharing: Manage your sensitive mail settings, including who can manage your mail
-      type: oauth2
+            https://www.googleapis.com/auth/gmail.settings.basic: "See, edit, create,\
+              \ or change your email settings and filters in Gmail"
+            https://www.googleapis.com/auth/gmail.settings.sharing: "Manage your sensitive\
+              \ mail settings, including who can manage your mail"
     Oauth2c:
+      type: oauth2
       description: Oauth 2.0 authorizationCode authentication
       flows:
         authorizationCode:
           authorizationUrl: https://accounts.google.com/o/oauth2/auth
-          scopes:
-            https://mail.google.com/: Read, compose, send, and permanently delete all your email from Gmail
-            https://www.googleapis.com/auth/gmail.addons.current.action.compose: Manage drafts and send emails when you interact with the add-on
-            https://www.googleapis.com/auth/gmail.addons.current.message.action: View your email messages when you interact with the add-on
-            https://www.googleapis.com/auth/gmail.addons.current.message.metadata: View your email message metadata when the add-on is running
-            https://www.googleapis.com/auth/gmail.addons.current.message.readonly: View your email messages when the add-on is running
-            https://www.googleapis.com/auth/gmail.compose: Manage drafts and send emails
-            https://www.googleapis.com/auth/gmail.insert: Add emails into your Gmail mailbox
-            https://www.googleapis.com/auth/gmail.labels: See and edit your email labels
-            https://www.googleapis.com/auth/gmail.metadata: View your email message metadata such as labels and headers, but not the email body
-            https://www.googleapis.com/auth/gmail.modify: Read, compose, and send emails from your Gmail account
-            https://www.googleapis.com/auth/gmail.readonly: View your email messages and settings
-            https://www.googleapis.com/auth/gmail.send: Send email on your behalf
-            https://www.googleapis.com/auth/gmail.settings.basic: See, edit, create, or change your email settings and filters in Gmail
-            https://www.googleapis.com/auth/gmail.settings.sharing: Manage your sensitive mail settings, including who can manage your mail
           tokenUrl: https://accounts.google.com/o/oauth2/token
-      type: oauth2
+          scopes:
+            https://mail.google.com/: "Read, compose, send, and permanently delete\
+              \ all your email from Gmail"
+            https://www.googleapis.com/auth/gmail.addons.current.action.compose: Manage
+              drafts and send emails when you interact with the add-on
+            https://www.googleapis.com/auth/gmail.addons.current.message.action: View
+              your email messages when you interact with the add-on
+            https://www.googleapis.com/auth/gmail.addons.current.message.metadata: View
+              your email message metadata when the add-on is running
+            https://www.googleapis.com/auth/gmail.addons.current.message.readonly: View
+              your email messages when the add-on is running
+            https://www.googleapis.com/auth/gmail.compose: Manage drafts and send
+              emails
+            https://www.googleapis.com/auth/gmail.insert: Add emails into your Gmail
+              mailbox
+            https://www.googleapis.com/auth/gmail.labels: See and edit your email
+              labels
+            https://www.googleapis.com/auth/gmail.metadata: "View your email message\
+              \ metadata such as labels and headers, but not the email body"
+            https://www.googleapis.com/auth/gmail.modify: "Read, compose, and send\
+              \ emails from your Gmail account"
+            https://www.googleapis.com/auth/gmail.readonly: View your email messages
+              and settings
+            https://www.googleapis.com/auth/gmail.send: Send email on your behalf
+            https://www.googleapis.com/auth/gmail.settings.basic: "See, edit, create,\
+              \ or change your email settings and filters in Gmail"
+            https://www.googleapis.com/auth/gmail.settings.sharing: "Manage your sensitive\
+              \ mail settings, including who can manage your mail"
+x-hasEquivalentPaths: true
