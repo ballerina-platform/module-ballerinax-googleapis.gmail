@@ -232,6 +232,7 @@ public type ListMessagesResponse record {
     # Estimated total number of results.
     int resultSizeEstimate?;
 };
+
 # Represents the Queries record for the operation: gmail.users.messages.insert
 public type GmailUsersMessagesInsertQueries record {
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
@@ -583,7 +584,6 @@ public type GmailUsersMessagesImportQueries record {
     # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
     string 'key?;
 };
-
 
 # Represents the Queries record for the operation: gmail.users.messages.send
 public type GmailUsersMessagesSendQueries record {

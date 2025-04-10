@@ -39,7 +39,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/drafts(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, boolean? includeSpamTrash, int? maxResults, string? pageToken, string? q) returns ListDraftsResponse {
-    Draft draft = {
+        Draft draft = {
             id: "1",
             message: {
                 id: "1",
@@ -54,7 +54,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/drafts/[string id](@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, "minimal"|"full"|"raw"|"metadata"? format) returns Draft {
-    return {
+        return {
             id: "1",
             message: {
                 id: "1",
@@ -67,7 +67,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/history(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, ("messageAdded"|"messageDeleted"|"labelAdded"|"labelRemoved")[]? historyTypes, string? labelId, int? maxResults, string? pageToken, string? startHistoryId) returns ListHistoryResponse {
-    return {
+        return {
             history: [
                 {
                     id: "1",
@@ -88,7 +88,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/labels(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType) returns ListLabelsResponse {
-    return {
+        return {
             labels: [
                 {
                     id: "1",
@@ -99,14 +99,14 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/labels/[string id](@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType) returns Label {
-   return {
+        return {
             id: "1",
             name: "CUSTOMER"
         };
-         }
+    }
 
     resource function get users/[string userId]/messages(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, boolean? includeSpamTrash, string[]? labelIds, int? maxResults, string? pageToken, string? q) returns ListMessagesResponse {
-    return {
+        return {
             messages: [
                 {
                     id: "1",
@@ -118,7 +118,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/messages/[string id](@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, "minimal"|"full"|"raw"|"metadata"? format, string[]? metadataHeaders) returns Message {
-    return {
+        return {
             id: "1",
             threadId: "1",
             labelIds: ["CUSTOMER"],
@@ -129,7 +129,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/messages/[string messageId]/attachments/[string id](@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType) returns MessagePartBody {
-    return {
+        return {
             attachmentId: "1",
             size: 1,
             data: "aW1hZ2U="
@@ -137,7 +137,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/profile(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType) returns Profile {
-    return {
+        return {
             emailAddress: "emailAddress",
             messagesTotal: 1,
             threadsTotal: 1,
@@ -146,7 +146,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/threads(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, boolean? includeSpamTrash, string[]? labelIds, int? maxResults, string? pageToken, string? q) returns ListThreadsResponse {
-    return {
+        return {
             threads: [
                 {
                     id: "1",
@@ -164,7 +164,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function get users/[string userId]/threads/[string id](@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, "full"|"metadata"|"minimal"? format, string[]? metadataHeaders) returns MailThread {
-    return {
+        return {
             id: "1",
             historyId: "1",
             messages: [
@@ -179,14 +179,14 @@ service /gmail/v1 on ep0 {
     }
 
     resource function patch users/[string userId]/labels/[string id](@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload Label payload) returns Label {
-    return {
+        return {
             id: "1",
             name: "CUSTOMER PATCHED"
         };
     }
 
     resource function post users/[string userId]/drafts(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload Draft payload) returns DraftOk {
-    return {
+        return {
             body: {
                 id: "1",
                 message: {
@@ -198,7 +198,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/drafts/send(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload Draft payload) returns MessageOk {
-    return {
+        return {
             body: {
                 id: "1",
                 threadId: "1",
@@ -210,7 +210,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/labels(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload Label payload) returns LabelOk {
-     return {
+        return {
             body: {
                 id: "1",
                 name: "CUSTOMER"
@@ -219,7 +219,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/messages(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, boolean? deleted, "receivedTime"|"dateHeader"? internalDateSource, @http:Payload Message payload) returns MessageOk {
-    return {
+        return {
             body: {
                 id: "1",
                 threadId: "1",
@@ -231,7 +231,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/messages/'import(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, boolean? deleted, "receivedTime"|"dateHeader"? internalDateSource, boolean? neverMarkSpam, boolean? processForCalendar, @http:Payload Message payload) returns MessageOk {
-    return {
+        return {
             body: {
                 id: "1",
                 threadId: "1",
@@ -243,7 +243,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/messages/[string id]/modify(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload ModifyMessageRequest payload) returns MessageOk {
-    return {
+        return {
             body: {
                 id: "1",
                 threadId: "1",
@@ -255,7 +255,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/messages/[string id]/trash(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType) returns MessageOk {
-    return {
+        return {
             body: {
                 id: "1",
                 threadId: "1",
@@ -267,7 +267,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/messages/[string id]/untrash(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType) returns MessageOk {
-    return {
+        return {
             body: {
                 id: "1",
                 threadId: "1",
@@ -279,15 +279,15 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/messages/batchDelete(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload BatchDeleteMessagesRequest payload) returns http:Ok {
-            return http:OK;
+        return http:OK;
     }
 
     resource function post users/[string userId]/messages/batchModify(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload BatchModifyMessagesRequest payload) returns http:Ok {
-            return http:OK;
+        return http:OK;
     }
 
     resource function post users/[string userId]/messages/send(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload Message payload) returns MessageOk {
-    return {
+        return {
             body: {
                 id: "1",
                 threadId: "1",
@@ -299,7 +299,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/threads/[string id]/modify(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload ModifyThreadRequest payload) returns MailThreadOk {
-    return {
+        return {
             body: {
                 id: "1",
                 historyId: "1",
@@ -316,7 +316,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/threads/[string id]/trash(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType) returns MailThreadOk {
-    return {
+        return {
             body: {
                 id: "1",
                 historyId: "1",
@@ -333,7 +333,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function post users/[string userId]/threads/[string id]/untrash(@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType) returns MailThreadOk {
-    return {
+        return {
             body: {
                 id: "1",
                 historyId: "1",
@@ -350,7 +350,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function put users/[string userId]/drafts/[string id](@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload Draft payload) returns Draft {
-    return {
+        return {
             id: "1",
             message: {
                 id: "1",
@@ -363,7 +363,7 @@ service /gmail/v1 on ep0 {
     }
 
     resource function put users/[string userId]/labels/[string id](@http:Query {name: "$.xgafv"} Xgafv? xgafv, @http:Query {name: "access_token"} string? accessToken, Alt? alt, string? callback, string? fields, string? 'key, @http:Query {name: "oauth_token"} string? oauthToken, boolean? prettyPrint, string? quotaUser, @http:Query {name: "upload_protocol"} string? uploadProtocol, string? uploadType, @http:Payload Label payload) returns Label {
-    return {
+        return {
             id: "1",
             name: "CUSTOMER"
         };

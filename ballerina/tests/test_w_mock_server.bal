@@ -114,7 +114,7 @@ function testUrlDecodeFailure() returns error? {
     Message|error result = convertOASMessageToMessage(receivedMsg);
     if result is error {
         test:assertEquals(result.message(), "Returned message raw field is not a valid Base64 URL encoded value.",
-        msg = "Error decoding message");
+                msg = "Error decoding message");
     } else {
         test:assertFail("Expected decoded error");
     }
@@ -136,7 +136,7 @@ function testAttachmentSendFailure() returns error? {
     oas:Message|error result = convertMessageRequestToOASMessage(sendMsg);
     if result is error {
         test:assertEquals(result.message(),
-        "Unable to retrieve attachment: asdadsa", msg = "Error decoding message");
+                "Unable to retrieve attachment: asdadsa", msg = "Error decoding message");
     } else {
         test:assertFail("Expected decoded error");
     }

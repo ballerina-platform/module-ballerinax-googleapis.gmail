@@ -227,7 +227,7 @@ public isolated client class Client {
     # + return - Successful response 
     resource isolated function post users/[string userId]/messages/batchModify(BatchModifyMessagesRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesBatchModifyQueries queries) returns error? {
         return self.genClient->/users/[userId]/messages/batchModify.post(payload, headers, queries);
-   }
+    }
 
     # Imports a message into only this user's mailbox, with standard email delivery scanning and classification similar to receiving via SMTP. This method doesn't perform SPF checks, so it might not work for some spam messages, such as those attempting to perform domain spoofing. This method does not send a message.
     #
