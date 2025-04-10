@@ -96,7 +96,7 @@ function testMessageBatchModify() returns error? {
     );
     Message message = check gmailClient->/users/me/messages/[insertMessageId];
     test:assertEquals(message.labelIds, ["UNREAD"],
-                    msg = "/users/[userId]/messages/batchModify failed UNREAD label not added");
+            msg = "/users/[userId]/messages/batchModify failed UNREAD label not added");
 }
 
 @test:Config {
@@ -183,7 +183,7 @@ function testMessageModify() returns error? {
     string[]? labelIds = getMessage.labelIds;
     if labelIds is string[] {
         test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0,
-                        msg = "/users/[userId]/messages/[sentMessageId]/modify failed");
+                msg = "/users/[userId]/messages/[sentMessageId]/modify failed");
     } else {
         test:assertFail("/users/[userId]/messages/[sentMessageId]/modify failed");
     }
@@ -199,7 +199,7 @@ function testMessageTrash() returns error? {
     string[]? labelIds = getMessage.labelIds;
     if labelIds is string[] {
         test:assertTrue(labelIds.filter(l => l == "TRASH").length() > 0,
-                        msg = "/users/[userId]/messages/[sentMessageId]/trash failed TRASH label not added");
+                msg = "/users/[userId]/messages/[sentMessageId]/trash failed TRASH label not added");
     } else {
         test:assertFail("/users/[userId]/messages/[sentMessageId]/trash failed");
     }
@@ -215,7 +215,7 @@ function testMessageUntrash() returns error? {
     string[]? labelIds = getMessage.labelIds;
     if labelIds is string[] {
         test:assertTrue(labelIds.filter(l => l == "TRASH").length() == 0,
-                        msg = "/users/[userId]/messages/[sentMessageId]/untrash failed TRASH label not removed");
+                msg = "/users/[userId]/messages/[sentMessageId]/untrash failed TRASH label not removed");
     } else {
         test:assertFail("/users/[userId]/messages/[sentMessageId]/untrash failed");
     }
@@ -312,7 +312,7 @@ function testPutDraft() returns error? {
     test:assertTrue(updatedDraft.id != "", msg = "/users/[userId]/drafts/[draftId] failed");
     Draft draft = check gmailClient->/users/me/drafts/[draftId](format = "raw");
     test:assertTrue(draft.message?.raw.toString().includes("subject:Gmail draft test updated"),
-    msg = "/users/[userId]/drafts/[draftId] failed");
+            msg = "/users/[userId]/drafts/[draftId] failed");
 }
 
 @test:Config {
@@ -367,7 +367,7 @@ function testModifyMailThread() returns error? {
         string[]? labelIds = firstMessage[0].labelIds;
         if labelIds is string[] {
             test:assertTrue(labelIds.filter(l => l == "UNREAD").length() > 0,
-                            msg = "/users/[userId]/threads/[threadId]/modify failed");
+                    msg = "/users/[userId]/threads/[threadId]/modify failed");
         } else {
             test:assertFail("/users/[userId]/threads/[threadId]/modify failed");
         }
@@ -389,7 +389,7 @@ function testTrashMailThread() returns error? {
         string[]? labelIds = firstMessage[0].labelIds;
         if labelIds is string[] {
             test:assertTrue(labelIds.filter(l => l == "TRASH").length() > 0,
-                            msg = "/users/[userId]/threads/[threadId]/trash failed TRASH label not added");
+                    msg = "/users/[userId]/threads/[threadId]/trash failed TRASH label not added");
         } else {
             test:assertFail("/users/[userId]/threads/[threadId]/trash failed");
         }
@@ -411,7 +411,7 @@ function testUntrashMailThread() returns error? {
         string[]? labelIds = firstMessage[0].labelIds;
         if labelIds is string[] {
             test:assertTrue(labelIds.filter(l => l == "TRASH").length() == 0,
-                            msg = "/users/[userId]/threads/[threadId]/untrash failed TRASH label not removed");
+                    msg = "/users/[userId]/threads/[threadId]/untrash failed TRASH label not removed");
         } else {
             test:assertFail("/users/[userId]/threads/[threadId]/untrash failed");
         }
