@@ -33,16 +33,20 @@ public type GmailUsersHistoryListQueries record {
     boolean prettyPrint?;
     # Data format for response.
     Alt alt?;
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # History types to be returned by the function
     ("messageAdded"|"messageDeleted"|"labelAdded"|"labelRemoved")[] historyTypes?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Only return messages with a label matching the ID.
     string labelId?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Maximum number of history records to return. This field defaults to 100. The maximum allowed value for this field is 500.
@@ -61,22 +65,31 @@ public type GmailUsersHistoryListQueries record {
     string 'key?;
 };
 
-public type HistoryMessageDeleted record {
-    Message message?;
+public type ListDraftsResponse record {
+    # Token to retrieve the next page of results in the list.
+    string nextPageToken?;
+    # List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details.
+    Draft[] drafts?;
+    # Estimated total number of results.
+    int resultSizeEstimate?;
 };
 
 # Represents the Queries record for the operation: gmail.users.drafts.update
 public type GmailUsersDraftsUpdateQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -91,13 +104,8 @@ public type GmailUsersDraftsUpdateQueries record {
     string 'key?;
 };
 
-public type ListDraftsResponse record {
-    # Token to retrieve the next page of results in the list.
-    string nextPageToken?;
-    # List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details.
-    Draft[] drafts?;
-    # Estimated total number of results.
-    int resultSizeEstimate?;
+public type HistoryMessageDeleted record {
+    Message message?;
 };
 
 # A collection of messages representing a conversation.
@@ -141,6 +149,11 @@ public type Label record {
 # V1 error format.
 public type Xgafv "1"|"2";
 
+public type DraftOk record {|
+    *http:Ok;
+    Draft body;
+|};
+
 # A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways.
 public type History record {
     # Messages added to the mailbox in this history record.
@@ -159,16 +172,20 @@ public type History record {
 
 # Represents the Queries record for the operation: gmail.users.threads.modify
 public type GmailUsersThreadsModifyQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -193,16 +210,20 @@ public type GmailUsersThreadsListQueries record {
     Alt alt?;
     # Include threads from `SPAM` and `TRASH` in the results.
     boolean includeSpamTrash?;
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Only return threads matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.
     string q?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Only return threads with labels that match all of the specified label IDs.
     string[] labelIds?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Maximum number of threads to return. This field defaults to 100. The maximum allowed value for this field is 500.
@@ -221,16 +242,20 @@ public type GmailUsersThreadsListQueries record {
 
 # Represents the Queries record for the operation: gmail.users.labels.patch
 public type GmailUsersLabelsPatchQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -263,14 +288,18 @@ public type GmailUsersDraftsListQueries record {
     Alt alt?;
     # Include drafts from `SPAM` and `TRASH` in the results.
     boolean includeSpamTrash?;
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Only return draft messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`.
     string q?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Maximum number of drafts to return. This field defaults to 100. The maximum allowed value for this field is 500.
@@ -289,16 +318,20 @@ public type GmailUsersDraftsListQueries record {
 
 # Represents the Queries record for the operation: gmail.users.messages.batchModify
 public type GmailUsersMessagesBatchModifyQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -321,29 +354,35 @@ public type ConnectionConfig record {|
     # The HTTP version understood by the client
     http:HttpVersion httpVersion = http:HTTP_2_0;
     # Configurations related to HTTP/1.x protocol
-    ClientHttp1Settings http1Settings?;
+    http:ClientHttp1Settings http1Settings = {};
     # Configurations related to HTTP/2 protocol
-    http:ClientHttp2Settings http2Settings?;
+    http:ClientHttp2Settings http2Settings = {};
     # The maximum time to wait (in seconds) for a response before closing the connection
-    decimal timeout = 60;
+    decimal timeout = 30;
     # The choice of setting `forwarded`/`x-forwarded` header
     string forwarded = "disable";
+    # Configurations associated with Redirection
+    http:FollowRedirects followRedirects?;
     # Configurations associated with request pooling
     http:PoolConfiguration poolConfig?;
     # HTTP caching related configurations
-    http:CacheConfig cache?;
+    http:CacheConfig cache = {};
     # Specifies the way of handling compression (`accept-encoding`) header
     http:Compression compression = http:COMPRESSION_AUTO;
     # Configurations associated with the behaviour of the Circuit Breaker
     http:CircuitBreakerConfig circuitBreaker?;
     # Configurations associated with retrying
     http:RetryConfig retryConfig?;
+    # Configurations associated with cookies
+    http:CookieConfig cookieConfig?;
     # Configurations associated with inbound response size limits
-    http:ResponseLimitConfigs responseLimits?;
+    http:ResponseLimitConfigs responseLimits = {};
     # SSL/TLS-related options
     http:ClientSecureSocket secureSocket?;
     # Proxy server related options
     http:ProxyConfig proxy?;
+    # Provides settings related to client socket configuration
+    http:ClientSocketConfig socketConfig = {};
     # Enables the inbound payload validation functionality which provided by the constraint package. Enabled by default
     boolean validation = true;
     # Enables relaxed data binding on the client side. When enabled, `nil` values are treated as optional, 
@@ -353,16 +392,20 @@ public type ConnectionConfig record {|
 
 # Represents the Queries record for the operation: gmail.users.threads.delete
 public type GmailUsersThreadsDeleteQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -379,16 +422,20 @@ public type GmailUsersThreadsDeleteQueries record {
 
 # Represents the Queries record for the operation: gmail.users.drafts.send
 public type GmailUsersDraftsSendQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -413,16 +460,20 @@ public type GmailUsersMessagesListQueries record {
     Alt alt?;
     # Include messages from `SPAM` and `TRASH` in the results.
     boolean includeSpamTrash?;
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Only return messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.
     string q?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Only return messages with labels that match all of the specified label IDs. Messages in a thread might have labels that other messages in the same thread don't have. To learn more, see [Manage labels on messages and threads](https://developers.google.com/gmail/api/guides/labels#manage_labels_on_messages_threads).
     string[] labelIds?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Maximum number of messages to return. This field defaults to 100. The maximum allowed value for this field is 500.
@@ -441,16 +492,20 @@ public type GmailUsersMessagesListQueries record {
 
 # Represents the Queries record for the operation: gmail.users.messages.modify
 public type GmailUsersMessagesModifyQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -467,16 +522,20 @@ public type GmailUsersMessagesModifyQueries record {
 
 # Represents the Queries record for the operation: gmail.users.drafts.delete
 public type GmailUsersDraftsDeleteQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -490,6 +549,11 @@ public type GmailUsersDraftsDeleteQueries record {
     # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
     string 'key?;
 };
+
+public type LabelOk record {|
+    *http:Ok;
+    Label body;
+|};
 
 # A single MIME message part.
 public type MessagePart record {
@@ -508,16 +572,20 @@ public type MessagePart record {
 
 # Represents the Queries record for the operation: gmail.users.labels.delete
 public type GmailUsersLabelsDeleteQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -546,14 +614,18 @@ public type GmailUsersMessagesInsertQueries record {
     boolean prettyPrint?;
     # Data format for response.
     Alt alt?;
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.
     boolean deleted?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Legacy upload protocol for media (e.g. "media", "multipart").
@@ -575,6 +647,11 @@ public type ModifyMessageRequest record {
     string[] removeLabelIds?;
 };
 
+public type MailThreadOk record {|
+    *http:Ok;
+    MailThread body;
+|};
+
 # The body of a single MIME message part.
 public type MessagePartBody record {
     # The body data of a MIME message part as a base64url encoded string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
@@ -591,6 +668,11 @@ public type ModifyThreadRequest record {
     # A list of IDs of labels to remove from this thread. You can remove up to 100 labels with each update.
     string[] removeLabelIds?;
 };
+
+public type MessageOk record {|
+    *http:Ok;
+    Message body;
+|};
 
 public type HistoryMessageAdded record {
     Message message?;
@@ -617,27 +699,22 @@ public type Message record {
     string internalDate?;
 };
 
-public type BatchModifyMessagesRequest record {
-    # A list of label IDs to add to messages.
-    string[] addLabelIds?;
-    # A list of label IDs to remove from messages.
-    string[] removeLabelIds?;
-    # The IDs of the messages to modify. There is a limit of 1000 ids per request.
-    string[] ids?;
-};
-
 # Represents the Queries record for the operation: gmail.users.messages.batchDelete
 public type GmailUsersMessagesBatchDeleteQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -652,18 +729,31 @@ public type GmailUsersMessagesBatchDeleteQueries record {
     string 'key?;
 };
 
+public type BatchModifyMessagesRequest record {
+    # A list of label IDs to add to messages.
+    string[] addLabelIds?;
+    # A list of label IDs to remove from messages.
+    string[] removeLabelIds?;
+    # The IDs of the messages to modify. There is a limit of 1000 ids per request.
+    string[] ids?;
+};
+
 # Represents the Queries record for the operation: gmail.users.messages.untrash
 public type GmailUsersMessagesUntrashQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -690,12 +780,16 @@ public type GmailUsersThreadsGetQueries record {
     "full"|"metadata"|"minimal" format?;
     # When given and format is METADATA, only include headers specified.
     string[] metadataHeaders?;
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Legacy upload protocol for media (e.g. "media", "multipart").
@@ -710,16 +804,20 @@ public type GmailUsersThreadsGetQueries record {
 
 # Represents the Queries record for the operation: gmail.users.labels.list
 public type GmailUsersLabelsListQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -736,16 +834,20 @@ public type GmailUsersLabelsListQueries record {
 
 # Represents the Queries record for the operation: gmail.users.messages.delete
 public type GmailUsersMessagesDeleteQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -767,16 +869,20 @@ public type ListLabelsResponse record {
 
 # Represents the Queries record for the operation: gmail.users.messages.send
 public type GmailUsersMessagesSendQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -791,18 +897,6 @@ public type GmailUsersMessagesSendQueries record {
     string 'key?;
 };
 
-# Profile for a Gmail user.
-public type Profile record {
-    # The user's email address.
-    string emailAddress?;
-    # The total number of threads in the mailbox.
-    int:Signed32 threadsTotal?;
-    # The ID of the mailbox's current history record.
-    string historyId?;
-    # The total number of messages in the mailbox.
-    int:Signed32 messagesTotal?;
-};
-
 # Represents the Queries record for the operation: gmail.users.messages.import
 public type GmailUsersMessagesImportQueries record {
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
@@ -813,14 +907,18 @@ public type GmailUsersMessagesImportQueries record {
     Alt alt?;
     # Ignore the Gmail spam classifier decision and never mark this email as SPAM in the mailbox.
     boolean neverMarkSpam?;
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.
     boolean deleted?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Process calendar invites in the email and add any extracted meetings to the Google Calendar for this user.
@@ -837,18 +935,34 @@ public type GmailUsersMessagesImportQueries record {
     string 'key?;
 };
 
+# Profile for a Gmail user.
+public type Profile record {
+    # The user's email address.
+    string emailAddress?;
+    # The total number of threads in the mailbox.
+    int:Signed32 threadsTotal?;
+    # The ID of the mailbox's current history record.
+    string historyId?;
+    # The total number of messages in the mailbox.
+    int:Signed32 messagesTotal?;
+};
+
 # Represents the Queries record for the operation: gmail.users.drafts.get
 public type GmailUsersDraftsGetQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -867,16 +981,20 @@ public type GmailUsersDraftsGetQueries record {
 
 # Represents the Queries record for the operation: gmail.users.getProfile
 public type GmailUsersGetProfileQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -893,16 +1011,20 @@ public type GmailUsersGetProfileQueries record {
 
 # Represents the Queries record for the operation: gmail.users.labels.get
 public type GmailUsersLabelsGetQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -936,12 +1058,16 @@ public type GmailUsersMessagesGetQueries record {
     "minimal"|"full"|"raw"|"metadata" format?;
     # When given and format is `METADATA`, only include headers specified.
     string[] metadataHeaders?;
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Legacy upload protocol for media (e.g. "media", "multipart").
@@ -961,19 +1087,6 @@ public type MessagePartHeader record {
     string value?;
 };
 
-# Proxy server configurations to be used with the HTTP client endpoint.
-public type ProxyConfig record {|
-    # Host name of the proxy server
-    string host = "";
-    # Proxy server port
-    int port = 0;
-    # Proxy server username
-    string userName = "";
-    # Proxy server password
-    @display {label: "", kind: "password"}
-    string password = "";
-|};
-
 public type ListThreadsResponse record {
     # Page token to retrieve the next page of results in the list.
     string nextPageToken?;
@@ -985,16 +1098,20 @@ public type ListThreadsResponse record {
 
 # Represents the Queries record for the operation: gmail.users.threads.untrash
 public type GmailUsersThreadsUntrashQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -1011,16 +1128,20 @@ public type GmailUsersThreadsUntrashQueries record {
 
 # Represents the Queries record for the operation: gmail.users.labels.update
 public type GmailUsersLabelsUpdateQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -1037,16 +1158,20 @@ public type GmailUsersLabelsUpdateQueries record {
 
 # Represents the Queries record for the operation: gmail.users.messages.trash
 public type GmailUsersMessagesTrashQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -1086,28 +1211,22 @@ public type ListHistoryResponse record {
     History[] history?;
 };
 
-# Provides settings related to HTTP/1.x protocol.
-public type ClientHttp1Settings record {|
-    # Specifies whether to reuse a connection for multiple requests
-    http:KeepAlive keepAlive = http:KEEPALIVE_AUTO;
-    # The chunking behaviour of the request
-    http:Chunking chunking = http:CHUNKING_AUTO;
-    # Proxy server related options
-    ProxyConfig proxy?;
-|};
-
 # Represents the Queries record for the operation: gmail.users.labels.create
 public type GmailUsersLabelsCreateQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -1129,16 +1248,20 @@ public type BatchDeleteMessagesRequest record {
 
 # Represents the Queries record for the operation: gmail.users.drafts.create
 public type GmailUsersDraftsCreateQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -1155,16 +1278,20 @@ public type GmailUsersDraftsCreateQueries record {
 
 # Represents the Queries record for the operation: gmail.users.threads.trash
 public type GmailUsersThreadsTrashQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
@@ -1181,16 +1308,20 @@ public type GmailUsersThreadsTrashQueries record {
 
 # Represents the Queries record for the operation: gmail.users.messages.attachments.get
 public type GmailUsersMessagesAttachmentsGetQueries record {
+    # OAuth access token.
     @http:Query {name: "access_token"}
     string accessToken?;
     # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
     string quotaUser?;
+    # V1 error format.
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart").
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
     # Returns response with indentations and line breaks.
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user.
     @http:Query {name: "oauth_token"}
     string oauthToken?;
     # Data format for response.
