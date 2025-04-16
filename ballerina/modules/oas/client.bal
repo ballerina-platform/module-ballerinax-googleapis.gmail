@@ -22,7 +22,6 @@ import ballerina/http;
 # The Gmail API lets you view and manage Gmail mailbox data like threads, messages, and labels.
 public isolated client class Client {
     final http:Client clientEp;
-
     # Gets invoked to initialize the `connector`.
     #
     # + config - The configurations to be used when initializing the `connector` 
