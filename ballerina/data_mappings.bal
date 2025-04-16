@@ -95,8 +95,8 @@ returns MessagePart|error {
 
     oas:MessagePartHeader[] headers = response.headers ?: [];
     if response.headers is oas:MessagePartHeader[] {
-        messagePart.headers = map from oas:MessagePartHeader h in headers
-            select [h.name ?: EMPTY_STRING, h.value ?: EMPTY_STRING];
+        messagePart.headers = from oas:MessagePartHeader h in headers
+            select {name: h.name ?: EMPTY_STRING, value: h.value ?: EMPTY_STRING};
     }
 
     oas:MessagePartBody? body = response.body;
@@ -110,7 +110,7 @@ returns MessagePart|error {
             }
         } on fail error err {
             check error ValueEncodeError(
-                string `Returned message body part of id '${messagePart.partId}'${err.message()}`, err.cause());
+                string `Returned message body part of id '${messagePart.partId ?: EMPTY_STRING}'${err.message()}`, err.cause());
         }
     }
 

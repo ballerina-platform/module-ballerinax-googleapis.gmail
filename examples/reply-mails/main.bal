@@ -38,10 +38,11 @@ public function main() returns error? {
     string[] ids = [];
     gmail:Message[] messageIds = messageList.messages ?: [];
     foreach gmail:Message message in messageIds {
-        ids.push(message.id);
+        string msgId = message.id ?: "";
+        ids.push(msgId);
 
         // Get the full message details
-        gmail:Message completeMsg = check gmail->/users/me/messages/[message.id](format = "metadata");
+        gmail:Message completeMsg = check gmail->/users/me/messages/[msgId](format = "metadata");
 
         // Get the details of the message
         string? fromAddress = completeMsg.'from;

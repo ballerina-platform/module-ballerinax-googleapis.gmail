@@ -20,38 +20,38 @@
 import ballerina/http;
 
 public type HistoryLabelAdded record {
-    # Label IDs added to the message.
+    # Label IDs added to the message
     string[] labelIds?;
     Message message?;
 };
 
-# An email message.
+# An email message
 public type Message record {
-    # A short part of the message text.
+    # A short part of the message text
     string snippet?;
     # The ID of the thread the message belongs to. To add a message or draft to a thread, the following criteria must be met: 1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 3. The `Subject` headers must match. 
     string threadId?;
-    # List of IDs of labels applied to this message.
+    # List of IDs of labels applied to this message
     string[] labelIds?;
     MessagePart payload?;
-    # The ID of the last history record that modified this message.
+    # The ID of the last history record that modified this message
     string historyId?;
-    # The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied.
+    # The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied
     string raw?;
-    # The immutable ID of the message.
+    # The immutable ID of the message
     string id?;
-    # Estimated size in bytes of the message.
+    # Estimated size in bytes of the message
     int:Signed32 sizeEstimate?;
-    # The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header.
+    # The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header
     string internalDate?;
 };
 
 public type ListDraftsResponse record {
-    # Token to retrieve the next page of results in the list.
+    # Token to retrieve the next page of results in the list
     string nextPageToken?;
-    # List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details.
+    # List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details
     Draft[] drafts?;
-    # Estimated total number of results.
+    # Estimated total number of results
     int resultSizeEstimate?;
 };
 
@@ -59,54 +59,54 @@ public type HistoryMessageDeleted record {
     Message message?;
 };
 
-# A collection of messages representing a conversation.
+# A collection of messages representing a conversation
 public type MailThread record {
-    # A short part of the message text.
+    # A short part of the message text
     string snippet?;
-    # The ID of the last history record that modified this thread.
+    # The ID of the last history record that modified this thread
     string historyId?;
-    # The list of messages in the thread.
+    # The list of messages in the thread
     Message[] messages?;
-    # The unique ID of the thread.
+    # The unique ID of the thread
     string id?;
 };
 
 public type BatchModifyMessagesRequest record {
-    # A list of label IDs to add to messages.
+    # A list of label IDs to add to messages
     string[] addLabelIds?;
-    # A list of label IDs to remove from messages.
+    # A list of label IDs to remove from messages
     string[] removeLabelIds?;
-    # The IDs of the messages to modify. There is a limit of 1000 ids per request.
+    # The IDs of the messages to modify. There is a limit of 1000 ids per request
     string[] ids?;
 };
 
-# Data format for response.
+# Data format for response
 public type Alt "json"|"media"|"proto";
 
-# Labels are used to categorize messages and threads within the user's mailbox. The maximum number of labels supported for a user's mailbox is 10,000.
+# Labels are used to categorize messages and threads within the user's mailbox. The maximum number of labels supported for a user's mailbox is 10,000
 public type Label record {
-    # The visibility of messages with this label in the message list in the Gmail web interface.
+    # The visibility of messages with this label in the message list in the Gmail web interface
     "show"|"hide" messageListVisibility?;
-    # The number of unread messages with the label.
+    # The number of unread messages with the label
     int:Signed32 messagesUnread?;
-    # The number of unread threads with the label.
+    # The number of unread threads with the label
     int:Signed32 threadsUnread?;
     LabelColor color?;
-    # The total number of threads with the label.
+    # The total number of threads with the label
     int:Signed32 threadsTotal?;
-    # The display name of the label.
+    # The display name of the label
     string name?;
-    # The immutable ID of the label.
+    # The immutable ID of the label
     string id?;
-    # The visibility of the label in the label list in the Gmail web interface.
+    # The visibility of the label in the label list in the Gmail web interface
     "labelShow"|"labelShowIfUnread"|"labelHide" labelListVisibility?;
-    # The owner type for the label. User labels are created by the user and can be modified and deleted by the user and can be applied to any message or thread. System labels are internally created and cannot be added, modified, or deleted. System labels may be able to be applied to or removed from messages and threads under some circumstances but this is not guaranteed. For example, users can apply and remove the `INBOX` and `UNREAD` labels from messages and threads, but cannot apply or remove the `DRAFTS` or `SENT` labels from messages or threads.
+    # The owner type for the label. User labels are created by the user and can be modified and deleted by the user and can be applied to any message or thread. System labels are internally created and cannot be added, modified, or deleted. System labels may be able to be applied to or removed from messages and threads under some circumstances but this is not guaranteed. For example, users can apply and remove the `INBOX` and `UNREAD` labels from messages and threads, but cannot apply or remove the `DRAFTS` or `SENT` labels from messages or threads
     "system"|"user" 'type?;
-    # The total number of messages with the label.
+    # The total number of messages with the label
     int:Signed32 messagesTotal?;
 };
 
-# V1 error format.
+# V1 error format
 public type Xgafv "1"|"2";
 
 public type DraftOk record {|
@@ -114,40 +114,40 @@ public type DraftOk record {|
     Draft body;
 |};
 
-# A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways.
+# A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways
 public type History record {
-    # Messages added to the mailbox in this history record.
+    # Messages added to the mailbox in this history record
     HistoryMessageAdded[] messagesAdded?;
-    # Labels added to messages in this history record.
+    # Labels added to messages in this history record
     HistoryLabelAdded[] labelsAdded?;
-    # List of messages changed in this history record. The fields for specific change types, such as `messagesAdded` may duplicate messages in this field. We recommend using the specific change-type fields instead of this.
+    # List of messages changed in this history record. The fields for specific change types, such as `messagesAdded` may duplicate messages in this field. We recommend using the specific change-type fields instead of this
     Message[] messages?;
-    # The mailbox sequence ID.
+    # The mailbox sequence ID
     string id?;
-    # Labels removed from messages in this history record.
+    # Labels removed from messages in this history record
     HistoryLabelRemoved[] labelsRemoved?;
-    # Messages deleted (not Trashed) from the mailbox in this history record.
+    # Messages deleted (not Trashed) from the mailbox in this history record
     HistoryMessageDeleted[] messagesDeleted?;
 };
 
 public type ListLabelsResponse record {
-    # List of labels. Note that each label resource only contains an `id`, `name`, `messageListVisibility`, `labelListVisibility`, and `type`. The labels.get method can fetch additional label details.
+    # List of labels. Note that each label resource only contains an `id`, `name`, `messageListVisibility`, `labelListVisibility`, and `type`. The labels.get method can fetch additional label details
     Label[] labels?;
 };
 
-# Profile for a Gmail user.
+# Profile for a Gmail user
 public type Profile record {
-    # The user's email address.
+    # The user's email address
     string emailAddress?;
-    # The total number of threads in the mailbox.
+    # The total number of threads in the mailbox
     int:Signed32 threadsTotal?;
-    # The ID of the mailbox's current history record.
+    # The ID of the mailbox's current history record
     string historyId?;
-    # The total number of messages in the mailbox.
+    # The total number of messages in the mailbox
     int:Signed32 messagesTotal?;
 };
 
-# The color to assign to the label. Color is only available for labels that have their `type` set to `user`.
+# The color to assign to the label. Color is only available for labels that have their `type` set to `user`
 public type LabelColor record {
     # The background color represented as hex string #RRGGBB (ex #000000). This field is required in order to set the color of a label. Only the following predefined set of color values are allowed: \#000000, #434343, #666666, #999999, #cccccc, #efefef, #f3f3f3, #ffffff, \#fb4c2f, #ffad47, #fad165, #16a766, #43d692, #4a86e8, #a479e2, #f691b3, \#f6c5be, #ffe6c7, #fef1d1, #b9e4d0, #c6f3de, #c9daf8, #e4d7f5, #fcdee8, \#efa093, #ffd6a2, #fce8b3, #89d3b2, #a0eac9, #a4c2f4, #d0bcf1, #fbc8d9, \#e66550, #ffbc6b, #fcda83, #44b984, #68dfa9, #6d9eeb, #b694e8, #f7a7c0, \#cc3a21, #eaa041, #f2c960, #149e60, #3dc789, #3c78d8, #8e63ce, #e07798, \#ac2b16, #cf8933, #d5ae49, #0b804b, #2a9c68, #285bac, #653e9b, #b65775, \#822111, #a46a21, #aa8831, #076239, #1a764d, #1c4587, #41236d, #83334c \#464646, #e7e7e7, #0d3472, #b6cff5, #0d3b44, #98d7e4, #3d188e, #e3d7ff, \#711a36, #fbd3e0, #8a1c0a, #f2b2a8, #7a2e0b, #ffc8af, #7a4706, #ffdeb5, \#594c05, #fbe983, #684e07, #fdedc1, #0b4f30, #b3efd3, #04502e, #a2dcc1, \#c2c2c2, #4986e7, #2da2bb, #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \#662e37, #ebdbde, #cca6ac, #094228, #42d692, #16a765
     string backgroundColor?;
@@ -156,9 +156,9 @@ public type LabelColor record {
 };
 
 public type MessagePartHeader record {
-    # The name of the header before the `:` separator. For example, `To`.
+    # The name of the header before the `:` separator. For example, `To`
     string name?;
-    # The value of the header after the `:` separator. For example, `someuser@example.com`.
+    # The value of the header after the `:` separator. For example, `someuser@example.com`
     string value?;
 };
 
@@ -167,70 +167,70 @@ public type LabelOk record {|
     Label body;
 |};
 
-# A single MIME message part.
+# A single MIME message part
 public type MessagePart record {
-    # List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`.
+    # List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`
     MessagePartHeader[] headers?;
-    # The filename of the attachment. Only present if this message part represents an attachment.
+    # The filename of the attachment. Only present if this message part represents an attachment
     string filename?;
-    # The immutable ID of the message part.
+    # The immutable ID of the message part
     string partId?;
-    # The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.
+    # The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521
     MessagePart[] parts?;
-    # The MIME type of the message part.
+    # The MIME type of the message part
     string mimeType?;
     MessagePartBody body?;
 };
 
 public type HistoryLabelRemoved record {
-    # Label IDs removed from the message.
+    # Label IDs removed from the message
     string[] labelIds?;
     Message message?;
 };
 
 public type ListThreadsResponse record {
-    # Page token to retrieve the next page of results in the list.
+    # Page token to retrieve the next page of results in the list
     string nextPageToken?;
-    # List of threads. Note that each thread resource does not contain a list of `messages`. The list of `messages` for a given thread can be fetched using the threads.get method.
+    # List of threads. Note that each thread resource does not contain a list of `messages`. The list of `messages` for a given thread can be fetched using the threads.get method
     MailThread[] threads?;
-    # Estimated total number of results.
+    # Estimated total number of results
     int resultSizeEstimate?;
 };
 
-# A draft email in the user's mailbox.
+# A draft email in the user's mailbox
 public type Draft record {
-    # The immutable ID of the draft.
+    # The immutable ID of the draft
     string id?;
     Message message?;
 };
 
 public type ListMessagesResponse record {
-    # Token to retrieve the next page of results in the list.
+    # Token to retrieve the next page of results in the list
     string nextPageToken?;
-    # List of messages. Note that each message resource contains only an `id` and a `threadId`. Additional message details can be fetched using the messages.get method.
+    # List of messages. Note that each message resource contains only an `id` and a `threadId`. Additional message details can be fetched using the messages.get method
     Message[] messages?;
-    # Estimated total number of results.
+    # Estimated total number of results
     int resultSizeEstimate?;
 };
 
 public type ListHistoryResponse record {
-    # The ID of the mailbox's current history record.
+    # The ID of the mailbox's current history record
     string historyId?;
-    # Page token to retrieve the next page of results in the list.
+    # Page token to retrieve the next page of results in the list
     string nextPageToken?;
-    # List of history records. Any `messages` contained in the response will typically only have `id` and `threadId` fields populated.
+    # List of history records. Any `messages` contained in the response will typically only have `id` and `threadId` fields populated
     History[] history?;
 };
 
 public type ModifyMessageRequest record {
-    # A list of IDs of labels to add to this message. You can add up to 100 labels with each update.
+    # A list of IDs of labels to add to this message. You can add up to 100 labels with each update
     string[] addLabelIds?;
-    # A list IDs of labels to remove from this message. You can remove up to 100 labels with each update.
+    # A list IDs of labels to remove from this message. You can remove up to 100 labels with each update
     string[] removeLabelIds?;
 };
 
 public type BatchDeleteMessagesRequest record {
-    # The IDs of the messages to delete.
+    # The IDs of the messages to delete
     string[] ids?;
 };
 
@@ -239,13 +239,13 @@ public type MailThreadOk record {|
     MailThread body;
 |};
 
-# The body of a single MIME message part.
+# The body of a single MIME message part
 public type MessagePartBody record {
-    # The body data of a MIME message part as a base64url encoded string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
+    # The body data of a MIME message part as a base64url encoded string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment
     string data?;
-    # Number of bytes for the message part data (encoding notwithstanding).
+    # Number of bytes for the message part data (encoding notwithstanding)
     int:Signed32 size?;
-    # When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field.
+    # When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field
     string attachmentId?;
 };
 
@@ -255,9 +255,9 @@ public type MessageOk record {|
 |};
 
 public type ModifyThreadRequest record {
-    # A list of IDs of labels to add to this thread. You can add up to 100 labels with each update.
+    # A list of IDs of labels to add to this thread. You can add up to 100 labels with each update
     string[] addLabelIds?;
-    # A list of IDs of labels to remove from this thread. You can remove up to 100 labels with each update.
+    # A list of IDs of labels to remove from this thread. You can remove up to 100 labels with each update
     string[] removeLabelIds?;
 };
 
