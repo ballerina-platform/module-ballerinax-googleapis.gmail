@@ -23,57 +23,40 @@ public type ConnectionConfig record {|
     # The HTTP version understood by the client
     http:HttpVersion httpVersion = http:HTTP_2_0;
     # Configurations related to HTTP/1.x protocol
-    ClientHttp1Settings http1Settings?;
+    http:ClientHttp1Settings http1Settings = {};
     # Configurations related to HTTP/2 protocol
-    http:ClientHttp2Settings http2Settings?;
+    http:ClientHttp2Settings http2Settings = {};
     # The maximum time to wait (in seconds) for a response before closing the connection
-    decimal timeout = 60;
+    decimal timeout = 30;
     # The choice of setting `forwarded`/`x-forwarded` header
     string forwarded = "disable";
+    # Configurations associated with Redirection
+    http:FollowRedirects followRedirects?;
     # Configurations associated with request pooling
     http:PoolConfiguration poolConfig?;
     # HTTP caching related configurations
-    http:CacheConfig cache?;
+    http:CacheConfig cache = {};
     # Specifies the way of handling compression (`accept-encoding`) header
     http:Compression compression = http:COMPRESSION_AUTO;
     # Configurations associated with the behaviour of the Circuit Breaker
     http:CircuitBreakerConfig circuitBreaker?;
     # Configurations associated with retrying
     http:RetryConfig retryConfig?;
+    # Configurations associated with cookies
+    http:CookieConfig cookieConfig?;
     # Configurations associated with inbound response size limits
-    http:ResponseLimitConfigs responseLimits?;
+    http:ResponseLimitConfigs responseLimits = {};
     # SSL/TLS-related options
     http:ClientSecureSocket secureSocket?;
     # Proxy server related options
     http:ProxyConfig proxy?;
+    # Provides settings related to client socket configuration
+    http:ClientSocketConfig socketConfig = {};
     # Enables the inbound payload validation functionality which provided by the constraint package. Enabled by default
     boolean validation = true;
     # Enables relaxed data binding on the client side. When enabled, `nil` values are treated as optional, 
     # and absent fields are handled as `nilable` types. Enabled by default.
     boolean laxDataBinding = true;
-|};
-
-# Provides settings related to HTTP/1.x protocol.
-public type ClientHttp1Settings record {|
-    # Specifies whether to reuse a connection for multiple requests
-    http:KeepAlive keepAlive = http:KEEPALIVE_AUTO;
-    # The chunking behaviour of the request
-    http:Chunking chunking = http:CHUNKING_AUTO;
-    # Proxy server related options
-    ProxyConfig proxy?;
-|};
-
-# Proxy server configurations to be used with the HTTP client endpoint.
-public type ProxyConfig record {|
-    # Host name of the proxy server
-    string host = "";
-    # Proxy server port
-    int port = 0;
-    # Proxy server username
-    string userName = "";
-    # Proxy server password
-    @display {label: "", kind: "password"}
-    string password = "";
 |};
 
 # OAuth2 Refresh Token Grant Configs
@@ -83,68 +66,73 @@ public type OAuth2RefreshTokenGrantConfig record {|
     string refreshUrl = "https://accounts.google.com/o/oauth2/token";
 |};
 
-# Data format for response.
+# Data format for response
 public type Alt "json"|"media"|"proto";
 
-# V1 error format.
+# V1 error format
 public type Xgafv "1"|"2";
 
 # Represents the Queries record for the operation: gmail.users.getProfile
 public type GmailUsersGetProfileQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-# Profile for a Gmail user.
+# Profile for a Gmail user
 public type Profile record {
-    # The user's email address.
+    # The user's email address
     string emailAddress?;
-    # The ID of the mailbox's current history record.
-    string historyId?;
-    # The total number of messages in the mailbox.
-    int:Signed32 messagesTotal?;
-    # The total number of threads in the mailbox.
+    # The total number of threads in the mailbox
     int:Signed32 threadsTotal?;
+    # The ID of the mailbox's current history record
+    string historyId?;
+    # The total number of messages in the mailbox
+    int:Signed32 messagesTotal?;
 };
 
-# An email message.
+# An email message
 public type Message record {
-    # The ID of the thread the message belongs to. 
-    string threadId;
-    # The immutable ID of the message.
-    string id;
-    # List of IDs of labels applied to this message.
-    string[] labelIds?;
-    # The entire email message in an RFC 2822 formatted. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied.
-    string raw?;
-    # A short part of the message text.
+    # A short part of the message text
     string snippet?;
-    # The ID of the last history record that modified this message.
+    # The ID of the thread the message belongs to. To add a message or draft to a thread, the following criteria must be met: 1. The requested `threadId` must be specified on the `Message` or `Draft.Message` you supply with your request. 2. The `References` and `In-Reply-To` headers must be set in compliance with the [RFC 2822](https://tools.ietf.org/html/rfc2822) standard. 3. The `Subject` headers must match. 
+    string threadId?;
+    # List of IDs of labels applied to this message
+    string[] labelIds?;
+    MessagePart payload?;
+    # The ID of the last history record that modified this message
     string historyId?;
-    # The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header.
-    string internalDate?;
-    # Estimated size in bytes of the message.
+    # The entire email message in an RFC 2822 formatted and base64url encoded string. Returned in `messages.get` and `drafts.get` responses when the `format=RAW` parameter is supplied
+    string raw?;
+    # The immutable ID of the message
+    string id?;
+    # Estimated size in bytes of the message
     int:Signed32 sizeEstimate?;
+    # The internal message creation timestamp (epoch ms), which determines ordering in the inbox. For normal SMTP-received email, this represents the time the message was originally accepted by Google, which is more reliable than the `Date` header. However, for API-migrated mail, it can be configured by client to be based on the `Date` header
+    string internalDate?;
     # Email header **To**
     string[] to?;
     # Email header **From**
@@ -163,336 +151,391 @@ public type Message record {
     string contentType?;
     # MIME type of the top level message part. Values in `multipart/alternative` such as `text/plain` and `text/html` and in `multipart/*` including `multipart/mixed` and `multipart/related` indicate that the message contains a structured body with MIME parts. Values in `message/rfc822` indicate that the message is a container for the message parts that follow after the header.    
     string mimeType?;
-    # Body of the message.
-    MessagePart payload?;
 };
 
-# A single MIME message part.
+# A single MIME message part
 public type MessagePart record {
-    # The filename of the attachment. Only present if this message part represents an attachment.
+    # List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`
+    MessagePartHeader[] headers?;
+    # The filename of the attachment. Only present if this message part represents an attachment
     string filename?;
-    # List of headers on this message part. For the top-level message part, representing the entire message payload, it will contain the standard RFC 2822 email headers such as `To`, `From`, and `Subject`.
-    map<string> headers?;
-    # The MIME type of the message part.
-    string mimeType?;
-    # The immutable ID of the message part.
-    string partId;
-    # When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field.
-    string attachmentId?;
-    # The body data of a MIME message part. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
-    string data?;
-    # Number of bytes for the message part data.
-    int:Signed32 size?;
-    # The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.
+    # The immutable ID of the message part
+    string partId?;
+    # The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521
     MessagePart[] parts?;
+    # The MIME type of the message part
+    string mimeType?;
+    MessagePartBody body?;
+    # When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field
+    string attachmentId?;
+    # The body data of a MIME message part. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment
+    string data?;
+    # Number of bytes for the message part data
+    int:Signed32 size?;
+};
+
+public type MessagePartHeader record {
+    # The name of the header before the `:` separator. For example, `To`
+    string name?;
+    # The value of the header after the `:` separator. For example, `someuser@example.com`
+    string value?;
+};
+
+# The body of a single MIME message part
+public type MessagePartBody record {
+    # The body data of a MIME message part as a base64url encoded string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment
+    string data?;
+    # Number of bytes for the message part data (encoding notwithstanding)
+    int:Signed32 size?;
+    # When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field
+    string attachmentId?;
 };
 
 # Represents the Queries record for the operation: gmail.users.messages.list
 public type GmailUsersMessagesListQueries record {
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Include messages from `SPAM` and `TRASH` in the results.
+    # Include messages from `SPAM` and `TRASH` in the results
     boolean includeSpamTrash?;
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Only return messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.
+    # Only return messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope
     string q?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Only return messages with labels that match all of the specified label IDs. Messages in a thread might have labels that other messages in the same thread don't have. To learn more, see [Manage labels on messages and threads](https://developers.google.com/gmail/api/guides/labels#manage_labels_on_messages_threads).
+    # Only return messages with labels that match all of the specified label IDs. Messages in a thread might have labels that other messages in the same thread don't have. To learn more, see [Manage labels on messages and threads](https://developers.google.com/gmail/api/guides/labels#manage_labels_on_messages_threads)
     string[] labelIds?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Maximum number of messages to return. This field defaults to 100. The maximum allowed value for this field is 500.
+    # Maximum number of messages to return. This field defaults to 100. The maximum allowed value for this field is 500
     int maxResults?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Page token to retrieve a specific page of results in the list.
+    # Page token to retrieve a specific page of results in the list
     string pageToken?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-# List of messages.
 public type ListMessagesResponse record {
-    # List of messages. Note that each message resource contains only an `id` and a `threadId`. Additional message details can be fetched using the messages.get method.
-    Message[] messages?;
-    # Token to retrieve the next page of results in the list.
+    # Token to retrieve the next page of results in the list
     string nextPageToken?;
-    # Estimated total number of results.
+    # List of messages. Note that each message resource contains only an `id` and a `threadId`. Additional message details can be fetched using the messages.get method
+    Message[] messages?;
+    # Estimated total number of results
     int resultSizeEstimate?;
 };
 
 # Represents the Queries record for the operation: gmail.users.messages.insert
 public type GmailUsersMessagesInsertQueries record {
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.
+    # Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts
     boolean deleted?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # Source for Gmail's internal date of the message.
+    # Source for Gmail's internal date of the message
     "receivedTime"|"dateHeader" internalDateSource?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-public type BatchDeleteMessagesRequest record {|
-    # The IDs of the messages to delete.
+public type BatchDeleteMessagesRequest record {
+    # The IDs of the messages to delete
     string[] ids?;
-|};
+};
 
 # Represents the Queries record for the operation: gmail.users.messages.batchDelete
 public type GmailUsersMessagesBatchDeleteQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-public type BatchModifyMessagesRequest record {|
-    # A list of label IDs to add to messages.
+public type BatchModifyMessagesRequest record {
+    # A list of label IDs to add to messages
     string[] addLabelIds?;
-    # The IDs of the messages to modify. There is a limit of 1000 ids per request.
-    string[] ids?;
-    # A list of label IDs to remove from messages.
+    # A list of label IDs to remove from messages
     string[] removeLabelIds?;
-|};
+    # The IDs of the messages to modify. There is a limit of 1000 ids per request
+    string[] ids?;
+};
 
 # Represents the Queries record for the operation: gmail.users.messages.batchModify
 public type GmailUsersMessagesBatchModifyQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.messages.get
 public type GmailUsersMessagesGetQueries record {
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # The format to return the message in.
+    # The format to return the message in
     "minimal"|"full"|"raw"|"metadata" format?;
-    # When given and format is `METADATA`, only include headers specified.
+    # When given and format is `METADATA`, only include headers specified
     string[] metadataHeaders?;
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.messages.delete
 public type GmailUsersMessagesDeleteQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-public type ModifyMessageRequest record {|
-    # A list of IDs of labels to add to this message. You can add up to 100 labels with each update.
+public type ModifyMessageRequest record {
+    # A list of IDs of labels to add to this message. You can add up to 100 labels with each update
     string[] addLabelIds?;
-    # A list IDs of labels to remove from this message. You can remove up to 100 labels with each update.
+    # A list IDs of labels to remove from this message. You can remove up to 100 labels with each update
     string[] removeLabelIds?;
-|};
+};
 
 # Represents the Queries record for the operation: gmail.users.messages.modify
 public type GmailUsersMessagesModifyQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.messages.trash
 public type GmailUsersMessagesTrashQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.messages.untrash
 public type GmailUsersMessagesUntrashQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.messages.attachments.get
 public type GmailUsersMessagesAttachmentsGetQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
@@ -553,138 +596,153 @@ public type ImageFile record {|
 
 # Represents the Queries record for the operation: gmail.users.messages.import
 public type GmailUsersMessagesImportQueries record {
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Ignore the Gmail spam classifier decision and never mark this email as SPAM in the mailbox.
+    # Ignore the Gmail spam classifier decision and never mark this email as SPAM in the mailbox
     boolean neverMarkSpam?;
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts.
+    # Mark the email as permanently deleted (not TRASH) and only visible in Google Vault to a Vault administrator. Only used for Google Workspace accounts
     boolean deleted?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Process calendar invites in the email and add any extracted meetings to the Google Calendar for this user.
+    # Process calendar invites in the email and add any extracted meetings to the Google Calendar for this user
     boolean processForCalendar?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # Source for Gmail's internal date of the message.
+    # Source for Gmail's internal date of the message
     "receivedTime"|"dateHeader" internalDateSource?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.messages.send
 public type GmailUsersMessagesSendQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-# A draft email in the user's mailbox.
+# A draft email in the user's mailbox
 public type Draft record {
-    # The immutable ID of the draft.
+    # The immutable ID of the draft
     string id?;
-    # An email message.
     Message message?;
 };
 
 # Represents the Queries record for the operation: gmail.users.drafts.list
 public type GmailUsersDraftsListQueries record {
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Include drafts from `SPAM` and `TRASH` in the results.
+    # Include drafts from `SPAM` and `TRASH` in the results
     boolean includeSpamTrash?;
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Only return draft messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`.
+    # Only return draft messages matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`
     string q?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Maximum number of drafts to return. This field defaults to 100. The maximum allowed value for this field is 500.
+    # Maximum number of drafts to return. This field defaults to 100. The maximum allowed value for this field is 500
     int maxResults?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Page token to retrieve a specific page of results in the list.
+    # Page token to retrieve a specific page of results in the list
     string pageToken?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 public type ListDraftsResponse record {
-    # List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details.
-    Draft[] drafts?;
-    # Token to retrieve the next page of results in the list.
+    # Token to retrieve the next page of results in the list
     string nextPageToken?;
-    # Estimated total number of results.
+    # List of drafts. Note that the `Message` property in each `Draft` resource only contains an `id` and a `threadId`. The messages.get method can fetch additional message details
+    Draft[] drafts?;
+    # Estimated total number of results
     int resultSizeEstimate?;
 };
 
 # Represents the Queries record for the operation: gmail.users.drafts.create
 public type GmailUsersDraftsCreateQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
@@ -698,195 +756,219 @@ public type DraftRequest record {|
 
 # Represents the Queries record for the operation: gmail.users.drafts.send
 public type GmailUsersDraftsSendQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.drafts.get
 public type GmailUsersDraftsGetQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
-    # The format to return the draft in.
+    # The format to return the draft in
     "minimal"|"full"|"raw"|"metadata" format?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.drafts.update
 public type GmailUsersDraftsUpdateQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.drafts.delete
 public type GmailUsersDraftsDeleteQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.threads.list
 public type GmailUsersThreadsListQueries record {
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Include threads from `SPAM` and `TRASH` in the results.
+    # Include threads from `SPAM` and `TRASH` in the results
     boolean includeSpamTrash?;
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Only return threads matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope.
+    # Only return threads matching the specified query. Supports the same query format as the Gmail search box. For example, `"from:someuser@example.com rfc822msgid: is:unread"`. Parameter cannot be used when accessing the api using the gmail.metadata scope
     string q?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Only return threads with labels that match all of the specified label IDs.
+    # Only return threads with labels that match all of the specified label IDs
     string[] labelIds?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Maximum number of threads to return. This field defaults to 100. The maximum allowed value for this field is 500.
+    # Maximum number of threads to return. This field defaults to 100. The maximum allowed value for this field is 500
     int maxResults?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Page token to retrieve a specific page of results in the list.
+    # Page token to retrieve a specific page of results in the list
     string pageToken?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 public type ListThreadsResponse record {
-    # Page token to retrieve the next page of results in the list.
+    # Page token to retrieve the next page of results in the list
     string nextPageToken?;
-    # Estimated total number of results.
-    int resultSizeEstimate?;
-    # List of threads. Note that each thread resource does not contain a list of `messages`. The list of `messages` for a given thread can be fetched using the threads.get method.
+    # List of threads. Note that each thread resource does not contain a list of `messages`. The list of `messages` for a given thread can be fetched using the threads.get method
     MailThread[] threads?;
+    # Estimated total number of results
+    int resultSizeEstimate?;
 };
 
 # Represents the Queries record for the operation: gmail.users.threads.get
 public type GmailUsersThreadsGetQueries record {
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # The format to return the messages in.
+    # The format to return the messages in
     "full"|"metadata"|"minimal" format?;
-    # When given and format is METADATA, only include headers specified.
+    # When given and format is METADATA, only include headers specified
     string[] metadataHeaders?;
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-# A collection of messages representing a conversation.
+# A collection of messages representing a conversation
 public type MailThread record {
-    # The ID of the last history record that modified this thread.
-    string historyId?;
-    # The unique ID of the thread.
-    string id?;
-    # The list of messages in the thread.
-    Message[] messages?;
-    # A short part of the message text.
+    # A short part of the message text
     string snippet?;
+    # The ID of the last history record that modified this thread
+    string historyId?;
+    # The list of messages in the thread
+    Message[] messages?;
+    # The unique ID of the thread
+    string id?;
 };
 
 # Request payload used to create a collection of messages representing a conversation.
@@ -899,140 +981,155 @@ public type MailThreadRequest record {|
 
 # Represents the Queries record for the operation: gmail.users.threads.delete
 public type GmailUsersThreadsDeleteQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-public type ModifyThreadRequest record {|
-    # A list of IDs of labels to add to this thread. You can add up to 100 labels with each update.
+public type ModifyThreadRequest record {
+    # A list of IDs of labels to add to this thread. You can add up to 100 labels with each update
     string[] addLabelIds?;
-    # A list of IDs of labels to remove from this thread. You can remove up to 100 labels with each update.
+    # A list of IDs of labels to remove from this thread. You can remove up to 100 labels with each update
     string[] removeLabelIds?;
-|};
+};
 
 # Represents the Queries record for the operation: gmail.users.threads.modify
 public type GmailUsersThreadsModifyQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.threads.trash
 public type GmailUsersThreadsTrashQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.threads.untrash
 public type GmailUsersThreadsUntrashQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
-# Labels are used to categorize messages and threads within the user's mailbox. The maximum number of labels supported for a user's mailbox is 10,000.
+# Labels are used to categorize messages and threads within the user's mailbox. The maximum number of labels supported for a user's mailbox is 10,000
 public type Label record {
-    # The color to assign to the label. Color is only available for labels that have their `type` set to `user`.
-    LabelColor color?;
-    # The immutable ID of the label.
-    string id?;
-    # The visibility of the label in the label list in the Gmail web interface.
-    "labelShow"|"labelShowIfUnread"|"labelHide" labelListVisibility?;
-    # The visibility of messages with this label in the message list in the Gmail web interface.
+    # The visibility of messages with this label in the message list in the Gmail web interface
     "show"|"hide" messageListVisibility?;
-    # The total number of messages with the label.
-    int:Signed32 messagesTotal?;
-    # The number of unread messages with the label.
+    # The number of unread messages with the label
     int:Signed32 messagesUnread?;
-    # The display name of the label.
-    string name?;
-    # The total number of threads with the label.
-    int:Signed32 threadsTotal?;
-    # The number of unread threads with the label.
+    # The number of unread threads with the label
     int:Signed32 threadsUnread?;
-    # The owner type for the label. User labels are created by the user and can be modified and deleted by the user and can be applied to any message or thread. System labels are internally created and cannot be added, modified, or deleted. System labels may be able to be applied to or removed from messages and threads under some circumstances but this is not guaranteed. For example, users can apply and remove the `INBOX` and `UNREAD` labels from messages and threads, but cannot apply or remove the `DRAFTS` or `SENT` labels from messages or threads.
+    LabelColor color?;
+    # The total number of threads with the label
+    int:Signed32 threadsTotal?;
+    # The display name of the label
+    string name?;
+    # The immutable ID of the label
+    string id?;
+    # The visibility of the label in the label list in the Gmail web interface
+    "labelShow"|"labelShowIfUnread"|"labelHide" labelListVisibility?;
+    # The owner type for the label. User labels are created by the user and can be modified and deleted by the user and can be applied to any message or thread. System labels are internally created and cannot be added, modified, or deleted. System labels may be able to be applied to or removed from messages and threads under some circumstances but this is not guaranteed. For example, users can apply and remove the `INBOX` and `UNREAD` labels from messages and threads, but cannot apply or remove the `DRAFTS` or `SENT` labels from messages or threads
     "system"|"user" 'type?;
+    # The total number of messages with the label
+    int:Signed32 messagesTotal?;
 };
 
-# The color to assign to the label. Color is only available for labels that have their `type` set to `user`.
+# The color to assign to the label. Color is only available for labels that have their `type` set to `user`
 public type LabelColor record {
     # The background color represented as hex string #RRGGBB (ex #000000). This field is required in order to set the color of a label. Only the following predefined set of color values are allowed: \#000000, #434343, #666666, #999999, #cccccc, #efefef, #f3f3f3, #ffffff, \#fb4c2f, #ffad47, #fad165, #16a766, #43d692, #4a86e8, #a479e2, #f691b3, \#f6c5be, #ffe6c7, #fef1d1, #b9e4d0, #c6f3de, #c9daf8, #e4d7f5, #fcdee8, \#efa093, #ffd6a2, #fce8b3, #89d3b2, #a0eac9, #a4c2f4, #d0bcf1, #fbc8d9, \#e66550, #ffbc6b, #fcda83, #44b984, #68dfa9, #6d9eeb, #b694e8, #f7a7c0, \#cc3a21, #eaa041, #f2c960, #149e60, #3dc789, #3c78d8, #8e63ce, #e07798, \#ac2b16, #cf8933, #d5ae49, #0b804b, #2a9c68, #285bac, #653e9b, #b65775, \#822111, #a46a21, #aa8831, #076239, #1a764d, #1c4587, #41236d, #83334c \#464646, #e7e7e7, #0d3472, #b6cff5, #0d3b44, #98d7e4, #3d188e, #e3d7ff, \#711a36, #fbd3e0, #8a1c0a, #f2b2a8, #7a2e0b, #ffc8af, #7a4706, #ffdeb5, \#594c05, #fbe983, #684e07, #fdedc1, #0b4f30, #b3efd3, #04502e, #a2dcc1, \#c2c2c2, #4986e7, #2da2bb, #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \#662e37, #ebdbde, #cca6ac, #094228, #42d692, #16a765
     string backgroundColor?;
@@ -1042,246 +1139,270 @@ public type LabelColor record {
 
 # Represents the Queries record for the operation: gmail.users.labels.list
 public type GmailUsersLabelsListQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 public type ListLabelsResponse record {
-    # List of labels. Note that each label resource only contains an `id`, `name`, `messageListVisibility`, `labelListVisibility`, and `type`. The labels.get method can fetch additional label details.
+    # List of labels. Note that each label resource only contains an `id`, `name`, `messageListVisibility`, `labelListVisibility`, and `type`. The labels.get method can fetch additional label details
     Label[] labels?;
 };
 
 # Represents the Queries record for the operation: gmail.users.labels.create
 public type GmailUsersLabelsCreateQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.labels.get
 public type GmailUsersLabelsGetQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.labels.update
 public type GmailUsersLabelsUpdateQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.labels.delete
 public type GmailUsersLabelsDeleteQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.labels.patch
 public type GmailUsersLabelsPatchQueries record {
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 # Represents the Queries record for the operation: gmail.users.history.list
 public type GmailUsersHistoryListQueries record {
-    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.
+    # Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters
     string quotaUser?;
-    # Returns response with indentations and line breaks.
+    # Returns response with indentations and line breaks
     boolean prettyPrint?;
-    # Data format for response.
+    # Data format for response
     Alt alt?;
+    # OAuth access token
     @http:Query {name: "access_token"}
     string accessToken?;
     # History types to be returned by the function
     ("messageAdded"|"messageDeleted"|"labelAdded"|"labelRemoved")[] historyTypes?;
+    # V1 error format
     @http:Query {name: "$.xgafv"}
     Xgafv xgafv?;
+    # Upload protocol for media (e.g. "raw", "multipart")
     @http:Query {name: "upload_protocol"}
     string uploadProtocol?;
-    # Only return messages with a label matching the ID.
+    # Only return messages with a label matching the ID
     string labelId?;
+    # OAuth 2.0 token for the current user
     @http:Query {name: "oauth_token"}
     string oauthToken?;
-    # Maximum number of history records to return. This field defaults to 100. The maximum allowed value for this field is 500.
+    # Maximum number of history records to return. This field defaults to 100. The maximum allowed value for this field is 500
     int maxResults?;
-    # Required. Returns history records after the specified `startHistoryId`. The supplied `startHistoryId` should be obtained from the `historyId` of a message, thread, or previous `list` response. History IDs increase chronologically but are not contiguous with random gaps in between valid IDs. Supplying an invalid or out of date `startHistoryId` typically returns an `HTTP 404` error code. A `historyId` is typically valid for at least a week, but in some rare circumstances may be valid for only a few hours. If you receive an `HTTP 404` error response, your application should perform a full sync. If you receive no `nextPageToken` in the response, there are no updates to retrieve and you can store the returned `historyId` for a future request.
+    # Required. Returns history records after the specified `startHistoryId`. The supplied `startHistoryId` should be obtained from the `historyId` of a message, thread, or previous `list` response. History IDs increase chronologically but are not contiguous with random gaps in between valid IDs. Supplying an invalid or out of date `startHistoryId` typically returns an `HTTP 404` error code. A `historyId` is typically valid for at least a week, but in some rare circumstances may be valid for only a few hours. If you receive an `HTTP 404` error response, your application should perform a full sync. If you receive no `nextPageToken` in the response, there are no updates to retrieve and you can store the returned `historyId` for a future request
     string startHistoryId?;
-    # Legacy upload protocol for media (e.g. "media", "multipart").
+    # Legacy upload protocol for media (e.g. "media", "multipart")
     string uploadType?;
     # JSONP
     string callback?;
-    # Page token to retrieve a specific page of results in the list.
+    # Page token to retrieve a specific page of results in the list
     string pageToken?;
-    # Selector specifying which fields to include in a partial response.
+    # Selector specifying which fields to include in a partial response
     string fields?;
-    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.
+    # API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token
     string 'key?;
 };
 
 public type ListHistoryResponse record {
-    # List of history records. Any `messages` contained in the response will typically only have `id` and `threadId` fields populated.
-    History[] history?;
-    # The ID of the mailbox's current history record.
+    # The ID of the mailbox's current history record
     string historyId?;
-    # Page token to retrieve the next page of results in the list.
+    # Page token to retrieve the next page of results in the list
     string nextPageToken?;
+    # List of history records. Any `messages` contained in the response will typically only have `id` and `threadId` fields populated
+    History[] history?;
 };
 
-# A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways.
+# A record of a change to the user's mailbox. Each history change may affect multiple messages in multiple ways
 public type History record {
-    # The mailbox sequence ID.
-    string id?;
-    # Labels added to messages in this history record.
-    HistoryLabelAdded[] labelsAdded?;
-    # Labels removed from messages in this history record.
-    HistoryLabelRemoved[] labelsRemoved?;
-    # List of messages changed in this history record. The fields for specific change types, such as `messagesAdded` may duplicate messages in this field. We recommend using the specific change-type fields instead of this.
-    Message[] messages?;
-    # Messages added to the mailbox in this history record.
+    # Messages added to the mailbox in this history record
     HistoryMessageAdded[] messagesAdded?;
-    # Messages deleted (not Trashed) from the mailbox in this history record.
+    # Labels added to messages in this history record
+    HistoryLabelAdded[] labelsAdded?;
+    # List of messages changed in this history record. The fields for specific change types, such as `messagesAdded` may duplicate messages in this field. We recommend using the specific change-type fields instead of this
+    Message[] messages?;
+    # The mailbox sequence ID
+    string id?;
+    # Labels removed from messages in this history record
+    HistoryLabelRemoved[] labelsRemoved?;
+    # Messages deleted (not Trashed) from the mailbox in this history record
     HistoryMessageDeleted[] messagesDeleted?;
 };
 
 public type HistoryMessageAdded record {
-    # An email message.
     Message message?;
 };
 
 public type HistoryMessageDeleted record {
-    # An email message.
     Message message?;
 };
 
 public type HistoryLabelAdded record {
-    # Label IDs added to the message.
+    # Label IDs added to the message
     string[] labelIds?;
-    # An email message.
     Message message?;
 };
 
 public type HistoryLabelRemoved record {
-    # Label IDs removed from the message.
+    # Label IDs removed from the message
     string[] labelIds?;
-    # An email message.
     Message message?;
 };

@@ -41,7 +41,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -50,7 +50,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -59,7 +59,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -75,7 +75,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -85,7 +85,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -93,7 +93,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -102,7 +102,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -112,7 +112,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -120,7 +120,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -130,7 +130,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -139,7 +139,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -147,7 +147,7 @@ paths:
           type: string
       - name: includeSpamTrash
         in: query
-        description: Include drafts from `SPAM` and `TRASH` in the results.
+        description: Include drafts from `SPAM` and `TRASH` in the results
         required: false
         style: form
         explode: true
@@ -156,7 +156,7 @@ paths:
       - name: maxResults
         in: query
         description: Maximum number of drafts to return. This field defaults to 100.
-          The maximum allowed value for this field is 500.
+          The maximum allowed value for this field is 500
         required: false
         style: form
         explode: true
@@ -164,7 +164,7 @@ paths:
           type: integer
       - name: pageToken
         in: query
-        description: Page token to retrieve a specific page of results in the list.
+        description: Page token to retrieve a specific page of results in the list
         required: false
         style: form
         explode: true
@@ -174,7 +174,7 @@ paths:
         in: query
         description: "Only return draft messages matching the specified query. Supports\
           \ the same query format as the Gmail search box. For example, `\"from:someuser@example.com\
-          \ rfc822msgid: is:unread\"`."
+          \ rfc822msgid: is:unread\"`"
         required: false
         style: form
         explode: true
@@ -212,7 +212,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -221,7 +221,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -230,7 +230,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -246,7 +246,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -256,7 +256,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -264,7 +264,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -273,7 +273,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -283,7 +283,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -291,7 +291,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -301,7 +301,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -310,14 +310,14 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: The draft to create.
+        description: The draft to create
         content:
           application/json:
             schema:
@@ -356,7 +356,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -365,7 +365,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -374,7 +374,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -390,7 +390,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -400,7 +400,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -408,7 +408,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -417,7 +417,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -427,7 +427,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -435,7 +435,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -445,7 +445,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -454,7 +454,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -462,7 +462,7 @@ paths:
           type: string
       requestBody:
         description: The ID of the existing draft to send. (Optional) Updated draft
-          if necessary.
+          if necessary
         content:
           application/json:
             schema:
@@ -500,7 +500,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -509,7 +509,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -518,7 +518,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -534,7 +534,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -544,7 +544,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -552,7 +552,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -561,7 +561,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -571,7 +571,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -579,7 +579,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -589,7 +589,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -598,7 +598,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -606,7 +606,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the draft to retrieve.
+        description: The ID of the draft to retrieve
         required: true
         style: simple
         explode: false
@@ -614,7 +614,7 @@ paths:
           type: string
       - name: format
         in: query
-        description: The format to return the draft in.
+        description: The format to return the draft in
         required: false
         style: form
         explode: true
@@ -657,7 +657,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -666,7 +666,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -675,7 +675,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -691,7 +691,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -701,7 +701,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -709,7 +709,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -718,7 +718,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -728,7 +728,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -736,7 +736,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -746,7 +746,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -755,7 +755,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -763,14 +763,14 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the draft to update.
+        description: The ID of the draft to update
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: The updated draft to update.
+        description: The updated draft to update
         content:
           application/json:
             schema:
@@ -808,7 +808,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -817,7 +817,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -826,7 +826,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -842,7 +842,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -852,7 +852,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -860,7 +860,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -869,7 +869,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -879,7 +879,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -887,7 +887,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -897,7 +897,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -906,7 +906,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -914,7 +914,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the draft to delete.
+        description: The ID of the draft to delete
         required: true
         style: simple
         explode: false
@@ -950,7 +950,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -959,7 +959,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -968,7 +968,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -984,7 +984,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -994,7 +994,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -1002,7 +1002,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -1011,7 +1011,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -1021,7 +1021,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -1029,7 +1029,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -1039,7 +1039,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -1048,7 +1048,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -1071,7 +1071,7 @@ paths:
             - labelRemoved
       - name: labelId
         in: query
-        description: Only return messages with a label matching the ID.
+        description: Only return messages with a label matching the ID
         required: false
         style: form
         explode: true
@@ -1080,7 +1080,7 @@ paths:
       - name: maxResults
         in: query
         description: Maximum number of history records to return. This field defaults
-          to 100. The maximum allowed value for this field is 500.
+          to 100. The maximum allowed value for this field is 500
         required: false
         style: form
         explode: true
@@ -1088,7 +1088,7 @@ paths:
           type: integer
       - name: pageToken
         in: query
-        description: Page token to retrieve a specific page of results in the list.
+        description: Page token to retrieve a specific page of results in the list
         required: false
         style: form
         explode: true
@@ -1106,7 +1106,7 @@ paths:
           \ If you receive an `HTTP 404` error response, your application should perform\
           \ a full sync. If you receive no `nextPageToken` in the response, there\
           \ are no updates to retrieve and you can store the returned `historyId`\
-          \ for a future request."
+          \ for a future request"
         required: false
         style: form
         explode: true
@@ -1145,7 +1145,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -1154,7 +1154,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -1163,7 +1163,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -1179,7 +1179,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -1189,7 +1189,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -1197,7 +1197,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -1206,7 +1206,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -1216,7 +1216,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -1224,7 +1224,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -1234,7 +1234,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -1243,7 +1243,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -1285,7 +1285,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -1294,7 +1294,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -1303,7 +1303,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -1319,7 +1319,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -1329,7 +1329,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -1337,7 +1337,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -1346,7 +1346,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -1356,7 +1356,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -1364,7 +1364,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -1374,7 +1374,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -1383,14 +1383,14 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: The label to create.
+        description: The label to create
         content:
           application/json:
             schema:
@@ -1424,7 +1424,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -1433,7 +1433,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -1442,7 +1442,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -1458,7 +1458,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -1468,7 +1468,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -1476,7 +1476,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -1485,7 +1485,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -1495,7 +1495,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -1503,7 +1503,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -1513,7 +1513,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -1522,7 +1522,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -1530,7 +1530,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the label to retrieve.
+        description: The ID of the label to retrieve
         required: true
         style: simple
         explode: false
@@ -1572,7 +1572,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -1581,7 +1581,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -1590,7 +1590,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -1606,7 +1606,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -1616,7 +1616,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -1624,7 +1624,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -1633,7 +1633,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -1643,7 +1643,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -1651,7 +1651,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -1661,7 +1661,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -1670,7 +1670,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -1678,14 +1678,14 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the label to update.
+        description: The ID of the label to update
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: The updated label to update.
+        description: The updated label to update
         content:
           application/json:
             schema:
@@ -1719,7 +1719,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -1728,7 +1728,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -1737,7 +1737,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -1753,7 +1753,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -1763,7 +1763,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -1771,7 +1771,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -1780,7 +1780,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -1790,7 +1790,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -1798,7 +1798,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -1808,7 +1808,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -1817,7 +1817,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -1825,7 +1825,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the label to delete.
+        description: The ID of the label to delete
         required: true
         style: simple
         explode: false
@@ -1855,7 +1855,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -1864,7 +1864,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -1873,7 +1873,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -1889,7 +1889,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -1899,7 +1899,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -1907,7 +1907,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -1916,7 +1916,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -1926,7 +1926,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -1934,7 +1934,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -1944,7 +1944,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -1953,7 +1953,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -1961,14 +1961,14 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the label to update.
+        description: The ID of the label to update
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: The updated label to update.
+        description: The updated label to update
         content:
           application/json:
             schema:
@@ -2002,7 +2002,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -2011,7 +2011,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -2020,7 +2020,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -2036,7 +2036,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -2046,7 +2046,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -2054,7 +2054,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -2063,7 +2063,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -2073,7 +2073,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -2081,7 +2081,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -2091,7 +2091,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -2100,7 +2100,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -2108,7 +2108,7 @@ paths:
           type: string
       - name: includeSpamTrash
         in: query
-        description: Include messages from `SPAM` and `TRASH` in the results.
+        description: Include messages from `SPAM` and `TRASH` in the results
         required: false
         style: form
         explode: true
@@ -2119,7 +2119,7 @@ paths:
         description: "Only return messages with labels that match all of the specified\
           \ label IDs. Messages in a thread might have labels that other messages\
           \ in the same thread don't have. To learn more, see [Manage labels on messages\
-          \ and threads](https://developers.google.com/gmail/api/guides/labels#manage_labels_on_messages_threads)."
+          \ and threads](https://developers.google.com/gmail/api/guides/labels#manage_labels_on_messages_threads)"
         required: false
         style: form
         explode: true
@@ -2130,7 +2130,7 @@ paths:
       - name: maxResults
         in: query
         description: Maximum number of messages to return. This field defaults to
-          100. The maximum allowed value for this field is 500.
+          100. The maximum allowed value for this field is 500
         required: false
         style: form
         explode: true
@@ -2138,7 +2138,7 @@ paths:
           type: integer
       - name: pageToken
         in: query
-        description: Page token to retrieve a specific page of results in the list.
+        description: Page token to retrieve a specific page of results in the list
         required: false
         style: form
         explode: true
@@ -2149,7 +2149,7 @@ paths:
         description: "Only return messages matching the specified query. Supports\
           \ the same query format as the Gmail search box. For example, `\"from:someuser@example.com\
           \ rfc822msgid: is:unread\"`. Parameter cannot be used when accessing the\
-          \ api using the gmail.metadata scope."
+          \ api using the gmail.metadata scope"
         required: false
         style: form
         explode: true
@@ -2189,7 +2189,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -2198,7 +2198,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -2207,7 +2207,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -2223,7 +2223,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -2233,7 +2233,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -2241,7 +2241,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -2250,7 +2250,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -2260,7 +2260,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -2268,7 +2268,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -2278,7 +2278,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -2287,7 +2287,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -2297,7 +2297,7 @@ paths:
         in: query
         description: Mark the email as permanently deleted (not TRASH) and only visible
           in Google Vault to a Vault administrator. Only used for Google Workspace
-          accounts.
+          accounts
         required: false
         style: form
         explode: true
@@ -2305,7 +2305,7 @@ paths:
           type: boolean
       - name: internalDateSource
         in: query
-        description: Source for Gmail's internal date of the message.
+        description: Source for Gmail's internal date of the message
         required: false
         style: form
         explode: true
@@ -2315,7 +2315,7 @@ paths:
           - receivedTime
           - dateHeader
       requestBody:
-        description: The message to be inserted.
+        description: The message to be inserted
         content:
           application/json:
             schema:
@@ -2350,7 +2350,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -2359,7 +2359,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -2368,7 +2368,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -2384,7 +2384,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -2394,7 +2394,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -2402,7 +2402,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -2411,7 +2411,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -2421,7 +2421,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -2429,7 +2429,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -2439,7 +2439,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -2448,14 +2448,14 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: The IDs of the messages to delete.
+        description: The IDs of the messages to delete
         content:
           application/json:
             schema:
@@ -2477,7 +2477,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -2486,7 +2486,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -2495,7 +2495,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -2511,7 +2511,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -2521,7 +2521,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -2529,7 +2529,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -2538,7 +2538,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -2548,7 +2548,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -2556,7 +2556,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -2566,7 +2566,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -2575,14 +2575,14 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: A list of labels to add/remove in messages.
+        description: A list of labels to add/remove in messages
         content:
           application/json:
             schema:
@@ -2612,7 +2612,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -2621,7 +2621,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -2630,7 +2630,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -2646,7 +2646,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -2656,7 +2656,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -2664,7 +2664,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -2673,7 +2673,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -2683,7 +2683,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -2691,7 +2691,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -2701,7 +2701,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -2710,7 +2710,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -2720,7 +2720,7 @@ paths:
         in: query
         description: Mark the email as permanently deleted (not TRASH) and only visible
           in Google Vault to a Vault administrator. Only used for Google Workspace
-          accounts.
+          accounts
         required: false
         style: form
         explode: true
@@ -2728,7 +2728,7 @@ paths:
           type: boolean
       - name: internalDateSource
         in: query
-        description: Source for Gmail's internal date of the message.
+        description: Source for Gmail's internal date of the message
         required: false
         style: form
         explode: true
@@ -2740,7 +2740,7 @@ paths:
       - name: neverMarkSpam
         in: query
         description: Ignore the Gmail spam classifier decision and never mark this
-          email as SPAM in the mailbox.
+          email as SPAM in the mailbox
         required: false
         style: form
         explode: true
@@ -2749,14 +2749,14 @@ paths:
       - name: processForCalendar
         in: query
         description: Process calendar invites in the email and add any extracted meetings
-          to the Google Calendar for this user.
+          to the Google Calendar for this user
         required: false
         style: form
         explode: true
         schema:
           type: boolean
       requestBody:
-        description: The message to be imported.
+        description: The message to be imported
         content:
           application/json:
             schema:
@@ -2791,7 +2791,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -2800,7 +2800,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -2809,7 +2809,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -2825,7 +2825,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -2835,7 +2835,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -2843,7 +2843,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -2852,7 +2852,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -2862,7 +2862,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -2870,7 +2870,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -2880,7 +2880,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -2889,14 +2889,14 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: The message to be sent.
+        description: The message to be sent
         content:
           application/json:
             schema:
@@ -2938,7 +2938,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -2947,7 +2947,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -2956,7 +2956,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -2972,7 +2972,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -2982,7 +2982,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -2990,7 +2990,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -2999,7 +2999,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -3009,7 +3009,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -3017,7 +3017,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -3027,7 +3027,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -3036,7 +3036,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -3046,7 +3046,7 @@ paths:
         in: path
         description: The ID of the message to retrieve. This ID is usually retrieved
           using `messages.list`. The ID is also contained in the result when a message
-          is inserted (`messages.insert`) or imported (`messages.import`).
+          is inserted (`messages.insert`) or imported (`messages.import`)
         required: true
         style: simple
         explode: false
@@ -3054,7 +3054,7 @@ paths:
           type: string
       - name: format
         in: query
-        description: The format to return the message in.
+        description: The format to return the message in
         required: false
         style: form
         explode: true
@@ -3067,7 +3067,7 @@ paths:
           - metadata
       - name: metadataHeaders
         in: query
-        description: "When given and format is `METADATA`, only include headers specified."
+        description: "When given and format is `METADATA`, only include headers specified"
         required: false
         style: form
         explode: true
@@ -3120,7 +3120,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -3129,7 +3129,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -3138,7 +3138,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -3154,7 +3154,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -3164,7 +3164,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -3172,7 +3172,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -3181,7 +3181,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -3191,7 +3191,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -3199,7 +3199,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -3209,7 +3209,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -3218,7 +3218,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -3226,7 +3226,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the message to delete.
+        description: The ID of the message to delete
         required: true
         style: simple
         explode: false
@@ -3249,7 +3249,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -3258,7 +3258,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -3267,7 +3267,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -3283,7 +3283,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -3293,7 +3293,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -3301,7 +3301,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -3310,7 +3310,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -3320,7 +3320,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -3328,7 +3328,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -3338,7 +3338,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -3347,7 +3347,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -3355,14 +3355,14 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the message to modify.
+        description: The ID of the message to modify
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: A list of labels to add/remove on the message.
+        description: A list of labels to add/remove on the message
         content:
           application/json:
             schema:
@@ -3392,7 +3392,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -3401,7 +3401,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -3410,7 +3410,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -3426,7 +3426,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -3436,7 +3436,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -3444,7 +3444,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -3453,7 +3453,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -3463,7 +3463,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -3471,7 +3471,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -3481,7 +3481,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -3490,7 +3490,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -3498,7 +3498,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the message to Trash.
+        description: The ID of the message to Trash
         required: true
         style: simple
         explode: false
@@ -3529,7 +3529,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -3538,7 +3538,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -3547,7 +3547,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -3563,7 +3563,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -3573,7 +3573,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -3581,7 +3581,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -3590,7 +3590,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -3600,7 +3600,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -3608,7 +3608,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -3618,7 +3618,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -3627,7 +3627,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -3635,7 +3635,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the message to remove from Trash.
+        description: The ID of the message to remove from Trash
         required: true
         style: simple
         explode: false
@@ -3666,7 +3666,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -3675,7 +3675,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -3684,7 +3684,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -3700,7 +3700,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -3710,7 +3710,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -3718,7 +3718,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -3727,7 +3727,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -3737,7 +3737,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -3745,7 +3745,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -3755,7 +3755,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -3764,7 +3764,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -3772,7 +3772,7 @@ paths:
           type: string
       - name: messageId
         in: path
-        description: The ID of the message containing the attachment.
+        description: The ID of the message containing the attachment
         required: true
         style: simple
         explode: false
@@ -3780,7 +3780,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the attachment.
+        description: The ID of the attachment
         required: true
         style: simple
         explode: false
@@ -3823,7 +3823,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -3832,7 +3832,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -3841,7 +3841,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -3857,7 +3857,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -3867,7 +3867,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -3875,7 +3875,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -3884,7 +3884,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -3894,7 +3894,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -3902,7 +3902,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -3912,7 +3912,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -3921,7 +3921,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -3964,7 +3964,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -3973,7 +3973,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -3982,7 +3982,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -3998,7 +3998,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -4008,7 +4008,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -4016,7 +4016,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -4025,7 +4025,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -4035,7 +4035,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -4043,7 +4043,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -4053,7 +4053,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -4062,7 +4062,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -4070,7 +4070,7 @@ paths:
           type: string
       - name: includeSpamTrash
         in: query
-        description: Include threads from `SPAM` and `TRASH` in the results.
+        description: Include threads from `SPAM` and `TRASH` in the results
         required: false
         style: form
         explode: true
@@ -4079,7 +4079,7 @@ paths:
       - name: labelIds
         in: query
         description: Only return threads with labels that match all of the specified
-          label IDs.
+          label IDs
         required: false
         style: form
         explode: true
@@ -4090,7 +4090,7 @@ paths:
       - name: maxResults
         in: query
         description: Maximum number of threads to return. This field defaults to 100.
-          The maximum allowed value for this field is 500.
+          The maximum allowed value for this field is 500
         required: false
         style: form
         explode: true
@@ -4098,7 +4098,7 @@ paths:
           type: integer
       - name: pageToken
         in: query
-        description: Page token to retrieve a specific page of results in the list.
+        description: Page token to retrieve a specific page of results in the list
         required: false
         style: form
         explode: true
@@ -4109,7 +4109,7 @@ paths:
         description: "Only return threads matching the specified query. Supports the\
           \ same query format as the Gmail search box. For example, `\"from:someuser@example.com\
           \ rfc822msgid: is:unread\"`. Parameter cannot be used when accessing the\
-          \ api using the gmail.metadata scope."
+          \ api using the gmail.metadata scope"
         required: false
         style: form
         explode: true
@@ -4148,7 +4148,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -4157,7 +4157,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -4166,7 +4166,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -4182,7 +4182,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -4192,7 +4192,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -4200,7 +4200,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -4209,7 +4209,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -4219,7 +4219,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -4227,7 +4227,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -4237,7 +4237,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -4246,7 +4246,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -4254,7 +4254,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the thread to retrieve.
+        description: The ID of the thread to retrieve
         required: true
         style: simple
         explode: false
@@ -4262,7 +4262,7 @@ paths:
           type: string
       - name: format
         in: query
-        description: The format to return the messages in.
+        description: The format to return the messages in
         required: false
         style: form
         explode: true
@@ -4274,7 +4274,7 @@ paths:
           - minimal
       - name: metadataHeaders
         in: query
-        description: "When given and format is METADATA, only include headers specified."
+        description: "When given and format is METADATA, only include headers specified"
         required: false
         style: form
         explode: true
@@ -4328,7 +4328,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -4337,7 +4337,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -4346,7 +4346,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -4362,7 +4362,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -4372,7 +4372,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -4380,7 +4380,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -4389,7 +4389,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -4399,7 +4399,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -4407,7 +4407,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -4417,7 +4417,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -4426,7 +4426,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -4434,7 +4434,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: ID of the Thread to delete.
+        description: ID of the Thread to delete
         required: true
         style: simple
         explode: false
@@ -4458,7 +4458,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -4467,7 +4467,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -4476,7 +4476,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -4492,7 +4492,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -4502,7 +4502,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -4510,7 +4510,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -4519,7 +4519,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -4529,7 +4529,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -4537,7 +4537,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -4547,7 +4547,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -4556,7 +4556,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -4564,14 +4564,14 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the thread to modify.
+        description: The ID of the thread to modify
         required: true
         style: simple
         explode: false
         schema:
           type: string
       requestBody:
-        description: A list labels to add/remove on the thread.
+        description: A list labels to add/remove on the thread
         content:
           application/json:
             schema:
@@ -4602,7 +4602,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -4611,7 +4611,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -4620,7 +4620,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -4636,7 +4636,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -4646,7 +4646,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -4654,7 +4654,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -4663,7 +4663,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -4673,7 +4673,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -4681,7 +4681,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -4691,7 +4691,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -4700,7 +4700,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -4708,7 +4708,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the thread to Trash.
+        description: The ID of the thread to Trash
         required: true
         style: simple
         explode: false
@@ -4740,7 +4740,7 @@ paths:
       parameters:
       - name: $.xgafv
         in: query
-        description: V1 error format.
+        description: V1 error format
         required: false
         style: form
         explode: true
@@ -4749,7 +4749,7 @@ paths:
         x-ballerina-name: xgafv
       - name: access_token
         in: query
-        description: OAuth access token.
+        description: OAuth access token
         required: false
         style: form
         explode: true
@@ -4758,7 +4758,7 @@ paths:
         x-ballerina-name: accessToken
       - name: alt
         in: query
-        description: Data format for response.
+        description: Data format for response
         required: false
         style: form
         explode: true
@@ -4774,7 +4774,7 @@ paths:
           type: string
       - name: fields
         in: query
-        description: Selector specifying which fields to include in a partial response.
+        description: Selector specifying which fields to include in a partial response
         required: false
         style: form
         explode: true
@@ -4784,7 +4784,7 @@ paths:
         in: query
         description: "API key. Your API key identifies your project and provides you\
           \ with API access, quota, and reports. Required unless you provide an OAuth\
-          \ 2.0 token."
+          \ 2.0 token"
         required: false
         style: form
         explode: true
@@ -4792,7 +4792,7 @@ paths:
           type: string
       - name: oauth_token
         in: query
-        description: OAuth 2.0 token for the current user.
+        description: OAuth 2.0 token for the current user
         required: false
         style: form
         explode: true
@@ -4801,7 +4801,7 @@ paths:
         x-ballerina-name: oauthToken
       - name: prettyPrint
         in: query
-        description: Returns response with indentations and line breaks.
+        description: Returns response with indentations and line breaks
         required: false
         style: form
         explode: true
@@ -4811,7 +4811,7 @@ paths:
         in: query
         description: "Available to use for quota purposes for server-side applications.\
           \ Can be any arbitrary string assigned to a user, but should not exceed\
-          \ 40 characters."
+          \ 40 characters"
         required: false
         style: form
         explode: true
@@ -4819,7 +4819,7 @@ paths:
           type: string
       - name: upload_protocol
         in: query
-        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")."
+        description: "Upload protocol for media (e.g. \"raw\", \"multipart\")"
         required: false
         style: form
         explode: true
@@ -4829,7 +4829,7 @@ paths:
       - name: uploadType
         in: query
         description: "Legacy upload protocol for media (e.g. \"media\", \"multipart\"\
-          )."
+          )"
         required: false
         style: form
         explode: true
@@ -4838,7 +4838,7 @@ paths:
       - name: userId
         in: path
         description: The user's email address. The special value `me` can be used
-          to indicate the authenticated user.
+          to indicate the authenticated user
         required: true
         style: simple
         explode: false
@@ -4846,7 +4846,7 @@ paths:
           type: string
       - name: id
         in: path
-        description: The ID of the thread to remove from Trash.
+        description: The ID of the thread to remove from Trash
         required: true
         style: simple
         explode: false
@@ -4875,7 +4875,7 @@ components:
       properties:
         labelIds:
           type: array
-          description: Label IDs added to the message.
+          description: Label IDs added to the message
           items:
             type: string
         message:
@@ -4890,24 +4890,24 @@ components:
       properties:
         nextPageToken:
           type: string
-          description: Token to retrieve the next page of results in the list.
+          description: Token to retrieve the next page of results in the list
         drafts:
           type: array
           description: List of drafts. Note that the `Message` property in each `Draft`
             resource only contains an `id` and a `threadId`. The messages.get method
-            can fetch additional message details.
+            can fetch additional message details
           items:
             $ref: '#/components/schemas/Draft'
         resultSizeEstimate:
           type: integer
-          description: Estimated total number of results.
+          description: Estimated total number of results
           format: uint32
     Message:
       type: object
       properties:
         snippet:
           type: string
-          description: A short part of the message text.
+          description: A short part of the message text
         threadId:
           type: string
           description: "The ID of the thread the message belongs to. To add a message\
@@ -4918,27 +4918,27 @@ components:
             \ standard. 3. The `Subject` headers must match. "
         labelIds:
           type: array
-          description: List of IDs of labels applied to this message.
+          description: List of IDs of labels applied to this message
           items:
             type: string
         payload:
           $ref: '#/components/schemas/MessagePart'
         historyId:
           type: string
-          description: The ID of the last history record that modified this message.
+          description: The ID of the last history record that modified this message
           format: uint64
         raw:
           type: string
           description: The entire email message in an RFC 2822 formatted and base64url
             encoded string. Returned in `messages.get` and `drafts.get` responses
-            when the `format=RAW` parameter is supplied.
+            when the `format=RAW` parameter is supplied
           format: byte
         id:
           type: string
-          description: The immutable ID of the message.
+          description: The immutable ID of the message
         sizeEstimate:
           type: integer
-          description: Estimated size in bytes of the message.
+          description: Estimated size in bytes of the message
           format: int32
         internalDate:
           type: string
@@ -4946,50 +4946,50 @@ components:
             \ determines ordering in the inbox. For normal SMTP-received email, this\
             \ represents the time the message was originally accepted by Google, which\
             \ is more reliable than the `Date` header. However, for API-migrated mail,\
-            \ it can be configured by client to be based on the `Date` header."
+            \ it can be configured by client to be based on the `Date` header"
           format: int64
-      description: An email message.
+      description: An email message
     MailThread:
       type: object
       properties:
         snippet:
           type: string
-          description: A short part of the message text.
+          description: A short part of the message text
         historyId:
           type: string
-          description: The ID of the last history record that modified this thread.
+          description: The ID of the last history record that modified this thread
           format: uint64
         messages:
           type: array
-          description: The list of messages in the thread.
+          description: The list of messages in the thread
           items:
             $ref: '#/components/schemas/Message'
         id:
           type: string
-          description: The unique ID of the thread.
-      description: A collection of messages representing a conversation.
+          description: The unique ID of the thread
+      description: A collection of messages representing a conversation
     BatchModifyMessagesRequest:
       type: object
       properties:
         addLabelIds:
           type: array
-          description: A list of label IDs to add to messages.
+          description: A list of label IDs to add to messages
           items:
             type: string
         removeLabelIds:
           type: array
-          description: A list of label IDs to remove from messages.
+          description: A list of label IDs to remove from messages
           items:
             type: string
         ids:
           type: array
           description: The IDs of the messages to modify. There is a limit of 1000
-            ids per request.
+            ids per request
           items:
             type: string
     Alt:
       type: string
-      description: Data format for response.
+      description: Data format for response
       enum:
       - json
       - media
@@ -5000,34 +5000,34 @@ components:
         messageListVisibility:
           type: string
           description: The visibility of messages with this label in the message list
-            in the Gmail web interface.
+            in the Gmail web interface
           enum:
           - show
           - hide
         messagesUnread:
           type: integer
-          description: The number of unread messages with the label.
+          description: The number of unread messages with the label
           format: int32
         threadsUnread:
           type: integer
-          description: The number of unread threads with the label.
+          description: The number of unread threads with the label
           format: int32
         color:
           $ref: '#/components/schemas/LabelColor'
         threadsTotal:
           type: integer
-          description: The total number of threads with the label.
+          description: The total number of threads with the label
           format: int32
         name:
           type: string
-          description: The display name of the label.
+          description: The display name of the label
         id:
           type: string
-          description: The immutable ID of the label.
+          description: The immutable ID of the label
         labelListVisibility:
           type: string
           description: The visibility of the label in the label list in the Gmail
-            web interface.
+            web interface
           enum:
           - labelShow
           - labelShowIfUnread
@@ -5041,20 +5041,20 @@ components:
             \ to or removed from messages and threads under some circumstances but\
             \ this is not guaranteed. For example, users can apply and remove the\
             \ `INBOX` and `UNREAD` labels from messages and threads, but cannot apply\
-            \ or remove the `DRAFTS` or `SENT` labels from messages or threads."
+            \ or remove the `DRAFTS` or `SENT` labels from messages or threads"
           enum:
           - system
           - user
         messagesTotal:
           type: integer
-          description: The total number of messages with the label.
+          description: The total number of messages with the label
           format: int32
       description: "Labels are used to categorize messages and threads within the\
         \ user's mailbox. The maximum number of labels supported for a user's mailbox\
-        \ is 10,000."
+        \ is 10,000"
     Xgafv:
       type: string
-      description: V1 error format.
+      description: V1 error format
       enum:
       - "1"
       - "2"
@@ -5063,12 +5063,12 @@ components:
       properties:
         messagesAdded:
           type: array
-          description: Messages added to the mailbox in this history record.
+          description: Messages added to the mailbox in this history record
           items:
             $ref: '#/components/schemas/HistoryMessageAdded'
         labelsAdded:
           type: array
-          description: Labels added to messages in this history record.
+          description: Labels added to messages in this history record
           items:
             $ref: '#/components/schemas/HistoryLabelAdded'
         messages:
@@ -5076,26 +5076,26 @@ components:
           description: "List of messages changed in this history record. The fields\
             \ for specific change types, such as `messagesAdded` may duplicate messages\
             \ in this field. We recommend using the specific change-type fields instead\
-            \ of this."
+            \ of this"
           items:
             $ref: '#/components/schemas/Message'
         id:
           type: string
-          description: The mailbox sequence ID.
+          description: The mailbox sequence ID
           format: uint64
         labelsRemoved:
           type: array
-          description: Labels removed from messages in this history record.
+          description: Labels removed from messages in this history record
           items:
             $ref: '#/components/schemas/HistoryLabelRemoved'
         messagesDeleted:
           type: array
           description: Messages deleted (not Trashed) from the mailbox in this history
-            record.
+            record
           items:
             $ref: '#/components/schemas/HistoryMessageDeleted'
       description: A record of a change to the user's mailbox. Each history change
-        may affect multiple messages in multiple ways.
+        may affect multiple messages in multiple ways
     ListLabelsResponse:
       type: object
       properties:
@@ -5103,7 +5103,7 @@ components:
           type: array
           description: "List of labels. Note that each label resource only contains\
             \ an `id`, `name`, `messageListVisibility`, `labelListVisibility`, and\
-            \ `type`. The labels.get method can fetch additional label details."
+            \ `type`. The labels.get method can fetch additional label details"
           items:
             $ref: '#/components/schemas/Label'
     Profile:
@@ -5111,20 +5111,20 @@ components:
       properties:
         emailAddress:
           type: string
-          description: The user's email address.
+          description: The user's email address
         threadsTotal:
           type: integer
-          description: The total number of threads in the mailbox.
+          description: The total number of threads in the mailbox
           format: int32
         historyId:
           type: string
-          description: The ID of the mailbox's current history record.
+          description: The ID of the mailbox's current history record
           format: uint64
         messagesTotal:
           type: integer
-          description: The total number of messages in the mailbox.
+          description: The total number of messages in the mailbox
           format: int32
-      description: Profile for a Gmail user.
+      description: Profile for a Gmail user
     LabelColor:
       type: object
       properties:
@@ -5165,18 +5165,18 @@ components:
             \ #b99aff, #994a64, #f691b2, #ff7537, #ffad46, \\#662e37, #ebdbde, #cca6ac,\
             \ #094228, #42d692, #16a765"
       description: The color to assign to the label. Color is only available for labels
-        that have their `type` set to `user`.
+        that have their `type` set to `user`
     MessagePartHeader:
       type: object
       properties:
         name:
           type: string
           description: "The name of the header before the `:` separator. For example,\
-            \ `To`."
+            \ `To`"
         value:
           type: string
           description: "The value of the header after the `:` separator. For example,\
-            \ `someuser@example.com`."
+            \ `someuser@example.com`"
     MessagePart:
       type: object
       properties:
@@ -5184,36 +5184,36 @@ components:
           type: array
           description: "List of headers on this message part. For the top-level message\
             \ part, representing the entire message payload, it will contain the standard\
-            \ RFC 2822 email headers such as `To`, `From`, and `Subject`."
+            \ RFC 2822 email headers such as `To`, `From`, and `Subject`"
           items:
             $ref: '#/components/schemas/MessagePartHeader'
         filename:
           type: string
           description: The filename of the attachment. Only present if this message
-            part represents an attachment.
+            part represents an attachment
         partId:
           type: string
-          description: The immutable ID of the message part.
+          description: The immutable ID of the message part
         parts:
           type: array
           description: "The child MIME message parts of this part. This only applies\
             \ to container MIME message parts, for example `multipart/*`. For non-\
             \ container MIME message part types, such as `text/plain`, this field\
-            \ is empty. For more information, see RFC 1521."
+            \ is empty. For more information, see RFC 1521"
           items:
             $ref: '#/components/schemas/MessagePart'
         mimeType:
           type: string
-          description: The MIME type of the message part.
+          description: The MIME type of the message part
         body:
           $ref: '#/components/schemas/MessagePartBody'
-      description: A single MIME message part.
+      description: A single MIME message part
     HistoryLabelRemoved:
       type: object
       properties:
         labelIds:
           type: array
-          description: Label IDs removed from the message.
+          description: Label IDs removed from the message
           items:
             type: string
         message:
@@ -5223,58 +5223,58 @@ components:
       properties:
         nextPageToken:
           type: string
-          description: Page token to retrieve the next page of results in the list.
+          description: Page token to retrieve the next page of results in the list
         threads:
           type: array
           description: List of threads. Note that each thread resource does not contain
             a list of `messages`. The list of `messages` for a given thread can be
-            fetched using the threads.get method.
+            fetched using the threads.get method
           items:
             $ref: '#/components/schemas/MailThread'
         resultSizeEstimate:
           type: integer
-          description: Estimated total number of results.
+          description: Estimated total number of results
           format: uint32
     Draft:
       type: object
       properties:
         id:
           type: string
-          description: The immutable ID of the draft.
+          description: The immutable ID of the draft
         message:
           $ref: '#/components/schemas/Message'
-      description: A draft email in the user's mailbox.
+      description: A draft email in the user's mailbox
     ListMessagesResponse:
       type: object
       properties:
         nextPageToken:
           type: string
-          description: Token to retrieve the next page of results in the list.
+          description: Token to retrieve the next page of results in the list
         messages:
           type: array
           description: List of messages. Note that each message resource contains
             only an `id` and a `threadId`. Additional message details can be fetched
-            using the messages.get method.
+            using the messages.get method
           items:
             $ref: '#/components/schemas/Message'
         resultSizeEstimate:
           type: integer
-          description: Estimated total number of results.
+          description: Estimated total number of results
           format: uint32
     ListHistoryResponse:
       type: object
       properties:
         historyId:
           type: string
-          description: The ID of the mailbox's current history record.
+          description: The ID of the mailbox's current history record
           format: uint64
         nextPageToken:
           type: string
-          description: Page token to retrieve the next page of results in the list.
+          description: Page token to retrieve the next page of results in the list
         history:
           type: array
           description: List of history records. Any `messages` contained in the response
-            will typically only have `id` and `threadId` fields populated.
+            will typically only have `id` and `threadId` fields populated
           items:
             $ref: '#/components/schemas/History'
     ModifyMessageRequest:
@@ -5283,13 +5283,13 @@ components:
         addLabelIds:
           type: array
           description: A list of IDs of labels to add to this message. You can add
-            up to 100 labels with each update.
+            up to 100 labels with each update
           items:
             type: string
         removeLabelIds:
           type: array
           description: A list IDs of labels to remove from this message. You can remove
-            up to 100 labels with each update.
+            up to 100 labels with each update
           items:
             type: string
     BatchDeleteMessagesRequest:
@@ -5297,7 +5297,7 @@ components:
       properties:
         ids:
           type: array
-          description: The IDs of the messages to delete.
+          description: The IDs of the messages to delete
           items:
             type: string
     MessagePartBody:
@@ -5308,32 +5308,32 @@ components:
           description: The body data of a MIME message part as a base64url encoded
             string. May be empty for MIME container types that have no message body
             or when the body data is sent as a separate attachment. An attachment
-            ID is present if the body data is contained in a separate attachment.
+            ID is present if the body data is contained in a separate attachment
           format: byte
         size:
           type: integer
-          description: Number of bytes for the message part data (encoding notwithstanding).
+          description: Number of bytes for the message part data (encoding notwithstanding)
           format: int32
         attachmentId:
           type: string
           description: "When present, contains the ID of an external attachment that\
             \ can be retrieved in a separate `messages.attachments.get` request. When\
             \ not present, the entire content of the message part body is contained\
-            \ in the data field."
-      description: The body of a single MIME message part.
+            \ in the data field"
+      description: The body of a single MIME message part
     ModifyThreadRequest:
       type: object
       properties:
         addLabelIds:
           type: array
           description: A list of IDs of labels to add to this thread. You can add
-            up to 100 labels with each update.
+            up to 100 labels with each update
           items:
             type: string
         removeLabelIds:
           type: array
           description: A list of IDs of labels to remove from this thread. You can
-            remove up to 100 labels with each update.
+            remove up to 100 labels with each update
           items:
             type: string
     HistoryMessageAdded:
@@ -5351,6 +5351,7 @@ components:
       explode: true
       schema:
         $ref: '#/components/schemas/Xgafv'
+      x-ballerina-name: xgafv
     access_token:
       name: access_token
       in: query
@@ -5360,6 +5361,7 @@ components:
       explode: true
       schema:
         type: string
+      x-ballerina-name: accessToken
     alt:
       name: alt
       in: query
@@ -5407,6 +5409,7 @@ components:
       explode: true
       schema:
         type: string
+      x-ballerina-name: oauthToken
     prettyPrint:
       name: prettyPrint
       in: query
@@ -5446,6 +5449,7 @@ components:
       explode: true
       schema:
         type: string
+      x-ballerina-name: uploadProtocol
   securitySchemes:
     Oauth2:
       type: oauth2

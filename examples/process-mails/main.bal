@@ -40,8 +40,9 @@ public function main() returns error? {
     string[] ids = [];
     gmail:Message[] completeMessages = [];
     foreach gmail:Message message in messageIds {
-        gmail:Message completeMsg = check gmail->/users/me/messages/[message.id](format = "full");
-        ids.push(message.id);
+        string messageId = message.id ?: "";
+        gmail:Message completeMsg = check gmail->/users/me/messages/[messageId](format = "full");
+        ids.push(messageId);
         completeMessages.push(completeMsg);
     }
 

@@ -71,7 +71,7 @@ function testMessageInsert() returns error? {
     };
     Message message = check gmailClient->/users/me/messages.post(request);
     test:assertTrue(message.id != "", msg = "/users/[userId]/messages/import failed");
-    insertMessageId = message.id;
+    insertMessageId = message.id ?: "";
 }
 
 @test:Config {
@@ -139,7 +139,7 @@ function testPostMessage() returns error? {
     };
     Message message = check gmailClient->/users/me/messages/send.post(request);
     test:assertTrue(message.id != "", msg = "/users/[userId]/messages/send failed");
-    sentMessageId = message.id;
+    sentMessageId = message.id ?: "";
 }
 
 @test:Config {
@@ -337,7 +337,7 @@ function testListMailThreads() returns error? {
     };
     Message message = check gmailClient->/users/me/messages/send.post(request);
     test:assertTrue(message.id != "", msg = "/users/[userId]/messages/send failed");
-    threadId = message.threadId;
+    threadId = message.threadId ?: "";
 
     ListThreadsResponse threadListPage = check gmailClient->/users/me/threads();
     test:assertTrue(threadListPage.threads is MailThread[], msg = "/users/[userId]/threads failed");
@@ -524,7 +524,7 @@ function testReplyTo() returns error? {
 
     runtime:sleep(10);
 
-    Message completeMsg = check gmailClient->/users/me/messages/[message.id](format = "metadata");
+    Message completeMsg = check gmailClient->/users/me/messages/[message.id ?: ""](format = "metadata");
 
     // Create a new MessageRequest for the reply
     MessageRequest replyRequest = {
@@ -542,7 +542,7 @@ function testReplyTo() returns error? {
     runtime:sleep(10);
 
     // Get the message thread
-    MailThread mailThread = check gmailClient->/users/me/threads/[replyMessage.threadId];
+    MailThread mailThread = check gmailClient->/users/me/threads/[replyMessage.threadId ?: ""];
 
     Message[]? threadMessages = mailThread.messages;
 
@@ -553,5 +553,5 @@ function testReplyTo() returns error? {
     } else {
         test:assertFail("Message not found");
     }
-    check gmailClient->/users/me/threads/[replyMessage.threadId].delete();
+    check gmailClient->/users/me/threads/[replyMessage.threadId ?: ""].delete();
 }

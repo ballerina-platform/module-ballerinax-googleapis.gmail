@@ -67,6 +67,5 @@ public function main() returns error? {
 
     // Send the email message.
     gmail:Message sendResult = check gmail->/users/me/messages/send.post(message);
-    io:println("Email sent. Message ID: " + sendResult.id);
+    io:println(string `Email sent. Message ID: ${sendResult.id ?: ""}`);
 }
-

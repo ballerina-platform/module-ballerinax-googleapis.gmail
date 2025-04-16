@@ -50,18 +50,24 @@ isolated function testPayloadConversion() returns error? {
     MessagePart messagePart = {
         mimeType: "multipart/alternative",
         filename: "",
-        headers: {
-            "Content-Type": "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
-        },
+        headers: [
+            {
+                name: "Content-Type",
+                value: "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
+            }
+        ],
         size: 0,
         partId: "",
         parts: [
             {
                 mimeType: "multipart/alternative",
                 filename: "",
-                headers: {
-                    "Content-Type": "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
-                },
+                headers: [
+                    {
+                        name: "Content-Type",
+                        value: "multipart/alternative; boundary=001a1142e23c551e8e05200b4be0"
+                    }
+                ],
                 size: 0,
                 partId: "",
                 parts: [
@@ -69,18 +75,24 @@ isolated function testPayloadConversion() returns error? {
                         partId: "0.0",
                         mimeType: "text/plain",
                         filename: "",
-                        headers: {
-                            "Content-Type": "text/plain; charset=UTF-8"
-                        },
+                        headers: [
+                            {
+                                name: "Content-Type",
+                                value: "text/plain; charset=UTF-8"
+                            }
+                        ],
                         size: 9
                     },
                     {
                         partId: "0.1",
                         mimeType: "text/html",
                         filename: "",
-                        headers: {
-                            "Content-Type": "text/html; charset=UTF-8"
-                        },
+                        headers: [
+                            {
+                                name: "Content-Type",
+                                value: "text/html; charset=UTF-8"
+                            }
+                        ],
                         size: 30
                     }
                 ]
@@ -89,12 +101,12 @@ isolated function testPayloadConversion() returns error? {
                 partId: "1",
                 mimeType: "image/jpeg",
                 filename: "feelthebern.jpg",
-                headers: {
-                    "Content-Type": "image/jpeg; name=\"feelthebern.jpg\"",
-                    "Content-Disposition": "attachment; filename=\"feelthebern.jpg\"",
-                    "Content-Transfer-Encoding": "base64",
-                    "X-Attachment-Id": "f_ieq3ev0i0"
-                },
+                headers: [
+                    {name: "Content-Type", value: "image/jpeg; name=\"feelthebern.jpg\""},
+                    {name: "Content-Disposition", value: "attachment; filename=\"feelthebern.jpg\""},
+                    {name: "Content-Transfer-Encoding", value: "base64"},
+                    {name: "X-Attachment-Id", value: "f_ieq3ev0i0"}
+                ],
                 size: 100446
             }
         ]

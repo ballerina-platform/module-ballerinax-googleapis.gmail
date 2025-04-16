@@ -33,7 +33,7 @@ public isolated client class Client {
 
     # Lists the drafts in the user's mailbox.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -44,10 +44,10 @@ public isolated client class Client {
 
     # Creates a new draft with the `DRAFT` label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The draft to create. 
+    # + payload - The draft to create 
     # + return - Successful response 
     resource isolated function post users/[string userId]/drafts(DraftRequest payload, map<string|string[]> headers = {}, *GmailUsersDraftsCreateQueries queries) returns Draft|error {
         oas:Draft newDraft = check convertDraftRequestToOASDraft(payload);
@@ -57,10 +57,10 @@ public isolated client class Client {
 
     # Sends the specified, existing draft to the recipients in the `To`, `Cc`, and `Bcc` headers.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The ID of the existing draft to send. (Optional) Updated draft if necessary. 
+    # + payload - The ID of the existing draft to send. (Optional) Updated draft if necessary 
     # + return - Successful response 
     resource isolated function post users/[string userId]/drafts/send(DraftRequest payload, map<string|string[]> headers = {}, *GmailUsersDraftsSendQueries queries) returns Message|error {
         oas:Draft updatedDraft = check convertDraftRequestToOASDraft(payload);
@@ -70,8 +70,8 @@ public isolated client class Client {
 
     # Gets the specified draft.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the draft to retrieve.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the draft to retrieve
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -82,11 +82,11 @@ public isolated client class Client {
 
     # Replaces a draft's content.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the draft to update.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the draft to update
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The updated draft to update. 
+    # + payload - The updated draft to update 
     # + return - Successful response 
     resource isolated function put users/[string userId]/drafts/[string id](DraftRequest payload, map<string|string[]> headers = {}, *GmailUsersDraftsUpdateQueries queries) returns Draft|error {
         oas:Draft updatedDraft = check convertDraftRequestToOASDraft(payload);
@@ -96,8 +96,8 @@ public isolated client class Client {
 
     # Immediately and permanently deletes the specified draft. Does not simply trash it.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the draft to delete.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the draft to delete
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -107,7 +107,7 @@ public isolated client class Client {
 
     # Lists the history of all changes to the given mailbox. History results are returned in chronological order (increasing `historyId`).
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -118,7 +118,7 @@ public isolated client class Client {
 
     # Lists all labels in the user's mailbox.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -128,10 +128,10 @@ public isolated client class Client {
 
     # Creates a new label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The label to create. 
+    # + payload - The label to create 
     # + return - Successful response 
     resource isolated function post users/[string userId]/labels(Label payload, map<string|string[]> headers = {}, *GmailUsersLabelsCreateQueries queries) returns Label|error {
         return self.genClient->/users/[userId]/labels.post(payload, headers, queries);
@@ -139,8 +139,8 @@ public isolated client class Client {
 
     # Gets the specified label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the label to retrieve.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the label to retrieve
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -150,11 +150,11 @@ public isolated client class Client {
 
     # Updates the specified label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the label to update.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the label to update
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The updated label to update. 
+    # + payload - The updated label to update 
     # + return - Successful response 
     resource isolated function put users/[string userId]/labels/[string id](Label payload, map<string|string[]> headers = {}, *GmailUsersLabelsUpdateQueries queries) returns Label|error {
         return self.genClient->/users/[userId]/labels/[id].put(payload, headers, queries);
@@ -162,8 +162,8 @@ public isolated client class Client {
 
     # Immediately and permanently deletes the specified label and removes it from any messages and threads that it is applied to.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the label to delete.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the label to delete
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -173,11 +173,11 @@ public isolated client class Client {
 
     # Patch the specified label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the label to update.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the label to update
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The updated label to update. 
+    # + payload - The updated label to update 
     # + return - Successful response 
     resource isolated function patch users/[string userId]/labels/[string id](Label payload, map<string|string[]> headers = {}, *GmailUsersLabelsPatchQueries queries) returns Label|error {
         return self.genClient->/users/[userId]/labels/[id].patch(payload, headers, queries);
@@ -185,7 +185,7 @@ public isolated client class Client {
 
     # Lists the messages in the user's mailbox.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -196,10 +196,10 @@ public isolated client class Client {
 
     # Directly inserts a message into only this user's mailbox similar to `IMAP APPEND`, bypassing most scanning and classification. Does not send a message.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The message to be inserted. 
+    # + payload - The message to be inserted 
     # + return - Successful response 
     resource isolated function post users/[string userId]/messages(MessageRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesInsertQueries queries) returns Message|error {
         oas:Message message = check convertMessageRequestToOASMessage(payload);
@@ -209,10 +209,10 @@ public isolated client class Client {
 
     # Deletes many messages by message ID. Provides no guarantees that messages were not already deleted or even existed at all.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The IDs of the messages to delete. 
+    # + payload - The IDs of the messages to delete 
     # + return - Successful response 
     resource isolated function post users/[string userId]/messages/batchDelete(BatchDeleteMessagesRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesBatchDeleteQueries queries) returns error? {
         return self.genClient->/users/[userId]/messages/batchDelete.post(payload, headers, queries);
@@ -220,10 +220,10 @@ public isolated client class Client {
 
     # Modifies the labels on the specified messages.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - A list of labels to add/remove in messages. 
+    # + payload - A list of labels to add/remove in messages 
     # + return - Successful response 
     resource isolated function post users/[string userId]/messages/batchModify(BatchModifyMessagesRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesBatchModifyQueries queries) returns error? {
         return self.genClient->/users/[userId]/messages/batchModify.post(payload, headers, queries);
@@ -243,10 +243,10 @@ public isolated client class Client {
 
     # Sends the specified message to the recipients in the `To`, `Cc`, and `Bcc` headers. For example usage, see [Sending email](https://developers.google.com/gmail/api/guides/sending).
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - The message to be sent. 
+    # + payload - The message to be sent 
     # + return - Successful response 
     resource isolated function post users/[string userId]/messages/send(MessageRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesSendQueries queries) returns Message|error {
         oas:Message processedPayload = check convertMessageRequestToOASMessage(payload);
@@ -256,8 +256,8 @@ public isolated client class Client {
 
     # Gets the specified message.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to retrieve. This ID is usually retrieved using `messages.list`. The ID is also contained in the result when a message is inserted (`messages.insert`) or imported (`messages.import`).
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the message to retrieve. This ID is usually retrieved using `messages.list`. The ID is also contained in the result when a message is inserted (`messages.insert`) or imported (`messages.import`)
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -268,8 +268,8 @@ public isolated client class Client {
 
     # Immediately and permanently deletes the specified message. This operation cannot be undone. Prefer `messages.trash` instead.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to delete.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the message to delete
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -279,11 +279,11 @@ public isolated client class Client {
 
     # Modifies the labels on the specified message.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to modify.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the message to modify
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - A list of labels to add/remove on the message. 
+    # + payload - A list of labels to add/remove on the message 
     # + return - Successful response 
     resource isolated function post users/[string userId]/messages/[string id]/modify(ModifyMessageRequest payload, map<string|string[]> headers = {}, *GmailUsersMessagesModifyQueries queries) returns Message|error {
         oas:Message response = check self.genClient->/users/[userId]/messages/[id]/modify.post(payload, headers, queries);
@@ -292,8 +292,8 @@ public isolated client class Client {
 
     # Moves the specified message to the trash.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to Trash.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the message to Trash
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -304,8 +304,8 @@ public isolated client class Client {
 
     # Removes the specified message from the trash.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the message to remove from Trash.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the message to remove from Trash
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -316,9 +316,9 @@ public isolated client class Client {
 
     # Gets the specified message attachment.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + messageId - The ID of the message containing the attachment.
-    # + id - The ID of the attachment.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + messageId - The ID of the message containing the attachment
+    # + id - The ID of the attachment
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -329,7 +329,7 @@ public isolated client class Client {
 
     # Gets the current user's Gmail profile.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -339,7 +339,7 @@ public isolated client class Client {
 
     # Lists the threads in the user's mailbox.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -350,8 +350,8 @@ public isolated client class Client {
 
     # Gets the specified thread.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the thread to retrieve.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the thread to retrieve
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -362,8 +362,8 @@ public isolated client class Client {
 
     # Immediately and permanently deletes the specified thread. Any messages that belong to the thread are also deleted. This operation cannot be undone. Prefer `threads.trash` instead.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - ID of the Thread to delete.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - ID of the Thread to delete
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -373,11 +373,11 @@ public isolated client class Client {
 
     # Modifies the labels applied to the thread. This applies to all messages in the thread.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the thread to modify.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the thread to modify
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
-    # + payload - A list labels to add/remove on the thread. 
+    # + payload - A list labels to add/remove on the thread 
     # + return - Successful response 
     resource isolated function post users/[string userId]/threads/[string id]/modify(ModifyThreadRequest payload, map<string|string[]> headers = {}, *GmailUsersThreadsModifyQueries queries) returns MailThread|error {
         oas:MailThread response = check self.genClient->/users/[userId]/threads/[id]/modify.post(payload, headers, queries);
@@ -386,8 +386,8 @@ public isolated client class Client {
 
     # Moves the specified thread to the trash. Any messages that belong to the thread are also moved to the trash.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the thread to Trash.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the thread to Trash
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -398,8 +398,8 @@ public isolated client class Client {
 
     # Removes the specified thread from the trash. Any messages that belong to the thread are also removed from the trash.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user.
-    # + id - The ID of the thread to remove from Trash.
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + id - The ID of the thread to remove from Trash
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
