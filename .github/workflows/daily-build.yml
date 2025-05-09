@@ -3,7 +3,7 @@ name: Daily build
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 2 * * *"
+    - cron: "30 2 * * SUN"
 
 jobs:
   call_workflow:
