@@ -282,6 +282,13 @@ public isolated client class Client {
         return self.clientEp->post(resourcePath, request, headers);
     }
 
+    # Imports a message into only this user's mailbox, with standard email delivery scanning and classification similar to receiving via SMTP. This method doesn't perform SPF checks, so it might not work for some spam messages, such as those attempting to perform domain spoofing. This method does not send a message.
+    #
+    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + headers - Headers to be sent with the request 
+    # + queries - Queries to be sent with the request 
+    # + payload - The message to be imported 
+    # + return - Successful response 
     resource isolated function post users/[string userId]/messages/'import(Message payload, map<string|string[]> headers = {}, *GmailUsersMessagesImportQueries queries) returns Message|error {
         string resourcePath = string `/users/${getEncodedUri(userId)}/messages/import`;
         resourcePath = resourcePath + check getPathForQueryParam(queries);
