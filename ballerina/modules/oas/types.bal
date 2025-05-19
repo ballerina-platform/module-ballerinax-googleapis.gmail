@@ -22,6 +22,7 @@ import ballerina/http;
 public type HistoryLabelAdded record {
     # Label IDs added to the message
     string[] labelIds?;
+    # An email message
     Message message?;
 };
 
@@ -105,6 +106,7 @@ public type GmailUsersDraftsUpdateQueries record {
 };
 
 public type HistoryMessageDeleted record {
+    # An email message
     Message message?;
 };
 
@@ -131,6 +133,7 @@ public type Label record {
     int:Signed32 messagesUnread?;
     # The number of unread threads with the label
     int:Signed32 threadsUnread?;
+    # The color to assign to the label. Color is only available for labels that have their `type` set to `user`
     LabelColor color?;
     # The total number of threads with the label
     int:Signed32 threadsTotal?;
@@ -557,6 +560,7 @@ public type MessagePart record {
     MessagePart[] parts?;
     # The MIME type of the message part
     string mimeType?;
+    # The body of a single MIME message part
     MessagePartBody body?;
 };
 
@@ -593,6 +597,7 @@ public type GmailUsersLabelsDeleteQueries record {
 public type HistoryLabelRemoved record {
     # Label IDs removed from the message
     string[] labelIds?;
+    # An email message
     Message message?;
 };
 
@@ -655,6 +660,7 @@ public type ModifyThreadRequest record {
 };
 
 public type HistoryMessageAdded record {
+    # An email message
     Message message?;
 };
 
@@ -666,6 +672,7 @@ public type Message record {
     string threadId?;
     # List of IDs of labels applied to this message
     string[] labelIds?;
+    # A single MIME message part
     MessagePart payload?;
     # The ID of the last history record that modified this message
     string historyId?;
@@ -1170,6 +1177,7 @@ public type GmailUsersMessagesTrashQueries record {
 public type Draft record {
     # The immutable ID of the draft
     string id?;
+    # An email message
     Message message?;
 };
 
