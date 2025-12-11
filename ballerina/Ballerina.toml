@@ -5,7 +5,7 @@ name = "googleapis.gmail"
 version = "5.0.0"
 authors = ["Ballerina"]
 repository = "https://github.com/ballerina-platform/module-ballerinax-googleapis.gmail"
-keywords = ["Communication/Email", "Cost/Free", "Vendor/Google"]
+keywords = ["Communication/Email", "Cost/Free", "Vendor/Google", "Area/Communication", "Type/Connector"]
 icon = "icon.png"
 license = ["Apache-2.0"]
 
