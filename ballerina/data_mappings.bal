@@ -27,7 +27,7 @@ isolated function convertOASMessageToMessage(oas:Message response) returns Messa
     do {
         string? rawMessage = response.raw;
         if rawMessage is string {
-            email.raw = check base64UrlDecode(rawMessage);
+            email.raw = check base64UrlDecodeToString(rawMessage);
         }
     } on fail error err {
         return error ValueEncodeError(string `Returned message raw field${err.message()}`, err.cause());
@@ -106,7 +106,7 @@ returns MessagePart|error {
         do {
             string? data = body.data;
             if data is string {
-                messagePart.data = check base64UrlDecode(data);
+                messagePart.data = check base64UrlDecodeToBytes(data);
             }
         } on fail error err {
             check error ValueEncodeError(
@@ -270,7 +270,7 @@ isolated function convertOASMessagePartBodyToAttachment(oas:MessagePartBody body
     do {
         string? data = bodyPart.data;
         if data is string {
-            attachment.data = check base64UrlDecode(data);
+            attachment.data = check base64UrlDecodeToBytes(data);
         }
     } on fail error err {
         return error ValueEncodeError(

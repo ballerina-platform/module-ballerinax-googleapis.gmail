@@ -135,6 +135,41 @@ function testUrlDecodeFailure() returns error? {
 @test:Config {
     groups: ["mock"]
 }
+isolated function testBase64UrlDecodeWithInvalidInput() {
+    byte[]|error result = base64UrlDecodeToBytes("@#$%");
+    test:assertTrue(result is error,
+            msg = "base64UrlDecodeToBytes should return an error for invalid base64url input");
+    if result is error {
+        test:assertEquals(result.message(), " is not a valid Base64 URL encoded value.",
+                msg = "base64UrlDecodeToBytes error message mismatch");
+    }
+}
+
+@test:Config {
+    groups: ["mock"]
+}
+isolated function testBinaryAttachmentPopulatesData() returns error? {
+    // "__4=" is base64url for [0xFF, 0xFE] — non-UTF-8 binary bytes (e.g. PDF content).
+    oas:MessagePartBody bodyPart = {attachmentId: "binary", size: 2, data: "__4="};
+    Attachment attachment = check convertOASMessagePartBodyToAttachment(bodyPart);
+    test:assertEquals(attachment.data, [<byte>0xFF, <byte>0xFE],
+            msg = "Binary attachment content should be decoded into data as byte[]");
+}
+
+@test:Config {
+    groups: ["mock"]
+}
+isolated function testBinaryMessagePartPopulatesData() returns error? {
+    // "__4=" is base64url for [0xFF, 0xFE] — non-UTF-8 binary bytes (e.g. PDF content).
+    oas:MessagePart part = {partId: "1", body: {data: "__4="}};
+    MessagePart messagePart = check convertOASMessagePartToMultipartMessageBody(part);
+    test:assertEquals(messagePart.data, [<byte>0xFF, <byte>0xFE],
+            msg = "Binary message part content should be decoded into data as byte[]");
+}
+
+@test:Config {
+    groups: ["mock"]
+}
 function testAttachmentSendFailure() returns error? {
     MessageRequest sendMsg = {
         attachments: [
@@ -270,7 +305,7 @@ function testPostMessageMock() returns error? {
 }
 function testGetAttachmentMock() returns error? {
     Attachment attachment = check gmailClientForMockServer->/users/me/messages/["123"]/attachments/["123"];
-    test:assertTrue(attachment.data != "", msg = "/users/[userId]/messages/[sentMessageId]/attachments/[attachmentId] failed");
+    test:assertTrue((attachment.data ?: []).length() > 0, msg = "/users/[userId]/messages/[sentMessageId]/attachments/[attachmentId] failed");
 }
 
 @test:Config {

@@ -227,7 +227,7 @@ function testMessageUntrash() returns error? {
 }
 function testGetAttachment() returns error? {
     Attachment attachment = check gmailClient->/users/me/messages/[sentMessageId]/attachments/[attachmentId];
-    test:assertTrue(attachment.data != "", msg = "/users/[userId]/messages/[sentMessageId]/attachments/[attachmentId] failed");
+    test:assertTrue((attachment.data ?: []).length() > 0, msg = "/users/[userId]/messages/[sentMessageId]/attachments/[attachmentId] failed");
 }
 
 @test:Config {
