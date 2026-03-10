@@ -70,7 +70,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "http"
-version = "2.13.5"
+version = "2.13.8"
 dependencies = [
 	{org = "ballerina", name = "auth"},
 	{org = "ballerina", name = "cache"},
@@ -350,7 +350,7 @@ modules = [
 [[package]]
 org = "ballerinax"
 name = "googleapis.gmail"
-version = "4.1.0"
+version = "4.2.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},

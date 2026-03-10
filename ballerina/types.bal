@@ -150,8 +150,10 @@ public type MessagePart record {
     string partId;
     # When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field.
     string attachmentId?;
-    # The body data of a MIME message part. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
-    string data?;
+    # The body data of a MIME message part decoded as a UTF-8 string. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
+    string data?; // TODO: This will deprecated in version 5.0.0 
+    # The body data of a MIME message part as raw decoded bytes. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
+    byte[] rawData?;
     # Number of bytes for the message part data.
     int:Signed32 size?;
     # The child MIME message parts of this part. This only applies to container MIME message parts, for example `multipart/*`. For non- container MIME message part types, such as `text/plain`, this field is empty. For more information, see RFC 1521.
@@ -193,8 +195,10 @@ public type ModifyMessageRequest record {|
 public type Attachment record {
     # Id of the attachment.
     string attachmentId?;
-    # The body data of a MIME message part. 
-    string data?;
+    # The attachment data decoded as a UTF-8 string. Populated only when the content is valid UTF-8 text.
+    string data?; // TODO: This will deprecated in version 5.0.0 
+    # The attachment data as raw decoded bytes. Populated for binary content that cannot be represented as a UTF-8 string (e.g. PDF, images).
+    byte[] rawData?;
     # Number of bytes for the message part data (encoding notwithstanding).
     int:Signed32 size?;
 };

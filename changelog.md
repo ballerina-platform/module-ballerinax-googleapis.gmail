@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [4.2.0] - 2026-03-10
+
+### Added
+
+- Add `rawData` field (`byte[]`) to `Attachment` and `MessagePart` types to support binary content (e.g. PDF, images) that cannot be represented as UTF-8 strings
+
+### Fixed
+
+- Fix binary attachment retrieval failing with `"array contains invalid UTF-8 byte value"` error when decoding non-UTF-8 content from the Gmail API
+
 ## [4.0.1] - 2024-02-13
 
 ### Changed
