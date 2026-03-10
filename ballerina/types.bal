@@ -168,9 +168,9 @@ public type MessagePart record {
     MessagePartBody body?;
     # When present, contains the ID of an external attachment that can be retrieved in a separate `messages.attachments.get` request. When not present, the entire content of the message part body is contained in the data field
     string attachmentId?;
-    # The body data of a MIME message part. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment
-    string data?;
-    # Number of bytes for the message part data
+    # The body data of a MIME message part as decoded bytes. May be empty for MIME container types that have no message body or when the body data is sent as a separate attachment. An attachment ID is present if the body data is contained in a separate attachment.
+    byte[] data?;
+    # Number of bytes for the message part data.
     int:Signed32 size?;
 };
 
@@ -543,8 +543,8 @@ public type GmailUsersMessagesAttachmentsGetQueries record {
 public type Attachment record {
     # Id of the attachment.
     string attachmentId?;
-    # The body data of a MIME message part. 
-    string data?;
+    # The attachment data as decoded bytes.
+    byte[] data?;
     # Number of bytes for the message part data (encoding notwithstanding).
     int:Signed32 size?;
 };

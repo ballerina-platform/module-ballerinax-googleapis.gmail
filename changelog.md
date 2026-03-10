@@ -11,7 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Improve APIs to align with ballerina standards
+### Changed
+
+- Improve APIs to align with Ballerina standards
+
+## [4.2.0] - 2026-03-10
+
+### Added
+
+- Add `rawData` (`byte[]`) field to `Attachment` and `MessagePart` types to support binary content (e.g. PDFs, images) that cannot be represented as a UTF-8 string
+
+### Fixed
+
+- Fix binary attachment retrieval failing with `"array contains invalid UTF-8 byte value"` when attachment data is non-UTF-8 content
 
 ## [4.0.1] - 2024-02-13
 
