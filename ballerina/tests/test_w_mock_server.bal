@@ -123,6 +123,41 @@ function testUrlDecodeFailure() returns error? {
 @test:Config {
     groups: ["mock"]
 }
+isolated function testBase64UrlDecodeWithInvalidInput() {
+    byte[]|error result = base64UrlDecodeToBytes("@#$%");
+    test:assertTrue(result is error,
+            msg = "base64UrlDecodeToBytes should return an error for invalid base64url input");
+    if result is error {
+        test:assertEquals(result.message(), " is not a valid Base64 URL encoded value.",
+                msg = "base64UrlDecodeToBytes error message mismatch");
+    }
+}
+
+@test:Config {
+    groups: ["mock"]
+}
+isolated function testBinaryAttachmentPopulatesRawData() returns error? {
+    oas:MessagePartBody bodyPart = {attachmentId: "binary", size: 2, data: "__4="};
+    Attachment attachment = check convertOASMessagePartBodyToAttachment(bodyPart);
+    test:assertEquals(attachment.rawData, [<byte>0xFF, <byte>0xFE],
+            msg = "Binary attachment content should be stored in rawData");
+    test:assertTrue(attachment.data is (), msg = "data field should be nil for binary attachment");
+}
+
+@test:Config {
+    groups: ["mock"]
+}
+isolated function testBinaryMessagePartPopulatesRawData() returns error? {
+    oas:MessagePart part = {partId: "1", body: {data: "__4="}};
+    MessagePart messagePart = check convertOASMessagePartToMultipartMessageBody(part);
+    test:assertEquals(messagePart.rawData, [<byte>0xFF, <byte>0xFE],
+            msg = "Binary message part content should be stored in rawData");
+    test:assertTrue(messagePart.data is (), msg = "data field should be nil for binary message part");
+}
+
+@test:Config {
+    groups: ["mock"]
+}
 function testAttachmentSendFailure() returns error? {
     MessageRequest sendMsg = {
         attachments: [
