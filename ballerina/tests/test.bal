@@ -62,7 +62,8 @@ function testGmailGetProfile() returns error? {
 }
 
 @test:Config {
-    groups: ["gmail"]
+    groups: ["gmail"],
+    dependsOn: [testGmailGetProfile]
 }
 function testMessageInsert() returns error? {
     MessageRequest request = {
