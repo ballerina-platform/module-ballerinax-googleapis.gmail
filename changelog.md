@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `rawData` field (`byte[]`) to `Attachment` and `MessagePart` types to support binary content (e.g. PDF, images) that cannot be represented as UTF-8 strings
 
+### Changed
+
+- Update the Ballerina distribution version from `2201.11.0` to `2201.12.0`
+
 ### Fixed
 
 - Fix binary attachment retrieval failing with `"array contains invalid UTF-8 byte value"` error when decoding non-UTF-8 content from the Gmail API
