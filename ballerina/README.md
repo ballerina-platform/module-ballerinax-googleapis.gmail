@@ -1,8 +1,15 @@
 ## Overview
 
-[Gmail](https://blog.google/products/gmail/) is a widely-used email service provided by Google LLC, enabling users to send and receive emails over the internet.
+[Gmail](https://www.google.com/gmail/) is an email service provided by Google LLC, enabling users to send and receive emails over the internet. it offers powerful features for organizing, searching, and managing electronic communications.
 
-The `ballerinax/googleapis.gmail` package offers APIs to connect and interact with [Gmail API](https://developers.google.com/gmail/api/guides) endpoints, specifically based on [Gmail API v1](https://gmail.googleapis.com/$discovery/rest?version=v1).
+The Gmail connector offers APIs to connect and interact with Gmail API endpoints, specifically based on Gmail API v1.
+
+### Key Features
+
+- Send, receive, and manage emails programmatically
+- Support for Gmail API v1
+- Manage labels, threads, and attachments
+- Efficient searching and filtering of electronic communications
 
 ## Setup guide
 
