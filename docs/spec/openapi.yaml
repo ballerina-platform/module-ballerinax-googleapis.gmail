@@ -138,7 +138,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -309,7 +309,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -453,7 +453,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -597,7 +597,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -754,7 +754,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -905,7 +905,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -1047,7 +1047,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -1242,7 +1242,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -1382,7 +1382,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -1521,7 +1521,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -1669,7 +1669,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -1816,7 +1816,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -1952,7 +1952,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -2099,7 +2099,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -2286,7 +2286,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -2447,7 +2447,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -2574,7 +2574,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -2709,7 +2709,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -2888,7 +2888,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -3035,7 +3035,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -3217,7 +3217,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -3346,7 +3346,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -3489,7 +3489,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -3626,7 +3626,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -3763,7 +3763,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -3920,7 +3920,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -4061,7 +4061,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -4245,7 +4245,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -4425,7 +4425,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -4555,7 +4555,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -4699,7 +4699,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple
@@ -4837,7 +4837,7 @@ paths:
           type: string
       - name: userId
         in: path
-        description: The user's email address. The special value `me` can be used
+        description: The user's email address. The special value `"me"` can be used
           to indicate the authenticated user
         required: true
         style: simple

@@ -33,7 +33,7 @@ public isolated client class Client {
 
     # Lists the drafts in the user's mailbox.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -44,7 +44,7 @@ public isolated client class Client {
 
     # Creates a new draft with the `DRAFT` label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + payload - The draft to create 
@@ -57,7 +57,7 @@ public isolated client class Client {
 
     # Sends the specified, existing draft to the recipients in the `To`, `Cc`, and `Bcc` headers.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + payload - The ID of the existing draft to send. (Optional) Updated draft if necessary 
@@ -70,7 +70,7 @@ public isolated client class Client {
 
     # Gets the specified draft.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the draft to retrieve
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -82,7 +82,7 @@ public isolated client class Client {
 
     # Replaces a draft's content.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the draft to update
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -96,7 +96,7 @@ public isolated client class Client {
 
     # Immediately and permanently deletes the specified draft. Does not simply trash it.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the draft to delete
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -107,7 +107,7 @@ public isolated client class Client {
 
     # Lists the history of all changes to the given mailbox. History results are returned in chronological order (increasing `historyId`).
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -118,7 +118,7 @@ public isolated client class Client {
 
     # Lists all labels in the user's mailbox.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -128,7 +128,7 @@ public isolated client class Client {
 
     # Creates a new label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + payload - The label to create 
@@ -139,7 +139,7 @@ public isolated client class Client {
 
     # Gets the specified label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the label to retrieve
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -150,7 +150,7 @@ public isolated client class Client {
 
     # Updates the specified label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the label to update
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -162,7 +162,7 @@ public isolated client class Client {
 
     # Immediately and permanently deletes the specified label and removes it from any messages and threads that it is applied to.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the label to delete
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -173,7 +173,7 @@ public isolated client class Client {
 
     # Patch the specified label.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the label to update
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -185,7 +185,7 @@ public isolated client class Client {
 
     # Lists the messages in the user's mailbox.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -196,7 +196,7 @@ public isolated client class Client {
 
     # Directly inserts a message into only this user's mailbox similar to `IMAP APPEND`, bypassing most scanning and classification. Does not send a message.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + payload - The message to be inserted 
@@ -209,7 +209,7 @@ public isolated client class Client {
 
     # Deletes many messages by message ID. Provides no guarantees that messages were not already deleted or even existed at all.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + payload - The IDs of the messages to delete 
@@ -220,7 +220,7 @@ public isolated client class Client {
 
     # Modifies the labels on the specified messages.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + payload - A list of labels to add/remove in messages 
@@ -243,7 +243,7 @@ public isolated client class Client {
 
     # Sends the specified message to the recipients in the `To`, `Cc`, and `Bcc` headers. For example usage, see [Sending email](https://developers.google.com/gmail/api/guides/sending).
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + payload - The message to be sent 
@@ -256,7 +256,7 @@ public isolated client class Client {
 
     # Gets the specified message.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the message to retrieve. This ID is usually retrieved using `messages.list`. The ID is also contained in the result when a message is inserted (`messages.insert`) or imported (`messages.import`)
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -268,7 +268,7 @@ public isolated client class Client {
 
     # Immediately and permanently deletes the specified message. This operation cannot be undone. Prefer `messages.trash` instead.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the message to delete
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -279,7 +279,7 @@ public isolated client class Client {
 
     # Modifies the labels on the specified message.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the message to modify
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -292,7 +292,7 @@ public isolated client class Client {
 
     # Moves the specified message to the trash.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the message to Trash
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -304,7 +304,7 @@ public isolated client class Client {
 
     # Removes the specified message from the trash.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the message to remove from Trash
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -316,7 +316,7 @@ public isolated client class Client {
 
     # Gets the specified message attachment.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + messageId - The ID of the message containing the attachment
     # + id - The ID of the attachment
     # + headers - Headers to be sent with the request 
@@ -329,7 +329,7 @@ public isolated client class Client {
 
     # Gets the current user's Gmail profile.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -339,7 +339,7 @@ public isolated client class Client {
 
     # Lists the threads in the user's mailbox.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
     # + return - Successful response 
@@ -350,7 +350,7 @@ public isolated client class Client {
 
     # Gets the specified thread.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the thread to retrieve
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -362,7 +362,7 @@ public isolated client class Client {
 
     # Immediately and permanently deletes the specified thread. Any messages that belong to the thread are also deleted. This operation cannot be undone. Prefer `threads.trash` instead.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - ID of the Thread to delete
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -373,7 +373,7 @@ public isolated client class Client {
 
     # Modifies the labels applied to the thread. This applies to all messages in the thread.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the thread to modify
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -386,7 +386,7 @@ public isolated client class Client {
 
     # Moves the specified thread to the trash. Any messages that belong to the thread are also moved to the trash.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the thread to Trash
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
@@ -398,7 +398,7 @@ public isolated client class Client {
 
     # Removes the specified thread from the trash. Any messages that belong to the thread are also removed from the trash.
     #
-    # + userId - The user's email address. The special value `me` can be used to indicate the authenticated user
+    # + userId - The user's email address. The special value `"me"` can be used to indicate the authenticated user
     # + id - The ID of the thread to remove from Trash
     # + headers - Headers to be sent with the request 
     # + queries - Queries to be sent with the request 
