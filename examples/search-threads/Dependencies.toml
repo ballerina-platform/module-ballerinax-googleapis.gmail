@@ -306,7 +306,7 @@ dependencies = [
 [[package]]
 org = "ballerinax"
 name = "googleapis.gmail"
-version = "4.2.0"
+version = "4.2.1-SNAPSHOT"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},
